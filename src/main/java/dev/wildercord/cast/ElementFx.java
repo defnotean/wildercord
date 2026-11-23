@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.LightOption;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
@@ -647,7 +649,7 @@ public final class ElementFx {
 			Vec3 p = at.add((r.nextDouble() - 0.5) * 2 * spread, (r.nextDouble() - 0.5) * spread, (r.nextDouble() - 0.5) * 2 * spread);
 			Vfx.fling(level, DROP, p, new Vec3((r.nextDouble() - 0.5) * 0.2, -0.3, (r.nextDouble() - 0.5) * 0.2), 0.12);
 		}
-		Vfx.emit(level, new DustParticleOptions(BLOOD.primary, 0.9F), at, Math.max(1, count / 2), spread, 0.0);
+		Vfx.emit(level, McParticles.dust(BLOOD.primary, 0.9F), at, Math.max(1, count / 2), spread, 0.0);
 	}
 
 	/** A heartbeat: two rings pulsing out of {@code at}, the second a beat behind the first. */

@@ -1,5 +1,7 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.*;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.spell.RuneColors;
@@ -93,7 +95,7 @@ public final class ResonantVfx {
 			case "blood" -> {
 				// Broken red threads pull tight across the cut, then snap outward.
 				for(int i=-1;i<=1;i++) ElementFx.ray(l,c.add(side.scale(-reach)).add(0,i*.15,0),c.add(side.scale(reach)).add(0,-i*.15,0),color,.025,7);
-				if(phase==2) Vfx.radial(l,new DustParticleOptions(color,.7F),c,5,.09);
+				if(phase==2) Vfx.radial(l,McParticles.dust(color, .7F),c,5,.09);
 				if(name.equals("hollow_pulse")) ElementFx.ray(l,c.add(0,-.4,0),c.add(0,.4,0),color|Light.DARK,.045,6);
 			}
 			default -> { }

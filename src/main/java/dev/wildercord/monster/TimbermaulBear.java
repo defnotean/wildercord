@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McParticles;
+
 import com.mojang.math.Transformation;
 import dev.wildercord.cast.BlockFx;
 import dev.wildercord.cast.MoveDeck;
@@ -78,8 +80,8 @@ public class TimbermaulBear extends EliteMonster {
 	private static final EntityDataAccessor<Long> BEGAN = SynchedEntityData.defineId(TimbermaulBear.class, EntityDataSerializers.LONG);
 	private static final EntityDataAccessor<Boolean> ROUSED = SynchedEntityData.defineId(TimbermaulBear.class, EntityDataSerializers.BOOLEAN);
 	private static final int MOVES = TimbermaulRules.MOVES;
-	private static final DustParticleOptions MARK = new DustParticleOptions(0x6B4A2B, 1.3F), LOCKED = new DustParticleOptions(0xB0413E, 1.3F),
-		MOSS = new DustParticleOptions(0x5E7F3A, 1.1F), DAZE = new DustParticleOptions(0xF2D45C, 0.9F);
+	private static final DustParticleOptions MARK = McParticles.dust(0x6B4A2B, 1.3F), LOCKED = McParticles.dust(0xB0413E, 1.3F),
+		MOSS = McParticles.dust(0x5E7F3A, 1.1F), DAZE = McParticles.dust(0xF2D45C, 0.9F);
 	/** The log it sends rolling: this long and this thick. */
 	private static final float LOG_SPAN = (float) (2 * TimbermaulRules.LOG_WIDTH), LOG_GIRTH = 0.9F;
 

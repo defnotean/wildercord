@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McParticles;
+
 import static dev.wildercord.monster.GiantRules.Bramble.*;
 
 import dev.wildercord.cast.ElementFx;
@@ -67,9 +69,9 @@ final class BrambleGiantFight extends GiantFight {
 		super(mob, MEMORY);
 		this.colossus = colossus;
 		this.tint = colossus ? ElementFx.FIRE : ElementFx.EARTH;
-		this.warn = new DustParticleOptions(colossus ? 0xFF6A2A : 0xC8A060, 1.6F);
-		this.bright = new DustParticleOptions(colossus ? 0xFFD060 : 0xF0E0A0, 2.0F);
-		this.thorn = new DustParticleOptions(0x5AC850, 1.4F);
+		this.warn = McParticles.dust(colossus ? 0xFF6A2A : 0xC8A060, 1.6F);
+		this.bright = McParticles.dust(colossus ? 0xFFD060 : 0xF0E0A0, 2.0F);
+		this.thorn = McParticles.dust(0x5AC850, 1.4F);
 	}
 
 	// ------------------------------------------------------------------ the fight

@@ -1,5 +1,7 @@
 package dev.wildercord.content;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.Grimoire;
 import dev.wildercord.cast.LeyWalker;
 import dev.wildercord.player.WildercordAttachments;
@@ -73,7 +75,7 @@ public class WellstoneBlockEntity extends BlockEntity {
 			Vec3 from = base.add(Math.cos(a) * r, -0.9, Math.sin(a) * r);
 			dev.wildercord.cast.Fx.sendParticles(server, dev.wildercord.compat.McSpawnEgg.trail(base.add(0, 0.2, 0), PURPLE, 20), from.x, from.y, from.z, 1, 0, 0, 0, 0);
 		}
-		dev.wildercord.cast.Fx.sendParticles(server, new DustParticleOptions(0xE8E0FF, 1.0F), base.x, base.y + 0.4, base.z, 3, 0.25, 0.3, 0.25, 0);
+		dev.wildercord.cast.Fx.sendParticles(server, McParticles.dust(0xE8E0FF, 1.0F), base.x, base.y + 0.4, base.z, 3, 0.25, 0.3, 0.25, 0);
 		if (time % 80 == 0) {
 			server.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6F, 0.9F);
 		}

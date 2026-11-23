@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.MoveDeck;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.spell.RuneDef;
@@ -68,8 +70,8 @@ public class SandmawWyrm extends EliteMonster {
 	private static final EntityDataAccessor<Long> BEGAN = SynchedEntityData.defineId(SandmawWyrm.class, EntityDataSerializers.LONG);
 	private static final EntityDataAccessor<Boolean> ROUSED = SynchedEntityData.defineId(SandmawWyrm.class, EntityDataSerializers.BOOLEAN);
 	private static final int MOVES = SandmawRules.THRASH + 1;
-	private static final DustParticleOptions SAND = new DustParticleOptions(0xD9B26F, 1.4F), SPINE = new DustParticleOptions(0x8A5A2B, 1.1F),
-		SPINE_NEXT = new DustParticleOptions(0xE8D9A8, 1.1F), MAW = new DustParticleOptions(0xB0413E, 1.5F);
+	private static final DustParticleOptions SAND = McParticles.dust(0xD9B26F, 1.4F), SPINE = McParticles.dust(0x8A5A2B, 1.1F),
+		SPINE_NEXT = McParticles.dust(0xE8D9A8, 1.1F), MAW = McParticles.dust(0xB0413E, 1.5F);
 
 	/** A geyser marked beneath someone, and when it goes up. */
 	private record Geyser(Vec3 at, long when) {}

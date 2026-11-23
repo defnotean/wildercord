@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.MoteOption;
 import dev.wildercord.content.SigilOption;
@@ -260,7 +262,7 @@ final class FusedStormVfx {
 		ElementFx.clock(level, spot.add(0, 0.07, 0), UP, size * 0.75, 8, false);
 		ElementFx.groundRing(level, spot, ElementFx.TIME.primary(), 0.2, size, 0.06, 9);
 		ElementFx.goldenTicks(level, spot.add(0, 0.3, 0), 0.4, 5);
-		Vfx.emit(level, new DustParticleOptions(SCORCH, 1.6F), spot.add(0, 0.08, 0), 5, 0.4, 0.0);
+		Vfx.emit(level, McParticles.dust(SCORCH, 1.6F), spot.add(0, 0.08, 0), 5, 0.4, 0.0);
 		dev.wildercord.cast.feel.Feels.sound(level, spot, "storm_hour", 1.0F, 1.0F);
 	}
 
@@ -376,7 +378,7 @@ final class FusedStormVfx {
 		ElementFx.groundRing(level, t.position(), storm().primary(), 0.2, 1.6, 0.06, 7);
 		ElementFx.groundRing(level, t.position(), storm().accent(), 0.15, 1.1, 0.04, 9);
 		ElementFx.sparks(level, centre(t), 10, 0.35);
-		Vfx.emit(level, new DustParticleOptions(SCORCH, 1.5F), t.position().add(0, 0.08, 0), 4, 0.35, 0.0);
+		Vfx.emit(level, McParticles.dust(SCORCH, 1.5F), t.position().add(0, 0.08, 0), 4, 0.35, 0.0);
 		RandomSource r = level.getRandom();
 		dev.wildercord.cast.feel.Feels.sound(level, foot, "storm_crack", 0.7F, 1.26F);
 	}

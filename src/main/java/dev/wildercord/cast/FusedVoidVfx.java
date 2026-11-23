@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
@@ -45,7 +47,7 @@ final class FusedVoidVfx {
 	/** Darkness rimmed in crimson: void with blood in it. */
 	private static final int RED_HOLE = ElementFx.dark(ElementFx.BLOOD.primary());
 	/** The dark motes a creature unravels into. */
-	private static final DustParticleOptions MOTE = new DustParticleOptions(0x1C0A2A, 1.1F);
+	private static final DustParticleOptions MOTE = McParticles.dust(0x1C0A2A, 1.1F);
 	private static final int SMOKE = 0x2A1838;
 	/** The accretion disk's hottest band. */
 	private static final int HOT = 0xFBF2FF;

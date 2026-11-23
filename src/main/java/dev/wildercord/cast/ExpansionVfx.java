@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
@@ -147,7 +149,7 @@ final class ExpansionVfx {
 		Vec3 side = across(dir);
 		Vec3 up = side.cross(dir).normalize();
 		double a = tick * 0.9;
-		dot(level, new DustParticleOptions(theme.secondary(), 0.7F), to.add(side.scale(Math.cos(a) * 0.28)).add(up.scale(Math.sin(a) * 0.28)));
+		dot(level, McParticles.dust(theme.secondary(), 0.7F), to.add(side.scale(Math.cos(a) * 0.28)).add(up.scale(Math.sin(a) * 0.28)));
 		Light.ray(level, from, to, theme.primary(), 0.03, 6);
 		if (tick % 4 == 0) {
 			Vfx.emit(level, theme.mote(), to, 1, 0.05, 0.0);
@@ -256,7 +258,7 @@ final class ExpansionVfx {
 		Vec3 up = side.cross(dir).normalize();
 		for (int i = 0; i < 5; i++) {
 			double a = tick * 0.6 + Math.PI * 2 * i / 5;
-			dot(level, new DustParticleOptions(theme.secondary(), 0.6F), to.add(side.scale(Math.cos(a) * 0.3)).add(up.scale(Math.sin(a) * 0.3)));
+			dot(level, McParticles.dust(theme.secondary(), 0.6F), to.add(side.scale(Math.cos(a) * 0.3)).add(up.scale(Math.sin(a) * 0.3)));
 		}
 	}
 
@@ -440,7 +442,7 @@ final class ExpansionVfx {
 			Vec3 toward = across(normal).scale(i % 2 == 0 ? 1 : -1);
 			Light.slash(level, c.add(0, (i - 1) * t.getBbHeight() * 0.25, 0), normal, toward, i == 1 ? 0x3E7A34 : LIFE, r, Math.PI * 1.4, 0.07, 3, 10);
 		}
-		Vfx.emit(level, new DustParticleOptions(0x3E7A34, 1.1F), c, 8, r * 0.8, 0.0);
+		Vfx.emit(level, McParticles.dust(0x3E7A34, 1.1F), c, 8, r * 0.8, 0.0);
 		// Four thorns you can count, circling the body: each hit taken spends one.
 		ElementFx.orbit(level, c, r + 0.2, dev.wildercord.cast.Effects.BRAMBLE_THORNS, 200, 0x3E7A34, LIFE);
 		dev.wildercord.cast.feel.Feels.sound(level, c, "life_thorn_grow", 0.9F, 1.0F);
@@ -452,7 +454,7 @@ final class ExpansionVfx {
 		Vec3 to = attacker.getBoundingBox().getCenter();
 		Light.ray(level, from, to, LIFE, 0.06, 5);
 		Sigils.flash(level, to, LIFE, 1.1F);
-		Vfx.radial(level, new DustParticleOptions(0x3E7A34, 1.0F), to, 8, 0.15);
+		Vfx.radial(level, McParticles.dust(0x3E7A34, 1.0F), to, 8, 0.15);
 		dev.wildercord.cast.feel.Feels.sound(level, to, "life_thorn", 0.9F, 1.0F);
 	}
 

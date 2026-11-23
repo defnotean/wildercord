@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import static dev.wildercord.cast.CinderWardenRules.*;
 
 import dev.wildercord.content.dungeons.DungeonSounds;
@@ -1335,7 +1337,7 @@ public class CinderWarden extends DungeonBoss {
 		Sigils.flash(level, c, ACCENT, 2.6F);
 		ElementFx.fireImpact(level, c, 1.4);
 		Vfx.emit(level, ParticleTypes.LAVA, c, 14, 0.7, 0.3);
-		Vfx.radial(level, new DustParticleOptions(0xFFB040, 1.3F), c, 20, 0.35);
+		Vfx.radial(level, McParticles.dust(0xFFB040, 1.3F), c, 20, 0.35);
 		Fx.sound(level, c, DungeonSounds.WARDEN_HURT, 1.2F, 1.0F);
 		Fx.sound(level, c, SoundEvents.ANVIL_LAND, 0.5F, 0.6F);
 	}

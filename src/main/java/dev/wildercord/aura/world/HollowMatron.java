@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.MoveDeck;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
@@ -112,7 +114,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private Vec3 caughtAt=Vec3.ZERO;
 	private int snaps;
 	private long lastSnap=-99;
-	private static final DustParticleOptions SILK_DUST=new DustParticleOptions(0xEDEDE4,1.4F),VENOM=new DustParticleOptions(0x8CC63F,.9F),HAIR=new DustParticleOptions(0xA08060,.7F);
+	private static final DustParticleOptions SILK_DUST=McParticles.dust(0xEDEDE4, 1.4F),VENOM=McParticles.dust(0x8CC63F, .9F),HAIR=McParticles.dust(0xA08060, .7F);
 	/** The spiderlings that hatch from her sacs carry this, so she spares them while she fights. */
 	private static final BlockState SILK=Blocks.WHITE_WOOL.defaultBlockState();
 	public static final String BROOD="wildercord_hollow_brood";

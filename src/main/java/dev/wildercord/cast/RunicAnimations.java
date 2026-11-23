@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.spell.RuneChoreography;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
@@ -189,7 +191,7 @@ public final class RunicAnimations {
 			}
 		}
 		if (landing && phase == 2) {
-			Vfx.emit(level, new DustParticleOptions(bright, 0.72F), at, 5, scale * 0.3, 0.02);
+			Vfx.emit(level, McParticles.dust(bright, 0.72F), at, 5, scale * 0.3, 0.02);
 		}
 	}
 

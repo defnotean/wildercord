@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -162,7 +164,7 @@ public final class Fx {
 	}
 
 	public static DustParticleOptions dust(int color, float scale) {
-		return new DustParticleOptions(color, scale);
+		return McParticles.dust(color, scale);
 	}
 
 	public static void puff(ServerLevel level, Vec3 pos, int color, int count, double spread) {

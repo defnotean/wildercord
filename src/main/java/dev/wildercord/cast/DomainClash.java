@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.player.Heart;
 import dev.wildercord.spell.Feats;
@@ -138,7 +140,7 @@ public final class DomainClash {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			double rr = Math.sqrt(1 - y * y) * r;
 			Vec3 p = c.add(Math.cos(a) * rr, y * r, Math.sin(a) * rr);
-			Fx.sendFar(level, i % 3 == 0 ? glass : new DustParticleOptions(domain.color(), 2.0F), p);
+			Fx.sendFar(level, i % 3 == 0 ? glass : McParticles.dust(domain.color(), 2.0F), p);
 		}
 		Sigils.send(level, dev.wildercord.content.SigilOption.flat(dev.wildercord.content.SigilOption.CRACKED, domain.color(), (float) Math.min(r, 12), 40, 0.0F),
 			CastEngine.ground(level, c).add(0, 0.08, 0));

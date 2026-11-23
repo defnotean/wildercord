@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.spell.ReactionRules;
@@ -247,7 +249,7 @@ final class ReactionVfx {
 		ElementFx.pulse(level, c, UP, 1.6 + w);
 		ElementFx.swirl(level, target.position(), 0.8, target.getBbHeight() + 0.4, 3, ElementFx.BLOOD.primary(), ElementFx.WIND.primary());
 		ElementFx.drip(level, c, 0.4, 10);
-		Vfx.radial(level, new DustParticleOptions(ElementFx.BLOOD.primary(), 1.2F), c, 14, 0.3);
+		Vfx.radial(level, McParticles.dust(ElementFx.BLOOD.primary(), 1.2F), c, 14, 0.3);
 		for (int i = 0; i < 3; i++) {
 			Motes.seek(level, c, home, ElementFx.BLOOD.secondary(), 0.22, 16, 0.4);
 		}

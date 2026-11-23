@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.MoveDeck;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
@@ -57,7 +59,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	/** Whether it has kindled, so the client can set its antlers alight. */
 	private static final EntityDataAccessor<Boolean> KINDLED=SynchedEntityData.defineId(AshenStag.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDimensions BEDDED=EntityDimensions.scalable(2.4F,2.0F).withEyeHeight(1.7F),STANDING=EntityDimensions.scalable(2.4F,3.6F).withEyeHeight(3.0F);
-	private static final DustParticleOptions EMBER=new DustParticleOptions(0xFF6A1A,1.4F),EMBER_SMALL=new DustParticleOptions(0xFFA040,.8F),SOOT=new DustParticleOptions(0x2A2420,1.6F);
+	private static final DustParticleOptions EMBER=McParticles.dust(0xFF6A1A, 1.4F),EMBER_SMALL=McParticles.dust(0xFFA040, .8F),SOOT=McParticles.dust(0x2A2420, 1.6F);
 	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.RED,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos bed=BlockPos.ZERO,gladeMin=BlockPos.ZERO,gladeMax=BlockPos.ZERO;

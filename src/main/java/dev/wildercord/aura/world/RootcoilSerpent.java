@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import com.mojang.math.Transformation;
 import dev.wildercord.cast.BlockFx;
 import dev.wildercord.cast.MoveDeck;
@@ -422,7 +424,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			if(el%2==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.1,getZ(),5,1.2,.05,1.2,.1);
 			if(el==tell-SerpentRules.LUNGE_LOCK){
 				Feels.sound(level,mouth(),"aura_serpent_hiss",1.3F,1.5F);
-				for(double r=2;r<=SerpentRules.LUNGE_REACH+2;r+=1){var at=position().add(ahead(aim).scale(r));level.sendParticles(new DustParticleOptions(0x6B4A2B,1.6F),at.x,at.y+.15,at.z,2,.3,.02,.3,0);}
+				for(double r=2;r<=SerpentRules.LUNGE_REACH+2;r+=1){var at=position().add(ahead(aim).scale(r));level.sendParticles(McParticles.dust(0x6B4A2B, 1.6F),at.x,at.y+.15,at.z,2,.3,.02,.3,0);}
 			}
 			return;
 		}
@@ -479,7 +481,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			if(el%2==0)level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,getX(),getY()+3,getZ(),3,1.5,1,1.5,0);
 			// Its aim set, the ground where the tail will come down darkens.
 			if(el>=tell-SerpentRules.TAIL_LOCK){var down=position().add(ahead(aim).scale(SerpentRules.SLAM_AHEAD));
-				level.sendParticles(new DustParticleOptions(0x6B4A2B,1.6F),down.x,down.y+.15,down.z,10,SerpentRules.SHOCK_RADIUS*.45,.02,SerpentRules.SHOCK_RADIUS*.45,0);}
+				level.sendParticles(McParticles.dust(0x6B4A2B, 1.6F),down.x,down.y+.15,down.z,10,SerpentRules.SHOCK_RADIUS*.45,.02,SerpentRules.SHOCK_RADIUS*.45,0);}
 			return;
 		}
 		if(el==tell){
@@ -517,7 +519,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 				level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),tip.x,tip.y,tip.z,4,.2,.2,.2,.1);
 				Feels.sound(level,tip,"aura_serpent_hiss",.8F,1.8F+random.nextFloat()*.3F);
 			}
-			if(el>=tell-4)for(int i=0;i<24;i++){var at=around(i*15,SerpentRules.SWEEP_REACH,.1);level.sendParticles(new DustParticleOptions(0x6B4A2B,1.3F),at.x,at.y,at.z,1,.1,0,.1,0);}
+			if(el>=tell-4)for(int i=0;i<24;i++){var at=around(i*15,SerpentRules.SWEEP_REACH,.1);level.sendParticles(McParticles.dust(0x6B4A2B, 1.3F),at.x,at.y,at.z,1,.1,0,.1,0);}
 			return;
 		}
 		int tick=(int)(el-tell)+1;
@@ -697,7 +699,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		// The ring it has run so far shows on the ground.
 		if(el>set && el<=set+lap)for(int i=0;i<24;i++){
 			double b=ringStart+side*2*Math.PI*i/24;if(i*lap>(el-set)*24)break;
-			var on=onRing(level,b,ringR);level.sendParticles(new DustParticleOptions(0x6B4A2B,1.4F),on.x,on.y+.1,on.z,1,.1,0,.1,0);
+			var on=onRing(level,b,ringR);level.sendParticles(McParticles.dust(0x6B4A2B, 1.4F),on.x,on.y+.1,on.z,1,.1,0,.1,0);
 		}
 		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.1,at.z,3,.5,.05,.5,.05);
 	}

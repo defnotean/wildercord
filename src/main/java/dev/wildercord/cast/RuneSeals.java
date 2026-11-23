@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.RuneSealBlock;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordBlocks;
@@ -92,7 +94,7 @@ public final class RuneSeals {
 			if (state.getValue(RuneSealBlock.ELEMENT) == element && !state.getValue(RuneSealBlock.LIT)) {
 				level.setBlock(pos, state.setValue(RuneSealBlock.LIT, true), Block.UPDATE_ALL);
 				level.scheduleTick(pos, WildercordBlocks.RUNE_SEAL, RuneSealBlock.LIT_TICKS);
-				Vfx.emit(level, new DustParticleOptions(color, 1.2F), Vec3.atCenterOf(pos), 4, 0.4, 0.0);
+				Vfx.emit(level, McParticles.dust(color, 1.2F), Vec3.atCenterOf(pos), 4, 0.4, 0.0);
 				changed = true;
 			}
 		}
@@ -136,7 +138,7 @@ public final class RuneSeals {
 		int color = RuneColors.element(state.getValue(RuneSealBlock.ELEMENT).getSerializedName());
 		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DEEPSLATE_TILES.defaultBlockState()), Vec3.atCenterOf(pos), 10, 0.35, 0.05);
-		Vfx.emit(level, new DustParticleOptions(color, 1.4F), Vec3.atCenterOf(pos), 6, 0.4, 0.0);
+		Vfx.emit(level, McParticles.dust(color, 1.4F), Vec3.atCenterOf(pos), 6, 0.4, 0.0);
 		Vfx.emit(level, ParticleTypes.ENCHANT, Vec3.atCenterOf(pos), 8, 0.4, 0.4);
 	}
 

@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.compat.McEntities;
 
 import dev.wildercord.content.ArchiveLecternBlockEntity;
@@ -107,10 +109,10 @@ public class Archivist extends SpellcasterIllager {
 	private static final ItemParticleOption BOOK = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BOOK));
 	/** Splinters of shelf, where a book lands. */
 	private static final BlockParticleOption SHELF = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BOOKSHELF.defaultBlockState());
-	private static final DustParticleOptions INK_DUST = new DustParticleOptions(INK, 1.3F);
-	private static final DustParticleOptions GOLD_DUST = new DustParticleOptions(GOLD, 1.1F);
-	private static final DustParticleOptions VIOLET_DUST = new DustParticleOptions(VIOLET, 1.1F);
-	private static final DustParticleOptions PALE_DUST = new DustParticleOptions(PALE, 0.9F);
+	private static final DustParticleOptions INK_DUST = McParticles.dust(INK, 1.3F);
+	private static final DustParticleOptions GOLD_DUST = McParticles.dust(GOLD, 1.1F);
+	private static final DustParticleOptions VIOLET_DUST = McParticles.dust(VIOLET, 1.1F);
+	private static final DustParticleOptions PALE_DUST = McParticles.dust(PALE, 0.9F);
 
 	/** The trick it is playing (see {@link ArchivistRules}), its tell, and when it began: synced, for its poses. */
 	private static final EntityDataAccessor<Integer> DATA_MOVE = SynchedEntityData.defineId(Archivist.class, EntityDataSerializers.INT);
@@ -246,7 +248,7 @@ public class Archivist extends SpellcasterIllager {
 		level.addFreshEntity(boss);
 		Sigils.ground(level, Vec3.atBottomCenterOf(lectern).add(0, 1, 0), 0xB8A0FF, 0xF5C46A, 5.0F, 80);
 		Vfx.radial(level, ParticleTypes.ENCHANT, at.add(0, 1, 0), 60, 0.8);
-		Vfx.radial(level, new DustParticleOptions(0xB8A0FF, 1.4F), at.add(0, 1, 0), 40, 0.4);
+		Vfx.radial(level, McParticles.dust(0xB8A0FF, 1.4F), at.add(0, 1, 0), 40, 0.4);
 		Fx.sound(level, at, SoundEvents.EVOKER_PREPARE_SUMMON, 1.5F, 0.5F);
 		Fx.sound(level, at, SoundEvents.BOOK_PAGE_TURN, 1.5F, 0.6F);
 		Fx.sound(level, at, SoundEvents.WITHER_SPAWN, 0.4F, 1.6F);
@@ -1235,8 +1237,8 @@ public class Archivist extends SpellcasterIllager {
 			double a = Math.PI * 2 * i / 12;
 			Vfx.emit(level, PAGE, position().add(Math.cos(a) * 1.0, 1.9, Math.sin(a) * 1.0), 2, 0.15, 0.2);
 		}
-		Vfx.radial(level, new DustParticleOptions(0xF8EDCC, 0.9F), tome, 30, 0.35);
-		Vfx.radial(level, new DustParticleOptions(0xE8DCFF, 0.7F), tome, 24, 0.5);
+		Vfx.radial(level, McParticles.dust(0xF8EDCC, 0.9F), tome, 30, 0.35);
+		Vfx.radial(level, McParticles.dust(0xE8DCFF, 0.7F), tome, 24, 0.5);
 		Sigils.flash(level, tome, 0xF5C46A, 2.2F);
 		Fx.sound(level, tome, SoundEvents.BOOK_PUT, 1.2F, 0.6F);
 		Fx.sound(level, tome, SoundEvents.CHISELED_BOOKSHELF_PICKUP_ENCHANTED, 1.0F, 0.7F);
@@ -1396,7 +1398,7 @@ public class Archivist extends SpellcasterIllager {
 		Vec3 c = position().add(0, 1.2, 0);
 		Sigils.ground(level, position(), 0xF5C46A, 0xFFFFFF, 6.0F, 60);
 		Vfx.radial(level, ParticleTypes.ENCHANT, c, 120, 1.0);
-		Vfx.radial(level, new DustParticleOptions(0xF5C46A, 1.6F), c, 50, 0.5);
+		Vfx.radial(level, McParticles.dust(0xF5C46A, 1.6F), c, 50, 0.5);
 		Fx.sound(level, c, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 0.8F);
 		Fx.sound(level, c, SoundEvents.BOOK_PUT, 1.5F, 0.5F);
 		// (The 7th Circle's boss breakthrough is given to everyone near by HeartCircles, as for every boss.)

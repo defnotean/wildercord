@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.WildercordItems;
@@ -351,7 +353,7 @@ public final class Runebound {
 		int color = elementColor(spell);
 		if (now % 20 == mob.getId() % 20) {
 			// A faint rune circle turns at its feet.
-			Vfx.ring(level, new DustParticleOptions(color, 0.7F), mob.position().add(0, 0.08, 0), 0.7, 10);
+			Vfx.ring(level, McParticles.dust(color, 0.7F), mob.position().add(0, 0.08, 0), 0.7, 10);
 			Vfx.emit(level, ParticleTypes.ENCHANT, mob.position().add(0, mob.getBbHeight() + 0.3, 0), 2, 0.2, 0.3);
 		}
 		if (CastLock.locked(mob)) {
@@ -504,7 +506,7 @@ public final class Runebound {
 		}
 		ExperienceOrb.award(level, at, adept ? 20 : 10);
 		int color = elementColor(spell);
-		Vfx.radial(level, new DustParticleOptions(color, 1.2F), at.add(0, 0.5, 0), 24, 0.25);
+		Vfx.radial(level, McParticles.dust(color, 1.2F), at.add(0, 0.5, 0), 24, 0.25);
 		Vfx.radial(level, ParticleTypes.ENCHANT, at.add(0, 0.5, 0), 20, 0.5);
 		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 0.8F);
 	}

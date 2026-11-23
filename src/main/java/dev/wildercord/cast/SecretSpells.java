@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.spell.Secrets;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -103,7 +105,7 @@ public final class SecretSpells {
 	// ------------------------------------------------------------------ helpers
 
 	private static DustParticleOptions dust(int color, float scale) {
-		return new DustParticleOptions(color, scale);
+		return McParticles.dust(color, scale);
 	}
 
 	private static void dot(ServerLevel level, ParticleOptions p, Vec3 at) {

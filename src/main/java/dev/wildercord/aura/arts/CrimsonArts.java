@@ -1,5 +1,7 @@
 package dev.wildercord.aura.arts;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.ArtRules;
 import dev.wildercord.aura.AuraFx;
@@ -99,7 +101,7 @@ public final class CrimsonArts {
 			Vec3 flick = new Vec3((r.nextDouble() - 0.5) * 0.8, 0.35 + r.nextDouble() * 0.3, (r.nextDouble() - 0.5) * 0.8);
 			Motes.fling(level, p, flick, 0.09, i % 3 == 0 ? PALE : i % 3 == 1 ? 0xD2283C : 0xA8142C, 0.055, 13 + r.nextInt(5), new Vec3(0, -0.075, 0));
 		}
-		Vfx.emit(level, new DustParticleOptions(DEEP, 0.8F), at, Math.max(1, count / 2), spread, 0.0);
+		Vfx.emit(level, McParticles.dust(DEEP, 0.8F), at, Math.max(1, count / 2), spread, 0.0);
 	}
 
 	/** A splash of blood where a great cut lands on {@code at}: a red flash, a heartbeat ring, drops thrown. */
@@ -219,7 +221,7 @@ public final class CrimsonArts {
 				Vec3 top = centre.add(Math.cos(a) * d, 0.4 + r.nextDouble() * 2.8, Math.sin(a) * d);
 				rain.ray(top, top.subtract(0, 0.9, 0), i % 2 == 0 ? 0xD2283C : PALE, 0.07, 4);
 				if (i == 0) {
-					Vfx.emit(lv, new DustParticleOptions(DEEP, 1.0F), top, 1, 0.1, 0.0);
+					Vfx.emit(lv, McParticles.dust(DEEP, 1.0F), top, 1, 0.1, 0.0);
 				}
 			}
 			if (age % 4 == 0) {

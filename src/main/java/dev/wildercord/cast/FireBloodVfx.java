@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import net.minecraft.core.particles.ItemParticleOption;
 import dev.wildercord.cast.feel.FeelCtx;
 import dev.wildercord.cast.feel.Feels;
@@ -474,7 +476,7 @@ public final class FireBloodVfx {
 			Motes.seek(level, c, to, ElementFx.BLOOD.secondary(), 0.11, 9 + 2 * i, 0.5 + i);
 		}
 		Sigils.flash(level, c, ElementFx.BLOOD.primary(), 0.8F);
-		Vfx.emit(level, new net.minecraft.core.particles.DustParticleOptions(0x8A0A1A, 0.9F), c, 3, 0.2, 0.0);
+		Vfx.emit(level, McParticles.dust(0x8A0A1A, 0.9F), c, 3, 0.2, 0.0);
 		if (shielded) {
 			Light.ring(level, to, UP, 0xFF8A9A, 0.3, width(caster) + 0.6, 0.05, 9);
 		}
@@ -501,7 +503,7 @@ public final class FireBloodVfx {
 		for (int i = 0; i < 2; i++) {
 			Vec3 p = c.add((level.getRandom().nextDouble() - 0.5) * t.getBbWidth(), (level.getRandom().nextDouble() - 0.5) * t.getBbHeight() * 0.6,
 				(level.getRandom().nextDouble() - 0.5) * t.getBbWidth());
-			Vfx.fling(level, new net.minecraft.core.particles.DustParticleOptions(0x8A0A1A, 1.0F), p, new Vec3(0, -1, 0), 0.05);
+			Vfx.fling(level, McParticles.dust(0x8A0A1A, 1.0F), p, new Vec3(0, -1, 0), 0.05);
 		}
 		if (moving) {
 			ElementFx.ring(level, c, UP, ElementFx.BLOOD.primary(), 0.15, width(t) + 0.5, 0.04, 6);
@@ -517,7 +519,7 @@ public final class FireBloodVfx {
 		for (int i = 0; i < 2; i++) {
 			Vec3 p = c.add((level.getRandom().nextDouble() - 0.5) * t.getBbWidth(), (level.getRandom().nextDouble() - 0.5) * t.getBbHeight() * 0.5,
 				(level.getRandom().nextDouble() - 0.5) * t.getBbWidth());
-			Vfx.fling(level, new net.minecraft.core.particles.DustParticleOptions(0x8A0A1A, 1.0F), p, new Vec3(0, -1, 0), 0.05);
+			Vfx.fling(level, McParticles.dust(0x8A0A1A, 1.0F), p, new Vec3(0, -1, 0), 0.05);
 		}
 		if (budget(level, "gash.weep", 3)) {
 			snd(level, c, "blood_drip", 0.5F, 0.85F);
@@ -670,7 +672,7 @@ public final class FireBloodVfx {
 		Vec3 b = centre(to);
 		ElementFx.ray(level, a, b, 0xFF5060, 0.05, 5);
 		Motes.seek(level, a, b, ElementFx.BLOOD.secondary(), 0.14, 6, 0.0);
-		Vfx.emit(level, new net.minecraft.core.particles.DustParticleOptions(ElementFx.BLOOD.primary(), 0.8F), b, 3, 0.2, 0.0);
+		Vfx.emit(level, McParticles.dust(ElementFx.BLOOD.primary(), 0.8F), b, 3, 0.2, 0.0);
 		snd(level, b, "blood_twang", 0.6F, LADDER[Math.max(0, Math.min(LADDER.length - 1, hop))]);
 	}
 

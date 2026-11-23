@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
@@ -55,7 +57,7 @@ public final class ForgedGear {
 	public static final DataComponentType<String> FORGED = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Wildercord.id("aura_forged"),
 		DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build());
 
-	private static final DustParticleOptions FETCH_MINT = new DustParticleOptions(0x7CFFB2, 1.4F);
+	private static final DustParticleOptions FETCH_MINT = McParticles.dust(0x7CFFB2, 1.4F);
 
 	public static void init() {
 		// Lumenedge & Mojito's Fetchblade: a blow's aura, more of it. The sash: the stance's breath, more of it.

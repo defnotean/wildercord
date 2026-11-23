@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
@@ -252,7 +254,7 @@ final class ExplorerVfx {
 	/** Treasure Sense: a coin-gold glint round the caster. */
 	static void treasureSense(ServerLevel level, LivingEntity t) {
 		ElementFx.groundRing(level, t.position().add(0, 0.08, 0), 0xF5C84A, 0.3, 1.6, 0.05, 14);
-		Vfx.emit(level, new DustParticleOptions(0xF5C84A, 1.0F), centre(t), 10, 0.5, 0.0);
+		Vfx.emit(level, McParticles.dust(0xF5C84A, 1.0F), centre(t), 10, 0.5, 0.0);
 		dev.wildercord.cast.feel.Feels.sound(level, centre(t), "arcane_glint", 0.8F, 1.0F);
 	}
 
@@ -706,7 +708,7 @@ final class ExplorerVfx {
 
 	/** A waiting Snare glints now and then, only near its posts. */
 	static void snareIdle(ServerLevel level, Vec3 a, Vec3 b, Vfx.Theme theme) {
-		Vfx.emit(level, new DustParticleOptions(theme.primary(), 0.5F), a.lerp(b, level.getRandom().nextDouble()), 1, 0.0, 0.0);
+		Vfx.emit(level, McParticles.dust(theme.primary(), 0.5F), a.lerp(b, level.getRandom().nextDouble()), 1, 0.0, 0.0);
 	}
 
 	/** A Snare springs: the thread flares, then the spell's circle bursts where it was crossed. */

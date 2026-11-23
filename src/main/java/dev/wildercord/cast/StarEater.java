@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.content.dungeons.DungeonSounds;
@@ -1451,10 +1453,10 @@ public class StarEater extends DungeonBoss {
 		if (s.heavy) {
 			ElementFx.ray(level, from, s.pos, COLOR, 0.16, 3);
 			ElementFx.ray(level, from, s.pos, ACCENT, 0.07, 3);
-			Vfx.emit(level, new DustParticleOptions(ACCENT, 1.4F), s.pos, 2, 0.08, 0.0);
+			Vfx.emit(level, McParticles.dust(ACCENT, 1.4F), s.pos, 2, 0.08, 0.0);
 		} else {
 			ElementFx.ray(level, from, s.pos, ACCENT, 0.06, 3);
-			Vfx.emit(level, new DustParticleOptions(COLOR, 1.0F), s.pos, 1, 0.05, 0.0);
+			Vfx.emit(level, McParticles.dust(COLOR, 1.0F), s.pos, 1, 0.05, 0.0);
 		}
 		if (parried(level, s)) {
 			return false;

@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -51,7 +53,7 @@ public final class VoidFx {
 			for (int i = 0; i < beads; i++) {
 				double u = (double) i / beads;
 				Vec3 p = c.add(d.scale(u));
-				Scheduler.later(i / 2, () -> Vfx.emit(level, new DustParticleOptions(PALE, 0.6F), p, 1, 0.0, 0.0));
+				Scheduler.later(i / 2, () -> Vfx.emit(level, McParticles.dust(PALE, 0.6F), p, 1, 0.0, 0.0));
 			}
 		}
 		Feels.sound(level, target.position(), "void_hook", 0.8F, 1.0F);
@@ -155,7 +157,7 @@ public final class VoidFx {
 			double u = (double) i / steps;
 			Vec3 p = a.add(d.scale(u));
 			float size = (float) (1.6 - 1.1 * u);
-			Vfx.emit(level, new DustParticleOptions(0x0C0810, size), p, 1, 0.12, 0.0);
+			Vfx.emit(level, McParticles.dust(0x0C0810, size), p, 1, 0.12, 0.0);
 			if (i % 2 == 0) {
 				Vfx.emit(level, ParticleTypes.SQUID_INK, p, 1, 0.1, 0.01);
 			}
@@ -182,7 +184,7 @@ public final class VoidFx {
 				for (int i = 1; i < dots; i++) {
 					double u = (double) i / dots;
 					Vec3 p = near.add(span.scale(u)).add(0, -Math.sin(u * Math.PI) * sag, 0);
-					Vfx.emit(level, new DustParticleOptions(b == 2 ? PALE : VIOLET, 0.55F), p, 1, 0.0, 0.0);
+					Vfx.emit(level, McParticles.dust(b == 2 ? PALE : VIOLET, 0.55F), p, 1, 0.0, 0.0);
 				}
 			});
 		}
@@ -214,7 +216,7 @@ public final class VoidFx {
 				double s = ang + strand * Math.PI;
 				Vec3 p = c.add(u.scale(Math.cos(s) * r)).add(v.scale(Math.sin(s) * r));
 				int color = (t < 0.5) == (strand == 0) ? VIOLET : PALE;
-				Scheduler.later(i / 3, () -> Vfx.emit(level, new DustParticleOptions(color, 0.7F), p, 1, 0.0, 0.0));
+				Scheduler.later(i / 3, () -> Vfx.emit(level, McParticles.dust(color, 0.7F), p, 1, 0.0, 0.0));
 			}
 		}
 		for (Vec3 end : new Vec3[] {pa, pb}) {
@@ -252,8 +254,8 @@ public final class VoidFx {
 					}
 					double open = Math.max(0.0, 0.14 - s * 0.04);
 					Vec3 p = at.add(0, i * 0.14, 0);
-					Vfx.emit(level, new DustParticleOptions(i % 2 == 0 ? gold : grey, 0.6F), p.add(side.scale(open)), 1, 0.0, 0.0);
-					Vfx.emit(level, new DustParticleOptions(i % 2 == 0 ? grey : gold, 0.6F), p.add(side.scale(-open)), 1, 0.0, 0.0);
+					Vfx.emit(level, McParticles.dust(i % 2 == 0 ? gold : grey, 0.6F), p.add(side.scale(open)), 1, 0.0, 0.0);
+					Vfx.emit(level, McParticles.dust(i % 2 == 0 ? grey : gold, 0.6F), p.add(side.scale(-open)), 1, 0.0, 0.0);
 				}
 			});
 		}
@@ -271,7 +273,7 @@ public final class VoidFx {
 		for (int i = 0; i < 28; i++) {
 			double a = rnd.nextDouble() * Math.PI * 2;
 			double r = Math.sqrt(rnd.nextDouble()) * radius;
-			Vfx.emit(level, new DustParticleOptions(0x0C0810, 1.6F), top.add(Math.cos(a) * r, 0, Math.sin(a) * r), 1, 0.0, 0.0);
+			Vfx.emit(level, McParticles.dust(0x0C0810, 1.6F), top.add(Math.cos(a) * r, 0, Math.sin(a) * r), 1, 0.0, 0.0);
 		}
 		ElementFx.ring(level, top, UP, DARK, radius, radius, 0.35, lifetime);
 		ElementFx.ring(level, top, UP, PALE, radius * 1.02, radius * 1.02, 0.02, lifetime);

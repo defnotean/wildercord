@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.aura.arts.ArtBlocks;
 import dev.wildercord.cast.BlockFx;
 import dev.wildercord.cast.MoveDeck;
@@ -64,7 +66,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	/** Which way a bound, a lash, a breath or a sprawl goes, for the client: -1 left, 1 right, 0 straight. */
 	private static final EntityDataAccessor<Integer> SIDE=SynchedEntityData.defineId(FrostWyrmling.class,EntityDataSerializers.INT);
 	private static final EntityDimensions CURLED=EntityDimensions.scalable(2.8F,1.6F).withEyeHeight(1.2F),STANDING=EntityDimensions.scalable(2.8F,3.0F).withEyeHeight(2.6F);
-	private static final DustParticleOptions FROST=new DustParticleOptions(0x9FDFFF,1.2F),WHITE=new DustParticleOptions(0xFFFFFF,1.5F),PALE=new DustParticleOptions(0xCFEFFF,.9F);
+	private static final DustParticleOptions FROST=McParticles.dust(0x9FDFFF, 1.2F),WHITE=McParticles.dust(0xFFFFFF, 1.5F),PALE=McParticles.dust(0xCFEFFF, .9F);
 	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.BLUE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos mound=BlockPos.ZERO,hallMin=BlockPos.ZERO,hallMax=BlockPos.ZERO;

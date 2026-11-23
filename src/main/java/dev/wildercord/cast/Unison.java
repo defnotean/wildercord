@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneColors;
@@ -86,7 +88,7 @@ public final class Unison {
 		for (int i = 0; i < 12; i++) {
 			double angle = Math.PI * 2 * i / 12;
 			Vec3 dir = new Vec3(Math.cos(angle), 0.2 * Math.sin(angle * 3), Math.sin(angle));
-			Vfx.fling(level, new DustParticleOptions(i % 2 == 0 ? a : b, 1.3F), c, dir, 0.3);
+			Vfx.fling(level, McParticles.dust(i % 2 == 0 ? a : b, 1.3F), c, dir, 0.3);
 		}
 		Vfx.emit(level, SigilOption.glow(0xFF000000 | a, 2.2F), c, 1, 0.0, 0.0);
 		Vfx.emit(level, SigilOption.glow(0xFF000000 | b, 1.2F), c, 1, 0.0, 0.0);

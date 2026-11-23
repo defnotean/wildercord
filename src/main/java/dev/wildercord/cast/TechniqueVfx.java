@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,7 +36,7 @@ final class TechniqueVfx {
 	private static final int BLACK = 0x0C0810;
 
 	private static DustParticleOptions dust(int color, float scale) {
-		return new DustParticleOptions(color, scale);
+		return McParticles.dust(color, scale);
 	}
 
 	private static SigilOption flash(int color) {

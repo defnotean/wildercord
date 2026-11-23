@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -132,7 +134,7 @@ public final class TimeFx {
 	/** One frame of a skip: a standing outline of gold dust. */
 	private static void frame(ServerLevel level, Vec3 feet, Vec3 heading, float size) {
 		Vec3 right = flat(heading).cross(UP).normalize();
-		DustParticleOptions dust = new DustParticleOptions(GOLD, size);
+		DustParticleOptions dust = McParticles.dust(GOLD, size);
 		Vec3 head = feet.add(0, 1.65, 0);
 		for (int i = 0; i < 6; i++) {
 			double a = Math.PI * 2 * i / 6;
@@ -193,7 +195,7 @@ public final class TimeFx {
 		}
 		ElementFx.groundRing(level, feet, PALE, r, r, 0.05, life);
 		stoppedFace(level, t.getBoundingBox().getCenter(), toward(t.position(), t.position().add(t.getLookAngle())), Math.max(0.6, r * 0.9), 0.0, life);
-		Vfx.emit(level, new DustParticleOptions(0xD8D0B8, 0.9F), t.getBoundingBox().getCenter(), 6, r, 0.0);
+		Vfx.emit(level, McParticles.dust(0xD8D0B8, 0.9F), t.getBoundingBox().getCenter(), 6, r, 0.0);
 	}
 
 	/** A blow held in the column: one shard hangs where it struck. */
@@ -232,7 +234,7 @@ public final class TimeFx {
 		// The sand: a bright thread through the waist and a heap where it lands.
 		ElementFx.ray(level, base.add(0, height * 0.55, 0), base.add(0, height * 0.05, 0), 0xFFFFFF, 0.05, lifetime);
 		ElementFx.ray(level, base.add(0, height * 0.55, 0), base.add(0, height * 0.05, 0), color, 0.1, lifetime);
-		Vfx.emit(level, new DustParticleOptions(color, 0.6F), base.add(0, height * 0.3, 0), 4, 0.04, 0.0);
+		Vfx.emit(level, McParticles.dust(color, 0.6F), base.add(0, height * 0.3, 0), 4, 0.04, 0.0);
 	}
 
 	/**
@@ -247,7 +249,7 @@ public final class TimeFx {
 			double u = (double) i / steps;
 			Vec3 p = from.add(d.scale(u)).add(0, Math.sin(u * Math.PI) * Math.min(0.9, length * 0.15), 0);
 			Scheduler.later(i / 2, () -> {
-				Vfx.emit(level, new DustParticleOptions(color, 0.7F), p, 1, 0.02, 0.0);
+				Vfx.emit(level, McParticles.dust(color, 0.7F), p, 1, 0.02, 0.0);
 				Vfx.emit(level, ParticleTypes.WAX_ON, p, 1, 0.03, 0.0);
 			});
 		}

@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
 import net.minecraft.core.particles.ParticleTypes;
@@ -303,8 +305,8 @@ public class RuneBolt extends Projectile {
 				|| cast.caster instanceof dev.wildercord.aura.world.SwordMaster || other.cast.caster instanceof dev.wildercord.aura.world.SwordMaster;
 			double damage = trial ? 0 : reaction != null ? 8 : mine.equals(theirs) ? 0 : 5;
 			Sigils.flash(server, at, 0xFF000000 | color, 1.3F);
-			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(color, 1.3F), at, 16, 0.3);
-			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(other.color, 1.3F), at, 16, 0.3);
+			Vfx.radial(server, McParticles.dust(color, 1.3F), at, 16, 0.3);
+			Vfx.radial(server, McParticles.dust(other.color, 1.3F), at, 16, 0.3);
 			Vfx.radial(server, ParticleTypes.ELECTRIC_SPARK, at, 12, 0.4);
 			Fx.sound(server, at, dev.wildercord.content.WildercordSounds.SHIELD_BREAK, 1.2F, 1.0F);
 			Fx.sound(server, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.6F);

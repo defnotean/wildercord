@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.spell.RuneColors;
@@ -254,7 +256,7 @@ public final class Vfx {
 		Vec3 up = side.cross(dir).normalize();
 		double a = age * 1.2;
 		Vec3 swirl = to.add(side.scale(Math.cos(a) * 0.22)).add(up.scale(Math.sin(a) * 0.22));
-		emit(level, new DustParticleOptions(theme.secondary, 0.8F), swirl, 1, 0.0, 0.0);
+		emit(level, McParticles.dust(theme.secondary, 0.8F), swirl, 1, 0.0, 0.0);
 		if (age % 2 == 0) {
 			emit(level, theme.mote, to, 1, 0.05, 0.01);
 		}
@@ -412,7 +414,7 @@ public final class Vfx {
 		ElementFx.groundRing(level, at, ElementFx.STORM.primary(), 0.3, 2.6, 0.07, 7);
 		ElementFx.groundRing(level, at, ElementFx.STORM.accent(), 0.2, 1.8, 0.04, 9);
 		ElementFx.sparks(level, at.add(0, 0.3, 0), 14, 0.5);
-		emit(level, new DustParticleOptions(0x2A2418, 1.8F), at.add(0, 0.08, 0), 6, 0.45, 0.0);
+		emit(level, McParticles.dust(0x2A2418, 1.8F), at.add(0, 0.08, 0), 6, 0.45, 0.0);
 		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_crack", 1.2F, 1.0F);
 		Scheduler.later(8, () -> dev.wildercord.cast.feel.Feels.sound(level, at, "storm_roll", 0.8F, 1.0F));
 	}
@@ -978,7 +980,7 @@ public final class Vfx {
 		}
 		emit(level, SigilOption.glow(theme.primary, 1.1F), top.add(0, bob, 0), 1, 0.0, 0.0);
 		double a = tick * 0.3;
-		emit(level, new DustParticleOptions(theme.secondary, 0.9F), top.add(Math.cos(a) * 0.55, bob, Math.sin(a) * 0.55), 1, 0.0, 0.0);
+		emit(level, McParticles.dust(theme.secondary, 0.9F), top.add(Math.cos(a) * 0.55, bob, Math.sin(a) * 0.55), 1, 0.0, 0.0);
 	}
 
 	public static void totemPulse(ServerLevel level, Vec3 base, double radius, Theme theme) {
@@ -1003,7 +1005,7 @@ public final class Vfx {
 		ElementFx.ring(level, c, UP, VENOM, 0.15, 1.0 + r, 0.05, 8);
 		ElementFx.ring(level, c, UP, 0x4E8A22, 0.1, 0.7 + r, 0.04, 11);
 		emit(level, ParticleTypes.ITEM_SLIME, c, 5, 0.3, 0.05);
-		emit(level, new DustParticleOptions(VENOM, 1.0F), c, 4, 0.35, 0.0);
+		emit(level, McParticles.dust(VENOM, 1.0F), c, 4, 0.35, 0.0);
 		dev.wildercord.cast.feel.Feels.sound(level, c, "life_fang", 0.8F, 1.0F);
 	}
 

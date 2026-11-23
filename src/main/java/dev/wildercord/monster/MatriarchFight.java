@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.compat.McEntities;
 
 import static dev.wildercord.monster.GiantRules.Matriarch.*;
@@ -72,9 +74,9 @@ final class MatriarchFight extends GiantFight {
 
 	MatriarchFight(WildMonster mob) {
 		super(mob, MEMORY);
-		this.warn = new DustParticleOptions(0x9AD8FF, 1.6F);
-		this.bright = new DustParticleOptions(0xF0FAFF, 2.0F);
-		this.rime = new DustParticleOptions(0xCFEFFF, 1.0F);
+		this.warn = McParticles.dust(0x9AD8FF, 1.6F);
+		this.bright = McParticles.dust(0xF0FAFF, 2.0F);
+		this.rime = McParticles.dust(0xCFEFFF, 1.0F);
 		this.snow = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 	}
 

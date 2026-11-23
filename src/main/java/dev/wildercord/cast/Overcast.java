@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.WildercordAttachments;
@@ -104,7 +106,7 @@ public final class Overcast {
 		for (int k = 0; k < 12; k++) {
 			double a = Math.PI * 2 * k / 12;
 			Vec3 dir = new Vec3(Math.cos(a), 0.15, Math.sin(a));
-			Vfx.fling(level, new DustParticleOptions(k % 2 == 0 ? CRACK : 0xFFE0C0, 1.1F), heart.add(dir.scale(r)), dir, 0.25);
+			Vfx.fling(level, McParticles.dust(k % 2 == 0 ? CRACK : 0xFFE0C0, 1.1F), heart.add(dir.scale(r)), dir, 0.25);
 		}
 		// Under your feet, where you'll see it too.
 		ElementFx.groundRing(level, player.position(), CRACK, 0.3, 1.9, 0.06, 10);

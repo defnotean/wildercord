@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.dungeons.DungeonAltarBlock;
 import dev.wildercord.content.dungeons.DungeonBlocks;
@@ -1724,7 +1726,7 @@ public class TideScribe extends DungeonBoss {
 	protected void vanish(ServerLevel level) {
 		Vec3 c = getBoundingBox().getCenter();
 		Vfx.radial(level, ParticleTypes.SQUID_INK, c, 40, 0.2);
-		Vfx.radial(level, new DustParticleOptions(ACCENT, 1.4F), c, 30, 0.3);
+		Vfx.radial(level, McParticles.dust(ACCENT, 1.4F), c, 30, 0.3);
 		Vfx.radial(level, ParticleTypes.NAUTILUS, c, 30, 0.5);
 	}
 

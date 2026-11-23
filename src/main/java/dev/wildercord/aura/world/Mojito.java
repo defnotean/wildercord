@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.MoveDeck;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -57,10 +59,10 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Vector3f> SWORD=SynchedEntityData.defineId(Mojito.class,EntityDataSerializers.VECTOR3);
 	private static final EntityDataAccessor<Boolean> THROWN=SynchedEntityData.defineId(Mojito.class,EntityDataSerializers.BOOLEAN);
 	/** Dirt, and the stars round his head when he is dizzy. */
-	private static final DustParticleOptions EARTH=new DustParticleOptions(0x6B4A2B,1.6F),STAR=new DustParticleOptions(0xFFE066,1.1F),SHADOW=new DustParticleOptions(0x1A1A22,1.8F);
+	private static final DustParticleOptions EARTH=McParticles.dust(0x6B4A2B, 1.6F),STAR=McParticles.dust(0xFFE066, 1.1F),SHADOW=McParticles.dust(0x1A1A22, 1.8F);
 	private static final EntityDimensions CURLED=EntityDimensions.scalable(3.6F,2.6F).withEyeHeight(2.0F),STANDING=EntityDimensions.scalable(3.6F,5.0F).withEyeHeight(4.4F);
 	/** His magic: mint green. */
-	private static final DustParticleOptions MINT=new DustParticleOptions(0x7CFFB2,1.5F),MINT_SMALL=new DustParticleOptions(0x7CFFB2,.8F);
+	private static final DustParticleOptions MINT=McParticles.dust(0x7CFFB2, 1.5F),MINT_SMALL=McParticles.dust(0x7CFFB2, .8F);
 	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.RED,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos bed=BlockPos.ZERO,groveMin=BlockPos.ZERO,groveMax=BlockPos.ZERO;

@@ -1,5 +1,7 @@
 package dev.wildercord.cast.feel;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.ElementFx;
 import dev.wildercord.cast.Light;
 import dev.wildercord.cast.Reactions;
@@ -104,8 +106,8 @@ public final class MarkHalos {
 				double a = level.getGameTime() * 0.35;
 				ElementFx.slash(level, feet.add(0, h * 0.55, 0), new Vec3(0, 1, 0), ElementFx.flatDir(a), color, w + 0.25, 1.2, 0.03, 2, PERIOD);
 			}
-			case DRIP -> Vfx.emit(level, new DustParticleOptions(color, 0.7F), feet.add(0, h * 0.7, 0), 2, w * 0.5, 0.0);
-			case MOTES -> Vfx.emit(level, new DustParticleOptions(color, 0.8F), feet.add(0, h * 0.8, 0), 2, w * 0.6, 0.01);
+			case DRIP -> Vfx.emit(level, McParticles.dust(color, 0.7F), feet.add(0, h * 0.7, 0), 2, w * 0.5, 0.0);
+			case MOTES -> Vfx.emit(level, McParticles.dust(color, 0.8F), feet.add(0, h * 0.8, 0), 2, w * 0.6, 0.01);
 			case CRACKS -> ElementFx.flatSigil(level, feet, SigilOption.CRACKED, color, w + 0.4, PERIOD + 2, 0.0);
 		}
 	}

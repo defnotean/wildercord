@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
@@ -412,7 +414,7 @@ public final class HeartCircles {
 		float cost = ManaSkinRules.payment(player.getHealth() - healthAfter, mana);
 		if (cost <= 0) return;
 		Spellbooks.setMana(player, mana - cost);
-		Vfx.emit((ServerLevel) player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
+		Vfx.emit((ServerLevel) player.level(), McParticles.dust(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
 		ElementFx.ring((ServerLevel) player.level(), player.getBoundingBox().getCenter(), UP, 0x7FB0FF, 0.9, 0.45, 0.03, 7);
 	}
 
@@ -428,7 +430,7 @@ public final class HeartCircles {
 	static void rings(ServerPlayer player, int circles, double spin, float size) {
 		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = heartOf(player);
-		Fx.sendOthers(level, player, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
+		Fx.sendOthers(level, player, McParticles.dust(0xFFE0A0, 0.8F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
 			double r = Circles.ringRadius(i + 1);
 			// One bounded ring primitive per circle avoids quadratic per-point packet growth at twenty.
@@ -466,7 +468,7 @@ public final class HeartCircles {
 		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F);
 		double r = Circles.ringRadius(circles + 1);
 		int points = (int) Math.round((12 + 3 * circles) * t);
-		DustParticleOptions dust = new DustParticleOptions(COLORS[Math.min(Circles.MAX - 1, circles)], 0.55F);
+		DustParticleOptions dust = McParticles.dust(COLORS[Math.min(Circles.MAX - 1, circles)], 0.55F);
 		for (int k = 0; k < points; k++) {
 			double a = Math.PI * 2 * k / (12 + 3 * circles);
 			Fx.sendOthers(level, player, dust, heart.add(Math.cos(a) * r, 0, Math.sin(a) * r));

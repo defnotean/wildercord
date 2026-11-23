@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.MoveDeck;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.world.dungeons.BarrowFieldPiece;
@@ -60,8 +62,8 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	/** Whether it has held its rite, so the client can show it roused. */
 	private static final EntityDataAccessor<Boolean> ROUSED=SynchedEntityData.defineId(LanternBearer.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDimensions LYING=EntityDimensions.scalable(1.4F,0.4F).withEyeHeight(0.2F),STANDING=EntityDimensions.scalable(1.4F,3.4F).withEyeHeight(3.0F);
-	private static final DustParticleOptions SOUL_DUST=new DustParticleOptions(0x4FE0E8,1.4F),SOUL_SMALL=new DustParticleOptions(0xA0F0F4,.8F),
-		EARTH=new DustParticleOptions(0x4A3828,1.6F);
+	private static final DustParticleOptions SOUL_DUST=McParticles.dust(0x4FE0E8, 1.4F),SOUL_SMALL=McParticles.dust(0xA0F0F4, .8F),
+		EARTH=McParticles.dust(0x4A3828, 1.6F);
 	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.BLUE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos grave=BlockPos.ZERO,hallMin=BlockPos.ZERO,hallMax=BlockPos.ZERO,hook=BlockPos.ZERO;

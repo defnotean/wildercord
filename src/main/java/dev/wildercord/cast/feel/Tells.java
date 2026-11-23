@@ -1,5 +1,7 @@
 package dev.wildercord.cast.feel;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.ElementFx;
 import dev.wildercord.cast.Light;
@@ -82,7 +84,7 @@ public final class Tells {
 				}
 				case "extend" -> {
 					for (int i = 0; i < 5; i++) {
-						Vfx.fling(level, new DustParticleOptions(0xE8C878, 0.6F), hand.add((i - 2) * 0.12, 0.25, 0), new Vec3(0, -1, 0), 0.03);
+						Vfx.fling(level, McParticles.dust(0xE8C878, 0.6F), hand.add((i - 2) * 0.12, 0.25, 0), new Vec3(0, -1, 0), 0.03);
 					}
 				}
 				case "quicken" -> Light.ray(level, hand, hand.add(look.scale(2.2)), GOLD, 0.03, 3);

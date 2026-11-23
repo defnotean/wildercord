@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import net.minecraft.core.particles.ItemParticleOption;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
@@ -725,7 +727,7 @@ public final class Innates {
 				if (level.getGameTime() % 10 == 0) {
 					taunt(level, body);
 					ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.9, 0.5, 0.035, 11);
-					Vfx.emit(level, new DustParticleOptions(0xB45AF0, 0.9F), body.getBoundingBox().getCenter(), 3, 0.35, 0.0);
+					Vfx.emit(level, McParticles.dust(0xB45AF0, 0.9F), body.getBoundingBox().getCenter(), 3, 0.35, 0.0);
 					Vfx.emit(level, ParticleTypes.SOUL_FIRE_FLAME, body.position().add(0, 0.1, 0), 2, 0.3, 0.0);
 				}
 			}

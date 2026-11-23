@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -79,7 +81,7 @@ public final class StormEarthFx {
 
 	/** Plasma's ionised mark: a faint violet haze round the target while it conducts (a mote every 10 ticks). */
 	static void ionised(ServerLevel level, LivingEntity t, int ticks) {
-		DustParticleOptions haze = new DustParticleOptions(PLASMA, 0.8F);
+		DustParticleOptions haze = McParticles.dust(PLASMA, 0.8F);
 		every(ticks, 10, () -> here(t, level), () -> {
 			Vfx.emit(level, haze, t.getBoundingBox().getCenter(), 2, Math.max(0.3, t.getBbWidth() * 0.5), 0.0);
 			Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, t.getBoundingBox().getCenter(), 1, 0.3, 0.02);

@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McParticles;
+
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
@@ -209,7 +211,7 @@ public final class FusionVfx {
 			Sigils.flash(level, top.add(0, 0.8, 0), color, 2.4F);
 			ElementFx.ring(level, top.add(0, 0.1, 0), UP, color, 0.2, 3.2, 0.1, 14);
 			Vfx.radial(level, ParticleTypes.END_ROD, top.add(0, 0.8, 0), 18, 0.2);
-			Vfx.emit(level, new DustParticleOptions(color, 1.2F), top.add(0, 1.2, 0), 24, 0.6, 0.05);
+			Vfx.emit(level, McParticles.dust(color, 1.2F), top.add(0, 1.2, 0), 24, 0.6, 0.05);
 			if (kind == 2) {
 				ElementFx.orbit(level, top.add(0, 0.9, 0), 0.7, 3, 20, color, WHITE);
 				Fx.sound(level, top, WildercordSounds.ALTAR_KNOT, 1.0F, 1.0F);
