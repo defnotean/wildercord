@@ -223,7 +223,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var serpent = serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				var guardianCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				var villageCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				check(warden != null && dev.wildercord.cast.Spirits.isBoss(warden), "cinder_warden recognized as boss");
 				check(serpent != null && dev.wildercord.cast.Spirits.isBoss(serpent), "rootcoil_serpent guardian recognized as boss");
 				if (guardianCat != null) {
@@ -415,7 +415,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				level.addFreshEntity(bastion);
 				fireIds[0] = bastion.getId();
 
-				var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				zombie.setNoAi(true);
 				zombie.setPos(3.5, 101, 0.5);
 				zombie.setYRot(0.0F);

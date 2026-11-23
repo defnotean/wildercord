@@ -35,7 +35,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -277,7 +277,7 @@ public final class OceanItems {
 		AABB box = player.getBoundingBox().inflate(OceanRules.LANTERN_REPEL_RADIUS);
 		List<Mob> mobs = player.level().getEntitiesOfClass(Mob.class, box, mob -> {
 			boolean swarmer = (mob instanceof SirenVeilJelly || mob instanceof CoralSpineMako
-				|| mob.getType() == EntityTypes.DROWNED || mob.getType() == EntityTypes.GUARDIAN)
+				|| mob.getType() == EntityType.DROWNED || mob.getType() == EntityType.GUARDIAN)
 				&& !BossDamage.boss(mob);
 			return OceanRules.shouldRepelSwarmer(mob.distanceToSqr(player), swarmer);
 		});
@@ -311,7 +311,7 @@ public final class OceanItems {
 						sp.setAirSupply(sp.getMaxAirSupply());
 						sp.removeEffect(MobEffects.MINING_FATIGUE);
 						sp.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 45, 0, true, false, true));
-					} else if ((living.getType() == EntityTypes.DROWNED || living.getType() == EntityTypes.GUARDIAN
+					} else if ((living.getType() == EntityType.DROWNED || living.getType() == EntityType.GUARDIAN
 						|| living instanceof CoralSpineMako) && !BossDamage.boss(living)) {
 						Vec3 out = living.position().subtract(dome.center()).normalize().scale(0.32);
 						living.push(out.x, 0.05, out.z);

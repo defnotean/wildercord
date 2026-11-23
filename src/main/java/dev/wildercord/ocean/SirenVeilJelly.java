@@ -40,7 +40,7 @@ public class SirenVeilJelly extends Monster {
 	public SirenVeilJelly(EntityType<? extends SirenVeilJelly> type, Level level) {
 		super(type, level);
 		this.xpReward = 10;
-		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.8F, 1.0F, false);
+		this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.8F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0.0F);
 	}
 

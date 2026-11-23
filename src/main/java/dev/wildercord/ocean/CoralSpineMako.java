@@ -38,7 +38,7 @@ public class CoralSpineMako extends Monster {
 	public CoralSpineMako(EntityType<? extends CoralSpineMako> type, Level level) {
 		super(type, level);
 		this.xpReward = 14;
-		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.9F, 1.0F, false);
+		this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.9F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0.0F);
 	}
 

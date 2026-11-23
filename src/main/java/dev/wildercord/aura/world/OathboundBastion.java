@@ -739,7 +739,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 			return false;
 		}
 		if (shove > 0) {
-			foe.knockback(shove, from.x - foe.getX(), from.z - foe.getZ(), level.damageSources().mobAttack(this), 0.0F);
+			foe.knockback(shove, from.x - foe.getX(), from.z - foe.getZ());
 		}
 		if (lift > 0) {
 			foe.setDeltaMovement(foe.getDeltaMovement().add(0.0, lift, 0.0));
