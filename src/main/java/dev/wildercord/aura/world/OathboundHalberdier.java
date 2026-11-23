@@ -5,11 +5,15 @@ import dev.wildercord.cast.MoveDeck;
 import dev.wildercord.cast.Sigils;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.compat.McEntities;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -43,8 +47,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -611,14 +613,14 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput out) {
-		super.addAdditionalSaveData(out);
+	protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outTag);
 		out.putBoolean("halberdier_empowered", empowered());
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput in) {
-		super.readAdditionalSaveData(in);
+	protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inTag);
 		boolean emp = in.getBooleanOr("halberdier_empowered", false)
 			|| OathboundHalberdierRules.empowered(getHealth(), getMaxHealth());
 		entityData.set(EMPOWERED, emp);

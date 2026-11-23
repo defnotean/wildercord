@@ -3,11 +3,16 @@ package dev.wildercord.pet;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.SwordMaster;
 import dev.wildercord.cast.Targets;
+import dev.wildercord.compat.McItemStackWithSlot;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import dev.wildercord.duel.Duels;
 import dev.wildercord.party.Parties;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +24,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
@@ -55,8 +59,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -230,11 +232,11 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	public boolean wearingGrandBow() { return grandBow; }
 	public boolean wearingHarness() { return harness; }
 	public SimpleContainer saddlebags() { return saddlebags; }
-	List<ItemStackWithSlot> snapshotSaddlebags() {
-		List<ItemStackWithSlot> stored = new ArrayList<>();
+	List<McItemStackWithSlot> snapshotSaddlebags() {
+		List<McItemStackWithSlot> stored = new ArrayList<>();
 		for (int i = 0; i < saddlebags.getContainerSize(); i++) {
 			ItemStack stack = saddlebags.getItem(i);
-			if (!stack.isEmpty()) stored.add(new ItemStackWithSlot(i, stack.copy()));
+			if (!stack.isEmpty()) stored.add(new McItemStackWithSlot(i, stack.copy()));
 		}
 		return stored;
 	}
@@ -732,7 +734,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	}
 
 	private boolean isClimbInput(Player driver) {
-		return driver.isJumping() || (driver instanceof ServerPlayer sp && sp.getLastClientInput().jump());
+		return ((dev.wildercord.mixin.LivingEntityJumpingAccessor) driver).wildercord$isJumping() || (driver instanceof ServerPlayer sp && sp.getLastClientInput().jump());
 	}
 
 	@Override
@@ -1059,7 +1061,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	/** Canonical journal state wins over an older chunk snapshot. Deadlines never restart on recreation or recall. */
 	void restoreState(boolean sitting, boolean wearingBow, boolean wearingGrandBow, boolean wearingHarness,
 			double scale, long growthUntil, float damage, long recoveryUntil, long damageImmuneUntil,
-			long hitPauseUntil, List<ItemStackWithSlot> bagItems) {
+			long hitPauseUntil, List<McItemStackWithSlot> bagItems) {
 		long now = clock();
 		savedSitting = sitting;
 		bow = wearingBow && !wearingGrandBow;
@@ -1076,7 +1078,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		try {
 			saddlebags.clearContent();
 			if (bagItems != null) {
-				for (ItemStackWithSlot entry : bagItems) {
+				for (McItemStackWithSlot entry : bagItems) {
 					if (entry != null && entry.isValidInContainer(saddlebags.getContainerSize())) {
 						saddlebags.setItem(entry.slot(), entry.stack().copy());
 					}
@@ -1096,8 +1098,8 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		return deadline <= now ? 0 : Math.min(deadline, now + maximum);
 	}
 
-	@Override protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	@Override protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("CinnamonSitting", savedSitting);
 		output.putBoolean("CinnamonBow", bow);
 		output.putBoolean("CinnamonGrandBow", grandBow);
@@ -1108,11 +1110,11 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		output.putLong("CinnamonRecoveryUntil", recoveryUntil);
 		output.putLong("CinnamonDamageImmuneUntil", damageImmuneUntil);
 		output.putLong("CinnamonHitPauseUntil", hitPauseUntil);
-		output.store("CinnamonSaddlebags", ItemStackWithSlot.CODEC.listOf(), snapshotSaddlebags());
+		output.store("CinnamonSaddlebags", McItemStackWithSlot.CODEC.listOf(), snapshotSaddlebags());
 	}
 
-	@Override protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	@Override protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		restoreState(
 			input.getBooleanOr("CinnamonSitting", isOrderedToSit()),
 			input.getBooleanOr("CinnamonBow", false),
@@ -1124,6 +1126,6 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 			input.getLongOr("CinnamonRecoveryUntil", 0),
 			input.getLongOr("CinnamonDamageImmuneUntil", 0),
 			input.getLongOr("CinnamonHitPauseUntil", 0),
-			input.read("CinnamonSaddlebags", ItemStackWithSlot.CODEC.listOf()).orElse(List.of()));
+			input.read("CinnamonSaddlebags", McItemStackWithSlot.CODEC.listOf()).orElse(List.of()));
 	}
 }
