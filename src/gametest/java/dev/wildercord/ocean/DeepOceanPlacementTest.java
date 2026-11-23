@@ -25,12 +25,16 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Natural-placement regression for the five Deep Ocean structures.
@@ -55,6 +59,28 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 	private static boolean isDeepOcean(net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome> biome) {
 		return biome.is(Biomes.DEEP_OCEAN) || biome.is(Biomes.DEEP_COLD_OCEAN)
 			|| biome.is(Biomes.DEEP_FROZEN_OCEAN) || biome.is(Biomes.DEEP_LUKEWARM_OCEAN);
+	}
+
+	private static float yaw(Vec3 from, Vec3 to) {
+		Vec3 d = to.subtract(from);
+		return (float) Math.toDegrees(Math.atan2(-d.x, d.z));
+	}
+
+	private static float pitch(Vec3 from, Vec3 to) {
+		Vec3 d = to.subtract(from);
+		return (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+	}
+
+	private static int countBlocks(ServerLevel l, BoundingBox bb, Block block) {
+		int c = 0;
+		for (int x = bb.minX(); x <= bb.maxX(); x++) {
+			for (int y = bb.minY(); y <= bb.maxY(); y++) {
+				for (int z = bb.minZ(); z <= bb.maxZ(); z++) {
+					if (l.getBlockState(new BlockPos(x, y, z)).is(block)) c++;
+				}
+			}
+		}
+		return c;
 	}
 
 	@Override
@@ -185,8 +211,18 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 					var bb = piece.getBoundingBox();
 					piece.postProcess(l, l.structureManager(), gen, rand, bb, ChunkPos.containing(bb.getCenter()), bb.getCenter());
 				}
+				BoundingBox box = start.getBoundingBox();
+				check(countBlocks(l, box, Blocks.CONDUIT) >= 1, "Naturally located Coral-Dome placed its central Conduit");
+				check(countBlocks(l, box, Blocks.STAINED_GLASS.cyan()) > 80, "Naturally located Coral-Dome built its cyan glass domes");
+
+				// Frame the camera on the placed dome from a close underwater vantage.
+				BlockPos c = stub.position();
+				Vec3 eye = new Vec3(c.getX() + 34.0, c.getY() + 20.0, c.getZ() + 34.0);
+				Vec3 target = new Vec3(c.getX(), c.getY() + 6.0, c.getZ());
+				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				p.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
 			});
-			context.waitTicks(40);
+			context.waitTicks(20);
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(mc.player);
@@ -194,7 +230,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				mc.gui.toastManager().clear();
 				mc.gui.hud.getChat().clearMessages(false);
 			});
-			context.waitTicks(5);
+			context.waitTicks(8);
 			context.takeScreenshot(TestScreenshotOptions.of("ocean_placement_coral_dome").disableCounterPrefix());
 		}
 	}
