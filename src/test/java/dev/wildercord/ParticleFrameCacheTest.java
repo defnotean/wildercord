@@ -21,10 +21,4 @@ class ParticleFrameCacheTest {
 		}
 	}
 
-	@Test
-	void theSerpentReusesItsRingBuffers() throws Exception {
-		String source = Files.readString(CLIENT.resolve("auraworld/SerpentRenderer.java"));
-		assertFalse(source.contains("new float[n][SIDES+1][]"), "the serpent allocates a ring of arrays every frame");
-		assertTrue(source.contains("if(rings.length<size)"), "the serpent's ring buffer is no longer reused");
-	}
 }

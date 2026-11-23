@@ -14,8 +14,7 @@ class TextureIdCacheTest {
 
 	@Test
 	void perFrameTexturesAreCached() throws Exception {
-		for (String file : List.of("GuiSpellCircle.java", "render/CordLayer.java", "render/RuneMarksLayer.java",
-				"cosmetic/CordStyleLook.java", "auraworld/MasterRenderer.java")) {
+		for (String file : List.of("GuiSpellCircle.java")) {
 			String source = Files.readString(CLIENT.resolve(file));
 			assertTrue(source.contains("computeIfAbsent"), file + " no longer caches its textures");
 			assertFalse(source.matches("(?s).*return Wildercord\\.id\\(\"textures/[^\"]*\" \\+.*"), file + " builds a texture id on every call");

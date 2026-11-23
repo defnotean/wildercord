@@ -44,6 +44,14 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SPELL_CIRCLE, new dev.wildercord.client.fx.SpellCircleParticle.Provider());
 		ParticleFactoryRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
 		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.EARTH, new dev.wildercord.client.fx.EarthParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.CAMP, new dev.wildercord.client.fx.CampParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.LIFE, new dev.wildercord.client.fx.LifeParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.VOID_MATERIAL, new dev.wildercord.client.fx.VoidParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.AIRFLOW, new dev.wildercord.client.fx.AirflowParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.MATERIAL, new dev.wildercord.client.fx.MaterialParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 
 		// Tooltips, the Grimoire's toasts, and the mastery screens the Cord opens.
 		dev.wildercord.client.ImbuedTooltip.init();
@@ -56,6 +64,9 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.ExciseClient.init();
 		dev.wildercord.client.PackLessonScreen.register();
 		dev.wildercord.client.LessonPackClient.init();
+		// The altar and the backpack open real container menus.
+		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, dev.wildercord.client.FusionAltarScreen::new);
+		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.BACKPACK, dev.wildercord.client.BackpackScreen::new);
 		dev.wildercord.client.BlankRuneTooltip.init();
 		dev.wildercord.client.Tooltips.init();
 		// A rune's text, everywhere it's shown, only as far as the player has read it.
