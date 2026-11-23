@@ -1,6 +1,5 @@
 package dev.wildercord.player;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.MasteryRules;
@@ -48,7 +47,7 @@ public final class MasteryAttachments {
 		/** It charges faster (so everyone's circle opens with it). */
 		public static final int QUICK = 32;
 
-		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_LONG, Look::spell, ByteBufCodecs.VAR_INT, Look::rank, ByteBufCodecs.VAR_LONG, Look::seed, ByteBufCodecs.VAR_INT, Look::flags,
 			Look::new);
 

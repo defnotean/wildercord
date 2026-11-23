@@ -55,7 +55,7 @@ public final class AuraAttachments {
 			Codec.DOUBLE.optionalFieldOf("practice", 0.0).forGetter(Data::practice)
 		).apply(i, Data::new));
 
-		public static final StreamCodec<ByteBuf, Data> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Data::method, ByteBufCodecs.VAR_INT, Data::stage, ByteBufCodecs.DOUBLE, Data::xp,
 			ByteBufCodecs.FLOAT, Data::aura, ByteBufCodecs.DOUBLE, Data::practice, Data::new);
 
@@ -102,7 +102,7 @@ public final class AuraAttachments {
 	public record State(long settledAt, long guardRaised, long guardUntil, long slashReadyAt, long backlashUntil, int stillness, long trialUntil) {
 		public static final State NONE = new State(-1, -1, -1, 0, 0, 0, -1);
 
-		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite7(
 			ByteBufCodecs.VAR_LONG, State::settledAt, ByteBufCodecs.VAR_LONG, State::guardRaised, ByteBufCodecs.VAR_LONG, State::guardUntil,
 			ByteBufCodecs.VAR_LONG, State::slashReadyAt, ByteBufCodecs.VAR_LONG, State::backlashUntil, ByteBufCodecs.VAR_INT, State::stillness,
 			ByteBufCodecs.VAR_LONG, State::trialUntil, State::new);
@@ -156,7 +156,7 @@ public final class AuraAttachments {
 	public record Look(int color, int stage, boolean lit, boolean guarding, boolean breathing) {
 		public static final Look NONE = new Look(0, 0, false, false, false);
 
-		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.INT, Look::color, ByteBufCodecs.VAR_INT, Look::stage, ByteBufCodecs.BOOL, Look::lit, ByteBufCodecs.BOOL, Look::guarding,
 			ByteBufCodecs.BOOL, Look::breathing, Look::new);
 	}

@@ -1,6 +1,5 @@
 package dev.wildercord.cosmetic;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -47,7 +46,7 @@ public final class CordCosmetics {
 		Codec.STRING.optionalFieldOf("glow", Style.DEFAULT.glow()).forGetter(Style::glow),
 		Codec.STRING.optionalFieldOf("trail", Style.DEFAULT.trail()).forGetter(Style::trail)
 	).apply(i, Style::new));
-	public static final StreamCodec<ByteBuf, Style> STYLE_STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<ByteBuf, Style> STYLE_STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.stringUtf8(32), Style::material, ByteBufCodecs.stringUtf8(32), Style::glow, ByteBufCodecs.stringUtf8(32), Style::trail, Style::new);
 
 	/** How the player's Cord looks. Saved, kept through death, and synced to everyone nearby. */
@@ -70,7 +69,7 @@ public final class CordCosmetics {
 	/** Wear this style (every part must be unlocked). */
 	public record SetStyle(String material, String glow, String trail) implements CustomPacketPayload {
 		public static final Type<SetStyle> TYPE = new Type<>(Wildercord.id("set_cord_style"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, SetStyle> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, SetStyle> CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(32), SetStyle::material, ByteBufCodecs.stringUtf8(32), SetStyle::glow, ByteBufCodecs.stringUtf8(32), SetStyle::trail,
 			SetStyle::new).cast();
 
@@ -84,7 +83,7 @@ public final class CordCosmetics {
 	public record BuyStyle(String key) implements CustomPacketPayload {
 		public static final Type<BuyStyle> TYPE = new Type<>(Wildercord.id("buy_cord_style"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, BuyStyle> CODEC =
-			McStreamCodec.composite(ByteBufCodecs.stringUtf8(64), BuyStyle::key, BuyStyle::new).cast();
+			StreamCodec.composite(ByteBufCodecs.stringUtf8(64), BuyStyle::key, BuyStyle::new).cast();
 
 		@Override
 		public Type<BuyStyle> type() {

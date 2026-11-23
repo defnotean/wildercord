@@ -1,6 +1,5 @@
 package dev.wildercord.cast;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
@@ -89,7 +88,7 @@ public final class PlayerAffinities {
 	public record Rise(String element, int level) implements CustomPacketPayload {
 		public static final Type<Rise> TYPE = new Type<>(Wildercord.id("affinity_rise"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Rise> CODEC =
-			McStreamCodec.composite(ByteBufCodecs.stringUtf8(32), Rise::element, ByteBufCodecs.VAR_INT, Rise::level, Rise::new).cast();
+			StreamCodec.composite(ByteBufCodecs.stringUtf8(32), Rise::element, ByteBufCodecs.VAR_INT, Rise::level, Rise::new).cast();
 
 		@Override
 		public Type<Rise> type() {

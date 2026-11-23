@@ -1,6 +1,5 @@
 package dev.wildercord.runesmith;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -254,7 +253,7 @@ public final class Contracts {
 			implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
 		public static final Type<ShowBoard> TYPE = new Type<>(dev.wildercord.Wildercord.id("contract_board"));
 		private static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, ContractRules.Contract> CONTRACT =
-			net.minecraft.network.codec.McStreamCodec.composite(
+			net.minecraft.network.codec.StreamCodec.composite(
 				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8, ContractRules.Contract::kind,
 				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8, ContractRules.Contract::arg,
 				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, ContractRules.Contract::target,
@@ -263,7 +262,7 @@ public final class Contracts {
 				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8, ContractRules.Contract::reward,
 				ContractRules.Contract::new);
 		public static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, ShowBoard> CODEC =
-			net.minecraft.network.codec.McStreamCodec.composite(
+			net.minecraft.network.codec.StreamCodec.composite(
 				CONTRACT.apply(net.minecraft.network.codec.ByteBufCodecs.list(8)), ShowBoard::contracts,
 				net.minecraft.network.codec.ByteBufCodecs.INT, ShowBoard::ticksToDawn,
 				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list(8)), ShowBoard::handedIn,

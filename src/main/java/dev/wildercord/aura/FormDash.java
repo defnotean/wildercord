@@ -65,7 +65,7 @@ public final class FormDash {
 			Codec.LONG.optionalFieldOf("recovery_until", 0L).forGetter(Progress::recoveryUntil),
 			Codec.INT.optionalFieldOf("practiced", 0).forGetter(Progress::practiced)
 		).apply(i, Progress::new));
-		public static final StreamCodec<ByteBuf, Progress> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Progress> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Progress::learned, ByteBufCodecs.VAR_INT, Progress::equipped, ByteBufCodecs.VAR_LONG, Progress::readyAt,
 			ByteBufCodecs.VAR_LONG, Progress::recoveryUntil, ByteBufCodecs.VAR_INT, Progress::practiced, Progress::new);
 	}
@@ -76,7 +76,7 @@ public final class FormDash {
 	/** {@code window} counts down the follow-up moment a perfect guard opened; the form key answers it while it lasts. */
 	public record View(long epoch, int form, int phase, int ticks, int rest, int recovery, int window) {
 		public static final View NONE = new View(0, 0, 0, 0, 0, 0, 0);
-		public static final StreamCodec<ByteBuf, View> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_LONG, View::epoch,
+		public static final StreamCodec<ByteBuf, View> CODEC = McStreamCodec.composite7(ByteBufCodecs.VAR_LONG, View::epoch,
 			ByteBufCodecs.VAR_INT, View::form, ByteBufCodecs.VAR_INT, View::phase, ByteBufCodecs.VAR_INT, View::ticks,
 			ByteBufCodecs.VAR_INT, View::rest, ByteBufCodecs.VAR_INT, View::recovery, ByteBufCodecs.VAR_INT, View::window, View::new);
 	}
@@ -85,14 +85,14 @@ public final class FormDash {
 	/** Shares Wall Turn's action numbers; {@code form} only matters for EQUIP. */
 	public record Action(int action, int form, long epoch, long sequence) implements CustomPacketPayload {
 		public static final Type<Action> TYPE = new Type<>(Wildercord.id("field_form_action"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Action> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Action::action,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Action> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Action::action,
 			ByteBufCodecs.VAR_INT, Action::form, ByteBufCodecs.VAR_LONG, Action::epoch, ByteBufCodecs.VAR_LONG, Action::sequence, Action::new).cast();
 		@Override public Type<Action> type() { return TYPE; }
 	}
 	/** Accepted set, travel, end and abort. Viewers play these back; nothing is predicted. */
 	public record Event(int entity, long epoch, long serial, int form, int phase, int ticks, float yaw, long at) implements CustomPacketPayload {
 		public static final Type<Event> TYPE = new Type<>(Wildercord.id("field_form_event"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Event> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Event::entity,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Event> CODEC = McStreamCodec.composite8(ByteBufCodecs.VAR_INT, Event::entity,
 			ByteBufCodecs.VAR_LONG, Event::epoch, ByteBufCodecs.VAR_LONG, Event::serial, ByteBufCodecs.VAR_INT, Event::form,
 			ByteBufCodecs.VAR_INT, Event::phase, ByteBufCodecs.VAR_INT, Event::ticks, ByteBufCodecs.FLOAT, Event::yaw, ByteBufCodecs.VAR_LONG, Event::at, Event::new).cast();
 		@Override public Type<Event> type() { return TYPE; }
@@ -324,7 +324,7 @@ public final class FormDash {
 	/** A swing while a hostile spell flies: the server judges the timing from its own look snapshot, never a client vector. */
 	public record Counter(long epoch) implements CustomPacketPayload {
 		public static final Type<Counter> TYPE = new Type<>(Wildercord.id("spell_cut_counter"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Counter> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_LONG, Counter::epoch, Counter::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Counter> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_LONG, Counter::epoch, Counter::new).cast();
 		@Override public Type<Counter> type() { return TYPE; }
 	}
 	/** A perfect guard that caught a living attacker opens the follow-up moment, if any follow-up is learned. */

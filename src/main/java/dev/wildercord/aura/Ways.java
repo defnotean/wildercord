@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -65,7 +64,7 @@ public final class Ways {
 			Codec.INT.optionalFieldOf("changes", 0).forGetter(State::changes)
 		).apply(i, State::new));
 
-		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), State::way, ByteBufCodecs.VAR_LONG, State::since, ByteBufCodecs.FLOAT, State::owed,
 			ByteBufCodecs.FLOAT, State::settle, ByteBufCodecs.stringUtf8(128), State::former, ByteBufCodecs.VAR_INT, State::changes, State::new);
 

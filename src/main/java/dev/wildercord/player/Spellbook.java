@@ -63,7 +63,7 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		Codec.STRING.listOf().optionalFieldOf("names", List.of()).forGetter(Spellbook::names)
 	).apply(i, Spellbook::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, Spellbook> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, Spellbook> STREAM_CODEC = McStreamCodec.composite7(
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), Spellbook::learned,
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).apply(ByteBufCodecs.list()), Spellbook::spells,
 		ByteBufCodecs.VAR_INT, Spellbook::selected,

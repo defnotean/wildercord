@@ -1,6 +1,5 @@
 package dev.wildercord.loadout;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -68,7 +67,7 @@ public record Loadout(String name, List<List<String>> spells, List<String> names
 		Codec.INT.optionalFieldOf("selected", 0).forGetter(Loadout::selected)
 	).apply(i, Loadout::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, Loadout> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, Loadout> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.STRING_UTF8, Loadout::name,
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).apply(ByteBufCodecs.list()), Loadout::spells,
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), Loadout::names,

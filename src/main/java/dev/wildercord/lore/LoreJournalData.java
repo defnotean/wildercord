@@ -1,6 +1,5 @@
 package dev.wildercord.lore;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -51,7 +50,7 @@ public record LoreJournalData(List<String> entries, Map<String, Integer> quests)
 		Codec.unboundedMap(Codec.STRING, Codec.INT).lenientOptionalFieldOf("quests", Map.of()).forGetter(LoreJournalData::quests)
 	).apply(i, LoreJournalData::new));
 
-	public static final StreamCodec<ByteBuf, LoreJournalData> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<ByteBuf, LoreJournalData> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.stringUtf8(MAX_ENTRY_LENGTH).apply(ByteBufCodecs.list(MAX_ENTRIES)), LoreJournalData::entries,
 		ByteBufCodecs.map(HashMap::new, ByteBufCodecs.stringUtf8(48), ByteBufCodecs.VAR_INT, MAX_QUESTS), d -> new HashMap<>(d.quests()),
 		LoreJournalData::new);

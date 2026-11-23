@@ -61,7 +61,7 @@ public final class MasterForms {
 			Codec.LONG.optionalFieldOf("landing_until", 0L).forGetter(Progress::landingUntil),
 			Codec.BOOL.optionalFieldOf("hinge_learned", false).forGetter(Progress::hingeLearned)
 		).apply(i, Progress::new));
-		public static final StreamCodec<ByteBuf, Progress> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Progress> STREAM_CODEC = McStreamCodec.composite8(
 			ByteBufCodecs.BOOL, Progress::learned, ByteBufCodecs.VAR_INT, Progress::equipped, ByteBufCodecs.VAR_LONG, Progress::readyAt,
 			ByteBufCodecs.BOOL, Progress::airborneUsed, ByteBufCodecs.BOOL, Progress::practiced,
 			ByteBufCodecs.VAR_LONG, Progress::recoveryUntil, ByteBufCodecs.VAR_LONG, Progress::landingUntil,
@@ -73,7 +73,7 @@ public final class MasterForms {
 	/** Remaining times are relative ticks, so the HUD is correct in worlds with different clocks. */
 	public record View(long epoch, int phase, int ticks, int rest, int recovery, int commitment) {
 		public static final View NONE = new View(0, 0, 0, 0, 0, 0);
-		public static final StreamCodec<ByteBuf, View> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_LONG, View::epoch,
+		public static final StreamCodec<ByteBuf, View> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_LONG, View::epoch,
 			ByteBufCodecs.VAR_INT, View::phase, ByteBufCodecs.VAR_INT, View::ticks, ByteBufCodecs.VAR_INT, View::rest,
 			ByteBufCodecs.VAR_INT, View::recovery, ByteBufCodecs.VAR_INT, View::commitment, View::new);
 	}
@@ -81,14 +81,14 @@ public final class MasterForms {
 		builder -> {});
 	public record Action(int action, long epoch, long sequence) implements CustomPacketPayload {
 		public static final Type<Action> TYPE = new Type<>(Wildercord.id("master_form_action"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Action> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Action::action,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Action> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Action::action,
 			ByteBufCodecs.VAR_LONG, Action::epoch, ByteBufCodecs.VAR_LONG, Action::sequence, Action::new).cast();
 		@Override public Type<Action> type() { return TYPE; }
 	}
 	/** Actual brace, accepted movement step, landing and abort events. No predicted fixed-release timeline. */
 	public record Event(int entity, long epoch, long serial, int phase, int ticks, float yaw, long at) implements CustomPacketPayload {
 		public static final Type<Event> TYPE = new Type<>(Wildercord.id("master_form_event"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Event> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Event::entity,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Event> CODEC = McStreamCodec.composite7(ByteBufCodecs.VAR_INT, Event::entity,
 			ByteBufCodecs.VAR_LONG, Event::epoch, ByteBufCodecs.VAR_LONG, Event::serial, ByteBufCodecs.VAR_INT, Event::phase,
 			ByteBufCodecs.VAR_INT, Event::ticks, ByteBufCodecs.FLOAT, Event::yaw, ByteBufCodecs.VAR_LONG, Event::at, Event::new).cast();
 		@Override public Type<Event> type() { return TYPE; }

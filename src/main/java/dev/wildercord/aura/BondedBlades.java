@@ -114,7 +114,7 @@ public final class BondedBlades {
 			Codec.STRING.optionalFieldOf("trait", "").forGetter(Shown::trait)
 		).apply(i, Shown::new));
 
-		static final StreamCodec<ByteBuf, Shown> STREAM_CODEC = McStreamCodec.composite(
+		static final StreamCodec<ByteBuf, Shown> STREAM_CODEC = McStreamCodec.composite7(
 			ByteBufCodecs.stringUtf8(128), Shown::item, ByteBufCodecs.stringUtf8(128), Shown::model, ByteBufCodecs.stringUtf8(128), Shown::name,
 			ByteBufCodecs.VAR_INT, Shown::tier, ByteBufCodecs.INT, Shown::color, ByteBufCodecs.FLOAT, Shown::resonance, ByteBufCodecs.stringUtf8(96),
 			Shown::trait, Shown::new);
@@ -147,7 +147,7 @@ public final class BondedBlades {
 			Codec.BOOL.optionalFieldOf("away", false).forGetter(State::away)
 		).apply(i, State::new));
 
-		static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
+		static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite7(
 			ByteBufCodecs.stringUtf8(48), State::bond, Shown.STREAM_CODEC, State::shown, ByteBufCodecs.stringUtf8(128), State::lastDim,
 			ByteBufCodecs.VAR_INT, State::lastX, ByteBufCodecs.VAR_INT, State::lastY, ByteBufCodecs.VAR_INT, State::lastZ, ByteBufCodecs.BOOL, State::away,
 			State::new);
@@ -202,7 +202,7 @@ public final class BondedBlades {
 	 * it kindles in. The blade's glow kindles with it, and its swordsman's HUD counts it down.
 	 */
 	public record Rite(int kind, long start, int ticks, int color) {
-		static final StreamCodec<ByteBuf, Rite> STREAM_CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Rite::kind, ByteBufCodecs.VAR_LONG, Rite::start,
+		static final StreamCodec<ByteBuf, Rite> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Rite::kind, ByteBufCodecs.VAR_LONG, Rite::start,
 			ByteBufCodecs.VAR_INT, Rite::ticks, ByteBufCodecs.INT, Rite::color, Rite::new);
 
 		public static final int BOND = 1;
@@ -1369,7 +1369,7 @@ public final class BondedBlades {
 	/** Client to server: name the blade {@code name} (as typed; the server makes it safe). */
 	public record Name(String name) implements CustomPacketPayload {
 		public static final Type<Name> TYPE = new Type<>(Wildercord.id("blade_name"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Name> CODEC = McStreamCodec.composite(ByteBufCodecs.stringUtf8(96), Name::name, Name::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Name> CODEC = StreamCodec.composite(ByteBufCodecs.stringUtf8(96), Name::name, Name::new).cast();
 
 		@Override
 		public Type<Name> type() {
@@ -1380,7 +1380,7 @@ public final class BondedBlades {
 	/** Client to server: give the blade trait {@code trait} from its offer. */
 	public record Choose(String trait) implements CustomPacketPayload {
 		public static final Type<Choose> TYPE = new Type<>(Wildercord.id("blade_trait"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Choose> CODEC = McStreamCodec.composite(ByteBufCodecs.stringUtf8(96), Choose::trait, Choose::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Choose> CODEC = StreamCodec.composite(ByteBufCodecs.stringUtf8(96), Choose::trait, Choose::new).cast();
 
 		@Override
 		public Type<Choose> type() {
@@ -1391,7 +1391,7 @@ public final class BondedBlades {
 	/** Client to server: release the bond (the page asks twice first). */
 	public record Release(String bond) implements CustomPacketPayload {
 		public static final Type<Release> TYPE = new Type<>(Wildercord.id("blade_release"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Release> CODEC = McStreamCodec.composite(ByteBufCodecs.stringUtf8(48), Release::bond, Release::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Release> CODEC = StreamCodec.composite(ByteBufCodecs.stringUtf8(48), Release::bond, Release::new).cast();
 
 		@Override
 		public Type<Release> type() {

@@ -1,6 +1,5 @@
 package dev.wildercord.compat;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 public final class McVec3 {
 	private McVec3() {}
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, Vec3> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, Vec3> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.DOUBLE, Vec3::x,
 		ByteBufCodecs.DOUBLE, Vec3::y,
 		ByteBufCodecs.DOUBLE, Vec3::z,

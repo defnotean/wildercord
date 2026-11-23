@@ -1,6 +1,5 @@
 package dev.wildercord.cast;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -442,7 +441,7 @@ public final class WorldResonances {
 		public static final String RESONANCE = "resonance";
 		public static final String QUIRK = "quirk";
 		public static final Type<Revealed> TYPE = new Type<>(Wildercord.id("revealed"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Revealed> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Revealed> CODEC = StreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8, Revealed::kind, ByteBufCodecs.STRING_UTF8, Revealed::name, ByteBufCodecs.INT, Revealed::color, Revealed::new);
 
 		@Override

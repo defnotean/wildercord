@@ -1,6 +1,5 @@
 package dev.wildercord.net;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.Spellbooks;
@@ -18,7 +17,7 @@ import java.util.List;
 /** Exact-request reconciliation; a rejected older edit never overwrites a newer local draft. */
 public record RelayEditorReply(int slot, String request, List<String> accepted, String reason, long session, long revision) implements CustomPacketPayload {
 	public static final Type<RelayEditorReply> TYPE = new Type<>(Wildercord.id("relay_edit_result"));
-	public static final StreamCodec<RegistryFriendlyByteBuf, RelayEditorReply> CODEC = McStreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, RelayEditorReply> CODEC = StreamCodec.composite(
 		ByteBufCodecs.VAR_INT, RelayEditorReply::slot, ByteBufCodecs.stringUtf8(64), RelayEditorReply::request,
 		ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(12)), RelayEditorReply::accepted,
 		ByteBufCodecs.stringUtf8(1024), RelayEditorReply::reason, ByteBufCodecs.LONG, RelayEditorReply::session,

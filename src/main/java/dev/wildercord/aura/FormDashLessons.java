@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.Duelist;
@@ -34,13 +33,13 @@ public final class FormDashLessons {
 	private FormDashLessons() {}
 	public record Open(long nonce, int form, boolean known) implements CustomPacketPayload {
 		public static final Type<Open> TYPE = new Type<>(Wildercord.id("field_form_lesson"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Open> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Open> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_LONG, Open::nonce, ByteBufCodecs.VAR_INT, Open::form, ByteBufCodecs.BOOL, Open::known, Open::new).cast();
 		@Override public Type<Open> type() { return TYPE; }
 	}
 	public record Accept(long nonce) implements CustomPacketPayload {
 		public static final Type<Accept> TYPE = new Type<>(Wildercord.id("field_form_lesson_accept"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Accept> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_LONG, Accept::nonce, Accept::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Accept> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_LONG, Accept::nonce, Accept::new).cast();
 		@Override public Type<Accept> type() { return TYPE; }
 	}
 	private record Offer(Duelist teacher, int form, ServerLevel level, long until, long nonce, dev.wildercord.aura.arts.ReleasedArtOwner owner) {}

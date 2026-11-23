@@ -60,7 +60,7 @@ public record SigilOption(int style, int color, float size, float yaw, float pit
 		Codec.FLOAT.optionalFieldOf("spin", 0.05F).forGetter(SigilOption::spin)
 	).apply(i, SigilOption::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, SigilOption> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, SigilOption> STREAM_CODEC = McStreamCodec.composite7(
 		ByteBufCodecs.VAR_INT, SigilOption::style,
 		ByteBufCodecs.INT, SigilOption::color,
 		ByteBufCodecs.FLOAT, SigilOption::size,

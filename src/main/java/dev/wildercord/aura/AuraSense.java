@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.Targets;
@@ -36,7 +35,7 @@ public final class AuraSense {
 	/** Server to client: outline these entities (by network id) in {@code color} for {@code ticks}. */
 	public record Sensed(List<Integer> ids, int color, int ticks) implements CustomPacketPayload {
 		public static final Type<Sensed> TYPE = new Type<>(Wildercord.id("aura_sense"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Sensed> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Sensed> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list(MAX)), Sensed::ids, ByteBufCodecs.INT, Sensed::color, ByteBufCodecs.VAR_INT, Sensed::ticks,
 			Sensed::new).cast();
 

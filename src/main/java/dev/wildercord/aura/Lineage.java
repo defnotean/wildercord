@@ -70,7 +70,7 @@ public final class Lineage {
 	 * here now, and (a master, for their disciple) near enough to quicken their learning.
 	 */
 	public record Entry(UUID id, String name, int stage, int color, long since, boolean online, boolean near) {
-		public static final StreamCodec<ByteBuf, Entry> STREAM_CODEC = McStreamCodec.composite(UUIDUtil.STREAM_CODEC, Entry::id, ByteBufCodecs.stringUtf8(64),
+		public static final StreamCodec<ByteBuf, Entry> STREAM_CODEC = McStreamCodec.composite7(UUIDUtil.STREAM_CODEC, Entry::id, ByteBufCodecs.stringUtf8(64),
 			Entry::name, ByteBufCodecs.VAR_INT, Entry::stage, ByteBufCodecs.INT, Entry::color, ByteBufCodecs.VAR_LONG, Entry::since, ByteBufCodecs.BOOL,
 			Entry::online, ByteBufCodecs.BOOL, Entry::near, Entry::new);
 	}
@@ -81,7 +81,7 @@ public final class Lineage {
 	 */
 	public record View(boolean on, Optional<Entry> master, List<Entry> disciples, List<Entry> honoured, int most, long lessonAt) {
 		public static final View NONE = new View(false, Optional.empty(), List.of(), List.of(), LineageRules.MAX_DISCIPLES, Long.MIN_VALUE);
-		public static final StreamCodec<ByteBuf, View> STREAM_CODEC = McStreamCodec.composite(ByteBufCodecs.BOOL, View::on,
+		public static final StreamCodec<ByteBuf, View> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL, View::on,
 			ByteBufCodecs.optional(Entry.STREAM_CODEC), View::master, Entry.STREAM_CODEC.apply(ByteBufCodecs.list(16)), View::disciples,
 			Entry.STREAM_CODEC.apply(ByteBufCodecs.list(16)), View::honoured, ByteBufCodecs.VAR_INT, View::most, ByteBufCodecs.VAR_LONG, View::lessonAt,
 			View::new);
@@ -97,7 +97,7 @@ public final class Lineage {
 	 * burns in, the other one's name, and whether this one is the master. Both of them carry it.
 	 */
 	public record Rite(int kind, long start, int ticks, int color, String other, boolean master) {
-		public static final StreamCodec<ByteBuf, Rite> STREAM_CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Rite::kind, ByteBufCodecs.VAR_LONG,
+		public static final StreamCodec<ByteBuf, Rite> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Rite::kind, ByteBufCodecs.VAR_LONG,
 			Rite::start, ByteBufCodecs.VAR_INT, Rite::ticks, ByteBufCodecs.INT, Rite::color, ByteBufCodecs.stringUtf8(64), Rite::other, ByteBufCodecs.BOOL,
 			Rite::master, Rite::new);
 
@@ -117,7 +117,7 @@ public final class Lineage {
 	/** The Lineage tab's ask to end a bond with {@code other} (their master, or one of their disciples). */
 	public record End(UUID other) implements CustomPacketPayload {
 		public static final Type<End> TYPE = new Type<>(Wildercord.id("lineage_end"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, End> CODEC = McStreamCodec.composite(UUIDUtil.STREAM_CODEC, End::other, End::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, End> CODEC = StreamCodec.composite(UUIDUtil.STREAM_CODEC, End::other, End::new).cast();
 
 		@Override
 		public Type<End> type() {

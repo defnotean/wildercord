@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -32,7 +31,7 @@ public final class Unity {
 		Codec.FLOAT.optionalFieldOf("mana_returned",0F).forGetter(UnityRules.State::manaReturned),
 		Codec.FLOAT.optionalFieldOf("aura_returned",0F).forGetter(UnityRules.State::auraReturned)
 	).apply(i,UnityRules.State::new));
-	public static final StreamCodec<ByteBuf,UnityRules.State> STREAM=McStreamCodec.composite(
+	public static final StreamCodec<ByteBuf,UnityRules.State> STREAM=StreamCodec.composite(
 		ByteBufCodecs.VAR_LONG,UnityRules.State::since,ByteBufCodecs.VAR_LONG,UnityRules.State::until,
 		ByteBufCodecs.VAR_LONG,UnityRules.State::readyAt,ByteBufCodecs.FLOAT,UnityRules.State::manaReturned,
 		ByteBufCodecs.FLOAT,UnityRules.State::auraReturned,UnityRules.State::new);

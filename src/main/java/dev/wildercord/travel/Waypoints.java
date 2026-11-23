@@ -1,6 +1,5 @@
 package dev.wildercord.travel;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -44,7 +43,7 @@ public final class Waypoints {
 	public record Track(String name, String dimension, double x, double y, double z) implements CustomPacketPayload {
 		public static final Track NONE = new Track("", "", 0, 0, 0);
 		public static final Type<Track> TYPE = new Type<>(Wildercord.id("track_waypoint"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Track> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Track> CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(TravelRules.MAX_NAME), Track::name,
 			ByteBufCodecs.stringUtf8(256), Track::dimension,
 			ByteBufCodecs.DOUBLE, Track::x,

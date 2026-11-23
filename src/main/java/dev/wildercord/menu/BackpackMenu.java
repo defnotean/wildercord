@@ -1,6 +1,5 @@
 package dev.wildercord.menu;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.backpack.BackpackTier;
 import dev.wildercord.backpack.Backpacks;
@@ -32,7 +31,7 @@ import net.minecraft.world.item.component.ItemContainerContents;
 public class BackpackMenu extends AbstractContainerMenu {
 	/** What the client needs to build the screen: how many rows, and which inventory slot holds the open backpack ({@code -1}: worn). */
 	public record Opening(int rows, int locked) {
-		public static final StreamCodec<ByteBuf, Opening> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Opening> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Opening::rows, ByteBufCodecs.VAR_INT, Opening::locked, Opening::new);
 
 		public Opening {

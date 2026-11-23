@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.compat.McVec3;
 import dev.wildercord.Wildercord;
@@ -53,7 +52,7 @@ public final class AuraStep {
 	 */
 	public record Stepped(int entity, Vec3 from, Vec3 to, float yaw, int color, int linger) implements CustomPacketPayload {
 		public static final Type<Stepped> TYPE = new Type<>(Wildercord.id("aura_step"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Stepped> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Stepped> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Stepped::entity, McVec3.STREAM_CODEC, Stepped::from, McVec3.STREAM_CODEC, Stepped::to, ByteBufCodecs.FLOAT, Stepped::yaw,
 			ByteBufCodecs.INT, Stepped::color, ByteBufCodecs.VAR_INT, Stepped::linger, Stepped::new).cast();
 

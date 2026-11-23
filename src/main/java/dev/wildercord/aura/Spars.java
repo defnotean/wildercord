@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -132,7 +131,7 @@ public final class Spars {
 
 	/** A salute waiting to be answered, as the one saluted sees it: who, their colour, until when. */
 	public record Offer(UUID from, String name, int color, long until) {
-		public static final StreamCodec<ByteBuf, Offer> STREAM_CODEC = McStreamCodec.composite(UUIDUtil.STREAM_CODEC, Offer::from,
+		public static final StreamCodec<ByteBuf, Offer> STREAM_CODEC = StreamCodec.composite(UUIDUtil.STREAM_CODEC, Offer::from,
 			ByteBufCodecs.stringUtf8(64), Offer::name, ByteBufCodecs.INT, Offer::color, ByteBufCodecs.VAR_LONG, Offer::until, Offer::new);
 	}
 
@@ -148,7 +147,7 @@ public final class Spars {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("today", Map.of()).forGetter(SparRules.Log::today)
 	).apply(i, SparRules.Log::new));
 	/** What a swordsman's own page shows of their record (the day's counts stay on the server). */
-	private static final StreamCodec<ByteBuf, SparRules.Log> LOG_STREAM = McStreamCodec.composite(ByteBufCodecs.VAR_INT, SparRules.Log::wins,
+	private static final StreamCodec<ByteBuf, SparRules.Log> LOG_STREAM = StreamCodec.composite(ByteBufCodecs.VAR_INT, SparRules.Log::wins,
 		ByteBufCodecs.VAR_INT, SparRules.Log::losses, ByteBufCodecs.VAR_INT, SparRules.Log::evens, (w, l, e) -> new SparRules.Log(w, l, e, Long.MIN_VALUE, Map.of()));
 
 	/** Each swordsman's sparring record (saved, kept through death; its wins, losses and evens sent to them for the Aura page). */

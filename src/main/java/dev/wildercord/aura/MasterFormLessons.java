@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.Duelist;
@@ -31,13 +30,13 @@ public final class MasterFormLessons {
 	/** {@code form} is the taught Master form: a Gale teacher shows Wall Turn, a Stone teacher Stone Hinge. */
 	public record Open(long nonce, boolean known, int form) implements CustomPacketPayload {
 		public static final Type<Open> TYPE = new Type<>(Wildercord.id("master_form_lesson"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Open> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Open> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_LONG, Open::nonce, ByteBufCodecs.BOOL, Open::known, ByteBufCodecs.VAR_INT, Open::form, Open::new).cast();
 		@Override public Type<Open> type() { return TYPE; }
 	}
 	public record Accept(long nonce) implements CustomPacketPayload {
 		public static final Type<Accept> TYPE = new Type<>(Wildercord.id("master_form_lesson_accept"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Accept> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_LONG, Accept::nonce, Accept::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Accept> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_LONG, Accept::nonce, Accept::new).cast();
 		@Override public Type<Accept> type() { return TYPE; }
 	}
 	private record Offer(Duelist teacher, ServerLevel level, long until, long nonce, dev.wildercord.aura.arts.ReleasedArtOwner owner, int form) {}

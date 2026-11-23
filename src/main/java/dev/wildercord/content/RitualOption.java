@@ -1,6 +1,5 @@
 package dev.wildercord.content;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -30,7 +29,7 @@ public record RitualOption(int entity, String rune, int color, float progress) i
 		Codec.FLOAT.optionalFieldOf("progress", 0F).forGetter(RitualOption::progress)
 	).apply(i, RitualOption::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, RitualOption> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, RitualOption> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.VAR_INT, RitualOption::entity,
 		ByteBufCodecs.STRING_UTF8, RitualOption::rune,
 		ByteBufCodecs.INT, RitualOption::color,

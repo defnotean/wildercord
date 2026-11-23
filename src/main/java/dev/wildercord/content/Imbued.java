@@ -1,6 +1,5 @@
 package dev.wildercord.content;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -37,7 +36,7 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 		Codec.LONG.optionalFieldOf("serial", 0L).forGetter(Imbued::serial)
 	).apply(i, Imbued::new));
 
-	public static final StreamCodec<ByteBuf, Imbued> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<ByteBuf, Imbued> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(MAX_RUNES)), Imbued::runes,
 		ByteBufCodecs.VAR_INT, Imbued::charges,
 		ByteBufCodecs.INT, Imbued::color,

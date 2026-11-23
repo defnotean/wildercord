@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
@@ -57,7 +56,7 @@ public final class SwordStrings {
 	/** Client to server: the client read {@code art}'s string in the player's swings; {@code marks} are those swings, oldest first. */
 	public record Perform(String art, List<Integer> marks) implements CustomPacketPayload {
 		public static final Type<Perform> TYPE = new Type<>(Wildercord.id("aura_string"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Perform> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Perform> CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Perform::art, ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list(SwordString.MAX_LENGTH)), Perform::marks,
 			Perform::new).cast();
 
@@ -74,7 +73,7 @@ public final class SwordStrings {
 	/** Server to client: a perfect guard or an Aura Step just happened ({@link StringReader.Cue}'s ordinal), for the reader. */
 	public record Cue(int cue) implements CustomPacketPayload {
 		public static final Type<Cue> TYPE = new Type<>(Wildercord.id("aura_string_cue"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Cue> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Cue::cue, Cue::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Cue> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Cue::cue, Cue::new).cast();
 
 		@Override
 		public Type<Cue> type() {
@@ -85,7 +84,7 @@ public final class SwordStrings {
 	/** Server to client: the server didn't let {@code art} go ({@link Refusal}'s ordinal), so the indicator shows a fumble. */
 	public record Refused(String art, int reason) implements CustomPacketPayload {
 		public static final Type<Refused> TYPE = new Type<>(Wildercord.id("aura_string_refused"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Refused> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Refused> CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Refused::art, ByteBufCodecs.VAR_INT, Refused::reason, Refused::new).cast();
 
 		@Override

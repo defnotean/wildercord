@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
@@ -108,7 +107,7 @@ public final class Clashes {
 	/** A press judged (or a beat missed): which side (0 {@code a}, 1 {@code b}), which beat (-1 a fumble), its grade, and both scores now. */
 	public record Mark(int id, int side, int beat, int grade, int scoreA, int scoreB) implements CustomPacketPayload {
 		public static final Type<Mark> TYPE = new Type<>(Wildercord.id("clash_mark"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Mark> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Mark::id, ByteBufCodecs.VAR_INT,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Mark> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Mark::id, ByteBufCodecs.VAR_INT,
 			Mark::side, ByteBufCodecs.VAR_INT, Mark::beat, ByteBufCodecs.VAR_INT, Mark::grade, ByteBufCodecs.VAR_INT, Mark::scoreA, ByteBufCodecs.VAR_INT,
 			Mark::scoreB, Mark::new).cast();
 
@@ -121,7 +120,7 @@ public final class Clashes {
 	/** A clash is over: who won ({@link ClashRules.Outcome}'s ordinal), and the two scores. */
 	public record End(int id, int outcome, int scoreA, int scoreB) implements CustomPacketPayload {
 		public static final Type<End> TYPE = new Type<>(Wildercord.id("clash_end"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, End> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, End::id, ByteBufCodecs.VAR_INT,
+		public static final StreamCodec<RegistryFriendlyByteBuf, End> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, End::id, ByteBufCodecs.VAR_INT,
 			End::outcome, ByteBufCodecs.VAR_INT, End::scoreA, ByteBufCodecs.VAR_INT, End::scoreB, End::new).cast();
 
 		@Override
@@ -133,7 +132,7 @@ public final class Clashes {
 	/** A player's press in clash {@code id} (a swing of the blade while it lasts, taken by their client for the clash). */
 	public record Press(int id) implements CustomPacketPayload {
 		public static final Type<Press> TYPE = new Type<>(Wildercord.id("clash_press"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Press> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Press::id, Press::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Press> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Press::id, Press::new).cast();
 
 		@Override
 		public Type<Press> type() {

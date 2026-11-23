@@ -63,7 +63,7 @@ public final class Stance {
 	 * until {@code steadyUntil}; broken {@code breaks} times (a boss grows steadier).
 	 */
 	public record State(float worn, long at, float pool, int kind, long openUntil, long steadyUntil, int breaks) {
-		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite7(
 			ByteBufCodecs.FLOAT, State::worn, ByteBufCodecs.VAR_LONG, State::at, ByteBufCodecs.FLOAT, State::pool, ByteBufCodecs.VAR_INT, State::kind,
 			ByteBufCodecs.VAR_LONG, State::openUntil, ByteBufCodecs.VAR_LONG, State::steadyUntil, ByteBufCodecs.VAR_INT, State::breaks, State::new);
 

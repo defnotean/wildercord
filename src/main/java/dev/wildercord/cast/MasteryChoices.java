@@ -1,6 +1,5 @@
 package dev.wildercord.cast;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.SpellMasteryApi;
@@ -55,7 +54,7 @@ public final class MasteryChoices {
 	 */
 	public record Request(int kind, int spell, int slot, String trait) implements CustomPacketPayload {
 		public static final Type<Request> TYPE = new Type<>(Wildercord.id("mastery_request"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Request> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Request> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Request::kind, ByteBufCodecs.VAR_INT, Request::spell, ByteBufCodecs.VAR_INT, Request::slot,
 			ByteBufCodecs.stringUtf8(128), Request::trait, Request::new).cast();
 
@@ -68,7 +67,7 @@ public final class MasteryChoices {
 	/** Server to client: one of your spells reached a rank (the client shows a toast, and the Cord screen offers the trait). */
 	public record Rise(String name, int rank, int color, boolean choice, long seed) implements CustomPacketPayload {
 		public static final Type<Rise> TYPE = new Type<>(Wildercord.id("mastery_rise"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Rise> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Rise> CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Rise::name, ByteBufCodecs.VAR_INT, Rise::rank, ByteBufCodecs.INT, Rise::color, ByteBufCodecs.BOOL, Rise::choice,
 			ByteBufCodecs.VAR_LONG, Rise::seed, Rise::new).cast();
 
@@ -81,7 +80,7 @@ public final class MasteryChoices {
 	/** Server to client: a named spell of Adept rank or higher was cast by {@code caster} (an entity id): its name, briefly, by them. */
 	public record Title(int caster, String name, int rank, int color) implements CustomPacketPayload {
 		public static final Type<Title> TYPE = new Type<>(Wildercord.id("mastery_title"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Title> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Title> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Title::caster, ByteBufCodecs.stringUtf8(64), Title::name, ByteBufCodecs.VAR_INT, Title::rank, ByteBufCodecs.INT, Title::color,
 			Title::new).cast();
 

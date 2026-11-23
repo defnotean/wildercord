@@ -45,7 +45,7 @@ public final class MastersArts {
 
 	public record Activate(int move) implements CustomPacketPayload {
 		public static final Type<Activate> TYPE = new Type<>(Wildercord.id("masters_art"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Activate> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Activate> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Activate::move, Activate::new).cast();
 		@Override public Type<Activate> type() { return TYPE; }
 	}
@@ -53,7 +53,7 @@ public final class MastersArts {
 	/** An accepted action's server timeline, sent to its owner and nearby viewers. */
 	public record Performed(int entity, int move, long startTick, int windup, int recovery, float yaw, float pitch) implements CustomPacketPayload {
 		public static final Type<Performed> TYPE = new Type<>(Wildercord.id("masters_art_performed"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Performed> CODEC = McStreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Performed> CODEC = McStreamCodec.composite7(
 			ByteBufCodecs.VAR_INT, Performed::entity, ByteBufCodecs.VAR_INT, Performed::move, ByteBufCodecs.VAR_LONG, Performed::startTick,
 			ByteBufCodecs.VAR_INT, Performed::windup, ByteBufCodecs.VAR_INT, Performed::recovery,
 			ByteBufCodecs.FLOAT, Performed::yaw, ByteBufCodecs.FLOAT, Performed::pitch, Performed::new).cast();

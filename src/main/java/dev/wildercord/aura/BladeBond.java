@@ -1,6 +1,5 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -47,7 +46,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.STRING.listOf().optionalFieldOf("lineage", List.of()).forGetter(Who::lineage)
 		).apply(i, Who::new));
 
-		public static final StreamCodec<ByteBuf, Who> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Who> STREAM_CODEC = StreamCodec.composite(
 			UUIDUtil.STREAM_CODEC, Who::id, UUIDUtil.STREAM_CODEC, Who::owner, ByteBufCodecs.stringUtf8(64), Who::ownerName,
 			ByteBufCodecs.stringUtf8(64).apply(ByteBufCodecs.list(BladeRules.MAX_LINEAGE)), Who::lineage, Who::new);
 	}
@@ -170,7 +169,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.LONG.optionalFieldOf("day", 0L).forGetter(Deed::day)
 		).apply(i, Deed::new));
 
-		public static final StreamCodec<ByteBuf, Deed> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Deed> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(32), Deed::kind, ByteBufCodecs.stringUtf8(160), Deed::arg, ByteBufCodecs.VAR_LONG, Deed::day, Deed::new);
 	}
 
@@ -193,7 +192,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Deed.CODEC.listOf().optionalFieldOf("deeds", List.of()).forGetter(History::deeds)
 		).apply(i, History::new));
 
-		public static final StreamCodec<ByteBuf, History> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, History> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.map(HashMap::new, ByteBufCodecs.stringUtf8(32), ByteBufCodecs.VAR_INT, 32), History::counts,
 			ByteBufCodecs.map(HashMap::new, ByteBufCodecs.stringUtf8(128), ByteBufCodecs.VAR_INT, BladeRules.MAX_ARTS + 4), History::arts,
 			Deed.STREAM_CODEC.apply(ByteBufCodecs.list(BladeRules.MAX_DEEDS + 2)), History::deeds, History::new);
@@ -223,7 +222,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 		History.CODEC.optionalFieldOf("history", History.EMPTY).forGetter(BladeBond::history)
 	).apply(i, BladeBond::new));
 
-	public static final StreamCodec<ByteBuf, BladeBond> STREAM_CODEC = McStreamCodec.composite(
+	public static final StreamCodec<ByteBuf, BladeBond> STREAM_CODEC = StreamCodec.composite(
 		Who.STREAM_CODEC, BladeBond::who, Growth.STREAM_CODEC, BladeBond::growth, Origin.STREAM_CODEC, BladeBond::origin, History.STREAM_CODEC,
 		BladeBond::history, BladeBond::new);
 
@@ -243,7 +242,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.INT.optionalFieldOf("tier", 0).forGetter(Former::tier)
 		).apply(i, Former::new));
 
-		public static final StreamCodec<ByteBuf, Former> STREAM_CODEC = McStreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Former> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Former::name, ByteBufCodecs.stringUtf8(64), Former::ownerName, ByteBufCodecs.VAR_INT, Former::tier,
 			Former::new);
 	}
