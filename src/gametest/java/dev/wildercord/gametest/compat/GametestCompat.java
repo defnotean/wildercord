@@ -96,6 +96,20 @@ public final class GametestCompat {
 			721, chunk, height, biome -> true);
 	}
 
+	/**
+	 * A real {@link Structure.GenerationContext} backed by the level's actual chunk generator, biome
+	 * source and random state, so a site locator can be exercised against genuine terrain heightmaps
+	 * (the same inputs {@link #generateStructureStart} feeds through {@code Structure.generate}). The
+	 * biome predicate accepts everything; each locator does its own biome eligibility check. 26.2 keeps
+	 * the climate sampler off this record - {@code BiomeSource} takes it per call instead.
+	 */
+	public static Structure.GenerationContext realStructureContext(ServerLevel level, ChunkPos chunk) {
+		var cs = level.getChunkSource();
+		var gen = cs.getGenerator();
+		return new Structure.GenerationContext(level.registryAccess(), gen, gen.getBiomeSource(),
+			cs.randomState(), level.getStructureTemplateManager(), level.getSeed(), chunk, level, biome -> true);
+	}
+
 	public static Vec3 entityPositionSyncTarget(ClientboundEntityPositionSyncPacket sync) {
 		return sync.values().position();
 	}

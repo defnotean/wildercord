@@ -109,16 +109,15 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				var gen = cs.getGenerator();
 				var randomState = cs.randomState();
 				int sea = gen.getSeaLevel();
-				var resolver = gen.getBiomeSource()
-					.createResolver(randomState.sampler());
+				var sampler = randomState.sampler();
 
 				List<ChunkPos> candidates = new ArrayList<>();
 				for (int cx = -128; cx <= 128; cx += 4) {
 					for (int cz = -128; cz <= 128; cz += 4) {
 						int bx = cx * 16 + 8;
 						int bz = cz * 16 + 8;
-						var biome = resolver.getNoiseBiome(
-							QuartPos.fromBlock(bx), QuartPos.fromBlock(sea - 2), QuartPos.fromBlock(bz));
+						var biome = gen.getBiomeSource().getNoiseBiome(
+							QuartPos.fromBlock(bx), QuartPos.fromBlock(sea - 2), QuartPos.fromBlock(bz), sampler);
 						if (isDeepOcean(biome)) candidates.add(new ChunkPos(cx, cz));
 					}
 				}
