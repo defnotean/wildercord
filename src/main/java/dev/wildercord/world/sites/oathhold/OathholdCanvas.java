@@ -70,12 +70,12 @@ public final class OathholdCanvas {
 	public static final BlockState HANGING_SOUL_LANTERN = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
 	public static final BlockState CHAIN = Blocks.IRON_CHAIN.defaultBlockState();
 	public static final BlockState IRON_BARS = Blocks.IRON_BARS.defaultBlockState();
-	public static final BlockState EMERALD_GREEN = Blocks.CONCRETE.green().defaultBlockState();
-	public static final BlockState EMERALD_TEAL = Blocks.DYED_TERRACOTTA.cyan().defaultBlockState();
-	public static final BlockState BANNER_GOLD = Blocks.DYED_TERRACOTTA.yellow().defaultBlockState();
-	public static final BlockState COPPER_WEATHERED = Blocks.CUT_COPPER.waxed().weathered().defaultBlockState();
-	public static final BlockState COPPER_OXIDIZED = Blocks.COPPER_BLOCK.waxed().oxidized().defaultBlockState();
-	public static final BlockState COPPER_CUT_OXIDIZED = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
+	public static final BlockState EMERALD_GREEN = Blocks.GREEN_CONCRETE.defaultBlockState();
+	public static final BlockState EMERALD_TEAL = Blocks.CYAN_TERRACOTTA.defaultBlockState();
+	public static final BlockState BANNER_GOLD = Blocks.YELLOW_TERRACOTTA.defaultBlockState();
+	public static final BlockState COPPER_WEATHERED = Blocks.WAXED_WEATHERED_CUT_COPPER.defaultBlockState();
+	public static final BlockState COPPER_OXIDIZED = Blocks.WAXED_OXIDIZED_COPPER.defaultBlockState();
+	public static final BlockState COPPER_CUT_OXIDIZED = Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState();
 
 	private final WorldGenLevel level;
 	private final BoundingBox clip;
@@ -539,7 +539,7 @@ public final class OathholdCanvas {
 			}
 		}
 		// Crown with real Minecraft wall banner at top center
-		set(lx, yTop, lz, Blocks.WALL_BANNER.green().defaultBlockState().setValue(WallBannerBlock.FACING, facing));
+		set(lx, yTop, lz, Blocks.GREEN_WALL_BANNER.defaultBlockState().setValue(WallBannerBlock.FACING, facing));
 	}
 
 	/** Emerald-and-gold fluttering pennant beside a spire/flagpole at {@code (cx, fy, cz)}. */

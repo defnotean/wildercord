@@ -76,12 +76,12 @@ public final class OathholdOuterLandmarks {
 		c.spawnMob(cx, 1, -10, AuraWorld.OATHBOUND_HALBERDIER, 0.0F, true);
 
 		// Tournament Pavilion Tents, Statues, Concourse Stalls & Spectators
-		BlockState wRed = Blocks.WOOL.red().defaultBlockState();
-		BlockState wGold = Blocks.WOOL.yellow().defaultBlockState();
-		BlockState wGreen = Blocks.WOOL.green().defaultBlockState();
-		BlockState wWhite = Blocks.WOOL.white().defaultBlockState();
-		BlockState wBlue = Blocks.WOOL.blue().defaultBlockState();
-		BlockState wOrange = Blocks.WOOL.orange().defaultBlockState();
+		BlockState wRed = Blocks.RED_WOOL.defaultBlockState();
+		BlockState wGold = Blocks.YELLOW_WOOL.defaultBlockState();
+		BlockState wGreen = Blocks.GREEN_WOOL.defaultBlockState();
+		BlockState wWhite = Blocks.WHITE_WOOL.defaultBlockState();
+		BlockState wBlue = Blocks.BLUE_WOOL.defaultBlockState();
+		BlockState wOrange = Blocks.ORANGE_WOOL.defaultBlockState();
 		OathholdStreetscape.tournamentTent(c, -668, 1, -54, wRed, wGold);
 		OathholdStreetscape.tournamentTent(c, -668, 1, 54, wBlue, wGold);
 		OathholdStreetscape.tournamentTent(c, -556, 1, -54, wGreen, wWhite);
@@ -103,7 +103,7 @@ public final class OathholdOuterLandmarks {
 	}
 
 	private static BlockState wYellow() {
-		return Blocks.WOOL.yellow().defaultBlockState();
+		return Blocks.YELLOW_WOOL.defaultBlockState();
 	}
 
 	private static void buildImperialHarbor(OathholdCanvas c) {
@@ -138,11 +138,11 @@ public final class OathholdOuterLandmarks {
 
 		// Striped Maritime & Fishmonger Stalls along quay (includes x=542, z=-32 -> canopy & hanging lantern at y=4!)
 		BlockState[] harborA = {
-			Blocks.WOOL.cyan().defaultBlockState(),
-			Blocks.WOOL.blue().defaultBlockState(),
-			Blocks.WOOL.orange().defaultBlockState()
+			Blocks.CYAN_WOOL.defaultBlockState(),
+			Blocks.BLUE_WOOL.defaultBlockState(),
+			Blocks.ORANGE_WOOL.defaultBlockState()
 		};
-		BlockState wWhite = Blocks.WOOL.white().defaultBlockState();
+		BlockState wWhite = Blocks.WHITE_WOOL.defaultBlockState();
 		int[] stallZ = {-180, -148, -92, -62, -32, 32, 62, 92, 148, 180};
 		for (int i = 0; i < stallZ.length; i++) {
 			int sz = stallZ[i];
@@ -173,14 +173,14 @@ public final class OathholdOuterLandmarks {
 
 		// Admiralty Harbor Guildhall + Dockside Harbor Tavern & patio tables
 		OathholdBuildings.build(c, 0, 504, -24, 534, 24, 3,
-			Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
+			Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
 			true, OathholdBuildings.Theme.MARITIME_SE, true, 601);
 		OathholdBuildings.build(c, 0, 506, 30, 532, 54, 2,
 			Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB,
 			false, OathholdBuildings.Theme.MARITIME_SE, false, 603);
 		c.chest(518, 2, 0, Direction.EAST, OathholdSites.LOOT_MARKET, 602L);
 		for (int ptz : new int[]{-16, -8, 8, 16, 36, 46}) {
-			OathholdStreetscape.patioTable(c, 538, 2, ptz, Blocks.CARPET.cyan().defaultBlockState(), wWhite);
+			OathholdStreetscape.patioTable(c, 538, 2, ptz, Blocks.CYAN_CARPET.defaultBlockState(), wWhite);
 		}
 		c.spawnMob(551, 2, -12, AuraWorld.OATHBOUND_BASTION, 90.0F, true);
 		c.spawnMob(551, 2, 12, AuraWorld.OATHBOUND_HALBERDIER, 90.0F, true);
@@ -216,7 +216,7 @@ public final class OathholdOuterLandmarks {
 				}
 			}
 		}
-		c.fill(lhx - 3, 45, lhz - 3, lhx + 3, 50, lhz + 3, Blocks.STAINED_GLASS.yellow().defaultBlockState());
+		c.fill(lhx - 3, 45, lhz - 3, lhx + 3, 50, lhz + 3, Blocks.YELLOW_STAINED_GLASS.defaultBlockState());
 		c.fill(lhx - 2, 45, lhz - 2, lhx + 2, 50, lhz + 2, OathholdCanvas.SEA_LANTERN);
 		c.fill(lhx - 1, 46, lhz - 1, lhx + 1, 49, lhz + 1, OathholdCanvas.OCHRE_LIGHT);
 		c.ribbedDome(lhx, 51, lhz, 5, 5, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
@@ -229,8 +229,8 @@ public final class OathholdOuterLandmarks {
 		BlockState trim = OathholdCanvas.SPRUCE_LOG;
 		BlockState deck = OathholdCanvas.SPRUCE;
 		BlockState mast = OathholdCanvas.DARK_OAK_LOG;
-		BlockState sailWhite = Blocks.WOOL.white().defaultBlockState();
-		BlockState sailGreen = Blocks.WOOL.green().defaultBlockState();
+		BlockState sailWhite = Blocks.WHITE_WOOL.defaultBlockState();
+		BlockState sailGreen = Blocks.GREEN_WOOL.defaultBlockState();
 
 		for (int dx = -22; dx <= 22; dx++) {
 			int halfBeam = Math.max(1, (int) Math.round(7.5 * Math.sqrt(Math.max(0.0, 1.0 - (dx * dx) / 505.0))));
@@ -296,7 +296,7 @@ public final class OathholdOuterLandmarks {
 			for (int z = Math.max(544, c.clipMinLz()); z <= Math.min(582, c.clipMaxLz()); z++) {
 				if (z >= 560 && z <= 566) {
 					c.set(x, 0, z, OathholdCanvas.POLISHED_DEEPSLATE);
-					c.set(x, 1, z, Blocks.CARPET.red().defaultBlockState());
+					c.set(x, 1, z, Blocks.RED_CARPET.defaultBlockState());
 				} else {
 					boolean even = ((x + z) & 1) == 0;
 					c.set(x, 0, z, even ? OathholdCanvas.CALCITE : OathholdCanvas.POLISHED_DEEPSLATE);
@@ -315,12 +315,12 @@ public final class OathholdOuterLandmarks {
 			c.fill(ex - 4, 1, 574, ex + 4, 1, 574, OathholdCanvas.DARK_OAK);
 			c.set(ex, 2, 552, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true));
 			c.set(ex, 2, 574, OathholdCanvas.LANTERN);
-			c.gothicArchZ(ex, 3, 542, 543, 3, 6, 4, OathholdCanvas.TUFF_BRICKS, Blocks.STAINED_GLASS.yellow().defaultBlockState());
+			c.gothicArchZ(ex, 3, 542, 543, 3, 6, 4, OathholdCanvas.TUFF_BRICKS, Blocks.YELLOW_STAINED_GLASS.defaultBlockState());
 		}
 		c.fill(-52, 1, 544, -52, 5, 580, Blocks.BOOKSHELF.defaultBlockState());
 		c.fill(52, 1, 544, 52, 5, 580, Blocks.BOOKSHELF.defaultBlockState());
 		c.gothicArchZ(0, 1, 583, 585, 6, 6, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
-		c.pitchedRoofX(-56, 13, 542, 56, 584, Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
+		c.pitchedRoofX(-56, 13, 542, 56, 584, Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
 			OathholdCanvas.CALCITE, OathholdCanvas.DARK_OAK);
 		c.bastionTower(-54, 0, 584, 5, 22, 12, OathholdCanvas.DEEPSLATE_TILES, true);
 		c.bastionTower(54, 0, 584, 5, 22, 12, OathholdCanvas.DEEPSLATE_TILES, true);
@@ -342,11 +342,11 @@ public final class OathholdOuterLandmarks {
 		c.fill(-1, 5, 627, 1, 24, 629, OathholdCanvas.CALCITE);
 		c.fill(0, 25, 628, 0, 28, 628, OathholdCanvas.GOLD);
 
-		BlockState wRed = Blocks.WOOL.red().defaultBlockState();
-		BlockState wBlue = Blocks.WOOL.blue().defaultBlockState();
-		BlockState wGreen = Blocks.WOOL.green().defaultBlockState();
-		BlockState wOrange = Blocks.WOOL.orange().defaultBlockState();
-		BlockState wWhite = Blocks.WOOL.white().defaultBlockState();
+		BlockState wRed = Blocks.RED_WOOL.defaultBlockState();
+		BlockState wBlue = Blocks.BLUE_WOOL.defaultBlockState();
+		BlockState wGreen = Blocks.GREEN_WOOL.defaultBlockState();
+		BlockState wOrange = Blocks.ORANGE_WOOL.defaultBlockState();
+		BlockState wWhite = Blocks.WHITE_WOOL.defaultBlockState();
 		OathholdStreetscape.knightMonument(c, -10, 1, 592);
 		OathholdStreetscape.knightMonument(c, 10, 1, 592);
 		for (int sx : new int[]{-46, -26, 26, 46}) {
@@ -375,7 +375,7 @@ public final class OathholdOuterLandmarks {
 			for (int z = Math.max(-664, c.clipMinLz()); z <= Math.min(-624, c.clipMaxLz()); z++) {
 				if (Math.abs(x) <= 2) {
 					c.set(x, 0, z, OathholdCanvas.POLISHED_DEEPSLATE);
-					c.set(x, 1, z, Blocks.CARPET.cyan().defaultBlockState());
+					c.set(x, 1, z, Blocks.CYAN_CARPET.defaultBlockState());
 				} else {
 					c.set(x, 0, z, ((x + z) & 1) == 0 ? OathholdCanvas.CALCITE : OathholdCanvas.STONE_BRICKS);
 				}
@@ -387,7 +387,7 @@ public final class OathholdOuterLandmarks {
 			c.fill(5, 1, pz, 16, 1, pz, pewNorth);
 		}
 		for (int wx : new int[]{-32, -16, 16, 32}) {
-			c.gothicArchZ(wx, 3, -666, -665, 3, 7, 4, OathholdCanvas.TUFF_BRICKS, Blocks.STAINED_GLASS.blue().defaultBlockState());
+			c.gothicArchZ(wx, 3, -666, -665, 3, 7, 4, OathholdCanvas.TUFF_BRICKS, Blocks.BLUE_STAINED_GLASS.defaultBlockState());
 		}
 		c.fill(-4, 1, -662, 4, 2, -659, OathholdCanvas.GOLD);
 		c.lecternBook(0, 2, -658, Direction.SOUTH,

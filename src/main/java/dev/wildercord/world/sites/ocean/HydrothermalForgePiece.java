@@ -149,7 +149,7 @@ public final class HydrothermalForgePiece extends OceanPiece {
 		// Crown pressure valve & molten light beacon atop dome peak
 		set(level, bb, COPPER_BLOCK, CX, domeY + 6, CZ);
 		set(level, bb, Blocks.OCHRE_FROGLIGHT.defaultBlockState(), CX, domeY + 7, CZ);
-		set(level, bb, Blocks.LIGHTNING_ROD.waxed().unaffected().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), CX, domeY + 8, CZ);
+		set(level, bb, Blocks.WAXED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), CX, domeY + 8, CZ);
 
 		// Ensure dry dome interior & richly furnish Trench Anvil smithy
 		for (int x = 9; x <= 17; x++) {

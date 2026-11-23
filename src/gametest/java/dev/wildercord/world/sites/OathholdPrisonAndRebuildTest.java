@@ -152,7 +152,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 		l.setBlock(new BlockPos(0, baseY + 2, z1),
 			Blocks.SPRUCE_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), 18);
 		for (int ax = -2; ax <= 2; ax++) {
-			BlockState awning = ((ax + 2) & 1) == 0 ? Blocks.WOOL.red().defaultBlockState() : Blocks.WOOL.white().defaultBlockState();
+			BlockState awning = ((ax + 2) & 1) == 0 ? Blocks.RED_WOOL.defaultBlockState() : Blocks.WHITE_WOOL.defaultBlockState();
 			l.setBlock(new BlockPos(ax, baseY + 3, z1 + 1), awning, 3);
 		}
 		l.setBlock(new BlockPos(0, baseY + 4, z1 + 1), Blocks.DARK_OAK_FENCE.defaultBlockState(), 3);

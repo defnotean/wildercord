@@ -24,13 +24,13 @@ public final class OathholdGreatHall {
 	public static void build(OathholdCanvas c) {
 		if (!c.intersects(MIN_X - 4, MIN_Z - 4, MAX_X + 4, MAX_Z + 14)) return;
 
-		BlockState glassWhite = Blocks.STAINED_GLASS.white().defaultBlockState();
-		BlockState glassGold = Blocks.STAINED_GLASS.yellow().defaultBlockState();
-		BlockState glassOrange = Blocks.STAINED_GLASS.orange().defaultBlockState();
-		BlockState carpetRed = Blocks.CARPET.red().defaultBlockState();
-		BlockState carpetTeal = Blocks.CARPET.cyan().defaultBlockState();
-		BlockState woolRed = Blocks.WOOL.red().defaultBlockState();
-		BlockState carpetGreen = Blocks.CARPET.green().defaultBlockState();
+		BlockState glassWhite = Blocks.WHITE_STAINED_GLASS.defaultBlockState();
+		BlockState glassGold = Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
+		BlockState glassOrange = Blocks.ORANGE_STAINED_GLASS.defaultBlockState();
+		BlockState carpetRed = Blocks.RED_CARPET.defaultBlockState();
+		BlockState carpetTeal = Blocks.CYAN_CARPET.defaultBlockState();
+		BlockState woolRed = Blocks.RED_WOOL.defaultBlockState();
+		BlockState carpetGreen = Blocks.GREEN_CARPET.defaultBlockState();
 
 		// 1. Clear vaulted interior cavity & build checkered deepslate/calcite/gold nave floor
 		c.clear(-25, AY + 1, MIN_Z + 1, 25, AY + 40, MAX_Z - 1);

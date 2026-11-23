@@ -24,19 +24,19 @@ public final class OathholdBuildings {
 	}
 
 	private static final BlockState[][] AWNING_PALETTE = {
-		{Blocks.WOOL.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState()},
-		{Blocks.WOOL.blue().defaultBlockState(), Blocks.WOOL.white().defaultBlockState()},
-		{Blocks.WOOL.orange().defaultBlockState(), Blocks.WOOL.yellow().defaultBlockState()},
-		{Blocks.WOOL.cyan().defaultBlockState(), Blocks.WOOL.white().defaultBlockState()},
-		{Blocks.WOOL.green().defaultBlockState(), Blocks.WOOL.white().defaultBlockState()},
-		{Blocks.WOOL.red().defaultBlockState(), Blocks.WOOL.yellow().defaultBlockState()}
+		{Blocks.RED_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState()},
+		{Blocks.BLUE_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState()},
+		{Blocks.ORANGE_WOOL.defaultBlockState(), Blocks.YELLOW_WOOL.defaultBlockState()},
+		{Blocks.CYAN_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState()},
+		{Blocks.GREEN_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState()},
+		{Blocks.RED_WOOL.defaultBlockState(), Blocks.YELLOW_WOOL.defaultBlockState()}
 	};
 
 	private static final BlockState[] RUG_COLORS = {
-		Blocks.CARPET.red().defaultBlockState(),
-		Blocks.CARPET.cyan().defaultBlockState(),
-		Blocks.CARPET.orange().defaultBlockState(),
-		Blocks.CARPET.green().defaultBlockState()
+		Blocks.RED_CARPET.defaultBlockState(),
+		Blocks.CYAN_CARPET.defaultBlockState(),
+		Blocks.ORANGE_CARPET.defaultBlockState(),
+		Blocks.GREEN_CARPET.defaultBlockState()
 	};
 
 	private static final DyeColor[] BED_COLORS = {
@@ -290,7 +290,7 @@ public final class OathholdBuildings {
 		// Roof matching quadrant palette + gable window accent
 		if (copperAccent) {
 			c.pitchedRoofZ(x0, roofY, z0, x1, z1,
-				Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
+				Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
 				upperPlaster, OathholdCanvas.DARK_OAK);
 			c.set(mx, roofY + 2, z1, Blocks.GLASS_PANE.defaultBlockState());
 		} else if ((seed & 1) == 0) {

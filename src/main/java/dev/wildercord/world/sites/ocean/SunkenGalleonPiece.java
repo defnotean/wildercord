@@ -101,7 +101,7 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		for (int i = 0; i < 6; i++) {
 			set(level, bb, STRIPPED_SPRUCE, 2 - i / 2, BASE + 9 + (i + 1) / 2, zMid);
 			if (i >= 2 && i <= 4) {
-				set(level, bb, Blocks.WOOL.white().defaultBlockState(), 2 - i / 2, BASE + 10 + (i + 1) / 2, zMid);
+				set(level, bb, Blocks.WHITE_WOOL.defaultBlockState(), 2 - i / 2, BASE + 10 + (i + 1) / 2, zMid);
 			}
 		}
 		// Heavy sunken bow anchor on seabed
@@ -211,7 +211,7 @@ public final class SunkenGalleonPiece extends OceanPiece {
 				if ((mx + y * 2 + z) % 6 == 0) continue; // Tattered battle holes
 				int bellyOffset = (Math.abs(z - zMid) <= halfYard - 1 && y > sailLow && y < sailHigh - 1) ? 2 : 1;
 				BlockState cloth = ((y + z) % 4 == 0) ? MOSS
-					: (((mx + y) % 3 == 0) ? GREEN_WOOL : Blocks.WOOL.white().defaultBlockState());
+					: (((mx + y) % 3 == 0) ? GREEN_WOOL : Blocks.WHITE_WOOL.defaultBlockState());
 				set(level, bb, cloth, mx + bellyOffset, y, z);
 			}
 		}

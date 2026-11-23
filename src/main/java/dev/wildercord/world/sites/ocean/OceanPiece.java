@@ -42,18 +42,18 @@ import net.minecraft.world.level.storage.loot.LootTable;
 public abstract class OceanPiece extends StructurePiece {
 	protected static final BlockState AIR = Blocks.AIR.defaultBlockState();
 	protected static final BlockState WATER = Blocks.WATER.defaultBlockState();
-	protected static final BlockState CYAN_GLASS = Blocks.STAINED_GLASS.cyan().defaultBlockState();
+	protected static final BlockState CYAN_GLASS = Blocks.CYAN_STAINED_GLASS.defaultBlockState();
 	protected static final BlockState GLASS = Blocks.GLASS.defaultBlockState();
-	protected static final BlockState YELLOW_GLASS = Blocks.STAINED_GLASS.yellow().defaultBlockState();
+	protected static final BlockState YELLOW_GLASS = Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
 	protected static final BlockState PRISMARINE = Blocks.PRISMARINE.defaultBlockState();
 	protected static final BlockState PRISMARINE_BRICKS = Blocks.PRISMARINE_BRICKS.defaultBlockState();
 	protected static final BlockState DARK_PRISMARINE = Blocks.DARK_PRISMARINE.defaultBlockState();
 	protected static final BlockState SEA_LANTERN = Blocks.SEA_LANTERN.defaultBlockState();
-	protected static final BlockState COPPER_OXIDIZED = Blocks.COPPER_BLOCK.waxed().oxidized().defaultBlockState();
-	protected static final BlockState CUT_COPPER_OXIDIZED = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
-	protected static final BlockState COPPER_WEATHERED = Blocks.CUT_COPPER.waxed().weathered().defaultBlockState();
-	protected static final BlockState COPPER_EXPOSED = Blocks.COPPER_BLOCK.waxed().exposed().defaultBlockState();
-	protected static final BlockState COPPER_BLOCK = Blocks.COPPER_BLOCK.waxed().unaffected().defaultBlockState();
+	protected static final BlockState COPPER_OXIDIZED = Blocks.WAXED_OXIDIZED_COPPER.defaultBlockState();
+	protected static final BlockState CUT_COPPER_OXIDIZED = Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState();
+	protected static final BlockState COPPER_WEATHERED = Blocks.WAXED_WEATHERED_CUT_COPPER.defaultBlockState();
+	protected static final BlockState COPPER_EXPOSED = Blocks.WAXED_EXPOSED_COPPER.defaultBlockState();
+	protected static final BlockState COPPER_BLOCK = Blocks.WAXED_COPPER_BLOCK.defaultBlockState();
 	protected static final BlockState DEEPSLATE_TILES = Blocks.DEEPSLATE_TILES.defaultBlockState();
 	protected static final BlockState DEEPSLATE_BRICKS = Blocks.DEEPSLATE_BRICKS.defaultBlockState();
 	protected static final BlockState POLISHED_DEEPSLATE = Blocks.POLISHED_DEEPSLATE.defaultBlockState();
@@ -70,7 +70,7 @@ public abstract class OceanPiece extends StructurePiece {
 	protected static final BlockState STRIPPED_OAK = Blocks.STRIPPED_OAK_LOG.defaultBlockState();
 	protected static final BlockState ACACIA_PLANKS = Blocks.ACACIA_PLANKS.defaultBlockState();
 	protected static final BlockState MOSS = Blocks.MOSS_BLOCK.defaultBlockState();
-	protected static final BlockState GREEN_WOOL = Blocks.WOOL.green().defaultBlockState();
+	protected static final BlockState GREEN_WOOL = Blocks.GREEN_WOOL.defaultBlockState();
 	protected static final BlockState SAND = Blocks.SAND.defaultBlockState();
 
 	protected OceanPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing) {
@@ -133,7 +133,7 @@ public abstract class OceanPiece extends StructurePiece {
 	protected final void cyanBed(WorldGenLevel level, BoundingBox clip, int fx, int y, int fz, Direction headDir) {
 		int hx = fx + headDir.getStepX();
 		int hz = fz + headDir.getStepZ();
-		Block bed = Blocks.BED.cyan();
+		Block bed = Blocks.CYAN_BED;
 		set(level, clip, bed.defaultBlockState().setValue(BedBlock.FACING, headDir).setValue(BedBlock.PART, BedPart.FOOT), fx, y, fz);
 		set(level, clip, bed.defaultBlockState().setValue(BedBlock.FACING, headDir).setValue(BedBlock.PART, BedPart.HEAD), hx, y, hz);
 	}

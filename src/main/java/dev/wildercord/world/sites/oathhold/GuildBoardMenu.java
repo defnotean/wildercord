@@ -47,8 +47,8 @@ public final class GuildBoardMenu extends ChestMenu {
 		grid.clearContent();
 		displayed.clear();
 
-		ItemStack frameGray = pane(Items.STAINED_GLASS_PANE.gray());
-		ItemStack frameGreen = pane(Items.STAINED_GLASS_PANE.green());
+		ItemStack frameGray = pane(Items.GRAY_STAINED_GLASS_PANE);
+		ItemStack frameGreen = pane(Items.GREEN_STAINED_GLASS_PANE);
 		for (int s = 0; s < 54; s++) {
 			int row = s / 9;
 			int col = s % 9;

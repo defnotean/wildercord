@@ -244,7 +244,7 @@ public final class OathholdStreetscape {
 	/** Outdoor waterside/patio umbrella table with sleek carpet canopy & two spruce-stair chairs. */
 	public static void patioTable(OathholdCanvas c, int x, int y, int z, BlockState umbrellaCarpet, BlockState accentWool) {
 		if (!c.intersects(x - 2, z - 2, x + 2, z + 2)) return;
-		BlockState carpetWhite = Blocks.CARPET.white().defaultBlockState();
+		BlockState carpetWhite = Blocks.WHITE_CARPET.defaultBlockState();
 		BlockState trapTop = trapdoorShelf(Blocks.SPRUCE_TRAPDOOR, Direction.NORTH);
 		c.set(x, y, z, OAK_FENCE);
 		c.set(x, y + 1, z, OAK_FENCE);
@@ -274,7 +274,7 @@ public final class OathholdStreetscape {
 			c.fill(cx - 1, waterTopY + 1, cz + 5, cx + 1, waterTopY + 1, cz + 5, OathholdCanvas.DARK_OAK);
 			// Tall central cargo mast, yardarm sail bar & pennant
 			c.fill(cx, waterTopY + 1, cz, cx, waterTopY + 7, cz, OathholdCanvas.DARK_OAK_LOG);
-			c.fill(cx - 2, waterTopY + 5, cz, cx + 2, waterTopY + 5, cz, Blocks.WOOL.white().defaultBlockState());
+			c.fill(cx - 2, waterTopY + 5, cz, cx + 2, waterTopY + 5, cz, Blocks.WHITE_WOOL.defaultBlockState());
 			c.fill(cx - 1, waterTopY + 6, cz, cx + 1, waterTopY + 6, cz, OathholdCanvas.DARK_OAK);
 			c.flagPennant(cx, waterTopY + 7, cz);
 			// Cargo crates, hay bales, barrels & bow/stern lanterns
@@ -295,7 +295,7 @@ public final class OathholdStreetscape {
 			c.fill(cx - 5, waterTopY + 1, cz - 1, cx - 5, waterTopY + 1, cz + 1, OathholdCanvas.DARK_OAK);
 			c.fill(cx + 5, waterTopY + 1, cz - 1, cx + 5, waterTopY + 1, cz + 1, OathholdCanvas.DARK_OAK);
 			c.fill(cx, waterTopY + 1, cz, cx, waterTopY + 7, cz, OathholdCanvas.DARK_OAK_LOG);
-			c.fill(cx, waterTopY + 5, cz - 2, cx, waterTopY + 5, cz + 2, Blocks.WOOL.white().defaultBlockState());
+			c.fill(cx, waterTopY + 5, cz - 2, cx, waterTopY + 5, cz + 2, Blocks.WHITE_WOOL.defaultBlockState());
 			c.fill(cx, waterTopY + 6, cz - 1, cx, waterTopY + 6, cz + 1, OathholdCanvas.DARK_OAK);
 			c.flagPennant(cx, waterTopY + 7, cz);
 			c.set(cx - 2, waterTopY + 1, cz - 1, CRAFTING);

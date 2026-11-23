@@ -215,7 +215,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 
 				check(countBlocks(l, ox1 + 22, 65, oz1 + 22, ox1 + 26, 70, oz1 + 26, Blocks.CONDUIT) == 1, "Coral-Dome has central Conduit");
 				check(l.getBlockState(new BlockPos(ox1 + 24, 67, oz1 + 9)).isAir(), "North Coral-Dome interior is dry AIR");
-				check(countBlocks(l, ox1, 64, oz1, ox1 + 49, 76, oz1 + 49, Blocks.STAINED_GLASS.cyan()) > 80, "Coral-Dome cyan stained-glass domes built");
+				check(countBlocks(l, ox1, 64, oz1, ox1 + 49, 76, oz1 + 49, Blocks.CYAN_STAINED_GLASS) > 80, "Coral-Dome cyan stained-glass domes built");
 				check(l.getEntitiesOfClass(BrineMerchant.class, new AABB(ox1, 62, oz1, ox1 + 49, 80, oz1 + 49)).size() >= 3,
 					"Coral-Dome spawns all 3 Brine-Merchants");
 			});
@@ -236,7 +236,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				placePiece(l, new SunkenGalleonPiece(ox2, 62, oz2, Direction.SOUTH));
 
 				check(countBlocks(l, ox2, 62, oz2, ox2 + 46, 90, oz2 + 15, Blocks.DISPENSER) >= 4, "Sunken Galleon has broadside cannons");
-				check(countBlocks(l, ox2, 62, oz2, ox2 + 46, 90, oz2 + 15, Blocks.WOOL.white()) > 10, "Sunken Galleon has tattered sails");
+				check(countBlocks(l, ox2, 62, oz2, ox2 + 46, 90, oz2 + 15, Blocks.WHITE_WOOL) > 10, "Sunken Galleon has tattered sails");
 				check(!l.getEntitiesOfClass(BarnacleHulkDredger.class, new AABB(ox2 - 2, 60, oz2 - 2, ox2 + 48, 92, oz2 + 18)).isEmpty(),
 					"Sunken Galleon spawns Barnacle-Hulk Dredger");
 			});

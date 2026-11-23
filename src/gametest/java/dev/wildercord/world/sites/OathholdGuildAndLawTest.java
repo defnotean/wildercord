@@ -188,7 +188,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				}
 				for (int x = -2; x <= 2; x++) {
 					for (int y = 124; y <= 125; y++) {
-						l.setBlock(new BlockPos(x, y, -8), (x == 0 ? Blocks.GOLD_BLOCK : Blocks.CONCRETE.green()).defaultBlockState(), 3);
+						l.setBlock(new BlockPos(x, y, -8), (x == 0 ? Blocks.GOLD_BLOCK : Blocks.GREEN_CONCRETE).defaultBlockState(), 3);
 					}
 				}
 				for (int x : new int[]{-5, 0, 5}) {

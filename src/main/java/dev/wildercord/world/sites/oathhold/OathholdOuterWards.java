@@ -381,11 +381,11 @@ public final class OathholdOuterWards {
 
 		Block stair = switch (theme) {
 			case IRONWORKS_NW -> (h % 3 == 0) ? Blocks.BRICK_STAIRS : Blocks.DEEPSLATE_TILE_STAIRS;
-			case SCHOLARS_NE -> (h % 3 == 0) ? Blocks.CUT_COPPER_STAIRS.waxed().weathered() : Blocks.DEEPSLATE_TILE_STAIRS;
-			case MARITIME_SE -> (h % 2 == 0) ? Blocks.CUT_COPPER_STAIRS.waxed().weathered() : Blocks.SPRUCE_STAIRS;
-			default -> (h % 4 == 0) ? Blocks.CUT_COPPER_STAIRS.waxed().weathered() : Blocks.SPRUCE_STAIRS;
+			case SCHOLARS_NE -> (h % 3 == 0) ? Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS : Blocks.DEEPSLATE_TILE_STAIRS;
+			case MARITIME_SE -> (h % 2 == 0) ? Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS : Blocks.SPRUCE_STAIRS;
+			default -> (h % 4 == 0) ? Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS : Blocks.SPRUCE_STAIRS;
 		};
-		Block slab = stair == Blocks.CUT_COPPER_STAIRS.waxed().weathered() ? Blocks.CUT_COPPER_SLAB.waxed().weathered()
+		Block slab = stair == Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS ? Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB
 			: stair == Blocks.BRICK_STAIRS ? Blocks.BRICK_SLAB
 			: stair == Blocks.DEEPSLATE_TILE_STAIRS ? Blocks.DEEPSLATE_TILE_SLAB
 			: Blocks.SPRUCE_SLAB;
@@ -411,7 +411,7 @@ public final class OathholdOuterWards {
 		OathholdStreetscape.cargoCluster(c, cx - 2, 2, z0 - 1, h);
 		if (theme == OathholdBuildings.Theme.MERCHANTS_SW || theme == OathholdBuildings.Theme.MARITIME_SE) {
 			OathholdStreetscape.patioTable(c, x1 + 1, 2, cz,
-				Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+				Blocks.RED_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 		}
 	}
 
@@ -439,16 +439,16 @@ public final class OathholdOuterWards {
 			case MERCHANTS_SW -> {
 				c.fill(cx - 2, 2, cz - 2, cx + 2, 3, cz + 2, OathholdCanvas.TUFF_BRICKS);
 				c.fill(cx - 1, 2, cz - 1, cx + 1, 2, cz + 1, OathholdCanvas.WATER);
-				OathholdStreetscape.marketStall(c, x0 + 8, 2, z0 + 8, Blocks.WOOL.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), h);
-				OathholdStreetscape.marketStall(c, x1 - 8, 2, z0 + 8, Blocks.WOOL.blue().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), h + 1);
-				OathholdStreetscape.marketStall(c, x0 + 8, 2, z1 - 8, Blocks.WOOL.orange().defaultBlockState(), Blocks.WOOL.yellow().defaultBlockState(), h + 2);
-				OathholdStreetscape.marketStall(c, x1 - 8, 2, z1 - 8, Blocks.WOOL.lime().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), h + 3);
+				OathholdStreetscape.marketStall(c, x0 + 8, 2, z0 + 8, Blocks.RED_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), h);
+				OathholdStreetscape.marketStall(c, x1 - 8, 2, z0 + 8, Blocks.BLUE_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), h + 1);
+				OathholdStreetscape.marketStall(c, x0 + 8, 2, z1 - 8, Blocks.ORANGE_WOOL.defaultBlockState(), Blocks.YELLOW_WOOL.defaultBlockState(), h + 2);
+				OathholdStreetscape.marketStall(c, x1 - 8, 2, z1 - 8, Blocks.LIME_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), h + 3);
 			}
 			case MARITIME_SE -> {
 				c.fill(x0 + 4, 2, z0 + 4, x0 + 9, 3, z0 + 6, OathholdCanvas.SPRUCE_LOG);
 				OathholdStreetscape.cargoCluster(c, x1 - 6, 2, z0 + 6, h);
-				OathholdStreetscape.patioTable(c, cx - 4, 2, cz + 5, Blocks.CARPET.cyan().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
-				OathholdStreetscape.patioTable(c, cx + 4, 2, cz + 5, Blocks.CARPET.green().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+				OathholdStreetscape.patioTable(c, cx - 4, 2, cz + 5, Blocks.CYAN_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
+				OathholdStreetscape.patioTable(c, cx + 4, 2, cz + 5, Blocks.GREEN_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 			}
 			default -> {}
 		}
