@@ -1,4 +1,5 @@
 package dev.wildercord.ocean;
+import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.aura.world.BossDamage;
 import dev.wildercord.client.fx.CustomMobFireFx;
@@ -85,11 +86,11 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) {
+					GametestCompat.toggleHud(mc);
 				}
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			}
 		});
 		context.waitTicks(6);
@@ -108,11 +109,11 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
 			mc.setCameraEntity(mc.player);
-			if (!mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (!GametestCompat.hudHidden(mc)) {
+				GametestCompat.toggleHud(mc);
 			}
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			GametestCompat.clearToasts(mc);
+			GametestCompat.clearChat(mc);
 		});
 		context.waitTicks(8);
 	}
@@ -130,8 +131,8 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 	private static void shot(ClientGameTestContext context, String name) {
 		context.runOnClient(mc -> {
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			GametestCompat.clearToasts(mc);
+			GametestCompat.clearChat(mc);
 		});
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
@@ -427,7 +428,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 			context.runOnClient(mc -> {
 				mc.particleEngine.clearParticles();
-				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
 				mc.setCameraEntity(mc.player);
 				mc.options.fov().set(55);
 				mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
@@ -487,7 +488,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 			context.runOnClient(mc -> {
 				mc.particleEngine.clearParticles();
-				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
 				mc.setCameraEntity(mc.player);
 				mc.options.fov().set(68);
 				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);

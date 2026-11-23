@@ -1,4 +1,5 @@
 package dev.wildercord.ocean;
+import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.world.StructureClearance;
 import dev.wildercord.world.sites.ocean.AbyssalCitadelPiece;
@@ -78,11 +79,11 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) {
+					GametestCompat.toggleHud(mc);
 				}
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			}
 		});
 		context.waitTicks(5);
@@ -101,11 +102,11 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
 			mc.setCameraEntity(mc.player);
-			if (!mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (!GametestCompat.hudHidden(mc)) {
+				GametestCompat.toggleHud(mc);
 			}
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			GametestCompat.clearToasts(mc);
+			GametestCompat.clearChat(mc);
 		});
 		context.waitTicks(8);
 	}
@@ -126,8 +127,8 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 
 	private static void shot(ClientGameTestContext context, String name) {
 		context.runOnClient(mc -> {
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			GametestCompat.clearToasts(mc);
+			GametestCompat.clearChat(mc);
 		});
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}

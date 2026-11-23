@@ -170,4 +170,24 @@ public final class GametestCompat {
 	public static void swingMainHandWithItem(LocalPlayer player) {
 		player.swing(InteractionHand.MAIN_HAND, true);
 	}
+
+	/** Clears the toast stack. 26.3 moved the toast manager from Minecraft onto Gui. */
+	public static void clearToasts(Minecraft mc) {
+		mc.getToastManager().clear();
+	}
+
+	/** Clears the chat line list. 26.3 reaches it through Gui#hud. */
+	public static void clearChat(Minecraft mc) {
+		mc.gui.getChat().clearMessages(false);
+	}
+
+	/** Whether the HUD is hidden (the F3+A state). 26.3 moved it behind Gui#hud. */
+	public static boolean hudHidden(Minecraft mc) {
+		return mc.options.hideGui;
+	}
+
+	/** Flips HUD visibility, so a screenshot can be taken without the hotbar and crosshair. */
+	public static void toggleHud(Minecraft mc) {
+		mc.options.hideGui = !mc.options.hideGui;
+	}
 }
