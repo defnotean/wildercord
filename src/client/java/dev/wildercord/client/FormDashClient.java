@@ -112,7 +112,7 @@ public final class FormDashClient {
 	/** A few motes at the feet. Reduced flash keeps a third and drops the flame; nothing moves the camera. */
 	private static void puff(Minecraft client, FormDash.Event event) {
 		var entity = client.level.getEntity(event.entity());
-		if (entity == null || client.options.particles().get() == net.minecraft.server.level.ParticleStatus.MINIMAL) return;
+		if (entity == null || client.options.particles().get() == net.minecraft.client.ParticleStatus.MINIMAL) return;
 		boolean cinder = event.form() == FormDashRules.CINDER_LUNGE || event.form() == FormDashRules.RIPOSTE || event.form() == FormDashRules.SPELL_CUT;
 		boolean stone = event.form() == FormDashRules.PLUNGE || event.form() == FormDashRules.GUARD_BREAK;
 		int count = switch (event.phase()) {

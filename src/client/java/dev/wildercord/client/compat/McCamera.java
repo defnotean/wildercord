@@ -22,7 +22,7 @@ public final class McCamera {
 		Matrix4f view = new Matrix4f().rotation(camera.rotation());
 		view.translate((float) -eye.x, (float) -eye.y, (float) -eye.z);
 		Matrix4f clip = new Matrix4f(mc.gameRenderer.getProjectionMatrix(
-			mc.getDeltaTracker().getGameTimeDeltaPartialTick(false)));
+			mc.getTimer().getGameTimeDeltaPartialTick(false)));
 		clip.mul(view);
 		Vector4f p = new Vector4f((float) world.x, (float) world.y, (float) world.z, 1.0F);
 		p.mul(clip);

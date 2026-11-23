@@ -142,7 +142,7 @@ public final class AimPreview {
 		}
 		if (hit.getType() != HitResult.Type.MISS) {
 			SigilOption mark = new SigilOption(SigilOption.TARGET, color, 0.5F, 0, 0, 3, 0.1F);
-			Vec3 n = Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i());
+			Vec3 n = Vec3.atLowerCornerOf(hit.getDirection().getNormal());
 			SigilParticle p = SigilParticle.make(mc.level, hit.getLocation().add(n.scale(0.03)), mark, true);
 			p.yaw = (float) Math.toDegrees(Math.atan2(-n.x, n.z));
 			p.pitch = (float) Math.toDegrees(Math.asin(-n.y));

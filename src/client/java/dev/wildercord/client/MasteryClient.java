@@ -14,7 +14,7 @@ import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -49,7 +49,7 @@ public final class MasteryClient {
 
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(MasteryChoices.Rise.TYPE, (payload, context) -> {
-			context.client().getToastManager().addToast(new RankToast(payload));
+			context.client().getToasts().addToast(new RankToast(payload));
 			if (payload.choice()) {
 				prompt = true;
 			}
@@ -82,27 +82,15 @@ public final class MasteryClient {
 		}
 
 		@Override
-		public Visibility getWantedVisibility() {
-			return visibility;
-		}
-
-		@Override
 		public Object getToken() {
 			return token(rise.name(), rise.rank());
 		}
 
+		// 1.21.1's Toast has no update hook: the toast decides for itself while it is drawn, and says whether to keep showing.
 		@Override
-		public void update(ToastManager manager, long fullyVisibleForMs) {
+		public Visibility render(GuiGraphics wcGui, ToastComponent manager, long fullyVisibleForMs) {
 			visibility = fullyVisibleForMs >= SHOW_MS * manager.getNotificationDisplayTimeMultiplier() ? Visibility.HIDE : Visibility.SHOW;
-		}
-
-		// The 1.21.4 Toast interface has no sound hook; the manager plays its own.
-		public SoundEvent getSoundEvent() {
-			return SoundEvents.AMETHYST_BLOCK_RESONATE;
-		}
-
-		@Override
-		public void render(GuiGraphics wcGui, Font font, long fullyVisibleForMs) {
+			Font font = Minecraft.getInstance().font;
 		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
 			int color = 0xFF000000 | rise.color();
@@ -114,6 +102,7 @@ public final class MasteryClient {
 			g.text(font, shownTitle, 30, 7, 0xFFB8A8FF, false);
 			String shown = font.plainSubstrByWidth(rise.name(), width() - 36);
 			g.text(font, shown, 30, 18, color, false);
+			return visibility;
 		}
 	}
 
@@ -225,7 +214,7 @@ public final class MasteryClient {
 	/** Under an inscribed scroll's tooltip: its spell's sigil in a ring of its rank's colour. */
 	record SigilTooltip(Inscription inscription) implements ClientTooltipComponent {
 		@Override
-		public int getHeight(Font font) {
+		public int getHeight() {
 			return 30;
 		}
 
@@ -235,7 +224,7 @@ public final class MasteryClient {
 		}
 
 		@Override
-		public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics wcGui) {
+		public void renderImage(Font font, int x, int y, GuiGraphics wcGui) {
 		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 			int color = 0xFF000000 | MasteryPanel.rankColor(inscription.rank());
 			GuiSpellCircle.ring(g, x + 13, y + 14, 12, 1, color);

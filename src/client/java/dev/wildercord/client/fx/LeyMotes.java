@@ -278,7 +278,7 @@ public final class LeyMotes {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(bx, y - 1, bz);
 		// Under a canopy the line runs on the forest floor, not over the treetops.
 		if (level.getBlockState(pos).is(BlockTags.LEAVES)) {
-			for (int i = 0; i < 24 && y > level.getMinY(); i++) {
+			for (int i = 0; i < 24 && y > level.getMinBuildHeight(); i++) {
 				BlockState below = level.getBlockState(pos.setY(y - 1));
 				if (!below.is(BlockTags.LEAVES) && (below.isSolid() || below.liquid())) {
 					break;

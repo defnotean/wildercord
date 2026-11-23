@@ -10,7 +10,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import dev.wildercord.client.compat.McQuadParticle;
 import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ARGB;
+import dev.wildercord.client.compat.ARGB;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;

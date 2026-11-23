@@ -283,11 +283,8 @@ final class BladePage {
 	private static ItemStack icon(BondedBlades.Shown shown) {
 		ItemStack icon;
 		try {
-			icon = new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(shown.item().isEmpty() ? "minecraft:iron_sword" : shown.item())));
-			if (!shown.model().isEmpty()) {
-				icon.set(DataComponents.ITEM_MODEL, ResourceLocation.parse(shown.model()));
-			}
-		} catch (RuntimeException e) {
+			icon = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(shown.item().isEmpty() ? "minecraft:iron_sword" : shown.item())));
+			} catch (RuntimeException e) {
 			icon = new ItemStack(Items.IRON_SWORD);
 		}
 		return icon;

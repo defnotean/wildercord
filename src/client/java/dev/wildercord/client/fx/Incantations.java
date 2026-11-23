@@ -160,7 +160,7 @@ public final class Incantations {
 		}
 		CameraRenderState camera = context.worldState().cameraRenderState;
 		Vec3 cam = camera.pos;
-		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		float partial = mc.getTimer().getGameTimeDeltaPartialTick(false);
 		double now = level.getGameTime() + partial;
 		Font font = mc.font;
 		PoseStack pose = context.matrices();

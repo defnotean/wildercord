@@ -9,7 +9,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -186,65 +185,69 @@ public final class GuiGraphicsExtractor {
 		g.drawStringWithBackdrop(font, text, x, y, width, color);
 	}
 
+	// 1.21.1's GuiGraphics takes no render-type pipeline: every blit below uses the atlas the caller names.
+
 	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height) {
-		g.blit(RenderType::guiTextured, atlas, x, y, u, v, regionWidth, regionHeight, width, height);
+		g.blit(atlas, x, y, u, v, regionWidth, regionHeight, width, height);
 	}
 
 	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int blitOffset) {
-		g.blit(RenderType::guiTextured, atlas, x, y, u, v, regionWidth, regionHeight, width, height, blitOffset);
+		// No offset argument on this version's blit; the depth rides on the pose instead.
+		g.pose().pushPose();
+		g.pose().translate(0.0F, 0.0F, blitOffset);
+		g.blit(atlas, x, y, u, v, regionWidth, regionHeight, width, height);
+		g.pose().popPose();
 	}
 
 	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int blitOffset) {
-		// 1.21.5 has no colour on a raw blit; the circle textures read fine untinted.
-		g.blit(RenderType::guiTextured, atlas, x, y, (float) (u + textureU), (float) (v + textureV),
-			regionWidth, regionHeight, width, height, 256, 256);
+		// 1.21.1 names no texture size on a raw blit; the sheet is sampled at the offset the caller gives.
+		g.pose().pushPose();
+		g.pose().translate(0.0F, 0.0F, blitOffset);
+		g.blit(atlas, x, y, u + textureU, v + textureV, regionWidth, regionHeight, width, height);
+		g.pose().popPose();
 	}
 
 	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int textureWidth, int textureHeight) {
-		g.blit(RenderType::guiTextured, atlas, x, y, (float) (u + textureU), (float) (v + textureV),
-			regionWidth, regionHeight, width, height, textureWidth, textureHeight);
+		g.blit(atlas, x, y, u + textureU, v + textureV, regionWidth, regionHeight, width, height);
 	}
 
 	public void blit(ResourceLocation atlas, int x, int y, int width, int height, float u, float v, float regionWidth, float regionHeight) {
-		g.blit(RenderType::guiTextured, atlas, x, y, u, v, (int) regionWidth, (int) regionHeight, width, height, 0);
+		g.blit(atlas, x, y, u, v, (int) regionWidth, (int) regionHeight, width, height);
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height) {
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);
+		g.blitSprite(sprite, x, y, width, height);
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, float blitOffset) {
 		// No offset on this version's sprite blits; the depth is carried on the pose instead.
 		g.pose().pushPose();
 		g.pose().translate(0.0F, 0.0F, blitOffset);
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);
+		g.blitSprite(sprite, x, y, width, height);
 		g.pose().popPose();
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, int color) {
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height, color);
+		g.blitSprite(sprite, x, y, width, height, color);
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight) {
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height, u, v, regionWidth, regionHeight);
+		g.blitSprite(sprite, x, y, width, height, u, v, regionWidth, regionHeight);
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight, int blitOffset) {
 		g.pose().pushPose();
 		g.pose().translate(0.0F, 0.0F, blitOffset);
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height, u, v, regionWidth, regionHeight);
+		g.blitSprite(sprite, x, y, width, height, u, v, regionWidth, regionHeight);
 		g.pose().popPose();
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, TextureAtlasSprite sprite, int x, int y, int width, int height) {
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);
+		g.blit(x, y, 0, width, height, sprite);
 	}
 
 	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, TextureAtlasSprite sprite, int x, int y, int width, int height, int blitOffset) {
-		g.pose().pushPose();
-		g.pose().translate(0.0F, 0.0F, blitOffset);
-		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);
-		g.pose().popPose();
+		g.blit(x, y, blitOffset, width, height, sprite);
 	}
 
 	public void item(ItemStack stack, int x, int y) {
@@ -276,27 +279,9 @@ public final class GuiGraphicsExtractor {
 	}
 
 	/**
-	 * 1.21.5 has no {@code GuiGraphics#submitEntityRenderState}, so the figure is drawn here and now, through
-	 * the renderer that built the state. The box is the frame the caller drew, {@code yBottom} is the pixels
-	 * per world unit and {@code pos} shifts the figure inside the frame.
+	 * 1.21.1 has no render states to submit: nothing in the surviving client draws a figure this way, so
+	 * the hook is gone and the GUI draws its figures through {@link #item} and vanilla's item renderer.
 	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	public void entity(EntityRenderer renderer, EntityRenderState state, float yBottom, Vector3f pos,
-			Quaternionf leftRotation, Quaternionf rightRotation, int x1, int y1, int x2, int y2) {
-		PoseStack ps = g.pose();
-		ps.pushPose();
-		ps.translate(x1 + (x2 - x1) / 2.0, y1, 0.0);
-		ps.scale(yBottom, -yBottom, yBottom);
-		if (leftRotation != null) {
-			ps.mulPose(leftRotation);
-		}
-		if (rightRotation != null) {
-			ps.mulPose(rightRotation);
-		}
-		ps.translate(pos.x, pos.y, pos.z);
-		renderer.render(state, ps, Minecraft.getInstance().renderBuffers().bufferSource(), 0xF000F0);
-		ps.popPose();
-	}
 
 	public void setTooltipForNextFrame(Component tooltip, int x, int y) {
 		g.renderTooltip(Minecraft.getInstance().font, tooltip, x, y);
