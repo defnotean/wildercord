@@ -1,5 +1,6 @@
 package dev.wildercord.town;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.compat.McEntities;
 
 import java.util.List;
@@ -30,10 +31,10 @@ public class RidgebackDeedItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		if (level instanceof ServerLevel server) {
 			RidgebackStag stag = McEntities.create(MountContent.RIDGEBACK_STAG, server, MobSpawnType.MOB_SUMMONED);
-			if (stag == null) return InteractionResult.FAIL;
+			if (stag == null) return InteractionResultHolder.fail(mcUseStack);
 			stag.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 			stag.finalizeSpawn(server, server.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
 			stag.tameWithName(player);
@@ -43,7 +44,7 @@ public class RidgebackDeedItem extends Item {
 			server.playSound(null, player.blockPosition(), SoundEvents.HORSE_SADDLE, SoundSource.NEUTRAL, 1.0F, 0.9F);
 			if (!player.getAbilities().instabuild) player.getItemInHand(hand).shrink(1);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	@Override

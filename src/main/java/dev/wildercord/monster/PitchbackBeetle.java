@@ -98,6 +98,7 @@ public class PitchbackBeetle extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		boolean full = sacFull(now);

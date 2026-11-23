@@ -119,7 +119,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
   observe(l,"place",-1,origin,null,null,"");int checked=0;
   for(int col=0;col<12;col++){
    var column=GlowcapFeature.column(l instanceof net.minecraft.server.level.WorldGenRegion,random,origin,col);observe(l,"column",col,origin,column,null,"");
-   for(int y=47;y>=Math.max(-64,l.getMinY());y--){
+   for(int y=47;y>=Math.max(-64,l.getMinBuildHeight());y--){
     var p=new BlockPos(column.getX(),y,column.getZ());if(!l.hasChunkAt(p))break;
     if(!l.isEmptyBlock(p) || !GlowcapBlock.footing(l,p) || !GlowcapBlock.structuralCover(l,p))continue;
     var biome=l.getBiome(p);if(l instanceof net.minecraft.server.level.WorldGenRegion && !biome.is(net.minecraft.world.level.biome.Biomes.LUSH_CAVES) && !biome.is(net.minecraft.world.level.biome.Biomes.DRIPSTONE_CAVES) && !biome.is(dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS))continue;

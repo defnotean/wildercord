@@ -91,7 +91,7 @@ public final class TidewardSurvey {
   }
   var cells=columns(s.first,floor);if(!route(p,cells) || !current(p,s))return refuse(p,"crossing");
   // Payment is committed once; callbacks cannot create an unpaid success or evade its shared rest.
-  p.setAttached(READY,now+REST);p.getCooldowns().addCooldown(held,REST);held.hurtAndBreak(2,p,dev.wildercord.compat.McHands.slot(c.getHand()));
+  p.setAttached(READY,now+REST);p.getCooldowns().addCooldown(held.getItem(),REST);held.hurtAndBreak(2,p,dev.wildercord.compat.McHands.slot(c.getHand()));
   if(!current(p,s) || !route(p,cells)){clear(p,s);return false;}
   s.first=null;s.route=cells;s.until=now+ROUTE_LIFE;s.nonce=p.level().getGameTime();
   TidewardCue.route(p,s.nonce,cells);Feels.sound(((ServerLevel) p.level()),p.position(),"tideward_spool_commit",.35F,1);return true;
@@ -112,7 +112,7 @@ public final class TidewardSurvey {
   ServerTickEvents.END_SERVER_TICK.register(server -> server.getPlayerList().getPlayers().forEach(TidewardSurvey::tick));
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server) -> {
    var p=handler.player;long remaining=p.getAttachedOrElse(READY,0L)-TidewardEquipment.clock(p);
-   if(remaining>0)p.getCooldowns().addCooldown(new ItemStack(ITEM),(int)Math.min(REST,remaining));
+   if(remaining>0)p.getCooldowns().addCooldown(ITEM,(int)Math.min(REST,remaining));
   });
   ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(ITEM));
  }

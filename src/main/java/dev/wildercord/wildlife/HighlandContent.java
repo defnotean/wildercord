@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.api.WildercordEvents;
@@ -34,7 +35,7 @@ public final class HighlandContent {
 	private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("windreed"));
 	public static final WindreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new WindreedBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS)));
 	public static final Item WINDREED=Registry.register(BuiltInRegistries.ITEM,ResourceKey.create(Registries.ITEM,Wildercord.id("windreed")),
-		new BlockItem(REED,new Item.Properties().useBlockDescriptionPrefix()));
+		new BlockItem(REED,new Item.Properties()));
 	public static final Holder<MobEffect> DOWNWIND=Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,Wildercord.id("downwind"),
 		new MobEffect(MobEffectCategory.BENEFICIAL,0x9FAE83) {}.addAttributeModifier(Attributes.MOVEMENT_SPEED,Wildercord.id("downwind_pace"),-.10,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	public static final Item DRAFT_KITE=tool("draft_kite",true), WINDREED_BRAID=tool("windreed_braid",false);
@@ -45,27 +46,27 @@ public final class HighlandContent {
 	private static Item tool(String id,boolean kite) {
 		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id));
 		return Registry.register(BuiltInRegistries.ITEM,key,new AuraWorld.Lore(id,new Item.Properties().stacksTo(kite?1:16)) {
-			@Override public InteractionResult use(Level l,Player p,InteractionHand hand) {
-				var stack=p.getItemInHand(hand);if(p.getCooldowns().isOnCooldown(stack))return InteractionResult.PASS;
+			@Override public InteractionResultHolder<ItemStack> use(Level l,Player p,InteractionHand hand) { ItemStack mcUseStack = p.getItemInHand(hand);
+				var stack=p.getItemInHand(hand);if(p.getCooldowns().isOnCooldown(stack.getItem()))return InteractionResultHolder.pass(mcUseStack);
 				if(l instanceof ServerLevel server) {
 					long now=p instanceof ServerPlayer sp?clock(sp):server.getGameTime();
 					var ready=kite?KITE_READY:BRAID_READY;
-					if(now<p.getAttachedOrElse(ready,0L))return InteractionResult.PASS;
+					if(now<p.getAttachedOrElse(ready,0L))return InteractionResultHolder.pass(mcUseStack);
 					if(kite) {
 						ItemStack fuel=ItemStack.EMPTY;
 						for(int i=0;i<p.getInventory().getContainerSize();i++) {var slot=p.getInventory().getItem(i);if(slot.is(WINDREED)) {fuel=slot;break;}}
-						if(fuel.isEmpty() && !p.getAbilities().instabuild) {p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.draft_kite.fuel"), true);return InteractionResult.FAIL;}
+						if(fuel.isEmpty() && !p.getAbilities().instabuild) {p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.draft_kite.fuel"), true);return InteractionResultHolder.fail(mcUseStack);}
 						if(!p.getAbilities().instabuild)fuel.shrink(1);
-						p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,160,0,false,true));p.getCooldowns().addCooldown(stack,400);
+						p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,160,0,false,true));p.getCooldowns().addCooldown(stack.getItem(),400);
 						p.setAttached(ready,now+400);
 						Feels.sound(server,p.position(),"highland_kite_open",.75F,1);
 					} else {
-						p.addEffect(new MobEffectInstance(DOWNWIND,600,0,false,true));p.getCooldowns().addCooldown(stack,600);
+						p.addEffect(new MobEffectInstance(DOWNWIND,600,0,false,true));p.getCooldowns().addCooldown(stack.getItem(),600);
 						p.setAttached(ready,now+600);
 						if(!p.getAbilities().instabuild)stack.shrink(1);Feels.sound(server,p.position(),"highland_braid_rustle",.55F,1);
 					}
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResultHolder.success(mcUseStack);
 			}
 		});
 	}
@@ -74,7 +75,7 @@ public final class HighlandContent {
 			var p=handler.player;long now=clock(p);
 			for(var pair:List.of(Map.entry(DRAFT_KITE,KITE_READY),Map.entry(WINDREED_BRAID,BRAID_READY))) {
 				long left=p.getAttachedOrElse(pair.getValue(),0L)-now;
-				if(left>0)p.getCooldowns().addCooldown(new ItemStack(pair.getKey()),(int)Math.min(left,600));
+				if(left>0)p.getCooldowns().addCooldown(pair.getKey(),(int)Math.min(left,600));
 			}
 		});
 		var feature=ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("windreed_patch"));

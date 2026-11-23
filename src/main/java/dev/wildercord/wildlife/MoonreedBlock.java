@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import net.minecraft.world.ItemInteractionResult;
 import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.*;
@@ -46,7 +47,7 @@ public final class MoonreedBlock extends Block {
     return resident.get(key);
    }
    public boolean loaded(int x,int z){return chunk(x,z)!=null;}
-   public int surfaceHeight(int x,int z){var c=chunk(x,z);return c==null?level.getMinY():c.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,x,z)+1;}
+   public int surfaceHeight(int x,int z){var c=chunk(x,z);return c==null?level.getMinBuildHeight():c.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,x,z)+1;}
    public boolean bud(int x,int y,int z){var c=chunk(x,z);if(c==null)return false;var state=c.getBlockState(new BlockPos(x,y,z));return state.is(WetlandGarden.REED)&&state.getValue(AGE)==1;}
    public boolean water(int x,int y,int z){var c=chunk(x,z);return c!=null&&c.getFluidState(new BlockPos(x,y,z)).is(FluidTags.WATER);}
    public boolean raining(int x,int y,int z){
@@ -97,7 +98,7 @@ public final class MoonreedBlock extends Block {
   }
  }
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult h) {return harvest(s,l,p,who);}
- @Override protected InteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return stack.is(WetlandGarden.LENS)?InteractionResult.PASS:s.getValue(AGE)==2?harvest(s,l,p,who):super.useItemOn(stack,s,l,p,who,hand,h);}
+ @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return stack.is(WetlandGarden.LENS)?InteractionResult.PASS:s.getValue(AGE)==2?harvest(s,l,p,who):super.useItemOn(stack,s,l,p,who,hand,h);}
  private InteractionResult harvest(BlockState s,Level l,BlockPos p,Player who) {
   if(!s.is(this) || s.getValue(AGE)!=2)return InteractionResult.PASS;
   return l instanceof ServerLevel server?harvest(s,server,p,who,MoonreedAdmission.WORLD):InteractionResult.SUCCESS;

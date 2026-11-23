@@ -649,8 +649,8 @@ public final class Duels {
 						title(player, Component.literal(Integer.toString(second)).withColor(GOLD), null);
 						circle(active.level, player);
 					}
-					Fx.sound(active.level, a.position(), SoundEvents.NOTE_BLOCK_HAT.value(), 1.0F, 1.0F);
-					Fx.sound(active.level, b.position(), SoundEvents.NOTE_BLOCK_HAT.value(), 1.0F, 1.0F);
+					Fx.sound(active.level, a.position(), SoundEvents.NOTE_BLOCK_HAT, 1.0F, 1.0F);
+					Fx.sound(active.level, b.position(), SoundEvents.NOTE_BLOCK_HAT, 1.0F, 1.0F);
 				}
 			}
 			if (duel.tick(now)) {

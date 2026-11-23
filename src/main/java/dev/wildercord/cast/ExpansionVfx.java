@@ -60,7 +60,7 @@ final class ExpansionVfx {
 	}
 
 	private static Vec3 normalOf(Direction face) {
-		return Vec3.atLowerCornerOf(face.getUnitVec3i());
+		return Vec3.atLowerCornerOf(face.getNormal());
 	}
 
 	/** A sphere of light: three shockwave rings on their own tilts racing out together. */

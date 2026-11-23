@@ -108,6 +108,11 @@ class DataPackProfile:
         # 26.x tuples sort above (1, 21, 5), so this stays False for the modern branch.
         return self.version_tuple < (1, 21, 5)
 
+    @property
+    def before_1_21_2(self) -> bool:
+        # The minecraft:item_model data component only exists from 1.21.2 on.
+        return self.version_tuple < (1, 21, 2)
+
     def item_model_definition(self, cases_model, fallback_model):
         """Item definitions may only select by component from 1.21.5 on; older targets take the fallback."""
         if self.before_1_21_5:

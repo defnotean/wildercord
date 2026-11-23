@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.CastEngine;
 import dev.wildercord.cast.Grimoire;
@@ -131,39 +132,39 @@ public class SpellScrollItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
-		if (player instanceof ServerPlayer server && ((dev.wildercord.cast.ExciseCasting.blocking(server) || dev.wildercord.cast.LessonPackCasting.blocking(server)) || dev.wildercord.aura.MastersArts.committed(server))) return InteractionResult.FAIL;
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
+		if (player instanceof ServerPlayer server && ((dev.wildercord.cast.ExciseCasting.blocking(server) || dev.wildercord.cast.LessonPackCasting.blocking(server)) || dev.wildercord.aura.MastersArts.committed(server))) return InteractionResultHolder.fail(mcUseStack);
 		ItemStack stack = player.getItemInHand(hand);
 		ScrollSpell scroll = stack.get(WildercordComponents.SCROLL);
 		if (scroll == null) {
-			return InteractionResult.PASS;
+			return InteractionResultHolder.pass(mcUseStack);
 		}
 		if (RelayRules.containsIds(scroll.runes())) {
 			if (player instanceof ServerPlayer server) server.displayClientMessage(dev.wildercord.spell.LessonText.problem(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED), true);
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		if ((ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()))) {
 			if (player instanceof ServerPlayer server) server.displayClientMessage(dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(scroll.runes()).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED), true);
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		if (player instanceof ServerPlayer serverPlayer && player.isShiftKeyDown() && stack.has(Inscription.TYPE)) {
 			// Studied rather than read: an inscribed scroll teaches its spell (see cast.Inscriptions).
 			Component refused = dev.wildercord.cast.Inscriptions.study(serverPlayer, stack);
 			if (refused != null) {
 				serverPlayer.displayClientMessage(refused, true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			try (var admission = dev.wildercord.cast.ActionAdmission.begin(serverPlayer)) {
-				if (admission == null) return InteractionResult.FAIL;
+				if (admission == null) return InteractionResultHolder.fail(mcUseStack);
 				List<RuneDef> runes = runesOf(scroll);
 				SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 				if (runes.isEmpty() || compiled.isEmpty()) {
-					return InteractionResult.FAIL;
+					return InteractionResultHolder.fail(mcUseStack);
 				}
-				if ((dev.wildercord.cast.ExciseCasting.blocking(serverPlayer) || dev.wildercord.cast.LessonPackCasting.blocking(serverPlayer)) || !dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResult.FAIL;
+				if ((dev.wildercord.cast.ExciseCasting.blocking(serverPlayer) || dev.wildercord.cast.LessonPackCasting.blocking(serverPlayer)) || !dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResultHolder.fail(mcUseStack);
 				dev.wildercord.aura.MasterForms.cancel(serverPlayer);
 				Optional<Secrets.Secret> secret = Secrets.match(runes);
 				// Against a Shield a secret weighs its full price, as it does cast from a Cord.
@@ -179,10 +180,10 @@ public class SpellScrollItem extends Item {
 				});
 				level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.4F);
 				stack.consume(1, player);
-				player.getCooldowns().addCooldown(stack, 20);
+				player.getCooldowns().addCooldown(stack.getItem(), 20);
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	@Override

@@ -626,12 +626,11 @@ def _smithing(name, template, base, addition, result_id, forged, rarity="rare", 
         item_name = _stringified_item_name(forged)
     else:
         item_name = {"translate": f"item.wildercord.{forged}"}
-    components = {
-        "wildercord:aura_forged": forged,
-        "minecraft:item_model": f"wildercord:{forged}",
-        "minecraft:item_name": item_name,
-        "minecraft:rarity": rarity,
-    }
+    components = {"wildercord:aura_forged": forged, "minecraft:item_name": item_name, "minecraft:rarity": rarity}
+    if profile is None or not profile.before_1_21_2:
+        # The item_model component only exists from 1.21.2 on.
+        components = {"wildercord:aura_forged": forged, "minecraft:item_model": f"wildercord:{forged}",
+                      "minecraft:item_name": item_name, "minecraft:rarity": rarity}
     if forged == "skyrend_glaive" and profile is not None and not profile.has_spear_base():
         # 1.21.10 has no spear base items and no swing animation component: forge from swords, swing like a blade.
         base = base.replace("_spear", "_sword")

@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -80,13 +81,13 @@ public final class ForgedGear {
 		// Mojito's Fetchblade: right-click to bound ahead in a burst of mint-green magic and loose a wide crescent slash.
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			if (hand != InteractionHand.MAIN_HAND || !Config.forgedGear(player)) {
-				return InteractionResult.PASS;
+				return InteractionResultHolder.pass(player.getItemInHand(hand));
 			}
 			ItemStack stack = player.getItemInHand(hand);
-			if (of(stack) != AuraWorldRules.Forged.FETCHBLADE || player.getCooldowns().isOnCooldown(stack)) {
-				return InteractionResult.PASS;
+			if (of(stack) != AuraWorldRules.Forged.FETCHBLADE || player.getCooldowns().isOnCooldown(stack.getItem())) {
+				return InteractionResultHolder.pass(stack);
 			}
-			player.getCooldowns().addCooldown(stack, AuraWorldRules.FETCHBLADE_DASH_COOLDOWN);
+			player.getCooldowns().addCooldown(stack.getItem(), AuraWorldRules.FETCHBLADE_DASH_COOLDOWN);
 			Vec3 look = player.getLookAngle();
 			Vec3 flat = new Vec3(look.x, 0, look.z);
 			Vec3 dir = flat.lengthSqr() > 1.0E-4 ? flat.normalize() : Vec3.ZERO;
@@ -96,10 +97,10 @@ public final class ForgedGear {
 			if (world instanceof ServerLevel server && player instanceof ServerPlayer sp) {
 				sp.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 80, 1, false, true));
 				server.sendParticles(FETCH_MINT, sp.getX(), sp.getY() + 0.9, sp.getZ(), 24, 0.5, 0.4, 0.5, 0);
-				server.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), SoundSource.PLAYERS, 1.0F, 1.15F);
+				server.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST, SoundSource.PLAYERS, 1.0F, 1.15F);
 				AuraSlash.fetchCrescent(sp, AuraWorldRules.FETCHBLADE_DASH_DAMAGE);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(player.getItemInHand(hand));
 		});
 	}
 

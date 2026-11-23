@@ -672,7 +672,7 @@ public final class CraftedRunes {
 			// A player keeps hold, but can't use it for three seconds.
 			ItemStack held = player.getMainHandItem();
 			if (!held.isEmpty()) {
-				player.getCooldowns().addCooldown(held, DISARM_PLAYER_COOLDOWN);
+				player.getCooldowns().addCooldown(held.getItem(), DISARM_PLAYER_COOLDOWN);
 				CraftedVfx.disarm(cast.level, player, held);
 				return;
 			}

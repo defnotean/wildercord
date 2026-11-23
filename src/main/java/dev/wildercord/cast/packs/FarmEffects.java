@@ -657,7 +657,7 @@ public final class FarmEffects {
 		}
 		if (paired > 0) {
 			Vfx.emit(cast.level, ParticleTypes.HEART, hit.point().add(0, 1, 0), paired * 2, 1.5, 0.02);
-			Fx.sound(cast.level, hit.point(), SoundEvents.NOTE_BLOCK_BELL.value(), 0.6F, 1.6F);
+			Fx.sound(cast.level, hit.point(), SoundEvents.NOTE_BLOCK_BELL, 0.6F, 1.6F);
 		}
 	}
 
@@ -676,7 +676,7 @@ public final class FarmEffects {
 			Vfx.emit(cast.level, ParticleTypes.NOTE, animal.position().add(0, animal.getBbHeight() + 0.3, 0), 1, 0.1, 0.0);
 			called++;
 		}
-		Fx.sound(cast.level, to, SoundEvents.NOTE_BLOCK_BELL.value(), 0.8F, 1.0F);
+		Fx.sound(cast.level, to, SoundEvents.NOTE_BLOCK_BELL, 0.8F, 1.0F);
 	}
 
 	private static void fleece(Cast cast, Cast.Hit hit, double scale) {
@@ -746,7 +746,7 @@ public final class FarmEffects {
 			animal.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FarmRules.ticks(8, duration), 1, false, false));
 			Vfx.emit(cast.level, ParticleTypes.NOTE, animal.position().add(0, animal.getBbHeight() + 0.3, 0), 1, 0.1, 0.0);
 		}
-		Fx.sound(cast.level, hit.point(), SoundEvents.NOTE_BLOCK_BELL.value(), 0.5F, 0.6F);
+		Fx.sound(cast.level, hit.point(), SoundEvents.NOTE_BLOCK_BELL, 0.5F, 0.6F);
 	}
 
 	private static void fodder(Cast cast, Cast.Hit hit, double scale) {

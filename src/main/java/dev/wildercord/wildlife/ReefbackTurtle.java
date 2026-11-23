@@ -175,7 +175,7 @@ public class ReefbackTurtle extends AbstractHorse {
 
 	@Override
 	protected SoundEvent getEatingSound() {
-		return SoundEvents.GENERIC_EAT.value();
+		return SoundEvents.GENERIC_EAT;
 	}
 
 	@Override

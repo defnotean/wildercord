@@ -258,7 +258,7 @@ public final class MasterForms {
 		if (!StoneHingeRules.canPay(Aura.aura(player), now(player), p.readyAt(), p.airborneUsed()))
 			return hingeRefusal(player, p.airborneUsed() ? "ground" : now(player) < p.readyAt() ? "rest" : "aura");
 		if (!WallTurn.safeLanding(player) || player.isShiftKeyDown()) return hingeRefusal(player, "ground");
-		var input = player.getLastClientInput();
+		var input = dev.wildercord.compat.McPlayerInput.of(player);
 		int side = StoneHingeRules.side(input.left(), input.right());
 		if (side == 0) return hingeRefusal(player, "strafe");
 		float yaw = player.getYRot();

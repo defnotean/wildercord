@@ -144,6 +144,7 @@ public class Glimmerwing extends AmbientCreature {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (home == null) {
 			home = position();

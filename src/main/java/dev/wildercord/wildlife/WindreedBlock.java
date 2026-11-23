@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.core.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -27,7 +28,7 @@ public final class WindreedBlock extends Block {
 		if(s.getValue(AGE)<2 && l.getMaxLocalRawBrightness(p)>=9 && l.canSeeSky(p) && r.nextInt(12)==0)l.setBlock(p,s.setValue(AGE,s.getValue(AGE)+1),Block.UPDATE_CLIENTS);
 	}
 	@Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult hit) {return harvest(s,l,p,who);}
-	@Override protected InteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult hit) {
+	@Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult hit) {
 		return s.getValue(AGE)==2?harvest(s,l,p,who):super.useItemOn(stack,s,l,p,who,hand,hit);
 	}
 	private InteractionResult harvest(BlockState s,Level l,BlockPos p,Player who) {

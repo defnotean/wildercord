@@ -81,7 +81,7 @@ public class DelverMole extends AbstractHorse {
 			return;
 		}
 		if (level() instanceof ServerLevel level && isSaddled() && getControllingPassenger() instanceof ServerPlayer rider
-			&& rider.getLastClientInput().forward() && tickCount % DelverRules.DIG_EVERY == 0 && burrow(level, rider) > 0) {
+			&& dev.wildercord.compat.McPlayerInput.of(rider).forward() && tickCount % DelverRules.DIG_EVERY == 0 && burrow(level, rider) > 0) {
 			digging = DelverRules.DIG_SHOWN;
 		}
 		if (digging > 0) {
@@ -190,7 +190,7 @@ public class DelverMole extends AbstractHorse {
 
 	@Override
 	protected SoundEvent getEatingSound() {
-		return SoundEvents.GENERIC_EAT.value();
+		return SoundEvents.GENERIC_EAT;
 	}
 
 	@Override

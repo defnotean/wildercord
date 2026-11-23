@@ -50,7 +50,7 @@ abstract class MinePiece extends DungeonPiece {
 			for (int z = z0; z <= z1; z++) {
 				for (int d = y - 1; d > y - 25; d--) {
 					BlockPos at = getWorldPos(x, d, z);
-					if (!bb.isInside(at) || at.getY() <= level.getMinY()) break;
+					if (!bb.isInside(at) || at.getY() <= level.getMinBuildHeight()) break;
 					BlockState here = level.getBlockState(at);
 					if (!(here.isAir() || here.canBeReplaced() || !here.getFluidState().isEmpty() || here.is(BlockTags.LEAVES))) break;
 					level.setBlock(at, state, 2);

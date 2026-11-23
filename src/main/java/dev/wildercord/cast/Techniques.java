@@ -814,7 +814,7 @@ final class Techniques {
 			}
 			for (double drop : new double[] {eyeHeight, eyeHeight * 0.5, 0.1}) {
 				Vec3 feet = p.subtract(0, drop, 0);
-				if (feet.y < level.getMinY() + 1) {
+				if (feet.y < level.getMinBuildHeight() + 1) {
 					continue;
 				}
 				// Out the far side: never into lava or fire (or onto it, a short drop below), nor past the world border.

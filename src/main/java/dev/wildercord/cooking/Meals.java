@@ -63,7 +63,7 @@ public final class Meals {
 			.mapColor(MapColor.METAL).sound(SoundType.LANTERN).strength(2.0F, 6.0F).noOcclusion()));
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id("camp_pot"));
 		Registry.register(BuiltInRegistries.ITEM, itemKey, new net.minecraft.world.item.BlockItem(block,
-			new Item.Properties().useBlockDescriptionPrefix()));
+			new Item.Properties()));
 		return block;
 	}
 

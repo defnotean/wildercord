@@ -117,6 +117,7 @@ public class FoxfireKitsune extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (decoy() && fades(level)) {
@@ -225,7 +226,7 @@ public class FoxfireKitsune extends WildMonster {
 
 	private void burst(ServerLevel level, Vec3 at) {
 		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, at.x, at.y, at.z, 14, 0.25, 0.25, 0.25, 0.04);
-		level.playSound(null, at.x, at.y, at.z, SoundEvents.SOUL_ESCAPE.value(), getSoundSource(), 0.8F, 1.3F);
+		level.playSound(null, at.x, at.y, at.z, SoundEvents.SOUL_ESCAPE, getSoundSource(), 0.8F, 1.3F);
 		firePos = null;
 	}
 
@@ -321,7 +322,7 @@ public class FoxfireKitsune extends WildMonster {
 
 	private void poof(ServerLevel level) {
 		poofAt(level, position());
-		level.playSound(null, getX(), getY(), getZ(), SoundEvents.SOUL_ESCAPE.value(), getSoundSource(), 1.0F, 1.5F);
+		level.playSound(null, getX(), getY(), getZ(), SoundEvents.SOUL_ESCAPE, getSoundSource(), 1.0F, 1.5F);
 	}
 
 	private static void poofAt(ServerLevel level, Vec3 at) {

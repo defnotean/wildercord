@@ -209,7 +209,7 @@ final class SignatureVfx {
 		ElementFx.gustRing(level, feet, width(t) + 1.2);
 		ElementFx.swirl(level, feet, width(t) * 0.6 + 0.3, 2.4, 3, ElementFx.WIND.primary(), ElementFx.FIRE.secondary());
 		ElementFx.embers(level, centre(t), 0.4, 6);
-		Fx.sound(level, feet, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 1.1F);
+		Fx.sound(level, feet, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 1.1F);
 	}
 
 	/** On the way up: a trail of embers and a wisp of wind under it. */
@@ -397,7 +397,7 @@ final class SignatureVfx {
 		Sigils.flash(level, at, DOOM, (float) size);
 		Motes.smoke(level, at, 4, radius * 0.3);
 		ScreenFx.shake(level, at, (float) Math.min(0.8, 0.3 + wound / 20), 16);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.9F, 1.1F);
+		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE, 0.9F, 1.1F);
 		dev.wildercord.cast.feel.Feels.sound(level, at, "time_strike", 1.0F, 0.8F);
 	}
 
@@ -541,7 +541,7 @@ final class SignatureVfx {
 		Sigils.flash(level, c, COMET, (float) Math.min(5, radius * 1.2));
 		Motes.smoke(level, c, 6, radius * 0.4);
 		ScreenFx.shake(level, at, 0.9F, 24);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 0.8F);
+		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 0.8F);
 	}
 
 	/** A shard of it arcs out into an enemy (or the ground): a streak of pink light and a spark of star where it strikes. */

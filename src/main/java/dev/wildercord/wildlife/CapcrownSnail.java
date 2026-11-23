@@ -140,6 +140,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		int left = hideLeft();
@@ -257,7 +258,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 			}
 			entityData.set(HIDE, 0);
 			level().broadcastEntityEvent(this, (byte) 18);
-			playSound(SoundEvents.GENERIC_EAT.value(), 0.5F, 1.5F);
+			playSound(SoundEvents.GENERIC_EAT, 0.5F, 1.5F);
 		}
 		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 	}

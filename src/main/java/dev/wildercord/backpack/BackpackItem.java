@@ -1,5 +1,6 @@
 package dev.wildercord.backpack;
 
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -32,11 +33,11 @@ public class BackpackItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		if (player instanceof ServerPlayer server) {
 			Backpacks.open(server, Backpacks.Place.hand(server, hand));
 		}
-		return InteractionResult.CONSUME;
+		return InteractionResultHolder.consume(mcUseStack);
 	}
 
 	/** Like a shulker box, it can't go in another container item: no backpack in a bundle, a shulker box or another backpack. */

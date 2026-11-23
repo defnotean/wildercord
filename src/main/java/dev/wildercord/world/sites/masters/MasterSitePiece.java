@@ -100,7 +100,7 @@ public abstract class MasterSitePiece extends DungeonPiece {
 			int h = height(c, at, Heightmap.Types.WORLD_SURFACE_WG);
 			if (Math.abs(h - surface) > slope || h != height(c, at, Heightmap.Types.OCEAN_FLOOR_WG)) return Optional.empty();
 		}
-		if (surface + box.getYSpan() > c.heightAccessor().getMaxY()) return Optional.empty();
+		if (surface + box.getYSpan() > c.heightAccessor().getMaxBuildHeight()) return Optional.empty();
 		piece.move(0, surface, 0);
 		return Optional.of(new Structure.GenerationStub(centre.atY(surface), b -> b.addPiece(piece)));
 	}

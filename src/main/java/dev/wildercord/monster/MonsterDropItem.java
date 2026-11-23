@@ -1,5 +1,6 @@
 package dev.wildercord.monster;
 
+import net.minecraft.world.InteractionResultHolder;
 import java.util.List;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbooks;
@@ -53,17 +54,17 @@ public class MonsterDropItem extends Item {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 			ItemStack stack = player.getItemInHand(hand);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F,
 				0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 			if (level instanceof ServerLevel server) {
 				Projectile.spawnProjectileFromRotation(ThrownBramble::new, server, stack, player, 0.0F, 1.3F, 1.0F);
 			}
-			player.getCooldowns().addCooldown(stack, 10);
+			player.getCooldowns().addCooldown(stack.getItem(), 10);
 			player.awardStat(Stats.ITEM_USED.get(this));
 			stack.consume(1, player);
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 	}
 
@@ -76,7 +77,7 @@ public class MonsterDropItem extends Item {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 			ItemStack stack = player.getItemInHand(hand);
 			Vec3 v = player.getDeltaMovement();
 			player.setDeltaMovement(v.x * 1.2, Math.max(v.y, 0) + 0.85, v.z * 1.2);
@@ -90,10 +91,10 @@ public class MonsterDropItem extends Item {
 				dev.wildercord.cast.ElementFx.sparks(server, player.position().add(0, 0.3, 0), 4, 0.15);
 				server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BREEZE_JUMP, SoundSource.PLAYERS, 0.8F, 1.3F);
 			}
-			player.getCooldowns().addCooldown(stack, COOLDOWN);
+			player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
 			player.awardStat(Stats.ITEM_USED.get(this));
 			stack.consume(1, player);
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 	}
 

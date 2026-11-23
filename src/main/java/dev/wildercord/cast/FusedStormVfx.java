@@ -315,7 +315,7 @@ final class FusedStormVfx {
 		ScreenFx.shake(level, t.position(), Math.min(0.6F, 0.2F + stun * 0.012F), 2.5);
 		// Each skip is a longer stun than the last, and the stop is deeper.
 		Feels.sound(level, heart, "blood_stop", 0.9F, stun >= 30 ? 0.7F : stun >= 10 ? 0.85F : 1.0F);
-		Fx.sound(level, heart, SoundEvents.TRIDENT_THUNDER.value(), 0.2F, 1.9F);
+		Fx.sound(level, heart, SoundEvents.TRIDENT_THUNDER, 0.2F, 1.9F);
 	}
 
 	// ------------------------------------------------------------------ Thunderhead
@@ -424,7 +424,7 @@ final class FusedStormVfx {
 		ElementFx.ring(level, ground.add(0, top * 0.5, 0), UP, ElementFx.WIND.accent(), radius * 0.6, 0.3, 0.04, 9);
 		ElementFx.gustRing(level, ground, radius);
 		ElementFx.crack(level, ground, 1.2, 24);
-		Fx.sound(level, ground, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 0.6F);
+		Fx.sound(level, ground, SoundEvents.BREEZE_WIND_CHARGE_BURST, 1.0F, 0.6F);
 		Fx.sound(level, ground, WildercordSounds.impact("earth"), 0.6F, 1.0F);
 	}
 
@@ -433,7 +433,7 @@ final class FusedStormVfx {
 		Vec3 c = centre(t);
 		ElementFx.ring(level, c.add(0, t.getBbHeight() * 0.6, 0), UP, ElementFx.WIND.secondary(), 1.4, 0.2, 0.05, 7);
 		ElementFx.windImpact(level, c, 1.0);
-		Fx.sound(level, c, SoundEvents.WIND_CHARGE_BURST.value(), 0.7F, 0.8F);
+		Fx.sound(level, c, SoundEvents.WIND_CHARGE_BURST, 0.7F, 0.8F);
 	}
 
 	/**

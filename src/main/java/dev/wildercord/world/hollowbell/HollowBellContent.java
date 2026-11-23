@@ -26,7 +26,7 @@ public final class HollowBellContent {
 	public static final ListeningBelfryBlock BELFRY = Registry.register(BuiltInRegistries.BLOCK, BELFRY_KEY,
 		new ListeningBelfryBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.COPPER)));
 	public static final Item BELFRY_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("listening_belfry")),
-		new BlockItem(BELFRY, new Item.Properties().useBlockDescriptionPrefix()));
+		new BlockItem(BELFRY, new Item.Properties()));
 	public static final BlockEntityType<ListeningBelfryEntity> BELFRY_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("listening_belfry"),
 		FabricBlockEntityTypeBuilder.create(ListeningBelfryEntity::new, BELFRY).build());
 	private static final ResourceKey<Item> COMPASS_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("quiet_bell_compass"));

@@ -1,5 +1,6 @@
 package dev.wildercord.world.hollowbell;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
@@ -24,7 +25,7 @@ public final class ListeningBelfryBlock extends Block implements EntityBlock {
 		if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof ListeningBelfryEntity belfry) return belfry.ring(serverPlayer);
 		return InteractionResult.CONSUME;
 	}
-	@Override protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		return useWithoutItem(state, level, pos, player, hit);
 	}
 }

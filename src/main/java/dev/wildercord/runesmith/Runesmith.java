@@ -50,7 +50,7 @@ public final class Runesmith {
 			.lightLevel(state -> 5)
 			));
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id("scribing_desk"));
-		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.UNCOMMON)));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().rarity(Rarity.UNCOMMON)));
 		return block;
 	}
 

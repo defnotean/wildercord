@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.WildercordAttachments;
 import net.minecraft.ChatFormatting;
@@ -27,7 +28,7 @@ public class ManaCrystalItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		if (!(player instanceof ServerPlayer serverPlayer)) {
 			return Mana.crystals(player) < Mana.MAX_CRYSTALS ? InteractionResult.SUCCESS : InteractionResult.FAIL;
@@ -35,7 +36,7 @@ public class ManaCrystalItem extends Item {
 		int crystals = Mana.crystals(serverPlayer);
 		if (crystals >= Mana.MAX_CRYSTALS) {
 			serverPlayer.displayClientMessage(Component.translatable("message.wildercord.crystals_full", Mana.MAX_CRYSTALS).withStyle(ChatFormatting.GRAY), true);
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		serverPlayer.setAttached(WildercordAttachments.CRYSTALS, crystals + 1);
 		stack.consume(1, player);
@@ -45,7 +46,7 @@ public class ManaCrystalItem extends Item {
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ENCHANT, player.getX(), player.getY() + 0.2, player.getZ(), 40, 0.6, 0.2, 0.6, 0.6);
 		serverPlayer.displayClientMessage(Component.translatable("message.wildercord.crystal_used", Mana.CRYSTAL_MANA, crystals + 1, Mana.MAX_CRYSTALS)
 			.withColor(0xB8A8FF), true);
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	@Override

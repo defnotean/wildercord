@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.ItemInteractionResult;
 import dev.wildercord.player.WildercordAttachments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -38,7 +39,7 @@ public final class RimescaleBlock extends Block {
 		return take(level, pos, player);
 	}
 
-	@Override protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		return take(level, pos, player);
 	}
 

@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.player.RuneRanks;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Knots;
@@ -202,36 +203,36 @@ public class RuneItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		Optional<RuneDef> rune = runeOf(stack);
 		if (rune.isEmpty()) {
-			return InteractionResult.PASS;
+			return InteractionResultHolder.pass(mcUseStack);
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			RuneDef def = rune.get();
 			if(!dev.wildercord.cast.SoulWeaving.owns(serverPlayer,java.util.List.of(def))){
-				serverPlayer.displayClientMessage(Component.literal("This innate magic belongs to a different heart."), true);return InteractionResult.FAIL;
+				serverPlayer.displayClientMessage(Component.literal("This innate magic belongs to a different heart."), true);return InteractionResultHolder.fail(mcUseStack);
 			}
 			if (Runes.innate(def) && !serverPlayer.isCreative()) {
 				serverPlayer.displayClientMessage(Component.translatable("message.wildercord.innate_item").withStyle(ChatFormatting.GRAY), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
             if (def.is(dev.wildercord.spell.ExciseRules.ID) && !dev.wildercord.player.MasterStudies.knowsExcise(serverPlayer)) {
                 serverPlayer.displayClientMessage(Component.literal("Excise is learned by studying Rootbound in your Grimoire."), true);
-                return InteractionResult.FAIL;
+                return InteractionResultHolder.fail(mcUseStack);
             }
             var pack = dev.wildercord.spell.LessonPackRules.byRune(def.id());
             if (pack != null && !dev.wildercord.player.MasterStudies.knows(serverPlayer, pack)) {
                 serverPlayer.displayClientMessage(Component.literal(pack.name + " is learned by studying " + pack.title + " in your Grimoire."), true);
-                return InteractionResult.FAIL;
+                return InteractionResultHolder.fail(mcUseStack);
             }
 			int rank = rankOf(stack);
 			boolean known = Spellbooks.knows(serverPlayer, def.id());
-			if (twistedUse(serverPlayer, stack, def, known)) return InteractionResult.SUCCESS;
+			if (twistedUse(serverPlayer, stack, def, known)) return InteractionResultHolder.success(mcUseStack);
 			if (known && rank <= RuneRanks.rank(serverPlayer, def.id())) {
 				serverPlayer.displayClientMessage(Component.translatable("message.wildercord.already_known", runeName(def)).withStyle(ChatFormatting.GRAY), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
 			Spellbooks.learn(serverPlayer, def.id());
 			if (!known) {
@@ -249,7 +250,7 @@ public class RuneItem extends Item {
 				? Component.translatable(known ? "message.wildercord.ranked_up" : "message.wildercord.learned_ranked", name, roman(rank))
 				: Component.translatable("message.wildercord.learned", name), true);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	/**

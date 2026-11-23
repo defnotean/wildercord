@@ -1,5 +1,6 @@
 package dev.wildercord.cooking;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -87,20 +88,20 @@ public class CampPotBlock extends Block {
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!stack.is(Items.BOWL)) {
 			return stack.isEmpty() ? InteractionResult.TRY_WITH_EMPTY_HAND : InteractionResult.PASS;
 		}
-		if (!(player instanceof ServerPlayer server) || !(level instanceof ServerLevel serverLevel)) return InteractionResult.SUCCESS;
+		if (!(player instanceof ServerPlayer server) || !(level instanceof ServerLevel serverLevel)) return ItemInteractionResult.SUCCESS;
 		if (!heated(level, pos)) {
 			server.displayClientMessage(Component.translatable("message.wildercord.pot.cold").withStyle(ChatFormatting.RED), true);
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		Inventory inventory = server.getInventory();
 		CookingRules.Recipe recipe = CookingRules.pick(pantry(inventory), CHOSEN.get(player.getUUID()));
 		if (recipe == null) {
 			server.displayClientMessage(Component.translatable("message.wildercord.pot.nothing").withStyle(ChatFormatting.GRAY), true);
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		for (CookingRules.Need need : recipe.needs()) {
 			take(server, item(need.item()), need.count());
@@ -111,7 +112,7 @@ public class CampPotBlock extends Block {
 		serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.getX() + 0.5, pos.getY() + 0.8, pos.getZ() + 0.5, 4, 0.15, 0.1, 0.15, 0.01);
 		serverLevel.sendParticles(ParticleTypes.BUBBLE_POP, pos.getX() + 0.5, pos.getY() + 0.7, pos.getZ() + 0.5, 8, 0.25, 0.05, 0.25, 0.02);
 		server.displayClientMessage(Component.translatable("message.wildercord.pot.cooked", name(recipe)).withStyle(ChatFormatting.GOLD), true);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	private static Component name(CookingRules.Recipe recipe) {

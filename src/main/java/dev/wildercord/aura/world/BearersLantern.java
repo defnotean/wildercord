@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.feel.Feels;
@@ -163,16 +164,16 @@ public final class BearersLantern {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
-			if (!(player instanceof ServerPlayer server)) return InteractionResult.SUCCESS;
+		public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
+			if (!(player instanceof ServerPlayer server)) return InteractionResultHolder.success(mcUseStack);
 			ItemStack stack = player.getItemInHand(hand);
 			if (player.isPassenger() || player.isSpectator()) {
 				server.displayClientMessage(Component.translatable("message.wildercord.bearers_lantern.mounted").withColor(0x8AA8B0), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
-			if (!steed(server)) return InteractionResult.FAIL;
-			player.getCooldowns().addCooldown(stack, LanternBearerRules.STEED_REST);
-			return InteractionResult.SUCCESS;
+			if (!steed(server)) return InteractionResultHolder.fail(mcUseStack);
+			player.getCooldowns().addCooldown(stack.getItem(), LanternBearerRules.STEED_REST);
+			return InteractionResultHolder.success(mcUseStack);
 		}
 
 		@Override

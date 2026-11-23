@@ -14,7 +14,7 @@ final class GrowSeagrassPreflight {
  static boolean reserve(Cast cast,BlockPos lower,BlockState source){
   if(!handles(source)||!cast.alive()||cast.caster.level()!=cast.level||!Casters.mayBuild(cast.caster))return false;
   var upper=lower.above();var level=cast.level;
-  if(!level.isLoaded(lower)||!level.isLoaded(upper)||!(lower.getY() >= level.getMinY() && lower.getY() <= level.getMaxY())||!(upper.getY() >= level.getMinY() && upper.getY() <= level.getMaxY())
+  if(!level.isLoaded(lower)||!level.isLoaded(upper)||!(lower.getY() >= level.getMinBuildHeight() && lower.getY() <= level.getMaxBuildHeight())||!(upper.getY() >= level.getMinBuildHeight() && upper.getY() <= level.getMaxBuildHeight())
    ||!level.getWorldBorder().isWithinBounds(lower)||!level.getWorldBorder().isWithinBounds(upper))return false;
   if(!Casters.mayEdit(cast.caster,level,lower)||!Casters.mayEdit(cast.caster,level,upper))return false;
   if(!cast.alive()||!level.getBlockState(lower).equals(source))return false;

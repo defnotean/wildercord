@@ -78,7 +78,7 @@ public final class GlacierDenPiece extends DungeonPiece {
 		}
 		// The hall goes in under the glacier deep enough that its dome is covered everywhere; the crevasse comes down to it.
 		int base=hallLow-(FLOOR+DOME+COVER);
-		if(base<c.heightAccessor().getMinY()+4)return Optional.empty();
+		if(base<c.heightAccessor().getMinBuildHeight()+4)return Optional.empty();
 		int top=head-base;
 		// Too shallow, and there is no crevasse; too deep, and its slope is a cliff.
 		if(top-1<FLOOR+4 || top-1-FLOOR>RAMP_END-RAMP_START || top>HEIGHT-OPEN-2)return Optional.empty();

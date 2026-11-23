@@ -261,7 +261,7 @@ public class RuneBolt extends Projectile {
 		} else if (block.getType() != HitResult.Type.MISS) {
 			if (bouncesLeft > 0) {
 				bouncesLeft--;
-				Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getUnitVec3i());
+				Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getNormal());
 				Vec3 reflected = motion.subtract(normal.scale(2 * motion.dot(normal)));
 				setPos(block.getLocation().add(normal.scale(0.05)));
 				setDeltaMovement(reflected);

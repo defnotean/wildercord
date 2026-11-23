@@ -26,7 +26,7 @@ public final class KilnWidowContent {
 	public static final KilnHeartstoneBlock HEARTSTONE = Registry.register(BuiltInRegistries.BLOCK, HEARTSTONE_KEY,
 		new KilnHeartstoneBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.DEEPSLATE_BRICKS)));
 	public static final Item HEARTSTONE_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("kiln_heartstone")),
-		new BlockItem(HEARTSTONE, new Item.Properties().useBlockDescriptionPrefix()));
+		new BlockItem(HEARTSTONE, new Item.Properties()));
 	public static final BlockEntityType<KilnHeartstoneEntity> HEARTSTONE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("kiln_heartstone"),
 		FabricBlockEntityTypeBuilder.create(KilnHeartstoneEntity::new, HEARTSTONE).build());
 	private static final ResourceKey<Item> COMPASS_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cooled_kiln_compass"));

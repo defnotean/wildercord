@@ -127,7 +127,7 @@ abstract class WildsPiece extends DungeonPiece {
 
 	private static Optional<Structure.GenerationStub> place(Structure.GenerationContext c, WildsPiece piece, int floor) {
 		BoundingBox b = piece.getBoundingBox();
-		if (floor - SINK < c.heightAccessor().getMinY() || floor - SINK + b.getYSpan() - 1 > c.heightAccessor().getMaxY()) return Optional.empty();
+		if (floor - SINK < c.heightAccessor().getMinBuildHeight() || floor - SINK + b.getYSpan() - 1 > c.heightAccessor().getMaxBuildHeight()) return Optional.empty();
 		piece.move(0, floor - SINK - b.minY(), 0);
 		BoundingBox moved = piece.getBoundingBox();
 		BlockPos at = new BlockPos((moved.minX() + moved.maxX()) / 2, floor + 1, (moved.minZ() + moved.maxZ()) / 2);

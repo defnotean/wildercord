@@ -174,6 +174,15 @@ def glow():
     return Image.fromarray(img, 'RGBA')
 
 
+def _fetchblade_components(g):
+    components = {'wildercord:aura_forged': 'fetchblade', 'minecraft:rarity': 'epic'}
+    if not g.profile.before_1_21_2:
+        # The item_model component only exists from 1.21.2 on.
+        components = {'wildercord:aura_forged': 'fetchblade', 'minecraft:item_model': 'wildercord:fetchblade',
+                      'minecraft:rarity': 'epic'}
+    return components
+
+
 def write(g):
     g.save(skin(), g.ASSETS / 'textures/entity/mojito/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/mojito/glow.png')
@@ -186,10 +195,6 @@ def write(g):
         # His sword, every time: aura-forged with Fetchblade so it gains more aura, cuts wider, and bounds ahead on use.
         {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': 'minecraft:netherite_sword', 'functions': [
             {'function': 'minecraft:set_name', 'target': 'item_name', 'name': {'translate': 'item.wildercord.mojito_fetchblade'}},
-            {'function': 'minecraft:set_components', 'components': {
-                'wildercord:aura_forged': 'fetchblade',
-                'minecraft:item_model': 'wildercord:fetchblade',
-                'minecraft:rarity': 'epic',
-            }},
+            {'function': 'minecraft:set_components', 'components': _fetchblade_components(g)},
         ]}]},
     ]})

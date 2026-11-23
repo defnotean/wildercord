@@ -1,5 +1,6 @@
 package dev.wildercord.content;
-import net.minecraft.core.BlockPos;
+
+import net.minecraft.world.ItemInteractionResult;import net.minecraft.core.BlockPos;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,5 +17,5 @@ public final class RunicHearthBlock extends Block implements EntityBlock {
  public BlockEntity newBlockEntity(BlockPos p,BlockState s){return new RunicHearthEntity(p,s);}
  @SuppressWarnings("unchecked") public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l,BlockState s,BlockEntityType<T> t){return l.isClientSide()||t!=WildercordBlocks.HEARTH_ENTITY?null:(BlockEntityTicker<T>)(BlockEntityTicker<RunicHearthEntity>)RunicHearthEntity::tick;}
  protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player player,BlockHitResult h){if(l.getBlockEntity(p) instanceof RunicHearthEntity hearth)hearth.use(player,ItemStack.EMPTY);return InteractionResult.SUCCESS;}
- protected InteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player player,InteractionHand hand,BlockHitResult h){if(l.getBlockEntity(p) instanceof RunicHearthEntity hearth)hearth.use(player,stack);return InteractionResult.SUCCESS;}
+ protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player player,InteractionHand hand,BlockHitResult h){if(l.getBlockEntity(p) instanceof RunicHearthEntity hearth)hearth.use(player,stack);return ItemInteractionResult.SUCCESS;}
 }

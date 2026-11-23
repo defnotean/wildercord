@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
-import net.minecraft.core.BlockPos;
+
+import net.minecraft.world.ItemInteractionResult;import net.minecraft.core.BlockPos;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +15,7 @@ public final class FungalNurseryBlock extends Block {
  public FungalNurseryBlock(Properties p) {super(p);}
  @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c) {return SHAPE;}
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult h) {if(who instanceof net.minecraft.server.level.ServerPlayer player)FungalInvestigation.hint(player);return InteractionResult.SUCCESS;}
- @Override protected InteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {
-  if(who instanceof net.minecraft.server.level.ServerPlayer player) {if(stack.is(FungalGarden.BREATHER))FungalInvestigation.finish(player,p);else FungalInvestigation.hint(player);}return InteractionResult.SUCCESS;
+ @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {
+  if(who instanceof net.minecraft.server.level.ServerPlayer player) {if(stack.is(FungalGarden.BREATHER))FungalInvestigation.finish(player,p);else FungalInvestigation.hint(player);}return ItemInteractionResult.SUCCESS;
  }
 }

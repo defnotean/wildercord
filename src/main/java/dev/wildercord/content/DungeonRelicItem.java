@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -40,13 +41,13 @@ public class DungeonRelicItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
-		if (player.getCooldowns().isOnCooldown(stack)) {
-			return InteractionResult.FAIL;
+		if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		if (!(level instanceof ServerLevel server)) {
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 		if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
 			int maxMana = Math.max(100, dev.wildercord.player.Mana.of(sp).max());
@@ -78,7 +79,7 @@ public class DungeonRelicItem extends Item {
 			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.END_ROD, player.getX(), player.getY() + 1, player.getZ(), 24, 2, 1, 2, 0.08);
 			level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1, 1.25F);
 		}
-		player.getCooldowns().addCooldown(stack, 20 * 20);
-		return InteractionResult.SUCCESS;
+		player.getCooldowns().addCooldown(stack.getItem(), 20 * 20);
+		return InteractionResultHolder.success(mcUseStack);
 	}
 }

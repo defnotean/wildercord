@@ -160,6 +160,7 @@ public class HushwingOwlet extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (tickCount % 20 == 0) {
@@ -179,7 +180,7 @@ public class HushwingOwlet extends Animal {
 		entityData.set(STARING, stare != null);
 		if (hootAgain >= 0 && now >= hootAgain) {
 			hootAgain = -1;
-			playSound(SoundEvents.NOTE_BLOCK_FLUTE.value(), 0.7F, 0.53F);
+			playSound(SoundEvents.NOTE_BLOCK_FLUTE, 0.7F, 0.53F);
 		}
 		Player friend = truster();
 		if (friend != null && tickCount % 20 == 5) {
@@ -212,7 +213,7 @@ public class HushwingOwlet extends Animal {
 
 	/** Hoo-hoo: two low notes. */
 	private void hoot(long now) {
-		playSound(SoundEvents.NOTE_BLOCK_FLUTE.value(), 0.7F, 0.6F);
+		playSound(SoundEvents.NOTE_BLOCK_FLUTE, 0.7F, 0.6F);
 		hootAgain = now + 7;
 	}
 
@@ -258,7 +259,7 @@ public class HushwingOwlet extends Animal {
 			fedAt = level().getGameTime();
 			wake();
 			level().broadcastEntityEvent(this, (byte) 18);
-			playSound(SoundEvents.GENERIC_EAT.value(), 0.4F, 1.6F);
+			playSound(SoundEvents.GENERIC_EAT, 0.4F, 1.6F);
 		}
 		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 	}

@@ -30,7 +30,7 @@ public final class WetlandContent {
 	public static final MarshlightBlock MARSHLIGHT=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new MarshlightBlock(BlockBehaviour.Properties.of().strength(.6F).noOcclusion().lightLevel(s -> 12).sound(SoundType.BAMBOO)));
 	private static ResourceKey<Item> itemKey(String name) {return ResourceKey.create(Registries.ITEM,Wildercord.id(name));}
 	public static final Item DUSK_PEARL=Registry.register(BuiltInRegistries.ITEM,itemKey("dusk_pearl"),new AuraWorld.Lore("dusk_pearl",new Item.Properties().rarity(Rarity.UNCOMMON)));
-	public static final Item MARSHLIGHT_ITEM=Registry.register(BuiltInRegistries.ITEM,itemKey("marshlight"),new BlockItem(MARSHLIGHT,new Item.Properties().useBlockDescriptionPrefix()));
+	public static final Item MARSHLIGHT_ITEM=Registry.register(BuiltInRegistries.ITEM,itemKey("marshlight"),new BlockItem(MARSHLIGHT,new Item.Properties()));
 	public static final Item NEWT_EGG=Registry.register(BuiltInRegistries.ITEM,itemKey("lantern_newt_spawn_egg"),dev.wildercord.compat.McSpawnEgg.create(NEWT, new Item.Properties()));
 	public static final Item FIELD_NOTES=Registry.register(BuiltInRegistries.ITEM,itemKey("tideward_notes"),new WrittenBookItem(new Item.Properties().stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,
 		new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough("Lights Along the Bank"),"Iona of the Tideward",0,

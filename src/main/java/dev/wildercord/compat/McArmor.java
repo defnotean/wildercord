@@ -1,5 +1,6 @@
 package dev.wildercord.compat;
 
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;

@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,15 +23,15 @@ public class SkyrayBridleItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		if (level instanceof ServerLevel server && player instanceof ServerPlayer serverPlayer) {
 			if (BondedSkyray.call(server, serverPlayer) == null) {
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
-			player.getCooldowns().addCooldown(stack, SkyMountRules.CALL_COOLDOWN);
+			player.getCooldowns().addCooldown(stack.getItem(), SkyMountRules.CALL_COOLDOWN);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	@Override

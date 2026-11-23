@@ -24,7 +24,7 @@ public class GlowcapFeature extends SimpleWorldFeature {
   for(int i=0;i<12;i++) {
    var top=column(natural,r,origin,i);
    for(int dy=0;dy<112;dy++) {
-    var p=top.below(dy);if(p.getY()<l.getMinY() || !l.hasChunkAt(p))break;
+    var p=top.below(dy);if(p.getY()<l.getMinBuildHeight() || !l.hasChunkAt(p))break;
     if(!l.isEmptyBlock(p) || !GlowcapBlock.footing(l,p) || !GlowcapBlock.moist(l,p) || !GlowcapBlock.structuralCover(l,p))continue;
     if(natural && !(l.getBiome(p).is(net.minecraft.world.level.biome.Biomes.LUSH_CAVES) || l.getBiome(p).is(net.minecraft.world.level.biome.Biomes.DRIPSTONE_CAVES) || l.getBiome(p).is(dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)))continue;
     var state=FungalGarden.GLOWCAP.defaultBlockState();if(state.canSurvive(l,p)) {l.setBlock(p,state,Block.UPDATE_CLIENTS);placed++;break;}

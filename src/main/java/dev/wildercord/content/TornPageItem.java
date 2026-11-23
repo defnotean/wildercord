@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.cast.Grimoire;
 import dev.wildercord.spell.Secrets;
 import net.minecraft.ChatFormatting;
@@ -30,7 +31,7 @@ public class TornPageItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		if (player instanceof ServerPlayer serverPlayer) {
 			// A riddle of this world's own magic half the time while there are both kinds left, or whichever is.
@@ -40,7 +41,7 @@ public class TornPageItem extends Item {
 			Secrets.Secret secret = resonance.isPresent() ? null : Grimoire.hint(serverPlayer);
 			if (secret == null && resonance.isEmpty()) {
 				serverPlayer.displayClientMessage(Component.translatable("message.wildercord.page_nothing").withStyle(ChatFormatting.GRAY), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
 			stack.consume(1, player);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 0.8F);
@@ -62,7 +63,7 @@ public class TornPageItem extends Item {
 				}
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	/** The eight compass points, for the page's map sketch. */

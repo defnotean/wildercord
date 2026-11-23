@@ -102,7 +102,7 @@ final class AerialMove extends FormDash.Move {
 		if (!owner.valid() || player.level() != level) return;
 		if (phase == FormDashRules.SPLASH) { play(SoundEvents.PLAYER_SPLASH, .6F, 1.2F); return; }
 		if (phase == FormDashRules.STALL) { play(SoundEvents.PLAYER_ATTACK_NODAMAGE, .7F, .7F); return; }
-		if (form == FormDashRules.AIR_STEP) { play(SoundEvents.WIND_CHARGE_BURST.value(), .5F, 1.4F); return; }
+		if (form == FormDashRules.AIR_STEP) { play(SoundEvents.WIND_CHARGE_BURST, .5F, 1.4F); return; }
 		play(SoundEvents.MACE_SMASH_GROUND_HEAVY, .9F, .9F);
 		int struck = 0;
 		for (LivingEntity foe : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(FormDashRules.PLUNGE_RADIUS, 1, FormDashRules.PLUNGE_RADIUS),

@@ -12,7 +12,7 @@ public class BreathmarkFeature extends SimpleWorldFeature {
   int kind=r.nextInt(2);
   for(int i=0;i<12;i++) {
    int x=origin.getX()+r.nextInt(9)-4,z=origin.getZ()+r.nextInt(9)-4;
-   for(int y=47;y>=Math.max(-64,l.getMinY());y--) {
+   for(int y=47;y>=Math.max(-64,l.getMinBuildHeight());y--) {
    var p=new BlockPos(x,y,z);
    if(!l.hasChunkAt(p))break;
    if(!l.isEmptyBlock(p) || !GlowcapBlock.footing(l,p) || !GlowcapBlock.structuralCover(l,p))continue;

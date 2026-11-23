@@ -75,6 +75,7 @@ public class BloomclawMantis extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		LivingEntity target = getTarget();
@@ -218,7 +219,7 @@ public class BloomclawMantis extends WildMonster {
 		}
 		if (MantisRules.nibbles(heldTicks)) {
 			prey.hurt(damageSources().mobAttack(this), MantisRules.NIBBLE_DAMAGE);
-			playSound(SoundEvents.GENERIC_EAT.value(), 0.6F, 1.4F);
+			playSound(SoundEvents.GENERIC_EAT, 0.6F, 1.4F);
 		}
 	}
 

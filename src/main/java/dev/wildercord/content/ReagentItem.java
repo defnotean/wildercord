@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.InteractionResultHolder;
 import java.util.List;
 import dev.wildercord.cast.TemporaryBlocks;
 import dev.wildercord.mixin.AbstractFurnaceBlockEntityAccessor;
@@ -200,20 +201,20 @@ public class ReagentItem extends Item {
 	// ------------------------------------------------------------------ used in the air
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		switch (kind) {
 			case EVERFROST -> {
 				BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
 				if (hit.getType() != HitResult.Type.BLOCK) {
-					return InteractionResult.PASS;
+					return InteractionResultHolder.pass(mcUseStack);
 				}
 				BlockPos pos = hit.getBlockPos();
 				FluidState fluid = level.getFluidState(pos);
 				boolean water = fluid.is(Fluids.WATER) && fluid.isSource();
 				boolean lava = fluid.is(Fluids.LAVA) && fluid.isSource();
 				if (!water && !lava || !player.mayUseItemAt(pos, hit.getDirection(), stack) || !level.mayInteract(player, pos)) {
-					return InteractionResult.PASS;
+					return InteractionResultHolder.pass(mcUseStack);
 				}
 				if (!level.isClientSide()) {
 					level.setBlockAndUpdate(pos, (water ? Blocks.ICE : Blocks.OBSIDIAN).defaultBlockState());
@@ -222,23 +223,23 @@ public class ReagentItem extends Item {
 						pos.getZ() + 0.5, 10, 0.35, 0.1, 0.35, 0.02);
 					use(stack, player);
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResultHolder.success(mcUseStack);
 			}
 			case RIVEN_STONE -> {
-				if (player.getCooldowns().isOnCooldown(stack)) {
-					return InteractionResult.PASS;
+				if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+					return InteractionResultHolder.pass(mcUseStack);
 				}
 				if (player instanceof ServerPlayer server) {
 					dev.wildercord.cast.CraftedRunes.prospect(server, GRIT_RADIUS, GRIT_TICKS);
 					server.level().playSound(null, server.blockPosition(), SoundEvents.TUFF_BREAK, SoundSource.PLAYERS, 0.8F, 0.7F);
-					player.getCooldowns().addCooldown(stack, 40);
+					player.getCooldowns().addCooldown(stack.getItem(), 40);
 					use(stack, player);
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResultHolder.success(mcUseStack);
 			}
 			case VOID_SCAR -> {
-				if (player.getCooldowns().isOnCooldown(stack)) {
-					return InteractionResult.PASS;
+				if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+					return InteractionResultHolder.pass(mcUseStack);
 				}
 				if (level instanceof ServerLevel server) {
 					int drawn = 0;
@@ -251,10 +252,10 @@ public class ReagentItem extends Item {
 						drawn++;
 					}
 					server.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.5F, drawn > 0 ? 0.6F : 1.4F);
-					player.getCooldowns().addCooldown(stack, 20);
+					player.getCooldowns().addCooldown(stack.getItem(), 20);
 					use(stack, player);
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResultHolder.success(mcUseStack);
 			}
 			default -> {
 				return super.use(level, player, hand);

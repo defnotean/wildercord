@@ -44,7 +44,7 @@ public final class Rimescale {
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("rimescale"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+		new BlockItem(BLOCK, new Item.Properties().rarity(Rarity.EPIC)));
 
 	/** When each player's scale last bit back, in server ticks. Forgotten on restart, which only ever lets it bite sooner. */
 	private static final Map<UUID, Long> LAST = new HashMap<>();

@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.ItemInteractionResult;
 import dev.wildercord.cast.Residues;
 import dev.wildercord.world.ResidueRules;
 import dev.wildercord.world.ResidueRules.Kind;
@@ -174,7 +175,7 @@ public class ResidueBlock extends Block {
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (kind != Kind.LINGERING_EDDY || !stack.is(Items.GLASS_BOTTLE)) {
 			return super.useItemOn(stack, state, level, pos, player, hand, hit);
 		}
@@ -185,7 +186,7 @@ public class ResidueBlock extends Block {
 			Residues.harvested(server, pos, state, player instanceof net.minecraft.server.level.ServerPlayer sp ? sp : null);
 			server.removeBlock(pos, false);
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	// ------------------------------------------------------------------ ageing

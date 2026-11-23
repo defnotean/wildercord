@@ -48,7 +48,7 @@ public class StormSpirePiece extends DungeonPiece {
 		BlockPos entrance = piece.getWorldPos(11, 0, 0);
 		int ground = context.chunkGenerator().getFirstOccupiedHeight(entrance.getX(), entrance.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
 			context.heightAccessor(), context.randomState());
-		if (ground - 1 + 43 > context.heightAccessor().getMaxY()) return Optional.empty();
+		if (ground - 1 + 43 > context.heightAccessor().getMaxBuildHeight()) return Optional.empty();
 		piece.move(0, ground - 1, 0);
 		return Optional.of(new Structure.GenerationStub(new BlockPos(entrance.getX(), ground, entrance.getZ()), builder -> builder.addPiece(piece)));
 	}

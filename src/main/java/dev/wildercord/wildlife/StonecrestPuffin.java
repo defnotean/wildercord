@@ -165,6 +165,7 @@ public class StonecrestPuffin extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		// Aloft, its whirring wings let it down slow, and it never lands hard.
 		if (!onGround() && !isInWater()) {

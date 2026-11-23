@@ -26,7 +26,7 @@ public final class EmberContent {
  private static final ResourceKey<Block> BLOCK=ResourceKey.create(Registries.BLOCK,Wildercord.id("cinder_fern"));
  public static final CinderFernBlock FERN=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new CinderFernBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.AZALEA)));
  private static ResourceKey<Item> item(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
- public static final Item FERN_ITEM=Registry.register(BuiltInRegistries.ITEM,item("cinder_fern"),new BlockItem(FERN,new Item.Properties().useBlockDescriptionPrefix()));
+ public static final Item FERN_ITEM=Registry.register(BuiltInRegistries.ITEM,item("cinder_fern"),new BlockItem(FERN,new Item.Properties()));
  public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,item("cinder_bailiff_spawn_egg"),dev.wildercord.compat.McSpawnEgg.create(BAILIFF, new Item.Properties()));
  static boolean room(net.minecraft.server.level.ServerLevel l,BlockPos p){var peers=new ArrayList<CinderBailiff>(EmberRules.LOCAL_CAP);l.getEntities(BAILIFF,new AABB(p).inflate(32),Entity::isAlive,peers,EmberRules.LOCAL_CAP);return peers.size()<EmberRules.LOCAL_CAP;}
  public static void init(){dev.wildercord.compat.McWorldgen.registerFeature("cinder_fern_patch", new CinderFernFeature());FabricDefaultAttributeRegistry.register(BAILIFF,CinderBailiff.attributes());

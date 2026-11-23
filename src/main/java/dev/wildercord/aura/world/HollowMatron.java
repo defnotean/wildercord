@@ -198,6 +198,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,b.getY(),b.getY()+5,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+18,b.getZ()+20));}
 		// Left alone long enough (her prey died and went home, say) and she has climbed back up in the meantime.
@@ -248,7 +249,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.ITEM_COBWEB,to.x,to.y,to.z,16,.4,.5,.4,.05);
 		Feels.sound(level,to,"aura_hollow_matron_splat",.8F,1.1F+random.nextFloat()*.2F);
 		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
-		if(m.isAlive())m.kill(level);
+		if(m.isAlive())m.kill();
 	}
 
 	/** The nearest player in the hall close enough to the floor under her to wake her, if any. */
@@ -784,7 +785,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 				double a=Math.toRadians(aim+180)+i*half/5;
 				for(int j=1;j<=6;j++){double r=j*HollowMatronRules.BRISTLE_REACH/6;level.sendParticles(HAIR,getX()-Math.sin(a)*r,getY()+1.1,getZ()+Math.cos(a)*r,1,.1,.1,.1,0);}
 			}
-			sound(level,tail,SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.1F,1.6F);sound(level,tail,SoundEvents.SILVERFISH_AMBIENT,1.2F,1.4F);
+			sound(level,tail,SoundEvents.BREEZE_WIND_CHARGE_BURST,1.1F,1.6F);sound(level,tail,SoundEvents.SILVERFISH_AMBIENT,1.2F,1.4F);
 		}
 		if(roused() && again==0 && el>=tell+3){again=1;struck.clear();pose(HollowMatronRules.BRISTLE,0,HollowMatronRules.BRISTLE_AGAIN);return;}
 		if(el>=tell+HollowMatronRules.BRISTLE_OPEN)after(level,HollowMatronRules.BRISTLE,6);
@@ -879,7 +880,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 				hit(level,p,HollowMatronRules.ROUSE_DAMAGE,1.6,position(),.6);
 			entityData.set(ROUSED,true);bar.setColor(BossEvent.BossBarColor.RED);
 			for(int i=0;i<6;i++){double a=i*Math.PI/3+random.nextDouble()*.5,r=2.5+random.nextDouble()*4;patch(level,position().add(Math.cos(a)*r,.5,Math.sin(a)*r));}
-			sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.8F,.6F);hiss(level,2,.8F);
+			sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST,1.8F,.6F);hiss(level,2,.8F);
 			level.sendParticles(ParticleTypes.ITEM_COBWEB,getX(),getY()+1,getZ(),60,2.5,1,2.5,.2);
 			level.sendParticles(ParticleTypes.POOF,getX(),getY()+.3,getZ(),30,2.5,.2,2.5,.08);
 		}
@@ -1035,7 +1036,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		spent(HollowMatronRules.CUT_RECOVER);
 		stung=0;lastBack=level.getGameTime();
 		var by=cutBy;cutBy=null;
-		hurt(level,by!=null && by.isAlive()?damageSources().playerAttack(by):damageSources().generic(),(float)HollowMatronRules.CUT_DAMAGE);
+		hurt(by!=null && by.isAlive()?damageSources().playerAttack(by):damageSources().generic(),(float)HollowMatronRules.CUT_DAMAGE);
 	}
 	/** Listening for players striking silk, for whoever is up a pillar. */
 	public static void listen(){
@@ -1137,8 +1138,8 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		reeled=null;super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
-	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
-		super.actuallyHurt(level,source,damage);
+	@Override protected void actuallyHurt(DamageSource source, float damage){
+		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,head(),"aura_hollow_matron_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();reeled=null;super.remove(reason);}

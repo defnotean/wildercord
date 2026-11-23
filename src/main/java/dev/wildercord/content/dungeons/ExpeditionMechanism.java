@@ -1,5 +1,6 @@
 package dev.wildercord.content.dungeons;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -28,9 +29,9 @@ public final class ExpeditionMechanism extends Block implements EntityBlock {
 		if(level.getBlockEntity(pos) instanceof ExpeditionMechanismEntity mechanism)mechanism.use(player,ItemStack.EMPTY);
 		return InteractionResult.SUCCESS;
 	}
-	@Override protected InteractionResult useItemOn(ItemStack stack,BlockState state,Level level,BlockPos pos,Player player,InteractionHand hand,BlockHitResult hit) {
+	@Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState state,Level level,BlockPos pos,Player player,InteractionHand hand,BlockHitResult hit) {
 		if(level.getBlockEntity(pos) instanceof ExpeditionMechanismEntity mechanism)mechanism.use(player,stack);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 	@Override protected BlockState rotate(BlockState state,Rotation rotation){return state.setValue(FACING,rotation.rotate(state.getValue(FACING)));}
 	@Override protected BlockState mirror(BlockState state,Mirror mirror){return rotate(state,mirror.getRotation(state.getValue(FACING)));}

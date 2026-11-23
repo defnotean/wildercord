@@ -917,7 +917,7 @@ final class FusedStorm {
 	 */
 	static boolean safe(ServerLevel level, Entity entity, Vec3 feet) {
 		BlockPos at = BlockPos.containing(feet);
-		if (!level.isLoaded(at) || feet.y < level.getMinY() + 1 || feet.y > level.getMaxY()) {
+		if (!level.isLoaded(at) || feet.y < level.getMinBuildHeight() + 1 || feet.y > level.getMaxBuildHeight()) {
 			return false;
 		}
 		AABB body = entity.getDimensions(entity.getPose()).makeBoundingBox(feet);

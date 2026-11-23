@@ -1,5 +1,6 @@
 package dev.wildercord.town;
 
+import net.minecraft.world.InteractionResultHolder;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -21,16 +22,16 @@ public class RoomKeyItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		if (player instanceof ServerPlayer server) {
 			if (!atInn(server)) {
 				server.displayClientMessage(Component.translatable("message.wildercord.room.no_inn").withStyle(ChatFormatting.RED), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
 			InnRooms.rent(server);
 			if (!player.getAbilities().instabuild) player.getItemInHand(hand).shrink(1);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	/** Whether {@code player} stands at an inn: near one of its keepers (a caravan doesn't let rooms). */

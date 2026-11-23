@@ -76,7 +76,7 @@ public final class WildercordBlocks {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id(path));
 		T block = Registry.register(BuiltInRegistries.BLOCK, key, factory.apply(properties));
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id(path));
-		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix().rarity(rarity)));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().rarity(rarity)));
 		return block;
 	}
 

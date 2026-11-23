@@ -170,6 +170,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!clods.isEmpty())fly(level);
 		if(!roots.isEmpty())grow(level);
@@ -204,7 +205,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.DAMAGE_INDICATOR,to.x,to.y,to.z,6,.3,.3,.3,.1);
 		Feels.sound(level,to,"aura_serpent_strike",1.1F,1.1F+random.nextFloat()*.2F);
 		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
-		if(m.isAlive())m.kill(level);
+		if(m.isAlive())m.kill();
 	}
 
 	/** The nearest player close enough to the trunk to wake it, if any. */
@@ -806,7 +807,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private void grab(ServerLevel level,ServerPlayer p){
 		caught=p;struggles=0;heldDamage=0;landed=true;lastMade[SerpentRules.CONSTRICT]=level.getGameTime();
 		// Whatever the player is already holding down does not count: a struggle is a fresh press.
-		var in=p.getLastClientInput();gripping=in.jump() || in.left() || in.right();
+		var in=dev.wildercord.compat.McPlayerInput.of(p);gripping=in.jump() || in.left() || in.right();
 		pose(SerpentRules.SQUEEZE,SerpentRules.SQUEEZE_TICKS);
 		p.displayClientMessage(Component.translatable("message.wildercord.rootcoil_serpent.caught").withColor(0xD8C070), true);
 		Feels.sound(level,p.position(),"aura_serpent_constrict",1.4F,.9F);
@@ -820,7 +821,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var grip=position().add(ahead(aim).scale(SerpentSpine.GRIP)).add(0,.6,0);
 		if(p.position().distanceTo(grip)>0.6)p.teleportTo(grip.x,grip.y,grip.z);
 		p.setDeltaMovement(Vec3.ZERO);p.hasImpulse=true;
-		var in=p.getLastClientInput();boolean pressing=in.jump() || in.left() || in.right();
+		var in=dev.wildercord.compat.McPlayerInput.of(p);boolean pressing=in.jump() || in.left() || in.right();
 		if(pressing && !gripping){
 			struggles++;
 			p.displayClientMessage(Component.translatable("message.wildercord.rootcoil_serpent.struggle",struggles,SerpentRules.STRUGGLES).withColor(0xD8C070), true);
@@ -889,7 +890,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			return;
 		}
 		if(rousing && el==tell){
-			Feels.sound(level,position(),"aura_serpent_slam",1.8F,.6F);sound(level,position(),SoundEvents.GENERIC_EXPLODE.value(),1.2F,.7F);
+			Feels.sound(level,position(),"aura_serpent_slam",1.8F,.6F);sound(level,position(),SoundEvents.GENERIC_EXPLODE,1.2F,.7F);
 			level.sendParticles(ParticleTypes.EXPLOSION,getX(),getY()+.5,getZ(),3,1.5,.2,1.5,0);
 			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.3,getZ(),60,2.5,.3,2.5,.3);
 			rippleAt=position();rippleAge=0;rippled.clear();
@@ -1048,8 +1049,8 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}
-	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
-		super.actuallyHurt(level,source,damage);
+	@Override protected void actuallyHurt(DamageSource source, float damage){
+		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,position().add(0,2,0),"aura_serpent_hurt",1,.9F+random.nextFloat()*.2F);
 	}
 	@Override public void remove(RemovalReason reason){caught=null;dropClods();dropSpikes();roots.clear();bar.removeAllPlayers();super.remove(reason);}

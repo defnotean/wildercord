@@ -36,7 +36,7 @@ public class ArchiveStructure extends Structure {
 		int ground = context.chunkGenerator().getFirstOccupiedHeight(entrance.getX(), entrance.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
 			context.heightAccessor(), context.randomState());
 		// In very low worlds (superflat) it can't be buried that deep: it rises out of the ground instead.
-		int floor = Math.max(ground - ArchivePiece.SURFACE, context.heightAccessor().getMinY() + 4);
+		int floor = Math.max(ground - ArchivePiece.SURFACE, context.heightAccessor().getMinBuildHeight() + 4);
 		piece.move(0, floor, 0);
 		return Optional.of(new Structure.GenerationStub(new BlockPos(entrance.getX(), ground, entrance.getZ()), builder -> builder.addPiece(piece)));
 	}

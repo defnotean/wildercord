@@ -933,7 +933,7 @@ public final class WorldMagic {
 			Sigils.flash(level, above, ElementFx.STORM.secondary(), (float) (0.8 + width * 0.6));
 			ElementFx.sparks(level, above, 8, 0.3);
 			if (order < 4) {
-				Fx.sound(level, above, SoundEvents.TRIDENT_THUNDER.value(), 0.25F, 1.9F);
+				Fx.sound(level, above, SoundEvents.TRIDENT_THUNDER, 0.25F, 1.9F);
 			}
 		});
 	}
@@ -1054,7 +1054,7 @@ public final class WorldMagic {
 			double a = Math.PI * 2 * i / 3;
 			ElementFx.arc(level, centre, centre.add(Math.cos(a) * 0.8, 0.6, Math.sin(a) * 0.8), SHOCK, 0.04, 1, false, 6);
 		}
-		Fx.sound(level, centre, SoundEvents.TRIDENT_THUNDER.value(), 0.5F, 1.6F);
+		Fx.sound(level, centre, SoundEvents.TRIDENT_THUNDER, 0.5F, 1.6F);
 	}
 
 	// ------------------------------------------------------------------ wind

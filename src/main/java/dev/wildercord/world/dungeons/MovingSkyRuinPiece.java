@@ -18,7 +18,7 @@ public final class MovingSkyRuinPiece extends DungeonPiece {
  public MovingSkyRuinPiece(CompoundTag tag){super(DungeonWorldgen.SKY_RUIN_PIECE,tag);}
  static Optional<Structure.GenerationStub> locate(Structure.GenerationContext c) {
   var chunk=c.chunkPos();var piece=new MovingSkyRuinPiece(chunk.getMinBlockX(),0,chunk.getMinBlockZ(),Direction.Plane.HORIZONTAL.getRandomDirection(c.random()));var entrance=piece.getWorldPos(12,0,1);
-  int y=c.chunkGenerator().getFirstOccupiedHeight(entrance.getX(),entrance.getZ(),Heightmap.Types.WORLD_SURFACE_WG,c.heightAccessor(),c.randomState());piece.move(0,Math.min(c.heightAccessor().getMaxY()-20,y+8),0);
+  int y=c.chunkGenerator().getFirstOccupiedHeight(entrance.getX(),entrance.getZ(),Heightmap.Types.WORLD_SURFACE_WG,c.heightAccessor(),c.randomState());piece.move(0,Math.min(c.heightAccessor().getMaxBuildHeight()-20,y+8),0);
   return Optional.of(new Structure.GenerationStub(new BlockPos(entrance.getX(),piece.getBoundingBox().minY(),entrance.getZ()),b->b.addPiece(piece)));
  }
  @Override public void postProcess(WorldGenLevel level,StructureManager structures,ChunkGenerator generator,RandomSource random,BoundingBox bb,ChunkPos chunk,BlockPos reference) {

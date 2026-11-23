@@ -1,5 +1,6 @@
 package dev.wildercord.content.dungeons;
 
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -38,16 +39,16 @@ public class TrophyItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide()) {
 			for (Boon boon : boons) {
 				player.addEffect(new MobEffectInstance(boon.effect(), boon.ticks(), boon.amplifier()));
 			}
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, 0.8F, 1.2F);
-			player.getCooldowns().addCooldown(stack, REST);
+			player.getCooldowns().addCooldown(stack.getItem(), REST);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	@Override

@@ -165,7 +165,7 @@ public final class MountBonds {
 			}
 		}
 
-		boolean sprint = player.getLastClientInput().sprint();
+		boolean sprint = dev.wildercord.compat.McPlayerInput.of(player).sprint();
 		if (sprint && !ride.sprint && mount.onGround() && MountBondRules.dashReady(bond.level(), now, ride.lastDash)) {
 			dash(level, mount);
 			ride.lastDash = now;

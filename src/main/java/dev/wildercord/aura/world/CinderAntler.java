@@ -41,7 +41,7 @@ public final class CinderAntler {
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinder_antler"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+		new BlockItem(BLOCK, new Item.Properties().rarity(Rarity.EPIC)));
 
 	/** How long each player has been sprinting, and when their antler last gored, in server ticks. Forgotten on restart. */
 	private static final Map<UUID, Integer> SPRINT = new HashMap<>();

@@ -46,7 +46,7 @@ public final class ReedRattle {
         if (crab.pose() != ReedbackCrab.WARNING) return refuse(p, "warning");
         if (!crab.answerRattle()) return refuse(p, "crab_rest");
         p.setAttached(READY, now + REST_TICKS);
-        p.getCooldowns().addCooldown(stack, REST_TICKS);
+        p.getCooldowns().addCooldown(stack.getItem(), REST_TICKS);
         stack.hurtAndBreak(1, p, dev.wildercord.compat.McHands.slot(hand));
         Feels.sound(((ServerLevel) p.level()), crab.position(), "wetland_reed_rattle", .6F, 1);
         p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle.settle"), true);
@@ -59,7 +59,7 @@ public final class ReedRattle {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var p = handler.player;
             long remaining = p.getAttachedOrElse(READY, 0L) - clock(p);
-            if (remaining > 0) p.getCooldowns().addCooldown(new ItemStack(ITEM), (int) Math.min(remaining, REST_TICKS));
+            if (remaining > 0) p.getCooldowns().addCooldown(ITEM, (int) Math.min(remaining, REST_TICKS));
         });
         UseEntityCallback.EVENT.register((p, level, hand, entity, hit) -> {
             if (!(entity instanceof ReedbackCrab crab) || !p.getItemInHand(hand).is(ITEM) || p.isSpectator()) return InteractionResult.PASS;

@@ -58,7 +58,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		}
 		if(high-low>5)return Optional.empty();
 		int base=low-DEPTH_BELOW;
-		if(base<c.heightAccessor().getMinY()+4)return Optional.empty();
+		if(base<c.heightAccessor().getMinBuildHeight()+4)return Optional.empty();
 		var piece=new SerpentGrovePiece(c.chunkPos().getMinBlockX(),base,c.chunkPos().getMinBlockZ(),probe.getOrientation(),high-base);
 		var entrance=piece.localPosition(SHAFT_X,piece.top,SHAFT_Z);
 		return Optional.of(new Structure.GenerationStub(entrance,b->b.addPiece(piece)));

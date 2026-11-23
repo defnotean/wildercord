@@ -131,6 +131,7 @@ public class CinnabarPanda extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		int pose = pose(), left = poseLeft();

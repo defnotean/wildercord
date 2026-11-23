@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.world.item.TooltipFlag;
 import java.util.List;import dev.wildercord.player.Heart;
 import net.minecraft.world.item.*;
 import net.minecraft.world.entity.player.Player;

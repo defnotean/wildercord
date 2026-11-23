@@ -51,8 +51,8 @@ public final class ResonanceChamberPiece extends MasterSitePiece {
 		for (int[] k : new int[][]{{5, 0}, {11, 0}, {5, 4}, {11, 4}}) {
 			if (Math.abs(height(c, probe.localPosition(k[0], 0, k[1]), Heightmap.Types.WORLD_SURFACE_WG) - surface) > 3) return Optional.empty();
 		}
-		int floor = Math.max(c.heightAccessor().getMinY() + 16, Math.min(surface - 50, -20));
-		if (surface + ABOVE > c.heightAccessor().getMaxY()) return Optional.empty();
+		int floor = Math.max(c.heightAccessor().getMinBuildHeight() + 16, Math.min(surface - 50, -20));
+		if (surface + ABOVE > c.heightAccessor().getMaxBuildHeight()) return Optional.empty();
 		var piece = new ResonanceChamberPiece(chunk.getMinBlockX(), 0, chunk.getMinBlockZ(), facing, altFor(chunk), surface - floor + ABOVE);
 		piece.move(0, floor, 0);
 		var centre = piece.localPosition(8, 1, 8);

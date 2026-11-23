@@ -72,7 +72,7 @@ public abstract class FarmPiece extends DungeonPiece {
 			if (top != height(c, s[0], s[1], Heightmap.Types.OCEAN_FLOOR_WG)) return Optional.empty();
 			lo = Math.min(lo, top); hi = Math.max(hi, top); centre = top;
 		}
-		if (hi - lo > slope || centre <= c.heightAccessor().getMinY() + 8 || centre + b.getYSpan() >= c.heightAccessor().getMaxY()) return Optional.empty();
+		if (hi - lo > slope || centre <= c.heightAccessor().getMinBuildHeight() + 8 || centre + b.getYSpan() >= c.heightAccessor().getMaxBuildHeight()) return Optional.empty();
 		piece.move(0, centre - piece.ground(), 0);
 		var mid = new BlockPos((b.minX() + b.maxX()) / 2, centre, (b.minZ() + b.maxZ()) / 2);
 		return Optional.of(new Structure.GenerationStub(mid, builder -> builder.addPiece(piece)));
@@ -128,7 +128,7 @@ public abstract class FarmPiece extends DungeonPiece {
 	protected void prop(WorldGenLevel level, BoundingBox bb, int x, int y, int z, BlockState state) {
 		BlockPos.MutableBlockPos at = getWorldPos(x, y, z);
 		if (!bb.isInside(at)) return;
-		for (int n = 0; n < 12 && at.getY() > level.getMinY() + 1; n++, at.move(Direction.DOWN)) {
+		for (int n = 0; n < 12 && at.getY() > level.getMinBuildHeight() + 1; n++, at.move(Direction.DOWN)) {
 			var here = level.getBlockState(at);
 			if (!here.isAir() && !here.liquid() && !here.canBeReplaced()) return;
 			level.setBlock(at, state, 2);

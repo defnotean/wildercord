@@ -50,7 +50,7 @@ public final class DeepVaultPiece extends MinePiece {
 		Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(c.random());
 		var probe = new DeepVaultPiece(chunk.getMinBlockX(), FLOOR_Y, chunk.getMinBlockZ(), 1, facing);
 		BlockPos top = probe.getWorldPos(SHAFT_X, 0, SHAFT_Z), middle = probe.getWorldPos(8, 0, 18);
-		if (wet(c, top) || FLOOR_Y < c.heightAccessor().getMinY() + 8) return Optional.empty();
+		if (wet(c, top) || FLOOR_Y < c.heightAccessor().getMinBuildHeight() + 8) return Optional.empty();
 		int surface = ground(c, top);
 		if (surface - FLOOR_Y < 30) return Optional.empty();
 		for (int y : new int[] {FLOOR_Y, FLOOR_Y - 16}) if (deepDark(c, top.getX(), y, top.getZ()) || deepDark(c, middle.getX(), y, middle.getZ())) return Optional.empty();

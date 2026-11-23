@@ -900,7 +900,7 @@ final class ShapeRunners {
 				pos[0] = to;
 				return true;
 			}
-			Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getUnitVec3i());
+			Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getNormal());
 			if (bounces[0]-- <= 0 || velocity[0].length() < 0.2) {
 				ExpansionVfx.ricochetEnd(cast.level, end, theme);
 				CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false).times(powerScale), anchored);
@@ -945,7 +945,7 @@ final class ShapeRunners {
 				struck.add(c.entity().getUUID());
 				land(cast, g, anchored, c, aim);
 			} else if (c != null) {
-				normal = Vec3.atLowerCornerOf(c.block().getDirection().getUnitVec3i());
+				normal = Vec3.atLowerCornerOf(c.block().getDirection().getNormal());
 				at = at.add(normal.scale(0.3));
 				land(cast, g, anchored, c, aim);
 			}

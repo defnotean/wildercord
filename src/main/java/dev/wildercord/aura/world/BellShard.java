@@ -42,7 +42,7 @@ public final class BellShard {
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bell_shard"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+		new BlockItem(BLOCK, new Item.Properties().rarity(Rarity.EPIC)));
 
 	/** When each player's knell last tolled, in server ticks. Forgotten on restart, which only ever lets it toll sooner. */
 	private static final Map<UUID, Long> LAST = new HashMap<>();

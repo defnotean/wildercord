@@ -696,7 +696,7 @@ public final class Innates {
 					it.remove();
 					continue;
 				}
-				boolean jump = player.getLastClientInput().jump();
+				boolean jump = dev.wildercord.compat.McPlayerInput.of(player).jump();
 				if (jump && !gale.jumping && !player.onGround() && !player.isInWater() && !player.getAbilities().flying) {
 					dash(player);
 					gale.dashes--;
@@ -802,7 +802,7 @@ public final class Innates {
 		Vec3 flat = new Vec3(look.x, 0, look.z);
 		flat = flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize();
 		// Steered: the dash goes where you're pushing (forward, back, left, right), not only where you look.
-		net.minecraft.world.entity.player.Input input = player.getLastClientInput();
+		var input = dev.wildercord.compat.McPlayerInput.of(player);
 		int ahead = (input.forward() ? 1 : 0) - (input.backward() ? 1 : 0);
 		int aside = (input.left() ? 1 : 0) - (input.right() ? 1 : 0);
 		if (ahead != 0 || aside != 0) {

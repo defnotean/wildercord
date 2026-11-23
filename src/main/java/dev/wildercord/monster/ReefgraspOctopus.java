@@ -131,6 +131,7 @@ public class ReefgraspOctopus extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		setState(ACTING, now < actingUntil);
@@ -287,7 +288,7 @@ public class ReefgraspOctopus extends WildMonster {
 	/** Out of the water: it dries out, and flops about hoping to land back in. */
 	private void dryOut(ServerLevel level, long now) {
 		if (now % OctopusRules.DRY_EVERY == 0) {
-			hurt(level, damageSources().dryOut(), 1.0F);
+			hurt(damageSources().dryOut(), 1.0F);
 		}
 		if (onGround() && random.nextFloat() < 0.08F) {
 			setDeltaMovement(getDeltaMovement().add((random.nextFloat() * 2 - 1) * 0.15, 0.35, (random.nextFloat() * 2 - 1) * 0.15));

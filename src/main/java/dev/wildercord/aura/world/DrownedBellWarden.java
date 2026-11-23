@@ -149,6 +149,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-11,b.getY()-1,b.getZ()-33,b.getX()+11,b.getY()+13,b.getZ()+13));}
 		// Left alone long enough (its prey died and went home, say) and it has knelt again in the meantime.
@@ -211,7 +212,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.DAMAGE_INDICATOR,to.x,to.y,to.z,6,.3,.3,.3,.1);
 		Feels.sound(level,b,"aura_bell_warden_toll",.6F,1.5F+random.nextFloat()*.2F);
 		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
-		if(m.isAlive())m.kill(level);
+		if(m.isAlive())m.kill();
 	}
 
 	/** The nearest player in the hall close enough to its vigil to wake it, if any. */
@@ -449,7 +450,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		still();face(aim);
 		var at=position().add(ahead(aim).scale(3.4));
 		if(left%8==0){sound(level,at,SoundEvents.GRINDSTONE_USE,.9F,.5F+random.nextFloat()*.1F);sound(level,at,SoundEvents.CHAIN_HIT,.8F,.6F);}
-		if(left%3==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK_CRUMBLE,ground(level,at)),at.x,at.y+.1,at.z,4,.3,.1,.3,.1);
+		if(left%3==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.1,at.z,4,.3,.1,.3,.1);
 		if(--left<=0){sound(level,at,SoundEvents.STONE_BREAK,1.4F,.6F);dust(level,at,24,.5);pose(BellWardenRules.WATCH,gap());}
 	}
 
@@ -738,7 +739,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		}
 		if(el==tell){
 			entityData.set(CRACKED,true);bar.setColor(BossEvent.BossBarColor.PURPLE);
-			Feels.sound(level,b,"aura_bell_warden_knell",2.6F,.6F);sound(level,b,SoundEvents.GENERIC_EXPLODE.value(),1.6F,.7F);sound(level,b,SoundEvents.GLASS_BREAK,1.6F,.5F);
+			Feels.sound(level,b,"aura_bell_warden_knell",2.6F,.6F);sound(level,b,SoundEvents.GENERIC_EXPLODE,1.6F,.7F);sound(level,b,SoundEvents.GLASS_BREAK,1.6F,.5F);
 			level.sendParticles(ParticleTypes.EXPLOSION,b.x,b.y,b.z,4,1,1,1,0);level.sendParticles(ParticleTypes.GLOW,b.x,b.y,b.z,60,1.5,1,1.5,.4);
 			ring(level,position(),BellWardenRules.CRACK_RADIUS*.6,ParticleTypes.SPLASH,30);dust(level,position(),30,2);
 			for(var p:prey(level)){double dx=p.getX()-getX(),dz=p.getZ()-getZ();if(BellWardenRules.blasts(Math.sqrt(dx*dx+dz*dz),p.getY()-getY()))hit(level,p,BellWardenRules.CRACK_DAMAGE,2,position(),.6);}
@@ -830,8 +831,8 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}
-	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
-		super.actuallyHurt(level,source,damage);
+	@Override protected void actuallyHurt(DamageSource source, float damage){
+		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,bell(),"aura_bell_warden_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}

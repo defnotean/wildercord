@@ -696,7 +696,7 @@ public class SandmawWyrm extends EliteMonster {
 			swallowed = caught.getUUID();
 			broke = 0;
 			pose(SandmawRules.GULPED, 0, SandmawRules.GULP_HOLD);
-			playSound(SoundEvents.GENERIC_EAT.value(), 2F, 0.4F);
+			playSound(SoundEvents.GENERIC_EAT, 2F, 0.4F);
 			caught.hurt(damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_CHEW));
 		} else {
 			pose(SandmawRules.CHOKING, 0, SandmawRules.CHOKING_TICKS);
@@ -740,7 +740,7 @@ public class SandmawWyrm extends EliteMonster {
 		if (s > 0 && s % SandmawRules.GULP_CHEW_EVERY == 0) {
 			victim.hurt(damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_CHEW));
 			victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0), this);
-			playSound(SoundEvents.GENERIC_EAT.value(), 1.6F, 0.5F);
+			playSound(SoundEvents.GENERIC_EAT, 1.6F, 0.5F);
 			level.sendParticles(MAW, maw.x, maw.y + 0.5, maw.z, 6, 0.4, 0.3, 0.4, 0);
 		}
 		if (left == 0) {
@@ -838,7 +838,7 @@ public class SandmawWyrm extends EliteMonster {
 		}
 		if (into == pull) {
 			playSound(SoundEvents.RAVAGER_ATTACK, 2F, 0.5F);
-			playSound(SoundEvents.GENERIC_EAT.value(), 1.6F, 0.4F);
+			playSound(SoundEvents.GENERIC_EAT, 1.6F, 0.4F);
 			sand(level, position(), 40, 1.5, 0.3);
 			for (LivingEntity victim : prey(level, SandmawRules.SINK_JAWS + 1)) {
 				Vec3 to = victim.position().subtract(position());

@@ -108,6 +108,7 @@ public class Skyray extends AmbientCreature {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (steered(level)) {
 			return;

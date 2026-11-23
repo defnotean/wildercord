@@ -1,5 +1,6 @@
 package dev.wildercord.gear;
 
+import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.Registry;

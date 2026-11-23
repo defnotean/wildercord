@@ -51,7 +51,8 @@ public final class SporebackSnail extends PathfinderMob {
   else if(l.getGameTime()>=hiddenUntil) {answerUntil=l.getGameTime()+60;Feels.sound(l,position(),"sporeback_answer",.4F,1);}
   return true;
  }
- @Override protected void customServerAiStep() {super.customServerAiStep();if(level.getGameTime()<hiddenUntil) {entityData.set(POSE,2);getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);}else if(pose()==2 && !shelterRest)entityData.set(POSE,0);if(answerUntil>level.getGameTime() && tickCount%12==0)level.sendParticles(net.minecraft.core.particles.ParticleTypes.SPORE_BLOSSOM_AIR,getX(),getY()+.5,getZ(),2,.12,.05,.12,0);}
+ @Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();super.customServerAiStep();if(level.getGameTime()<hiddenUntil) {entityData.set(POSE,2);getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);}else if(pose()==2 && !shelterRest)entityData.set(POSE,0);if(answerUntil>level.getGameTime() && tickCount%12==0)level.sendParticles(net.minecraft.core.particles.ParticleTypes.SPORE_BLOSSOM_AIR,getX(),getY()+.5,getZ(),2,.12,.05,.12,0);}
  @Override public boolean hurt(DamageSource source, float amount) {
 		ServerLevel level = (ServerLevel) level();
 boolean hit=super.hurt(source,amount);if(hit) {hiddenUntil=level().getGameTime()+SporebackRules.HIDE_TICKS;answerUntil=0;entityData.set(POSE,2);getNavigation().stop();}return hit;}

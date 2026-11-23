@@ -168,6 +168,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-17,b.getY()-3,b.getZ()-17,b.getX()+17,b.getY()+13,b.getZ()+17));}
 		// Left alone long enough (its prey died and went home, say) and it has curled up again in the meantime.
@@ -222,7 +223,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.CLOUD,to.x,to.y,to.z,8,.3,.4,.3,.02);
 		Feels.sound(level,to,"aura_frost_wyrmling_frost",.8F,1.2F+random.nextFloat()*.2F);
 		m.hurt(damageSources().freeze(),Float.MAX_VALUE);
-		if(m.isAlive())m.kill(level);
+		if(m.isAlive())m.kill();
 	}
 
 	/** The nearest player in the hall close enough to its mound to wake it, if any. */
@@ -444,7 +445,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			struck.clear();
 			var f=ahead(aim);
 			Feels.sound(level,position().add(0,2,0),"aura_frost_wyrmling_wing",1.7F,.8F+random.nextFloat()*.15F);
-			sound(level,position().add(f.scale(2)),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.2F,.7F);
+			sound(level,position().add(f.scale(2)),SoundEvents.BREEZE_WIND_CHARGE_BURST,1.2F,.7F);
 			for(int i=0;i<36;i++){
 				double sp=(random.nextDouble()-.5)*1.6;
 				level.sendParticles(i%3==0?ParticleTypes.POOF:ParticleTypes.SNOWFLAKE,getX()+f.x*1.5,getY()+.4+random.nextDouble()*2,getZ()+f.z*1.5,0,f.x-f.z*sp,.02,f.z+f.x*sp,.9);
@@ -1044,8 +1045,8 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}
-	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
-		super.actuallyHurt(level,source,damage);
+	@Override protected void actuallyHurt(DamageSource source, float damage){
+		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,head(),"aura_frost_wyrmling_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();thaw();super.remove(reason);}

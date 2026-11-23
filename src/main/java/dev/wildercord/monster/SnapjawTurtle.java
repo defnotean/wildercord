@@ -133,6 +133,7 @@ public class SnapjawTurtle extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		setState(ACTING, now < actingUntil);

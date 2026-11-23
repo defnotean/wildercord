@@ -145,6 +145,7 @@ public class GlowberryDormouse extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (tickCount % 20 == 0) {
@@ -167,7 +168,7 @@ public class GlowberryDormouse extends Animal {
 				// A berry from its cheeks, nibbled.
 				eatAt = now + DormouseRules.EAT_TICKS;
 				entityData.set(POUCH, pouch() - 1);
-				playSound(SoundEvents.GENERIC_EAT.value(), 0.3F, 1.8F);
+				playSound(SoundEvents.GENERIC_EAT, 0.3F, 1.8F);
 				heal(1.0F);
 			}
 		}
@@ -233,7 +234,7 @@ public class GlowberryDormouse extends Animal {
 			fedAt = level().getGameTime();
 			wake();
 			level().broadcastEntityEvent(this, (byte) 18);
-			playSound(SoundEvents.GENERIC_EAT.value(), 0.4F, 1.8F);
+			playSound(SoundEvents.GENERIC_EAT, 0.4F, 1.8F);
 		}
 		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 	}

@@ -121,6 +121,7 @@ public class MirebathCapybara extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (isBaby() || isPassenger()) {
@@ -155,7 +156,7 @@ public class MirebathCapybara extends Animal {
 		if (wearsApple()) {
 			entityData.set(APPLE, false);
 			heal(2);
-			playSound(SoundEvents.GENERIC_EAT.value(), 0.6F, 1.1F);
+			playSound(SoundEvents.GENERIC_EAT, 0.6F, 1.1F);
 			Fx.send(level, ParticleTypes.HAPPY_VILLAGER, getX(), getY() + 0.8, getZ(), 6, 0.3, 0.2, 0.3, 0.01);
 		}
 	}

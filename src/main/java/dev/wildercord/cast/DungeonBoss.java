@@ -323,6 +323,7 @@ public abstract class DungeonBoss extends Monster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		bossEvent.setProgress(getHealth() / getMaxHealth());
@@ -639,9 +640,9 @@ public abstract class DungeonBoss extends Monster {
 
 	/** Held at the start of its next phase: no one blow (or burst of them) takes it further. */
 	@Override
-	protected void actuallyHurt(ServerLevel level, DamageSource source, float damage) {
+	protected void actuallyHurt(DamageSource source, float damage) {
 		float before = getHealth();
-		super.actuallyHurt(level, source, damage);
+		super.actuallyHurt(source, damage);
 		if (!source.is(DamageTypes.GENERIC_KILL) && !source.is(DamageTypes.FELL_OUT_OF_WORLD) && shifting == 0) {
 			float capped = BossRules.capped(phase, getMaxHealth(), before, getHealth());
 			if (capped != getHealth()) {

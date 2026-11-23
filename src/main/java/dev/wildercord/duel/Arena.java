@@ -243,14 +243,14 @@ public final class Arena {
 		@Override
 		public void counting(int second) {
 			both(p -> p.displayClientMessage(Component.literal(String.valueOf(second)).withColor(0xFFE8C46A), true));
-			level.playSound(null, centre.x, centre.y, centre.z, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.PLAYERS, 1.0F, 0.6F + 0.2F * (3 - second));
+			level.playSound(null, centre.x, centre.y, centre.z, SoundEvents.NOTE_BLOCK_BELL, SoundSource.PLAYERS, 1.0F, 0.6F + 0.2F * (3 - second));
 			ring(32);
 		}
 
 		@Override
 		public void began() {
 			both(p -> p.displayClientMessage(Component.translatable("message.wildercord.arena.fight").withColor(0xFFFF6A4A), true));
-			level.playSound(null, centre.x, centre.y, centre.z, SoundEvents.RAID_HORN.value(), SoundSource.PLAYERS, 0.6F, 1.4F);
+			level.playSound(null, centre.x, centre.y, centre.z, SoundEvents.RAID_HORN, SoundSource.PLAYERS, 0.6F, 1.4F);
 		}
 
 		@Override

@@ -37,6 +37,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -305,7 +306,7 @@ public final class Imbuing {
 		Glyph glyph = new Glyph(pos, face, ids, charges, player.getUUID(), color, now, level.getBlockState(pos).getBlock());
 		glyphs.put(glyph);
 		Vec3 at = faceCentre(level, glyph);
-		Vec3 n = Vec3.atLowerCornerOf(face.getUnitVec3i());
+		Vec3 n = Vec3.atLowerCornerOf(face.getNormal());
 		Sigils.spell(level, at.add(n.scale(0.03)), n, runesOf(ids), color, circleSize(level, glyph) * 1.1F, 40);
 		Light.groundRing(level, at, color, 0.1, 1.1, 0.05, 12);
 		Sigils.flash(level, at, color, 1.2F);
@@ -368,7 +369,7 @@ public final class Imbuing {
 
 	/** Where a creature must be to set a glyph off: on it, or touching the face it's on. */
 	static AABB zone(ServerLevel level, Glyph glyph) {
-		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getUnitVec3i());
+		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getNormal());
 		return shape(level, glyph.pos()).expandTowards(n.scale(0.5)).inflate(0.02);
 	}
 
@@ -690,35 +691,35 @@ public final class Imbuing {
 	}
 
 	/** Using an imbued item that has no other way to let go: at what you're looking at. */
-	private static InteractionResult onUse(Player player, Level level, InteractionHand hand) {
-		if (player instanceof ServerPlayer acting && ((ExciseCasting.blocking(acting) || dev.wildercord.cast.LessonPackCasting.blocking(acting)) || dev.wildercord.aura.MastersArts.committed(acting))
-			&& player.getItemInHand(hand).has(WildercordComponents.IMBUED)) return InteractionResult.FAIL;
+	private static InteractionResultHolder<ItemStack> onUse(Player player, Level level, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
+		if (player instanceof ServerPlayer acting && ((ExciseCasting.blocking(acting) || dev.wildercord.cast.LessonPackCasting.blocking(acting)) || dev.wildercord.aura.MastersArts.committed(acting))
+			&& stack.has(WildercordComponents.IMBUED)) return InteractionResultHolder.fail(stack);
 		Imbued imbued = stack.get(WildercordComponents.IMBUED);
 		if (imbued == null || Imbued.release(stack) != Imbued.Release.USE) {
-			return InteractionResult.PASS;
+			return InteractionResultHolder.pass(stack);
 		}
 		if (!(player instanceof ServerPlayer server)) {
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(stack);
 		}
 		try (var admission = ActionAdmission.begin(server)) {
-			if (admission == null) return InteractionResult.FAIL;
+			if (admission == null) return InteractionResultHolder.fail(stack);
 			if (!holds(server, stack, imbued)) {
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(stack);
 			}
 			if (!ready(server)) {
 				server.displayClientMessage(Component.translatable("message.wildercord.imbue_cooling",
 					String.format(java.util.Locale.ROOT, "%.1f", waiting(server) / 20.0)).withStyle(ChatFormatting.GRAY), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(stack);
 			}
 			Cast.Trigger at = aim(server, imbued.runes());
 			if (at == null) {
 				server.displayClientMessage(Component.translatable("message.wildercord.imbue_no_aim").withStyle(ChatFormatting.GRAY), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(stack);
 			}
-			if (!release(server, stack, imbued, at)) return InteractionResult.FAIL;
+			if (!release(server, stack, imbued, at)) return InteractionResultHolder.fail(stack);
 			dev.wildercord.compat.McEntities.swing(server, hand, true);
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(stack);
 		}
 	}
 
@@ -1010,7 +1011,7 @@ public final class Imbuing {
 		}
 		cool(owner, glyph.runes());
 		Vec3 at = faceCentre(level, glyph);
-		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getUnitVec3i());
+		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getNormal());
 		Cast.Trigger trigger;
 		if (stepper != null) {
 			Vec3 c = stepper.getBoundingBox().getCenter();
@@ -1042,7 +1043,7 @@ public final class Imbuing {
 
 	/** The glyph's circle, faint, for the players near it (fainter still while its maker is away). */
 	private static void show(ServerLevel level, Glyph glyph, boolean awake) {
-		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getUnitVec3i());
+		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getNormal());
 		Vec3 at = faceCentre(level, glyph).add(n.scale(0.02));
 		int color = dim(glyph.color(), awake ? 0.55F : 0.22F);
 		dev.wildercord.content.SpellCircleOption circle = new dev.wildercord.content.SpellCircleOption(
@@ -1055,7 +1056,7 @@ public final class Imbuing {
 	}
 
 	private static void fade(ServerLevel level, Glyph glyph) {
-		Vec3 at = Vec3.atCenterOf(glyph.pos()).add(Vec3.atLowerCornerOf(glyph.face().getUnitVec3i()).scale(0.5));
+		Vec3 at = Vec3.atCenterOf(glyph.pos()).add(Vec3.atLowerCornerOf(glyph.face().getNormal()).scale(0.5));
 		Fx.send(level, net.minecraft.core.particles.ParticleTypes.ENCHANT, at, 12, 0.3, 0.3);
 		Fx.sound(level, at, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.4F, 1.5F);
 	}

@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;

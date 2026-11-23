@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,6 @@ public final class BattlefieldMemorial extends Block implements EntityBlock {
 		if (player instanceof net.minecraft.server.level.ServerPlayer p) Battlefields.begin(p,pos);
 		return InteractionResult.SUCCESS;
 	}
-	@Override protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack,BlockState state,Level level,BlockPos pos,
+	@Override protected ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack,BlockState state,Level level,BlockPos pos,
 		Player player,net.minecraft.world.InteractionHand hand,BlockHitResult hit) { return useWithoutItem(state,level,pos,player,hit); }
 }

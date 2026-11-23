@@ -106,7 +106,7 @@ public final class UpgradeSites extends SavedData {
 		var source=level.getChunkSource();
 		for(int x=fromX;x<=toX;x++)for(int z=fromZ;z<=toZ;z++){var chunk=source.getChunkNow(x,z);if(chunk!=null)observe(level,chunk,journal);}
 		if(family.id().equals(UpgradeCatalog.SWORD_TOMB)) {
-			var box=new AABB(fromX*16,level.getMinY(),fromZ*16,(toX+1)*16,level.getMaxY()+1,(toZ+1)*16);
+			var box=new AABB(fromX*16,level.getMinBuildHeight(),fromZ*16,(toX+1)*16,level.getMaxBuildHeight()+1,(toZ+1)*16);
 			if(!level.getEntities(SwordTombs.KEEPER,box,e->e.isAlive()).isEmpty())return "A live Gravekeeper is loaded in this spread region; a second keeper site is refused";
 		}
 		String natural=natural(level,family,plan.chunkX(),plan.chunkZ(),regions);

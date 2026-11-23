@@ -236,7 +236,7 @@ public final class Giants {
 		}
 		level.sendParticles(ParticleTypes.EXPLOSION, mob.getX(), mob.getY() + 0.2, mob.getZ(), 6, radius / 2, 0.1, radius / 2, 0);
 		level.sendParticles(ParticleTypes.CLOUD, mob.getX(), mob.getY() + 0.2, mob.getZ(), 30, radius / 2, 0.1, radius / 2, 0.05);
-		level.playSound(null, mob.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 1.5F, 0.55F);
+		level.playSound(null, mob.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 0.55F);
 		return hit;
 	}
 

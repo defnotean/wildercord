@@ -55,7 +55,7 @@ final class Landing {
 	static Vec3 surface(ServerLevel level, int x, int z, ServerPlayer player, boolean strict) {
 		level.getChunk(x >> 4, z >> 4);
 		int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-		if (y <= level.getMinY() || y >= level.getMaxY()) {
+		if (y <= level.getMinBuildHeight() || y >= level.getMaxBuildHeight()) {
 			return null;
 		}
 		return near(level, new Vec3(x + 0.5, y, z + 0.5), player, strict);

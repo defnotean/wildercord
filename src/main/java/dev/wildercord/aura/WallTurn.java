@@ -36,7 +36,7 @@ final class WallTurn {
 		this.player = player; level = (ServerLevel) player.level(); owner = ReleasedArtOwner.capture(player);
 		blade = player.getMainHandItem(); method = Aura.data(player).method();
 		start = player.position(); last = start; wall = contact.getBlockPos().immutable();
-		normal = Vec3.atLowerCornerOf(contact.getDirection().getUnitVec3i());
+		normal = Vec3.atLowerCornerOf(contact.getDirection().getNormal());
 		warded = DungeonWards.movementWard(level, player.blockPosition());
 		accepted = level.getGameTime(); fallRisk = Math.max(0, player.fallDistance);
 	}
@@ -113,11 +113,11 @@ final class WallTurn {
 		Vec3 chest = player.position().add(0, Math.min(1.2, player.getBbHeight() * .65), 0);
 		BlockHitResult nearest = null;
 		for (Direction face : Direction.Plane.HORIZONTAL) {
-			Vec3 end = chest.add(Vec3.atLowerCornerOf(face.getUnitVec3i()).scale(WallTurnRules.REACH));
+			Vec3 end = chest.add(Vec3.atLowerCornerOf(face.getNormal()).scale(WallTurnRules.REACH));
 			if (!loaded(level, new AABB(chest, end).inflate(.01))) continue;
 			BlockHitResult hit = level.clip(new ClipContext(chest, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 			if (hit.getType() != HitResult.Type.BLOCK || hit.getDirection().getAxis().isVertical() || dangerous(level, hit.getBlockPos())) continue;
-			Vec3 visible = hit.getLocation().add(Vec3.atLowerCornerOf(hit.getDirection().getUnitVec3i()).scale(.01));
+			Vec3 visible = hit.getLocation().add(Vec3.atLowerCornerOf(hit.getDirection().getNormal()).scale(.01));
 			if (!loaded(level, new AABB(player.getEyePosition(), visible).inflate(.01))) continue;
 			if (level.clip(new ClipContext(player.getEyePosition(), visible, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() != HitResult.Type.MISS) continue;
 			if (nearest == null || chest.distanceToSqr(hit.getLocation()) < chest.distanceToSqr(nearest.getLocation())) nearest = hit;
@@ -154,7 +154,7 @@ final class WallTurn {
 	}
 	private static boolean loaded(ServerLevel level, AABB box) {
 		if (!Double.isFinite(box.getSize()) || box.getXsize() > 4 || box.getYsize() > 6 || box.getZsize() > 4) return false;
-		if (box.minY < level.getMinY() || box.maxY >= level.getMaxY()) return false;
+		if (box.minY < level.getMinBuildHeight() || box.maxY >= level.getMaxBuildHeight()) return false;
 		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(box.minX, box.minY, box.minZ), BlockPos.containing(box.maxX, box.maxY, box.maxZ)))
 			if (!level.hasChunkAt(pos)) return false;
 		return true;

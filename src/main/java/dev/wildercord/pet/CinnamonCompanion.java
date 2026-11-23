@@ -209,7 +209,7 @@ final class CinnamonCompanion {
 			return;
 		}
 		changed(dog);
-		boolean unsafe = dog.getY() < dog.level().getMinY() + 2 || !dog.level().noCollision(dog, dog.getBoundingBox());
+		boolean unsafe = dog.getY() < dog.level().getMinBuildHeight() + 2 || !dog.level().noCollision(dog, dog.getBoundingBox());
 		boolean requested = REQUESTED.contains(player.getUUID());
 		boolean distant = dog.level() != player.level() || !dog.isOrderedToSit() && dog.distanceToSqr(player) > CinnamonRecoveryRules.FOLLOW_DISTANCE * CinnamonRecoveryRules.FOLLOW_DISTANCE;
 		if (requested || unsafe || distant) {

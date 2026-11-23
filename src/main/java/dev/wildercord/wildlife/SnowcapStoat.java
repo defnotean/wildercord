@@ -136,6 +136,7 @@ public class SnowcapStoat extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (tickCount % 100 == 1) {

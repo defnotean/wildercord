@@ -169,6 +169,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		return AshenStagRules.within(at.x,at.y,at.z,gladeMin.getX(),gladeMin.getY(),gladeMin.getZ(),gladeMax.getX(),gladeMax.getY(),gladeMax.getZ(),margin);
 	}
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-17,b.getY()-1,b.getZ()-9,b.getX()+17,b.getY()+13,b.getZ()+25));}
 		// Left alone long enough (its prey died and went home, say) and it has bedded down again in the meantime.
@@ -249,7 +250,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.LARGE_SMOKE,to.x,to.y,to.z,8,.3,.4,.3,.03);
 		Feels.sound(level,h,"aura_ashen_stag_snort",.8F,1.2F+random.nextFloat()*.2F);
 		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
-		if(m.isAlive())m.kill(level);
+		if(m.isAlive())m.kill();
 	}
 
 	/** The nearest player in the glade close enough to its bed to wake it, if any. */
@@ -1006,8 +1007,8 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
-	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
-		super.actuallyHurt(level,source,damage);
+	@Override protected void actuallyHurt(DamageSource source, float damage){
+		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,head(),"aura_ashen_stag_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}

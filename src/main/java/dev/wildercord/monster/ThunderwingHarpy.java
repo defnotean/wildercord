@@ -142,6 +142,7 @@ public class ThunderwingHarpy extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (home == null) {
@@ -279,7 +280,7 @@ public class ThunderwingHarpy extends WildMonster {
 			return new Vec3(home.x, Math.max(getY(), home.y), home.z);
 		}
 		int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, column.getX(), column.getZ());
-		return new Vec3(x, Math.max(ground + 5 + getRandom().nextDouble() * 6, level.getMinY() + 4), z);
+		return new Vec3(x, Math.max(ground + 5 + getRandom().nextDouble() * 6, level.getMinBuildHeight() + 4), z);
 	}
 
 	/** Folds its wings and stoops at where the target is (and where it's heading), in a straight line. */

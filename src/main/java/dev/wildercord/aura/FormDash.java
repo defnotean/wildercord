@@ -581,7 +581,7 @@ public final class FormDash {
 				if (visible(near)) { foe = near; break; }
 			if (foe == null) { sound(player, SoundEvents.PLAYER_ATTACK_NODAMAGE, .8F, .8F); return; }
 			if (form == FormDashRules.SHOVE) {
-				sound(player, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), .8F, 1.1F);
+				sound(player, SoundEvents.BREEZE_WIND_CHARGE_BURST, .8F, 1.1F);
 				ArtKit.shove(foe, new Vec3(direction.x * FormDashRules.SHOVE_PUSH, .2, direction.z * FormDashRules.SHOVE_PUSH));
 				foe.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, FormDashRules.SHOVE_WEAKNESS, 0), player);
 			} else if (form == FormDashRules.GUARD_BREAK) {

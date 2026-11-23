@@ -107,7 +107,7 @@ public abstract class AuraBeast extends PathfinderMob {
 	}
 	public boolean hurtBySpell(ServerLevel level,DamageSource source,float amount) {
 		boolean previous=spellHit; spellHit=true;
-		try { return hurt(level,source,amount); } finally { spellHit=previous; }
+		try { return hurt(source,amount); } finally { spellHit=previous; }
 	}
 	@Override public boolean hurt(DamageSource source, float amount) {
 		ServerLevel level = (ServerLevel) level();

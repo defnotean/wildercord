@@ -35,7 +35,7 @@ public final class DungeonBlocks {
 
 	static {
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id("dungeon_altar"));
-		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(ALTAR, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(ALTAR, new Item.Properties().rarity(Rarity.EPIC)));
 	}
 
 	public static void init() {}

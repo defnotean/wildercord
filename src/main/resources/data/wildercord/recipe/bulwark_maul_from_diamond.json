@@ -7,7 +7,6 @@
     "id": "minecraft:diamond_axe",
     "components": {
       "wildercord:aura_forged": "bulwark_maul",
-      "minecraft:item_model": "wildercord:bulwark_maul",
       "minecraft:item_name": "{\"translate\":\"item.wildercord.bulwark_maul\"}",
       "minecraft:rarity": "rare"
     }

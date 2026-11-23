@@ -1,5 +1,6 @@
 package dev.wildercord.aura;
 
+import net.minecraft.world.InteractionResultHolder;
 import java.util.List;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
@@ -90,13 +91,13 @@ public class CrossroadsIncense extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		String why = refusal(player);
 		if (why != null) {
 			if (player instanceof ServerPlayer server) {
 				server.displayClientMessage(Component.translatable(why).withColor(0xA89CC8), true);
 			}
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		return super.use(level, player, hand);
 	}

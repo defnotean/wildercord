@@ -297,6 +297,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		if (home == null) {
@@ -705,7 +706,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	private void feed(ServerLevel level, Player player, ItemStack book) {
 		book.consume(1, player);
 		play(level, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.7F);
-		play(level, SoundEvents.GENERIC_EAT.value(), 0.7F, 0.8F);
+		play(level, SoundEvents.GENERIC_EAT, 0.7F, 0.8F);
 		if (tamed()) {
 			heal(MimicRules.BOOK_HEAL);
 			level.sendParticles(ParticleTypes.HEART, getX(), getY() + 1.0, getZ(), 2, 0.3, 0.2, 0.3, 0);

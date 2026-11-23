@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.InteractionResultHolder;
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.Aura;
@@ -72,24 +73,24 @@ public class TechniqueScrollItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		String part = partOf(stack).orElse(null);
 		if (part == null) {
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		if (player instanceof ServerPlayer server) {
 			String why = refusal(server, part);
 			if (why != null) {
 				server.displayClientMessage(Component.translatable(why, Component.translatable(TechniqueRules.nameKey(part))).withColor(0xA89CC8), true);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
 			if (!Techniques.teach(server, part, "scroll")) {
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
 			stack.consume(1, player);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	/** Why {@code player} can't learn {@code part} from a scroll now, as a language key (given the part's name), or null. */

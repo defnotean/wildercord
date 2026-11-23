@@ -1,5 +1,6 @@
 package dev.wildercord.familiar;
 
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,14 +27,14 @@ public class WispLanternItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		if (!(player instanceof ServerPlayer server)) {
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 		Bonds bonds = Familiars.get(server);
 		if (bonds.bonds().isEmpty()) {
 			server.displayClientMessage(Component.translatable("message.wildercord.wisp.lantern_empty").withStyle(ChatFormatting.GRAY), true);
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(mcUseStack);
 		}
 		if (player.isShiftKeyDown()) {
 			String from = bonds.out().isEmpty() ? bonds.last() : bonds.out();
@@ -41,13 +42,13 @@ public class WispLanternItem extends Item {
 			if (next != null && !next.id().equals(bonds.out())) {
 				Familiars.callOut(server, next);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 		if (!Familiars.recall(server, false)) {
 			Bonds.Bond last = bonds.get(bonds.last());
 			Familiars.callOut(server, last != null ? last : bonds.bonds().getFirst());
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(mcUseStack);
 	}
 
 	@Override

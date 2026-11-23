@@ -216,6 +216,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+16,b.getZ()+20));}
 		// Left alone long enough (his prey died and went home, say) and he has curled up again in the meantime.
@@ -259,7 +260,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.HAPPY_VILLAGER,to.x,to.y,to.z,8,.3,.4,.3,0);
 		sound(level,to,SoundEvents.AMETHYST_BLOCK_CHIME,1.2F,.8F+random.nextFloat()*.2F);
 		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
-		if(m.isAlive())m.kill(level);
+		if(m.isAlive())m.kill();
 	}
 
 	/** The nearest player in the grove close enough to his bed to wake him, if any. */
@@ -284,7 +285,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	/** Getting up: on his feet, the sword taken up in his jaws, his coat shaken out. */
 	private void rising(ServerLevel level,int el){
 		if(el==MojitoRules.GRAB_AT){
-			var h=head();sound(level,h,SoundEvents.ARMOR_EQUIP_NETHERITE.value(),1.6F,.7F);
+			var h=head();sound(level,h,SoundEvents.ARMOR_EQUIP_NETHERITE,1.6F,.7F);
 			level.sendParticles(MINT,h.x,h.y,h.z,20,1.6,.3,1.6,0);
 		}else if(el==MojitoRules.SHAKE_AT){
 			sound(level,position(),SoundEvents.WOLF_SHAKE,2F,.55F);
@@ -385,7 +386,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		if(target!=null)aim=yawTo(target.position());
 		switch(move){
 			case MojitoRules.SWEEP->{swing=-swing;entityData.set(SIDE,swing);pose(move,0,chained?MojitoRules.SWEEP_TELL_CHAINED:MojitoRules.SWEEP_TELL);growl(level,1.2F);}
-			case MojitoRules.CHOP->{pose(move,0,chained?MojitoRules.CHOP_TELL_CHAINED:MojitoRules.CHOP_TELL);growl(level,1.5F);sound(level,head(),SoundEvents.ARMOR_EQUIP_NETHERITE.value(),1.4F,.6F);}
+			case MojitoRules.CHOP->{pose(move,0,chained?MojitoRules.CHOP_TELL_CHAINED:MojitoRules.CHOP_TELL);growl(level,1.5F);sound(level,head(),SoundEvents.ARMOR_EQUIP_NETHERITE,1.4F,.6F);}
 			case MojitoRules.CHASE->{entityData.set(SIDE,random.nextBoolean()?1:-1);pose(move,0,MojitoRules.CHASE_TELL);bark(level,1.6F,.95F);}
 			case MojitoRules.POUNCE->{landing=position();pose(move,0,MojitoRules.POUNCE_TELL);bark(level,1.8F,.55F);}
 			case MojitoRules.BOLTS->{pose(move,0,MojitoRules.BOLT_TELL);sound(level,position().add(0,3,0),SoundEvents.AMETHYST_BLOCK_RESONATE,2F,.7F);}
@@ -483,7 +484,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			if(k%2==1)sound(level,tip,SoundEvents.ROOTED_DIRT_BREAK,1.2F,.6F+k*.05F);
 		}else if(k==MojitoRules.CHOP_CRACK){
 			var mid=bladeAt(0,(MojitoRules.CHOP_LENGTH+MojitoRules.CRACK_LENGTH)/2);
-			sound(level,mid,SoundEvents.GRAVEL_BREAK,2F,.5F);sound(level,mid,SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),2F,.7F);
+			sound(level,mid,SoundEvents.GRAVEL_BREAK,2F,.5F);sound(level,mid,SoundEvents.BREEZE_WIND_CHARGE_BURST,2F,.7F);
 			for(double x=MojitoRules.CHOP_LENGTH;x<=MojitoRules.CRACK_LENGTH;x+=1){
 				var p=bladeAt(0,x);
 				level.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR,ground(level,p)),p.x,p.y,p.z,6,.3,.4,.3,.3);
@@ -574,7 +575,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		}
 		move(MoverType.SELF,new Vec3(0,-3,0));setDeltaMovement(Vec3.ZERO);
 		var at=position();
-		sound(level,at,SoundEvents.MACE_SMASH_GROUND_HEAVY,2.2F,.7F);sound(level,at,SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.6F,.6F);
+		sound(level,at,SoundEvents.MACE_SMASH_GROUND_HEAVY,2.2F,.7F);sound(level,at,SoundEvents.BREEZE_WIND_CHARGE_BURST,1.6F,.6F);
 		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.2,at.z,40,2,.2,2,.15);
 		level.sendParticles(ParticleTypes.END_ROD,at.x,at.y+.3,at.z,16,1.2,.2,1.2,.08);
 		for(var p:prey(level))if(MojitoRules.lands(p.getX()-at.x,p.getY()-at.y,p.getZ()-at.z))hit(level,p,MojitoRules.POUNCE_DAMAGE,1.4,at,.5);
@@ -628,7 +629,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			sword=position().add(ahead(aim).scale(2.5)).add(0,MojitoRules.FETCH_HEIGHT,0);
 			swordStep=ahead(aim).scale(MojitoRules.FETCH_THROW);
 			fetchStage=1;entityData.set(SIDE,1);entityData.set(THROWN,true);
-			sound(level,head(),SoundEvents.TRIDENT_THROW.value(),2F,.6F);bark(level,1.8F,1F);
+			sound(level,head(),SoundEvents.TRIDENT_THROW,2F,.6F);bark(level,1.8F,1F);
 		}
 		var prey=prey(level);
 		if(fetchStage==1){
@@ -661,7 +662,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			if(fetchStage==2 && far<=MojitoRules.FETCH_CATCH){
 				entityData.set(THROWN,false);fetchStage=0;still();
 				pose(MojitoRules.PRANCE,MojitoRules.FETCH_PRANCE);
-				sound(level,head(),SoundEvents.ARMOR_EQUIP_NETHERITE.value(),1.4F,1.1F);bark(level,1.8F,1.25F);
+				sound(level,head(),SoundEvents.ARMOR_EQUIP_NETHERITE,1.4F,1.1F);bark(level,1.8F,1.25F);
 				var h=head();level.sendParticles(ParticleTypes.HAPPY_VILLAGER,h.x,h.y,h.z,14,1,.6,1,0);
 				return;
 			}
@@ -685,7 +686,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			face(yawTo(sword));
 			if(far<=1.5 || k>=MojitoRules.FETCH_RUN_TICKS+60){
 				entityData.set(THROWN,false);fetchStage=0;
-				sound(level,h,SoundEvents.ARMOR_EQUIP_NETHERITE.value(),1.4F,.7F);
+				sound(level,h,SoundEvents.ARMOR_EQUIP_NETHERITE,1.4F,.7F);
 				after(level,MojitoRules.FETCH,MojitoRules.FETCH_RECOVER);
 				return;
 			}
@@ -837,7 +838,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			return;
 		}
 		if(el==tell){
-			sound(level,position(),SoundEvents.WOLF_SHAKE,2.4F,.5F);sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.8F,.7F);
+			sound(level,position(),SoundEvents.WOLF_SHAKE,2.4F,.5F);sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST,1.8F,.7F);
 			level.sendParticles(ParticleTypes.SPLASH,getX(),getY()+3,getZ(),80,2.5,1.5,2.5,.4);
 			level.sendParticles(ParticleTypes.POOF,getX(),getY()+2,getZ(),30,2,1,2,.15);
 			ring(level,position(),MojitoRules.SHAKE_RADIUS,MINT,32);
@@ -928,7 +929,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			}else if(d<skid+run && !(d>skid && horizontalCollision)){
 				face(aim);
 				move(MoverType.SELF,new Vec3(dashStep.x,-.3,dashStep.z));setDeltaMovement(Vec3.ZERO);
-				if(d==skid)sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.6F,.8F);
+				if(d==skid)sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST,1.6F,.8F);
 				if(d%2==0){sound(level,position(),SoundEvents.WOLF_STEP,1.8F,.7F);trail.add(new Spot(getX(),getY(),getZ(),now+MojitoRules.TRAIL_TICKS));}
 				level.sendParticles(ParticleTypes.CLOUD,getX(),getY()+.5,getZ(),3,.8,.2,.8,.02);
 			}else{
@@ -1071,8 +1072,8 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
-	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
-		super.actuallyHurt(level,source,damage);
+	@Override protected void actuallyHurt(DamageSource source, float damage){
+		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)sound(level,head(),voice().hurtSound(),1.4F,.55F+random.nextFloat()*.1F);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}

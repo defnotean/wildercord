@@ -336,7 +336,7 @@ public final class DuelistDuels {
 					title(player, Component.literal(Integer.toString(second)).withColor(GOLD), null);
 					circle(active.level, player.position());
 					circle(active.level, duelist.position());
-					Fx.sound(active.level, player.position(), SoundEvents.NOTE_BLOCK_HAT.value(), 1.0F, 1.0F);
+					Fx.sound(active.level, player.position(), SoundEvents.NOTE_BLOCK_HAT, 1.0F, 1.0F);
 				}
 			}
 			if (active.duel.tick(now)) {

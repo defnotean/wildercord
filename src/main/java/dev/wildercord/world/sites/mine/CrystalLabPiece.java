@@ -43,7 +43,7 @@ public final class CrystalLabPiece extends MinePiece {
 		BlockPos top = piece.getWorldPos(CX, 0, CZ);
 		if (wet(c, top)) return Optional.empty();
 		int surface = ground(c, top), base = surface - SURFACE;
-		if (base < c.heightAccessor().getMinY() + 8 || deepDark(c, top.getX(), base + CY, top.getZ())) return Optional.empty();
+		if (base < c.heightAccessor().getMinBuildHeight() + 8 || deepDark(c, top.getX(), base + CY, top.getZ())) return Optional.empty();
 		for (BlockPos at : new BlockPos[] {top, piece.getWorldPos(1, 0, CZ), piece.getWorldPos(19, 0, CZ), piece.getWorldPos(CX, 0, 1), piece.getWorldPos(CX, 0, 19)}) {
 			if (fluidIn(c, at, base, base + 19)) return Optional.empty();
 		}

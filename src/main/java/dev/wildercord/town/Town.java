@@ -144,7 +144,7 @@ public final class Town {
 			.noOcclusion().noLootTable()));
 	private static final ResourceKey<Item> BOARD_ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bounty_board"));
 	public static final Item BOUNTY_BOARD_ITEM = Registry.register(BuiltInRegistries.ITEM, BOARD_ITEM_KEY,
-		new BlockItem(BOUNTY_BOARD, new Item.Properties().useBlockDescriptionPrefix()));
+		new BlockItem(BOUNTY_BOARD, new Item.Properties()));
 
 	private static final ResourceKey<Item> DEED_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("ridgeback_deed"));
 	public static final Item RIDGEBACK_DEED = Registry.register(BuiltInRegistries.ITEM, DEED_KEY,

@@ -1,5 +1,6 @@
 package dev.wildercord.ritual;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.ritual.RitualRules.Ritual;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,7 +32,7 @@ public class RitualTabletItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		if (player.isShiftKeyDown()) {
 			if (player instanceof ServerPlayer server) {
@@ -41,17 +42,17 @@ public class RitualTabletItem extends Item {
 					Component.translatable("ritual.wildercord." + next.id), next.minCircle).withColor(0xB8A8FF), true);
 				server.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.8F, 1.0F);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(mcUseStack);
 		}
 		if (player instanceof ServerPlayer server) {
 			Rituals.Result result = Rituals.check(((ServerLevel) server.level()), server, Rituals.ritual(stack));
 			if (result != Rituals.Result.DONE) {
 				refuse(server, Rituals.ritual(stack), result);
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(mcUseStack);
 			}
 		}
 		player.startUsingItem(hand);
-		return InteractionResult.CONSUME;
+		return InteractionResultHolder.consume(mcUseStack);
 	}
 
 	private static void refuse(ServerPlayer player, Ritual ritual, Rituals.Result result) {

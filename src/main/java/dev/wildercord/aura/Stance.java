@@ -333,7 +333,7 @@ public final class Stance {
 					player.stopUsingItem();
 				}
 				ItemStack shield = new ItemStack(Items.SHIELD);
-				player.getCooldowns().addCooldown(shield, ticks);
+				player.getCooldowns().addCooldown(shield.getItem(), ticks);
 				if (target instanceof ServerPlayer server && AuraGuard.guarding(server)) {
 					Aura.state(server, Aura.state(server).guard(-1, server.level().getGameTime()));
 				}

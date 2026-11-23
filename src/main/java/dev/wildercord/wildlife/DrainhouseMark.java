@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
-import net.minecraft.core.BlockPos;
+
+import net.minecraft.world.ItemInteractionResult;import net.minecraft.core.BlockPos;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,5 +20,5 @@ public final class DrainhouseMark extends Block implements EntityBlock {
  @Override public BlockEntity newBlockEntity(BlockPos p,BlockState s){return new DrainhouseMarkEntity(p,s);}
  @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c){return s.getValue(KIND)==2?Shapes.or(Block.box(1,0,1,15,4,15),Block.box(2,4,3,14,12,13)):Block.box(2,0,2,14,14,14);}
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult h){if(who instanceof net.minecraft.server.level.ServerPlayer player)DrainhouseInvestigation.read(player,p);return InteractionResult.SUCCESS;}
- @Override protected InteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h){if(who instanceof net.minecraft.server.level.ServerPlayer player){if(s.getValue(KIND)==2 && stack.is(BelowkeeperEquipment.BELL))DrainhouseInvestigation.repair(player,p,stack);else if(s.getValue(KIND)==2 && stack.is(SporebackContent.DEW))DrainhouseInvestigation.restore(player,p);else DrainhouseInvestigation.read(player,p);}return InteractionResult.SUCCESS;}
+ @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h){if(who instanceof net.minecraft.server.level.ServerPlayer player){if(s.getValue(KIND)==2 && stack.is(BelowkeeperEquipment.BELL))DrainhouseInvestigation.repair(player,p,stack);else if(s.getValue(KIND)==2 && stack.is(SporebackContent.DEW))DrainhouseInvestigation.restore(player,p);else DrainhouseInvestigation.read(player,p);}return ItemInteractionResult.SUCCESS;}
 }

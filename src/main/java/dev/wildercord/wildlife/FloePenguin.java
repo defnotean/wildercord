@@ -169,6 +169,7 @@ public class FloePenguin extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		double hurry = getMoveControl().hasWanted() ? getMoveControl().getSpeedModifier() : 0;
 		boolean slides = PenguinRules.slides(onSlick(), onGround() && !isInWater(), hurry);

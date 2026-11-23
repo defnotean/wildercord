@@ -92,8 +92,8 @@ final class CompanionLanding {
 	static SourcePermit sourcePermit(ServerPlayer owner, ServerLevel level, CinnamonDog dog) {
 		AABB box = dog.getBoundingBox();
 		if (!finite(box) || box.getXsize() > 2 || box.getYsize() > 3 || box.getZsize() > 2) return null;
-		BlockPos min = BlockPos.containing(box.minX + 1e-5, Math.clamp(box.minY, level.getMinY(), level.getMaxY() - 1), box.minZ + 1e-5);
-		BlockPos max = BlockPos.containing(box.maxX - 1e-5, Math.clamp(box.maxY - 1e-5, level.getMinY(), level.getMaxY() - 1), box.maxZ - 1e-5);
+		BlockPos min = BlockPos.containing(box.minX + 1e-5, Math.clamp(box.minY, level.getMinBuildHeight(), level.getMaxBuildHeight() - 1), box.minZ + 1e-5);
+		BlockPos max = BlockPos.containing(box.maxX - 1e-5, Math.clamp(box.maxY - 1e-5, level.getMinBuildHeight(), level.getMaxBuildHeight() - 1), box.maxZ - 1e-5);
 		java.util.Map<BlockPos, net.minecraft.world.level.block.state.BlockState> observed = new java.util.HashMap<>();
 		for (BlockPos p : BlockPos.betweenClosed(min, max)) {
 			if (!level.hasChunkAt(p) || !level.getWorldBorder().isWithinBounds(p) || DungeonWards.warded(level, p)

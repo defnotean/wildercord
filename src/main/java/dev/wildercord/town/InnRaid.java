@@ -237,7 +237,7 @@ public final class InnRaid {
 	}
 
 	private void open() {
-		level.playSound(null, BlockPos.containing(centre), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 4F, 1F);
+		level.playSound(null, BlockPos.containing(centre), SoundEvents.RAID_HORN, SoundSource.HOSTILE, 4F, 1F);
 		for (ServerPlayer player : defenders()) {
 			Town.set(player, Town.standing(player).raided(day));
 			player.sendSystemMessage(Component.translatable("message.wildercord.inn_raid.begin", InnRaidRules.waves(tier)).withColor(COLOR));
@@ -321,7 +321,7 @@ public final class InnRaid {
 		waveDeadline = now + InnRaidRules.WAVE_TICKS;
 		int size = InnRaidRules.waveSize(tier, n);
 		boolean last = InnRaidRules.lastWave(tier, n);
-		level.playSound(null, BlockPos.containing(centre), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 3F, 1.1F + 0.05F * n);
+		level.playSound(null, BlockPos.containing(centre), SoundEvents.RAID_HORN, SoundSource.HOSTILE, 3F, 1.1F + 0.05F * n);
 		for (ServerPlayer player : defenders) {
 			player.displayClientMessage(Component.translatable(last ? "message.wildercord.inn_raid.last" : "message.wildercord.inn_raid.wave",
 				n, InnRaidRules.waves(tier)).withColor(COLOR), true);

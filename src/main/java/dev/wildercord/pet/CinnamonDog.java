@@ -494,7 +494,7 @@ public final class CinnamonDog extends TamableAnimal {
 					net.minecraft.sounds.SoundSource.NEUTRAL, 0.5F, 1.6F + age * 0.01F);
 			}
 			if (age == LICK_GROW) {
-				level().playSound(null, getX(), getEyeY(), getZ(), net.minecraft.sounds.SoundEvents.GENERIC_DRINK.value(),
+				level().playSound(null, getX(), getEyeY(), getZ(), net.minecraft.sounds.SoundEvents.GENERIC_DRINK,
 					net.minecraft.sounds.SoundSource.NEUTRAL, 0.9F, 1.5F);
 			}
 			return;
@@ -514,7 +514,7 @@ public final class CinnamonDog extends TamableAnimal {
 		settled = 0;
 		player.setAttached(CinnamonState.BOW, on);
 		changed();
-		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value() : net.minecraft.sounds.SoundEvents.SHEEP_SHEAR,
+		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER : net.minecraft.sounds.SoundEvents.SHEEP_SHEAR,
 			net.minecraft.sounds.SoundSource.NEUTRAL, 0.8F, 1.3F);
 	}
 

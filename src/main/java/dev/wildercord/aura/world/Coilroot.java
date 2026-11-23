@@ -31,7 +31,7 @@ public final class Coilroot {
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("coilroot"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+		new BlockItem(BLOCK, new Item.Properties().rarity(Rarity.EPIC)));
 
 	/** Whether this player has eaten of it. */
 	public static boolean eaten(Player player) {

@@ -130,7 +130,7 @@ public final class TrailSignatures {
    || !NextSignatureSafety.open(c,p.getEyePosition(),t.destination().add(0,p.getEyeHeight(),0),7)){
    TOWS.remove(p.getUUID());if(p.isAlive() && p.level()==c.level && !p.onGround())p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,40,0,false,true));return;
   }
-  if(p.getLastClientInput().forward()){
+  if(dev.wildercord.compat.McPlayerInput.of(p).forward()){
    double speed=NextSignatureRules.tow(distance);var flat=new Vec3(delta.x,0,delta.z).normalize().scale(speed*.4);
    var old=p.getDeltaMovement();var lateral=new Vec3(old.x+flat.x,0,old.z+flat.z);
    if(old.x*old.x+old.z*old.z>.1024 || Math.abs(old.y)>.35){TOWS.remove(p.getUUID());return;}

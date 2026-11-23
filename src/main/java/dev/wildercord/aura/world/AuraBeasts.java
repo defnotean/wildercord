@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.config.Config;
@@ -43,20 +44,20 @@ public final class AuraBeasts {
 	private static Item item(String id,boolean usable) {
 		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id));
 		return Registry.register(BuiltInRegistries.ITEM,key,new AuraWorld.Lore(id,new Item.Properties().stacksTo(id.equals("ridge_whistle")?1:64)) {
-			@Override public InteractionResult use(Level level,Player p,InteractionHand hand) {
-				if(!usable) return InteractionResult.PASS;
-				var stack=p.getItemInHand(hand); if(p.getCooldowns().isOnCooldown(stack)) return InteractionResult.PASS;
+			@Override public InteractionResultHolder<ItemStack> use(Level level,Player p,InteractionHand hand) { ItemStack mcUseStack = p.getItemInHand(hand);
+				if(!usable) return InteractionResultHolder.pass(mcUseStack);
+				var stack=p.getItemInHand(hand); if(p.getCooldowns().isOnCooldown(stack.getItem())) return InteractionResultHolder.pass(mcUseStack);
 				if(level instanceof ServerLevel server) {
 					if(id.equals("bastion_poultice")) {
 						p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,200,0)); p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,200,0));
-						p.getCooldowns().addCooldown(stack,600); if(!p.getAbilities().instabuild) stack.shrink(1);
+						p.getCooldowns().addCooldown(stack.getItem(),600); if(!p.getAbilities().instabuild) stack.shrink(1);
 						Feels.sound(server,p.position(),"aura_stonehorn_forage",.6F,.8F);
 					} else {
 						for(var beast:AuraBeastQueries.complete(server,Galeclaw.class,p.getBoundingBox().inflate(16),b->b.isAlive()).stream().filter(p::hasLineOfSight).toList()) beast.distract(p.position());
-						p.getCooldowns().addCooldown(stack,200); Feels.sound(server,p.position(),"aura_galeclaw_whistle",.8F,1);
+						p.getCooldowns().addCooldown(stack.getItem(),200); Feels.sound(server,p.position(),"aura_galeclaw_whistle",.8F,1);
 					}
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResultHolder.success(mcUseStack);
 			}
 		});
 	}

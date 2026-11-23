@@ -116,7 +116,7 @@ public class AstralObservatoryPiece extends DungeonPiece {
 		BlockPos entrance = piece.getWorldPos(CX, 0, 4);
 		int ground = context.chunkGenerator().getFirstOccupiedHeight(dome.getX(), dome.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
 			context.heightAccessor(), context.randomState());
-		if (ground <= context.heightAccessor().getMinY() + 8) {
+		if (ground <= context.heightAccessor().getMinBuildHeight() + 8) {
 			return Optional.empty();
 		}
 		piece.move(0, ground - 1 - F, 0);

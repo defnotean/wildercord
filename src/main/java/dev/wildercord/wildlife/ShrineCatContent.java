@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -101,9 +102,9 @@ public final class ShrineCatContent {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 			if (level.isClientSide()) {
-				return InteractionResult.SUCCESS;
+				return InteractionResultHolder.success(mcUseStack);
 			}
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.85F, 1.5F);
 			int recalled = 0;

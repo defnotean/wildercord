@@ -138,6 +138,7 @@ public class BlossomTanuki extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		switch (form()) {
@@ -216,7 +217,7 @@ public class BlossomTanuki extends Animal {
 			entityData.set(DRUMMING, should);
 		}
 		if (should && (now + getId()) % TanukiRules.BEAT_TICKS == 0) {
-			playSound(SoundEvents.NOTE_BLOCK_BASEDRUM.value(), 0.5F, TanukiRules.beatPitch(beat++));
+			playSound(SoundEvents.NOTE_BLOCK_BASEDRUM, 0.5F, TanukiRules.beatPitch(beat++));
 		}
 	}
 
