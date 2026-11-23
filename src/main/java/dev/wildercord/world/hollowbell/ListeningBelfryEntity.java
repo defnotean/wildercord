@@ -19,6 +19,7 @@ import java.util.UUID;
 public final class ListeningBelfryEntity extends BlockEntity {
 	private UUID guardian;
 	private boolean slain;
+	private long slainAt;
 
 	public ListeningBelfryEntity(BlockPos pos, BlockState state) { super(HollowBellContent.BELFRY_ENTITY, pos, state); }
 	public UUID guardian() { return guardian; }
@@ -34,7 +35,15 @@ public final class ListeningBelfryEntity extends BlockEntity {
 			if (piece instanceof BellSanctumPiece found && found.belfry().equals(worldPosition)) { sanctum = found; break; }
 		}
 		if (sanctum == null) { say(player, "decorative"); return InteractionResult.CONSUME; }
-		if (slain) { say(player, "finished"); return InteractionResult.CONSUME; }
+		if (slain) {
+			long remaining = dev.wildercord.cast.BossRules.respawnTicksRemaining(slainAt, server.getGameTime());
+			if (remaining > 0) {
+				player.sendSystemMessage(Component.literal("The arena rests. You can challenge the guardian again in "
+					+ dev.wildercord.cast.BossRules.formatRespawnRemaining(remaining) + "."), true);
+				return InteractionResult.CONSUME;
+			}
+			slain = false; slainAt = 0; guardian = null; setChanged();
+		}
 		if (!Guardians.enabled() || server.getDifficulty() == Difficulty.PEACEFUL || player.isCreative()) { say(player, "quiet"); return InteractionResult.CONSUME; }
 		if (guardian != null) {
 			if (server.getEntity(guardian) instanceof HollowBell bell && bell.belongsTo(worldPosition)) {
@@ -62,6 +71,7 @@ public final class ListeningBelfryEntity extends BlockEntity {
 	public boolean complete(UUID id) {
 		if (slain || !id.equals(guardian)) return false;
 		slain = true;
+		slainAt = level != null ? level.getGameTime() : 0L;
 		setChanged();
 		return true;
 	}
@@ -70,10 +80,12 @@ public final class ListeningBelfryEntity extends BlockEntity {
 		super.loadAdditional(input);
 		guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null);
 		slain = input.getBooleanOr("slain", false);
+		slainAt = input.getLongOr("slain_at", 0L);
 	}
 	@Override protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian);
 		output.putBoolean("slain", slain);
+		output.putLong("slain_at", slainAt);
 	}
 }

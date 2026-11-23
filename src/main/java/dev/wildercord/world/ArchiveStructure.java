@@ -24,7 +24,8 @@ public class ArchiveStructure extends Structure {
 
 	@Override
 	protected Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
-		if (!McWorldgen.canValidBiomeExistAtChunkCenter(context)) {
+		if (!McWorldgen.canValidBiomeExistAtChunkCenter(context)
+				|| StructureClearance.isBlocked(context, "archive")) {
 			return Optional.empty();
 		}
 		Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(context.random());

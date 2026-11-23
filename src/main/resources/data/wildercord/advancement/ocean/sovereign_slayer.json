@@ -1,0 +1,39 @@
+{
+  "parent": "wildercord:ocean/trench_forged",
+  "criteria": {
+    "sovereign_slayer": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "wildercord:thalassor"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:leviathan_heart_pearl"
+    },
+    "title": {
+      "translate": "advancements.wildercord.ocean.sovereign_slayer.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.ocean.sovereign_slayer.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "sovereign_slayer"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

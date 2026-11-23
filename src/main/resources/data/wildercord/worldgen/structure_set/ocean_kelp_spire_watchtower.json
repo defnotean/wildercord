@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:ocean_kelp_spire_watchtower",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 30,
+    "separation": 10,
+    "salt": 2026112203,
+    "exclusion_zone": {
+      "other_set": "minecraft:ocean_monuments",
+      "chunk_count": 6
+    }
+  }
+}

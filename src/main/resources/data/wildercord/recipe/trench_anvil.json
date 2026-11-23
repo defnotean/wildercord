@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    " A ",
+    "DDD"
+  ],
+  "key": {
+    "B": "wildercord:abyssal_iron_plate",
+    "A": "minecraft:anvil",
+    "D": "minecraft:polished_blackstone_bricks"
+  },
+  "result": {
+    "id": "wildercord:trench_anvil",
+    "count": 1
+  }
+}

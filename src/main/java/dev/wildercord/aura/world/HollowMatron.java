@@ -226,6 +226,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	 * {@link HollowMatronRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
 		var h=head();
 		// Her brood she spares while she fights; once she is back on her thread, they go too.
@@ -246,8 +247,9 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** The nearest player in the hall close enough to the floor under her to wake her, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=spot();
+		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
-			&& HollowMatronRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || HollowMatronRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){
@@ -1123,7 +1125,10 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_hollow_matron_death",1.8F,1);Guardians.reward(server,this,HollowMatronRules.TIER,bar,source);bar.removeAllPlayers();setNoGravity(false);}
+		if(level() instanceof ServerLevel server){
+			Feels.sound(server,head(),"aura_hollow_matron_death",1.8F,1);Guardians.reward(server,this,HollowMatronRules.TIER,bar,source);bar.removeAllPlayers();setNoGravity(false);
+			if(bound && !getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,new LairRespawns.Entry("hollow_matron",hang.immutable(),rest,hallMin.immutable(),hallMax.immutable(),floor,entityData.get(ANCHOR),BlockPos.ZERO,List.copyOf(pillars),List.copyOf(sacs),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+		}
 		reeled=null;super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}

@@ -1,0 +1,40 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_sacred_pig_village": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:wilds_sacred_pig_village"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:carrot"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_sacred_pig_village.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_sacred_pig_village.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_sacred_pig_village"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

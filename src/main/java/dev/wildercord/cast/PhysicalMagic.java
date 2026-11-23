@@ -79,6 +79,7 @@ public final class PhysicalMagic {
 		if(level.getBlockState(pos).equals(cell.placed)){level.setBlockAndUpdate(pos,cell.replaced);if(cell.placed.is(PhysicalBlocks.ROOT))LifeOwnerEvents.cell(cell.cast,"root_bulwark",pos,cell.placed,cell.replaced,LifeOwnerEvents.Moment.END);}
 		TemporaryBlocks.remove(level,pos);
 	}
+	static void evict(ServerLevel level,BlockPos pos){CELLS.remove(GlobalPos.of(level.dimension(),pos.immutable()));}
 	static int active(){return CELLS.size();}
 	/** Discrete terrain reactions do not renew expiry or produce additional material. */
 	static boolean interact(Cast incoming,RuneDef rune,Cast.Hit hit){

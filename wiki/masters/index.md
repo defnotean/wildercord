@@ -56,7 +56,7 @@ The Master needs clear, level ground around you. Only one trial can run in the s
 - **Lobby:** once you accept, the trial starts in **30 seconds**. Type `/master ready` to start sooner.
 - **Joining:** up to **8 players** can fight together. Each one must opt in: talk to the Master twice, or type `/master join` while standing near it. Being in your party doesn't sign anyone up.
 - **Arena:** stay within **24 blocks** of where the trial began. Leaving, dying or disconnecting removes you from the trial.
-- **Locked roster:** the Master's health is set when the trial starts. It has 480 health alone and 55% more for each extra challenger. People who leave or die don't make it easier for the rest.
+- **Locked roster:** the Master's health is set when the trial starts. It has 2,200 health alone and 55% more for each extra challenger. People who leave or die don't make it easier for the rest.
 - **Outsiders:** players who didn't join can't hurt the Master, and it can't hurt them.
 - **Time limit:** a trial ends after **20 minutes**. If every challenger is gone, the Master leaves after 10 seconds.
 
