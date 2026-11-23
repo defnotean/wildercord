@@ -9,12 +9,12 @@
           "name": "wildercord:star_barnacle_ambergris",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }

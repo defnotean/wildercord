@@ -10,10 +10,10 @@
           "weight": 2,
           "functions": [
             {
+              "function": "minecraft:set_components",
               "components": {
                 "wildercord:rune": "wildercord:shield"
-              },
-              "function": "minecraft:set_components"
+              }
             }
           ]
         },
@@ -23,10 +23,10 @@
           "weight": 2,
           "functions": [
             {
+              "function": "minecraft:set_components",
               "components": {
                 "wildercord:rune": "wildercord:keenkeep"
-              },
-              "function": "minecraft:set_components"
+              }
             }
           ]
         }
@@ -45,12 +45,12 @@
           "weight": 4,
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 3,
                 "max": 8
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         },
@@ -60,12 +60,12 @@
           "weight": 2,
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         },
@@ -75,12 +75,12 @@
           "weight": 3,
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 4,
                 "max": 10
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         },
@@ -90,12 +90,12 @@
           "weight": 3,
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 2,
                 "max": 5
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         },
@@ -105,12 +105,12 @@
           "weight": 3,
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 2,
                 "max": 5
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         },
@@ -120,12 +120,12 @@
           "weight": 2,
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }

@@ -40,9 +40,9 @@ def _player_condition(profile: DataPackProfile, node):
         item = dict(item)
         if profile.is_26_2:
             if "type" in item and "condition" not in item:
-                item["condition"] = item.pop("type")
+                item = {"condition": item.pop("type"), **item}
         elif "condition" in item and "type" not in item:
-            item["type"] = item.pop("condition")
+            item = {"type": item.pop("condition"), **item}
         converted.append(item)
     if profile.is_26_2:
         out["player"] = converted
@@ -62,9 +62,9 @@ def _recipe_unlock_condition(profile: DataPackProfile, node):
         conditions = dict(out["conditions"])
         if profile.is_26_2:
             if "recipes" in conditions:
-                conditions["recipe"] = conditions.pop("recipes")
+                conditions = {"recipe": conditions.pop("recipes"), **conditions}
         elif "recipe" in conditions:
-            conditions["recipes"] = conditions.pop("recipe")
+            conditions = {"recipes": conditions.pop("recipe"), **conditions}
         out["conditions"] = conditions
     if isinstance(out.get("conditions"), dict):
         out["conditions"] = _player_condition(profile, out["conditions"])

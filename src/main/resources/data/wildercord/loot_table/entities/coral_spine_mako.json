@@ -9,12 +9,12 @@
           "name": "wildercord:coral_edge_fang",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }
@@ -28,12 +28,12 @@
           "name": "minecraft:cod",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }
