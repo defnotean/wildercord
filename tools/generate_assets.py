@@ -262,7 +262,10 @@ def write_json(path, data):
         data = loot_format(data)
     elif "recipe" in path.parts:
         data = _normalize_recipe_variants(data)
-    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
+    # ensure_ascii=False: the lang file carries middots, arrows and quotes, and the
+    # committed copy keeps them readable. Escaping them here made the asset check
+    # report lang drift on every branch.
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
 def save(img, path, preview=None):
@@ -306,6 +309,20 @@ def main():
     write_json(DATA / "recipe/cinnamon_whistle.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
         "ingredients": ["minecraft:copper_ingot", "minecraft:bone", "minecraft:string"], "result": {"id": "wildercord:cinnamon_whistle"}})
     unlock_advancement("wildercord:cinnamon_whistle", "minecraft:copper_ingot")
+    item_model("cinnamon_grand_bow", "cinnamon_grand_bow")
+    write_json(ASSETS / "items/cinnamon_grand_bow.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_grand_bow"}})
+    write_json(DATA / "recipe/cinnamon_grand_bow.json", {"type": "minecraft:crafting_shaped", "category": "misc",
+        "pattern": ["GGG", "GBG", "ACA"],
+        "key": {"G": "minecraft:gold_ingot", "B": "wildercord:cinnamon_bow", "A": "minecraft:amethyst_shard", "C": "wildercord:mana_crystal"},
+        "result": {"id": "wildercord:cinnamon_grand_bow"}})
+    unlock_advancement("wildercord:cinnamon_grand_bow", "wildercord:cinnamon_bow")
+    item_model("cinnamon_harness", "cinnamon_harness")
+    write_json(ASSETS / "items/cinnamon_harness.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_harness"}})
+    write_json(DATA / "recipe/cinnamon_harness.json", {"type": "minecraft:crafting_shaped", "category": "misc",
+        "pattern": ["LSL", "CGC", "LFL"],
+        "key": {"L": "minecraft:leather", "S": "minecraft:saddle", "C": "minecraft:chest", "G": "minecraft:gold_ingot", "F": "minecraft:feather"},
+        "result": {"id": "wildercord:cinnamon_harness"}})
+    unlock_advancement("wildercord:cinnamon_harness", "minecraft:saddle")
     runes = read_runes()
     tex = ASSETS / "textures/item"
 
@@ -402,6 +419,8 @@ def main():
     soar_art.write(sys.modules[__name__])
     import aura_world_art  # The world of aura: duelists, fallen knights, pages, forged gear, the sash, their recipes and loot.
     aura_world_art.write(sys.modules[__name__])
+    import oathbound_knights_art
+    oathbound_knights_art.write(sys.modules[__name__])
     import way_art  # Ways: the four Ways' emblems, the Crossroads Incense and its recipe.
     way_art.write(sys.modules[__name__])
     import technique_art  # Techniques of one's own: each part's glyph, the writing page's seals, the technique scroll.
@@ -474,7 +493,10 @@ def write_lang(runes):
         "entity.wildercord.cinnamon": "Cinnamon",
         "item.wildercord.cinnamon_toy": "Cinnamon's Red Bone",
         "item.wildercord.cinnamon_bow": "Cinnamon's Bow",
+        "item.wildercord.cinnamon_grand_bow": "Cinnamon's Grand Bow",
+        "item.wildercord.cinnamon_harness": "Cinnamon's Flying Harness",
         "item.wildercord.cinnamon_whistle": "Cinnamon's Summoning Whistle",
+        "container.wildercord.cinnamon_harness": "Cinnamon's Saddlebags",
         "message.wildercord.cinnamon.grow": "Cinnamon grows! Her first treat starts one 60-second growth window.",
         "message.wildercord.cinnamon.growth_full": "Cinnamon is at her safe size limit. No treat was used.",
         "message.wildercord.cinnamon.growth_blocked": "Cinnamon needs clear space and solid ground to grow. No treat was used.",
@@ -491,6 +513,11 @@ def write_lang(runes):
         "message.wildercord.cinnamon.recall_identity": "Cinnamon's saved identity needs repair. Recovery is paused without replacing her. Ask an admin to restore the matching companion records from backup.",
         "message.wildercord.cinnamon.bow_on": "Cinnamon wears her bow. Shears take it off again.",
         "message.wildercord.cinnamon.bow_off": "You untie Cinnamon's bow.",
+        "message.wildercord.cinnamon.grand_bow_on": "Cinnamon dons her Grand Bow and grows permanently larger, stronger, and faster!",
+        "message.wildercord.cinnamon.grand_bow_off": "You untie Cinnamon's Grand Bow.",
+        "message.wildercord.cinnamon.harness_on": "Cinnamon wears her flying harness and twin side chests. Right-click to ride, sneak-use to open chests.",
+        "message.wildercord.cinnamon.harness_off": "You unbuckle Cinnamon's flying harness.",
+        "message.wildercord.cinnamon.lick_heal": "Cinnamon licks you, mending your wounds!",
         "message.wildercord.cinnamon.toy": "Cinnamon wiggles with her favourite red bone.",
         "message.wildercord.cinnamon.owner": "Cinnamon is waiting for her owner. Set owner in wildercord-cinnamon.json.",
         "message.wildercord.cinnamon.pet": "Cinnamon leans into your hand.",
@@ -1050,6 +1077,15 @@ def write_lang(runes):
     import town_art
     lang.update(town_art.LANG)
     town_art.write(sys.modules[__name__])
+    import oathhold_citizens_art
+    lang.update(oathhold_citizens_art.LANG)
+    oathhold_citizens_art.write(sys.modules[__name__])
+    import white_rabbit_art
+    lang.update(white_rabbit_art.LANG)
+    white_rabbit_art.write(sys.modules[__name__])
+    import ocean_expansion_art
+    lang.update(ocean_expansion_art.LANG)
+    ocean_expansion_art.write(sys.modules[__name__])
     import magic_art  # 0.13 magic: the mage-hunter's skin, egg and loot.
     lang.update(magic_art.LANG)
     magic_art.write(sys.modules[__name__])
@@ -1076,6 +1112,8 @@ def write_lang(runes):
     refuge_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
+    import oathbound_knights_art
+    lang.update(oathbound_knights_art.LANG)
     import masters_art
     lang.update(masters_art.LANG)
     masters_art.write(sys.modules[__name__])

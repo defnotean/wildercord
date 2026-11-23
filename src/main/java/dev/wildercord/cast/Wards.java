@@ -203,13 +203,20 @@ public final class Wards {
 			dev.wildercord.cast.feel.Feels.sound(cast.level, cast.caster.position(), "time_stop", 1.0F, 1.0F);
 		}
 		TechniqueVfx.stasisStart(cast.level, t);
+		if (Spirits.isBoss(t)) {
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				return;
+			}
+			int capped = BossRules.bossHoldTicks(ticks);
+			if (!STASIS.containsKey(t.getUUID())) {
+				TimeFx.stasisColumn(cast.level, t, capped);
+			}
+			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, capped, 4, false, true));
+			return;
+		}
 		// The column of frozen sand is drawn once and lasts the hold (a renewal by a repeating shape does not redraw it).
 		if (!STASIS.containsKey(t.getUUID())) {
 			TimeFx.stasisColumn(cast.level, t, ticks);
-		}
-		if (Spirits.isBoss(t)) {
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 4, false, true));
-			return;
 		}
 		Stasis held = STASIS.get(t.getUUID());
 		if (held != null && held.target == t) {
@@ -572,7 +579,15 @@ public final class Wards {
 				for (Entity e : level.getEntities(who, who.getBoundingBox().inflate(ZENO_REACH), e -> e instanceof LivingEntity && Targets.canHarm(ward.caster, e))) {
 					double d = e.getBoundingBox().getCenter().distanceTo(centre);
 					if (d <= ZENO_REACH) {
-						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 8, zenoLevel(d), false, false), ward.caster);
+						LivingEntity victim = (LivingEntity) e;
+						int slowTicks = 8;
+						if (Spirits.isBoss(victim)) {
+							if (!Spirits.tryClaimBossHold(victim, BossRules.BOSS_HOLD_MIN_TICKS, ward.caster)) {
+								continue;
+							}
+							slowTicks = BossRules.BOSS_HOLD_MIN_TICKS;
+						}
+						victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slowTicks, zenoLevel(d), false, false), ward.caster);
 					}
 				}
 			}

@@ -16,11 +16,11 @@ class MastersRulesTest {
 
 	@Test
 	void partyScalingIsBoundedAndDoesNotMultiplyIncomingDamageByPartySize() {
-		assertEquals(480, MastersRules.health(1));
-		assertEquals(480, MastersRules.health(-5));
-		assertEquals(744, MastersRules.health(2), 1e-6);
-		assertEquals(1272, MastersRules.health(4), 1e-6);
-		assertEquals(2328, MastersRules.health(8), 1e-6);
+		assertEquals(2200, MastersRules.health(1));
+		assertEquals(2200, MastersRules.health(-5));
+		assertEquals(3410, MastersRules.health(2), 1e-6);
+		assertEquals(5830, MastersRules.health(4), 1e-6);
+		assertEquals(10670, MastersRules.health(8), 1e-6);
 		assertEquals(1.0, MastersRules.postureMultiplier(1));
 		assertEquals(1.25, MastersRules.postureMultiplier(2), 1e-6);
 		assertEquals(1.75, MastersRules.postureMultiplier(4), 1e-6);

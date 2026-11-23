@@ -149,10 +149,14 @@ final class CinnamonCompanion {
 			&& (player == null || identity(player, entry) == CinnamonIdentityRules.Status.REGISTERED)) journal.put(id, entry.snapshot(dog));
 	}
 	static boolean mayRecall(ServerPlayer player) {
+		return mayActWith(player, null);
+	}
+	static boolean mayActWith(ServerPlayer player, CinnamonDog dog) {
 		if (stopping || !matches(player) || !player.isAlive() || player.isRemoved() || player.isSpectator()
-			|| player.isPassenger() || Duels.inDuel(player) || DuelistDuels.inDuel(player)
+			|| Duels.inDuel(player) || DuelistDuels.inDuel(player)
 			|| player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player
 			|| DungeonWards.warded(player.level(), player.blockPosition())) return false;
+		if (player.isPassenger() && (dog == null || player.getVehicle() != dog)) return false;
 		var nearby = new java.util.ArrayList<SwordMaster>();
 		player.level().getEntities(EntityTypeTestHolder.MASTERS, player.getBoundingBox().inflate(96), master -> master.distanceToSqr(player) <= 96 * 96, nearby, 17);
 		if (nearby.size() > 16) return false;
@@ -177,6 +181,11 @@ final class CinnamonCompanion {
 			release();
 		}
 		if (player == null) return;
+		if (player.getVehicle() instanceof CinnamonDog ridden && player.getUUID().equals(ownerId(ridden))) {
+			changed(ridden);
+			if (REQUESTED.remove(player.getUUID())) message(player, "recall_blocked");
+			return;
+		}
 		if (!mayRecall(player)) {
 			if (REQUESTED.remove(player.getUUID())) message(player, "recall_blocked");
 			return;
@@ -210,7 +219,7 @@ final class CinnamonCompanion {
 		boolean unsafe = dog.getY() < dog.level().getMinY() + 2 || !dog.level().noCollision(dog, dog.getBoundingBox());
 		boolean requested = REQUESTED.contains(player.getUUID());
 		boolean distant = dog.level() != player.level() || !dog.isOrderedToSit() && dog.distanceToSqr(player) > CinnamonRecoveryRules.FOLLOW_DISTANCE * CinnamonRecoveryRules.FOLLOW_DISTANCE;
-		if (requested || unsafe || distant) {
+		if ((requested || unsafe || distant) && !dog.isVehicle()) {
 			if (recall(player, dog, requested)) {
 				REQUESTED.remove(player.getUUID()); BLOCKED.remove(player.getUUID());
 				if (LEASE.heldBy(player.getUUID())) release();

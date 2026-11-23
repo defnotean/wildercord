@@ -22,5 +22,17 @@
     "fileID": 9715377,
     "file": "wildercord-0.15.0-alpha+mc26.3-sources.jar",
     "sha256": "5a90cd00177e57300f5a10a1171ff3ff21a8e29d6c2ea510d49bb5356fc0e5b3"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9757895,
+    "file": "wildercord-0.16.0-alpha+mc26.3.jar",
+    "sha256": "2f30df4b07db4cf49ec90fb5517ee28f8c531be82f0dcf99852f1b8a6cab3998"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9757933,
+    "file": "wildercord-0.16.0-alpha+mc26.3-sources.jar",
+    "sha256": "53f14c75de6513156326ce1d5fa6cf2e0c34346c7c4afd7dc4d5f15bbea75980"
   }
 ]

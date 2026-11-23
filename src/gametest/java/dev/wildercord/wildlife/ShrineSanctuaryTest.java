@@ -855,6 +855,99 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.removeAllEffects();
 				player.setHealth(player.getMaxHealth());
 				player.getFoodData().setFoodLevel(20);
+
+				// Anti-duplication regression: sit Freya >440 blocks away, cross |x|>500, ring Cat-Bell Charm,
+				// attempt duplicate tame & duplicate entity load, then verify genuine /kill recovery.
+				for (int x = 616; x <= 626; x++) {
+					for (int z = -4; z <= 6; z++) {
+						l.setBlock(new BlockPos(x, 110, z), Blocks.SMOOTH_STONE.defaultBlockState(), 2);
+						for (int y = 111; y <= 115; y++) {
+							l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+						}
+					}
+				}
+				ShrineCat yuki = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.YUKI));
+				check(yuki != null, "Yuki present for anti-duplication check");
+				yuki.setLoafing(false);
+				yuki.setOrderedToSit(false);
+				yuki.setInSittingPose(false);
+				yuki.teleportTo(619.5, 111.0, 0.5);
+				player.teleportTo(l, 620.5, 111.0, 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+			});
+			c.waitTicks(25);
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				ServerPlayer player = p(s);
+				ItemStack bell = new ItemStack(ShrineCatContent.CAT_BELL_CHARM, 1);
+				hold(s, bell);
+
+				// Normal ring at |x|>500 (440 blocks away from resting Freya) must NEVER clone Freya or any other variant.
+				bell.use(l, player, InteractionHand.MAIN_HAND);
+				List<ShrineCat> nearDistant = l.getEntitiesOfClass(ShrineCat.class, player.getBoundingBox().inflate(32.0),
+					cat -> cat.isAlive() && cat.isTame() && cat.isOwnedBy(player));
+				check(nearDistant.size() == 1 && nearDistant.getFirst().variant() == ShrineCatRules.Variant.YUKI,
+					"Distant/unloaded sitting cats were NEVER cloned at |x|>500 (found " + nearDistant.size() + ")");
+
+				// Return within active entity range of (180.5, 111.0, 4.0) so resting Freya's section loads cleanly.
+				player.teleportTo(l, 220.5, 111.0, 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+			});
+			c.waitTicks(15);
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				ServerPlayer player = p(s);
+				ItemStack bell = new ItemStack(ShrineCatContent.CAT_BELL_CHARM, 2);
+				hold(s, bell);
+
+				UUID oldFreyaId = guardianIds.get(ShrineCatRules.Variant.FREYA);
+				ShrineCat canonicalFreya = (ShrineCat) l.getEntity(oldFreyaId);
+				check(canonicalFreya != null && canonicalFreya.isAlive(), "Canonical Freya loaded in resting chunk");
+				player.setShiftKeyDown(true);
+				bell.use(l, player, InteractionHand.MAIN_HAND);
+				player.setShiftKeyDown(false);
+				check(canonicalFreya.distanceToSqr(player) <= 16.0 && canonicalFreya.getUUID().equals(oldFreyaId),
+					"Sneak-ring recalled canonical Freya without changing UUID or cloning");
+				long ownedFreyas = l.getEntitiesOfClass(ShrineCat.class, player.getBoundingBox().inflate(128.0),
+					cat -> cat.isAlive() && cat.isTame() && cat.isOwnedBy(player) && cat.variant() == ShrineCatRules.Variant.FREYA).size();
+				check(ownedFreyas == 1, "Expected exactly 1 Freya after sneak-ring recall (found " + ownedFreyas + ")");
+
+				// Attempt taming a second village Freya with Suzu Cat-Bell Charm -> refused by ShrineCatJournal.canTame.
+				ShrineCat extraVillageFreya = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
+				check(extraVillageFreya != null, "Duplicate tame candidate created");
+				extraVillageFreya.snapTo(222.5, 111.0, 0.5, 0.0F, 0.0F);
+				extraVillageFreya.configureVillage(ShrineCatRules.Variant.FREYA, new BlockPos(222, 111, 0));
+				extraVillageFreya.setNoAi(true);
+				l.addFreshEntity(extraVillageFreya);
+				extraVillageFreya.mobInteract(player, InteractionHand.MAIN_HAND);
+				check(!extraVillageFreya.isTame(), "Already-owned player cannot tame a second Freya");
+				extraVillageFreya.discard();
+
+				// Attempt loading a bogus clone -> immediately discarded by ShrineCatJournal ENTITY_LOAD guard.
+				ShrineCat bogusClone = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
+				check(bogusClone != null, "Bogus clone test entity created");
+				bogusClone.snapTo(223.0, 111.0, 1.5, 0.0F, 0.0F);
+				bogusClone.setVariant(ShrineCatRules.Variant.FREYA);
+				bogusClone.tame(player);
+				bogusClone.setRole(ShrineCatRules.ROLE_TAMED);
+				l.addFreshEntity(bogusClone);
+				check(bogusClone.isRemoved() && canonicalFreya.isAlive(),
+					"Duplicate ShrineCat body discarded cleanly on ENTITY_LOAD");
+
+				// Kill canonical Freya (/kill) -> Cat-Bell Charm recovers exactly ONE replacement, never two.
+				canonicalFreya.hurtServer(l, l.damageSources().genericKill(), 1000.0F);
+				check(!canonicalFreya.isAlive(), "Canonical Freya died to GENERIC_KILL");
+				hold(s, new ItemStack(ShrineCatContent.CAT_BELL_CHARM, 1));
+				player.getMainHandItem().use(l, player, InteractionHand.MAIN_HAND);
+				List<ShrineCat> recoveredFreyas = l.getEntitiesOfClass(ShrineCat.class, player.getBoundingBox().inflate(32.0),
+					cat -> cat.isAlive() && cat.isTame() && cat.isOwnedBy(player) && cat.variant() == ShrineCatRules.Variant.FREYA);
+				check(recoveredFreyas.size() == 1 && !recoveredFreyas.getFirst().getUUID().equals(oldFreyaId),
+					"Cat-Bell Charm recovered exactly 1 Freya after genuine death (found " + recoveredFreyas.size() + ")");
+				player.getMainHandItem().use(l, player, InteractionHand.MAIN_HAND);
+				long countAfterSecondRing = l.getEntitiesOfClass(ShrineCat.class, player.getBoundingBox().inflate(32.0),
+					cat -> cat.isAlive() && cat.isTame() && cat.isOwnedBy(player) && cat.variant() == ShrineCatRules.Variant.FREYA).size();
+				check(countAfterSecondRing == 1, "Second Cat-Bell Charm ring does not duplicate recovered Freya");
+				check(recoveredFreyas.getFirst().isAlive() && recoveredFreyas.getFirst().isTame() && recoveredFreyas.getFirst().isOwnedBy(player),
+					"Recovered Freya keeps tamed ownership");
+				hold(s, ItemStack.EMPTY);
 			});
 
 			// =========================================================================

@@ -39,7 +39,9 @@ class DataFormatTest {
 		Map.entry("minecraft:inventory_changed", Set.of("player", "slots", "items")),
 		Map.entry("minecraft:consume_item", Set.of("player", "item")),
 		Map.entry("minecraft:recipe_unlocked", TestDataProfile.is26_2() ? Set.of("player", "recipe") : Set.of("player", "recipes")),
-		Map.entry("minecraft:location", Set.of("player")));
+		Map.entry("minecraft:location", Set.of("player")),
+		Map.entry("minecraft:villager_trade", Set.of("player", "villager", "item")),
+		Map.entry("minecraft:player_killed_entity", Set.of("player", "entity", "killing_blow")));
 
 	@Test
 	void advancements() throws IOException {

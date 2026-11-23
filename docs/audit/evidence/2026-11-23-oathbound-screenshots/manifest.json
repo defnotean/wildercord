@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "scope": "vps-native:oathbound-knights",
+  "provenance": {
+    "schemaVersion": 1,
+    "headSha": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+    "checkoutSha": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+    "workflowSha": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+    "runId": "18",
+    "runAttempt": "1",
+    "job": "smoke-native",
+    "executor": "windows-vps",
+    "computer": "WIN-I2GBVRRD872",
+    "launchId": "37a672a0-d5d3-4cb0-9b7f-440c99d31290",
+    "selectionSha256": "0b8c7086dccff9ec297c147872af5de5cdff50873ee22fcb12b27ccadcfb33c8"
+  },
+  "completedEntries": [
+    "dev.wildercord.aura.world.OathboundBastionTest",
+    "dev.wildercord.aura.world.OathboundBladeChampionTest",
+    "dev.wildercord.aura.world.OathboundHalberdierTest",
+    "dev.wildercord.aura.world.OathboundBannerMarshalTest"
+  ],
+  "fullClientGate": "unverified",
+  "focusedClientGate": "passed",
+  "selection": {
+    "kind": "suite",
+    "name": "oathbound-knights",
+    "count": 4,
+    "entries": [
+      "dev.wildercord.aura.world.OathboundBastionTest",
+      "dev.wildercord.aura.world.OathboundBladeChampionTest",
+      "dev.wildercord.aura.world.OathboundHalberdierTest",
+      "dev.wildercord.aura.world.OathboundBannerMarshalTest"
+    ]
+  },
+  "verificationIssues": [],
+  "clientSuites": [
+    {
+      "suite": "dev.wildercord.aura.world.OathboundBastionTest",
+      "status": "passed"
+    },
+    {
+      "suite": "dev.wildercord.aura.world.OathboundBladeChampionTest",
+      "status": "passed"
+    },
+    {
+      "suite": "dev.wildercord.aura.world.OathboundHalberdierTest",
+      "status": "passed"
+    },
+    {
+      "suite": "dev.wildercord.aura.world.OathboundBannerMarshalTest",
+      "status": "passed"
+    }
+  ],
+  "counts": {
+    "passed": 4,
+    "skipped": 0,
+    "unverified": 0
+  }
+}

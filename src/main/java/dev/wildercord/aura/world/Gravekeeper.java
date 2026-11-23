@@ -55,7 +55,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	private UUID quarry;
 	private boolean fought,roused;
 	public Gravekeeper(EntityType<? extends Gravekeeper> type,Level level){super(type,level);xpReward=100;setPersistenceRequired();}
-	public static AttributeSupplier.Builder createAttributes(){return createMobAttributes().add(Attributes.MAX_HEALTH,160).add(Attributes.ARMOR,8).add(Attributes.MOVEMENT_SPEED,.23).add(Attributes.ATTACK_DAMAGE,6).add(Attributes.FOLLOW_RANGE,28).add(Attributes.KNOCKBACK_RESISTANCE,.8);}
+	public static AttributeSupplier.Builder createAttributes(){return createMobAttributes().add(Attributes.MAX_HEALTH,700).add(Attributes.ARMOR,12).add(Attributes.MOVEMENT_SPEED,.23).add(Attributes.ATTACK_DAMAGE,6).add(Attributes.FOLLOW_RANGE,28).add(Attributes.KNOCKBACK_RESISTANCE,.8);}
 	public void bind(BlockPos altar,BlockPos arena){reliquary=altar.immutable();home=arena.immutable();}
 	public BlockPos home(){return home;}
 	public Vec3 attackDirection(){return direction;}

@@ -42,9 +42,17 @@ public final class AuraWorldClient {
 		EntityRendererRegistry.register(dev.wildercord.world.kilnwidow.KilnWidowContent.WIDOW, dev.wildercord.client.kilnwidow.KilnWidowRenderer::new);
 		EntityModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
 		EntityModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(OathboundBastionRenderer.LAYER, OathboundBastionModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(OathboundBladeChampionRenderer.LAYER, OathboundBladeChampionModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(OathboundHalberdierRenderer.LAYER, OathboundHalberdierModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(OathboundBannerMarshalRenderer.LAYER, OathboundBannerMarshalModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);
 		EntityRendererRegistry.register(AuraWorld.SWORD_MASTER, MasterRenderer::new);
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
+		EntityRendererRegistry.register(AuraWorld.OATHBOUND_BASTION, OathboundBastionRenderer::new);
+		EntityRendererRegistry.register(AuraWorld.OATHBOUND_BLADE_CHAMPION, OathboundBladeChampionRenderer::new);
+		EntityRendererRegistry.register(AuraWorld.OATHBOUND_HALBERDIER, OathboundHalberdierRenderer::new);
+		EntityRendererRegistry.register(AuraWorld.OATHBOUND_BANNER_MARSHAL, OathboundBannerMarshalRenderer::new);
 		EntityModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.SERPENT,SerpentRenderer::new);
