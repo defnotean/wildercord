@@ -2,6 +2,7 @@ package dev.wildercord.client.ocean;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
+import dev.wildercord.client.compat.McModel;
 import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.ocean.OceanItems;
 import net.minecraft.client.model.Model;
@@ -13,11 +14,10 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,7 +33,7 @@ import net.minecraft.util.Unit;
  *   <li>Greaves &amp; Trench Boots: independent kelp-weave thigh armor + bolted kneepads and weighted lead-soled diving boots on both legs.</li>
  * </ul>
  */
-public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+public final class AbyssalDivingSuitLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 	public static final ModelLayerLocation HELM_LAYER = new ModelLayerLocation(Wildercord.id("abyssal_diving_helm_3d"), "main");
 	public static final ModelLayerLocation TANKS_LAYER = new ModelLayerLocation(Wildercord.id("abyssal_diving_tanks_3d"), "main");
 	public static final ModelLayerLocation RIGHT_ARM_LAYER = new ModelLayerLocation(Wildercord.id("abyssal_diving_right_arm_3d"), "main");
@@ -54,7 +54,7 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 	private final LegSuitModel rightLegModel;
 	private final LegSuitModel leftLegModel;
 
-	public AbyssalDivingSuitLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
+	public AbyssalDivingSuitLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
 		this.helmModel = new SuitGlassModel(context.bakeLayer(HELM_LAYER));
 		this.tanksModel = new SuitPartModel(context.bakeLayer(TANKS_LAYER));
@@ -160,7 +160,7 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 	}
 
 	@Override
-	public void submit(PoseStack pose, SubmitNodeCollector collector, int light, AvatarRenderState state, float yaw, float pitch) {
+	public void render(PoseStack pose, MultiBufferSource collector, int light, PlayerRenderState state, float yaw, float pitch) {
 		if (state.isInvisible) return;
 
 		if (state.headEquipment.is(OceanItems.ABYSSAL_DIVING_HELM)) {
@@ -184,29 +184,29 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 	}
 
 	private static void submitLimb(
-			PoseStack pose, SubmitNodeCollector collector, int light, AvatarRenderState state,
-			ModelPart anchor, Model<Unit> model, RenderType baseType) {
+			PoseStack pose, MultiBufferSource collector, int light, PlayerRenderState state,
+			ModelPart anchor, McModel<Unit> model, RenderType baseType) {
 		pose.pushPose();
 		anchor.translateAndRotate(pose);
 		pose.scale(0.5F, 0.5F, 0.5F);
-		RenderCompat.submitModel(collector.order(0), model, Unit.INSTANCE, pose, baseType, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
-		RenderCompat.submitModel(collector.order(1), model, Unit.INSTANCE, pose, EYES, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+		RenderCompat.submitModel(collector, model, Unit.INSTANCE, pose, baseType, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
+		RenderCompat.submitModel(collector, model, Unit.INSTANCE, pose, EYES, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 		pose.popPose();
 	}
 
-	private static final class SuitPartModel extends Model<Unit> {
+	private static final class SuitPartModel extends McModel<Unit> {
 		SuitPartModel(ModelPart root) {
 			super(root, RenderType::entityCutout);
 		}
 	}
 
-	private static final class SuitGlassModel extends Model<Unit> {
+	private static final class SuitGlassModel extends McModel<Unit> {
 		SuitGlassModel(ModelPart root) {
 			super(root, RenderType::entityTranslucent);
 		}
 	}
 
-	private static final class LegSuitModel extends Model<Unit> {
+	private static final class LegSuitModel extends McModel<Unit> {
 		private final ModelPart greaves;
 		private final ModelPart boots;
 
