@@ -78,7 +78,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 				Mob elite = found.getFirst();
 				double dx = elite.getX() - board.getX(), dz = elite.getZ() - board.getZ(), d = Math.sqrt(dx * dx + dz * dz);
 				check(d >= BountyRules.ELITE_NEAR - 2 && d <= BountyRules.ELITE_FAR + 2, "the elite is 48 to 96 blocks out (" + d + ")");
-				check(way == Direction.getApproximateNearest(dx, 0, dz), "the board points the right way");
+				check(way == Direction.getNearest(dx, 0, dz), "the board points the right way");
 				check(BuiltInRegistries.ENTITY_TYPE.getKey(elite.getType()).toString().equals(TARGET), "it's the bounty's creature");
 				check(elite.hasCustomName() && elite.getCustomName().getString().contains("Grimjaw"), "it carries the bounty's name");
 				check(elite.isCustomNameVisible() && elite.isPersistenceRequired(), "its name shows and it never despawns");
@@ -101,11 +101,11 @@ public final class BountyHuntTest implements FabricClientGameTest {
 				Mob plain = (Mob) type.create(l, MobSpawnType.COMMAND);
 				plain.moveTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
 				l.addFreshEntity(plain);
-				plain.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1.0E6F);
+				plain.hurt(p(s).damageSources().playerAttack(p(s)), 1.0E6F);
 				check(!plain.isAlive(), "the plain one died");
 				check(bounty(s).kills() == 0 && !bounty(s).done(), "a plain creature doesn't count toward a named elite");
 				Mob elite = elites(s).getFirst();
-				elite.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1.0E6F);
+				elite.hurt(p(s).damageSources().playerAttack(p(s)), 1.0E6F);
 				check(!elite.isAlive(), "the elite died");
 				check(bounty(s).kills() == 1 && bounty(s).done(), "the hunter's kill finishes the bounty");
 				Town.set(p(s), Town.Standing.NONE);

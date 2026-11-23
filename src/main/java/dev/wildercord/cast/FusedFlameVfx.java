@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * How the fused effects of flame and stone look ({@link FusedFlame}). Like every fused effect, each draws on both of
@@ -476,7 +477,7 @@ final class FusedFlameVfx {
 		if (STONE.size() >= MAX_STONE) {
 			return null;
 		}
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

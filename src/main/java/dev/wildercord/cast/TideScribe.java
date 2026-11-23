@@ -53,6 +53,7 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Tide Scribe, keeper of the Drowned Scriptorium: a drowned sorcerer trailing ink, who floods its
@@ -466,7 +467,7 @@ public class TideScribe extends DungeonBoss {
 				// The Scribe is the water's own: the shock runs straight through it, and it reels.
 				shocking = true;
 				try {
-					RelayCircles.from(cast, at, () -> Effects.hurt(cast, this, source, shock * 5));
+					RelayCircles.from(cast, at, () -> Effects.hurt(this, source, shock * 5));
 				} finally {
 					shocking = false;
 				}
@@ -479,7 +480,7 @@ public class TideScribe extends DungeonBoss {
 			if (t != cast.caster && !Targets.canHarm(cast.caster, t)) {
 				continue;
 			}
-			RelayCircles.from(cast, at, () -> Effects.hurt(cast, t, source, shock));
+			RelayCircles.from(cast, at, () -> Effects.hurt(t, source, shock));
 		}
 		// Sparks skitter across the whole surface.
 		Vec3 c = Vec3.atBottomCenterOf(home).add(0, 2.0, 0);
@@ -716,7 +717,7 @@ public class TideScribe extends DungeonBoss {
 		if (!swing.add(t.getUUID())) {
 			return false;
 		}
-		return t.hurtServer(level, level.damageSources().mobAttack(this), (float) (base * power()));
+		return t.hurt(level.damageSources().mobAttack(this), (float) (base * power()));
 	}
 
 	/** Flat along {@code yaw}. */
@@ -1622,7 +1623,7 @@ public class TideScribe extends DungeonBoss {
 			startRising(level);
 		}
 		for (int i = 0; i < 2; i++) {
-			Mob guard = EntityType.DROWNED.create(level, MobSpawnType.MOB_SUMMONED);
+			Mob guard = McEntities.create(EntityType.DROWNED, level, MobSpawnType.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}
@@ -1777,7 +1778,7 @@ public class TideScribe extends DungeonBoss {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		return false;
 	}
 }

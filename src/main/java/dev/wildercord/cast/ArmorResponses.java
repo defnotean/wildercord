@@ -63,8 +63,8 @@ public final class ArmorResponses {
 		if (scoped != null && (!scoped.admits(attacker) || scoped.takeEntities(1) < 1)) return;
 		reflecting=true;
 		try {
-			if (scoped == null) SpellDefence.hurt(level,attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F));
-			else SpellDefence.hurt(level,attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F),scoped);
+			if (scoped == null) SpellDefence.hurt(attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F));
+			else SpellDefence.hurt(attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F),scoped);
 			Light.ray(level,p.getEyePosition(),attacker.getEyePosition(),0xEED5FF,.045F,8);
 		} finally { reflecting=false; }
 	}

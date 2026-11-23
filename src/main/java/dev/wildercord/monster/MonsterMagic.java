@@ -29,7 +29,7 @@ public final class MonsterMagic {
 	 * A monster's spell hitting a creature: magic, from the monster, through the spell defences. Returns whether it hurt.
 	 */
 	public static boolean hurt(ServerLevel level, Mob caster, LivingEntity target, float amount) {
-		return SpellDefence.hurt(level, target, level.damageSources().indirectMagic(caster, caster), amount);
+		return SpellDefence.hurt(target, level.damageSources().indirectMagic(caster, caster), amount);
 	}
 
 	/**

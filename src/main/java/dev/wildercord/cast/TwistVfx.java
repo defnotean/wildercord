@@ -24,6 +24,7 @@ import org.joml.Vector3f;
 import java.util.List;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * How each twist of a world's resonances looks and sounds (see {@link TwistMagic} for what they do). Built from the
@@ -480,7 +481,7 @@ final class TwistVfx {
 
 	/** A block display of {@code state} that grows up out of the ground at {@code base}, holds, and sinks away again. */
 	static void rise(ServerLevel level, Vec3 base, BlockState state, float width, float height, int hold) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return;
 		}

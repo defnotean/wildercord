@@ -215,7 +215,7 @@ final class SignatureFusions {
 					struck.add(t.getUUID());
 					boolean frozen = t.isFullyFrozen();
 					SignatureVfx.frostwireStrike(level, t, frozen);
-					Effects.hurt(cast, t, shock, SignatureRules.frostwireDamage(frozen) * power * Reactions.storm(cast, t));
+					Effects.hurt(t, shock, SignatureRules.frostwireDamage(frozen) * power * Reactions.storm(cast, t));
 				}
 			}
 		}));
@@ -254,13 +254,13 @@ final class SignatureFusions {
 				SignatureVfx.seetheBoil(level, t);
 			}
 			if (tick > 0 && tick % SignatureRules.SEETHE_EVERY == 0) {
-				Effects.hurt(cast, t, heat, SignatureRules.SEETHE_SCALD * power);
+				Effects.hurt(t, heat, SignatureRules.SEETHE_SCALD * power);
 			}
 		}, () -> {
 			if (onHand(cast, t)) {
 				// The last scald, as the bubble's time runs out (one every half second in all: see SignatureRules.seetheScalds).
 				if (ticks % SignatureRules.SEETHE_EVERY == 0) {
-					Effects.lingering(() -> Effects.hurt(cast, t, heat, SignatureRules.SEETHE_SCALD * power));
+					Effects.lingering(() -> Effects.hurt(t, heat, SignatureRules.SEETHE_SCALD * power));
 				}
 				t.removeEffect(MobEffects.LEVITATION);
 				last[0] = t.getBoundingBox().getCenter();
@@ -271,7 +271,7 @@ final class SignatureFusions {
 				if (!scalded.add(e.getUUID())) {
 					continue;
 				}
-				Effects.hurt(cast, e, heat, SignatureRules.SEETHE_BURST * power * Reactions.fire(cast, e));
+				Effects.hurt(e, heat, SignatureRules.SEETHE_BURST * power * Reactions.fire(cast, e));
 				e.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Effects.ticks(SignatureRules.SEETHE_BLIND_SECONDS, duration), 0, false, true));
 				if (e instanceof Mob mob) {
 					mob.setTarget(null);
@@ -425,7 +425,7 @@ final class SignatureFusions {
 				continue;
 			}
 			double falloff = SignatureRules.blastFalloff(horizontal(e.getBoundingBox().getCenter(), at), r);
-			Effects.hurt(cast, e, blast, SignatureRules.SKYBURST_DAMAGE * strength * falloff * Reactions.fire(cast, e));
+			Effects.hurt(e, blast, SignatureRules.SKYBURST_DAMAGE * strength * falloff * Reactions.fire(cast, e));
 			e.igniteForSeconds(SignatureRules.SKYBURST_BURN_SECONDS);
 			Vec3 away = e.getBoundingBox().getCenter().subtract(at);
 			Effects.push(e, (away.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : away.normalize()).scale(0.7 * falloff).add(0, 0.2, 0));
@@ -473,7 +473,7 @@ final class SignatureFusions {
 				return;
 			}
 			float before = t.getHealth();
-			Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), SignatureRules.PARASITE_DRAIN * power));
+			Effects.lingering(() -> Effects.hurt(t, magic(cast), SignatureRules.PARASITE_DRAIN * power));
 			float taken = Math.max(0.0F, before - t.getHealth());
 			LivingEntity caster = cast.caster;
 			boolean fed = taken > 0 && caster.isAlive() && caster.distanceToSqr(t) <= SignatureRules.PARASITE_FEED_RANGE * SignatureRules.PARASITE_FEED_RANGE;
@@ -505,7 +505,7 @@ final class SignatureFusions {
 		SignatureVfx.razorgale(level, centre, r, false);
 		for (LivingEntity t : take(cast, around(cast, centre, r), touched)) {
 			SignatureVfx.razorCut(level, t, centre, false);
-			Effects.hurt(cast, t, wind, SignatureRules.RAZORGALE_CUT * power);
+			Effects.hurt(t, wind, SignatureRules.RAZORGALE_CUT * power);
 			Reactions.mark(t, Reactions.Mark.BLEEDING, SignatureRules.RAZORGALE_BLEED_TICKS);
 		}
 		Scheduler.later(SignatureRules.RAZORGALE_RETURN, Effects.carryContext(() -> {
@@ -515,7 +515,7 @@ final class SignatureFusions {
 			SignatureVfx.razorgale(level, centre, r, true);
 			for (LivingEntity t : take(cast, around(cast, centre, r), touched)) {
 				SignatureVfx.razorCut(level, t, centre, true);
-				Effects.hurt(cast, t, wind, SignatureRules.RAZORGALE_CUT * power);
+				Effects.hurt(t, wind, SignatureRules.RAZORGALE_CUT * power);
 			}
 		}));
 	}
@@ -562,7 +562,7 @@ final class SignatureFusions {
 		SignatureVfx.thunderstep(level, spot, r, !caught.isEmpty());
 		DamageSource shock = level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster);
 		for (LivingEntity t : caught) {
-			Effects.hurt(cast, t, shock, SignatureRules.THUNDERSTEP_DAMAGE * power * Reactions.storm(cast, t));
+			Effects.hurt(t, shock, SignatureRules.THUNDERSTEP_DAMAGE * power * Reactions.storm(cast, t));
 			Spirits.hold(t, SignatureRules.THUNDERSTEP_STUN);
 		}
 	}
@@ -652,7 +652,7 @@ final class SignatureFusions {
 				if (foe != null) {
 					double undead = foe.isInvertedHealAndHarm() ? SignatureRules.HALO_UNDEAD : 1.0;
 					SignatureVfx.haloSmite(level, ally, foe);
-					Effects.lingering(() -> Effects.hurt(by, foe, magic(by), SignatureRules.HALO_SMITE * halo.power * undead));
+					Effects.lingering(() -> Effects.hurt(foe, magic(by), SignatureRules.HALO_SMITE * halo.power * undead));
 					ally.heal((float) (SignatureRules.HALO_HEAL * halo.power));
 				}
 			}
@@ -706,7 +706,7 @@ final class SignatureFusions {
 				List<LivingEntity> struck = w == 1 ? take(cast, reached, touched) : reached.subList(0, strike.takeEntities(reached.size()));
 				for (LivingEntity t : struck) {
 					SignatureVfx.quakeStrike(level, t);
-					Effects.hurt(strike, t, ground, SignatureRules.QUAKE_DAMAGE * power);
+					Effects.hurt(t, ground, SignatureRules.QUAKE_DAMAGE * power);
 					if (!Spirits.isBoss(t)) {
 						Effects.push(t, new Vec3(0, 0.35, 0));
 					}
@@ -746,7 +746,7 @@ final class SignatureFusions {
 			for (LivingEntity t : take(cast, nearest(cast, heart, r, MAX_IN_AREA), touched)) {
 				blasted.add(t);
 				double d = t.getBoundingBox().getCenter().distanceTo(heart);
-				Effects.hurt(cast, t, magic(cast), SignatureRules.cometDamage(d, r) * power);
+				Effects.hurt(t, magic(cast), SignatureRules.cometDamage(d, r) * power);
 				t.igniteForSeconds(SignatureRules.COMET_BURN_SECONDS);
 				Vec3 away = Effects.horizontal(t.position().subtract(at), cast.caster.getLookAngle());
 				Effects.push(t, away.scale(0.6).add(0, 0.35, 0));
@@ -772,7 +772,7 @@ final class SignatureFusions {
 						return;
 					}
 					SignatureVfx.cometShard(level, heart, target.getBoundingBox().getCenter());
-					Effects.hurt(cast, target, magic(cast), SignatureRules.COMET_SHARD_DAMAGE * power);
+					Effects.hurt(target, magic(cast), SignatureRules.COMET_SHARD_DAMAGE * power);
 				}));
 			}
 		}));
@@ -860,7 +860,7 @@ final class SignatureFusions {
 			}
 			if (tick % 20 == 0) {
 				SignatureVfx.devilScour(level, t);
-				Effects.hurt(strike, t, sand, SignatureRules.DEVIL_SCOUR * power);
+				Effects.hurt(t, sand, SignatureRules.DEVIL_SCOUR * power);
 			}
 		}
 	}
@@ -918,7 +918,7 @@ final class SignatureFusions {
 	 */
 	private static void malison(Cast cast, LivingEntity t, double power, int ticks, double reach, boolean passes) {
 		// The damage first, so the curse doesn't sharpen its own blow.
-		Effects.hurt(cast, t, magic(cast), SignatureRules.MALISON_DAMAGE * power);
+		Effects.hurt(t, magic(cast), SignatureRules.MALISON_DAMAGE * power);
 		Effects.hex(cast, t, ticks, Effects.HEX_BONUS, false);
 		SignatureVfx.malison(cast.level, t);
 		if (passes) {
@@ -944,7 +944,7 @@ final class SignatureFusions {
 		for (LivingEntity t : take(cast, around(cast, centre, r), new HashSet<>(hit.entities()))) {
 			boolean bare = t.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
 			SignatureVfx.avalancheBury(level, t, bare);
-			Effects.hurt(cast, t, cold, SignatureRules.avalancheDamage(bare) * power);
+			Effects.hurt(t, cold, SignatureRules.avalancheDamage(bare) * power);
 			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(SignatureRules.AVALANCHE_SLOW_SECONDS, duration), 2, false, true), cast.caster);
 			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 			chill(t, 60);

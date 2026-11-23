@@ -161,7 +161,7 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				var l = s.overworld();
 				check(rootmolt(s).attackReady() > rest, "The new strike starts a new rest");
-				rootmolt(s).hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1);
+				rootmolt(s).hurt(p(s).damageSources().playerAttack(p(s)), 1);
 				check(rootmolt(s).pose() == RootmoltStrider.RECOVERING && !held(s), "A hit from the player breaks the hold");
 				check(rootmolt(s).getTarget() == p(s), "and turns it on whoever hit it");
 				rest = rootmolt(s).attackReady();

@@ -28,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Thunderwing Harpy: a hunter of the high peaks, storm-blue feathers streaked with lightning-yellow, a beaked crest and
@@ -292,7 +293,7 @@ public class ThunderwingHarpy extends WildMonster {
 	}
 
 	private void strike(ServerLevel level, LivingEntity target, long now) {
-		if (target.hurtServer(level, damageSources().mobAttack(this), DIVE_DAMAGE)) {
+		if (target.hurt(damageSources().mobAttack(this), DIVE_DAMAGE)) {
 			MonsterMagic.knock(target, position(), 0.8);
 			ElementFx.slash(level, target.getBoundingBox().getCenter(), new Vec3(0, 1, 0), diveDir, STORM_BLUE, 0.9, 1.4, 0.1, 3, 8);
 		}
@@ -333,7 +334,7 @@ public class ThunderwingHarpy extends WildMonster {
 		if (mark == null) {
 			return;
 		}
-		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, MobSpawnType.TRIGGERED);
+		LightningBolt bolt = McEntities.create(EntityType.LIGHTNING_BOLT, level, MobSpawnType.TRIGGERED);
 		if (bolt != null) {
 			// The flash and the thunder only: the harm is the harpy's own, through every spell defence.
 			bolt.setVisualOnly(true);
@@ -343,7 +344,7 @@ public class ThunderwingHarpy extends WildMonster {
 		AABB area = new AABB(mark, mark).inflate(BOLT_RADIUS, 2.5, BOLT_RADIUS);
 		for (Entity e : level.getEntities(this, area, e -> Targets.canHarm(this, e))) {
 			if (e.position().distanceTo(mark) <= BOLT_RADIUS + 0.5) {
-				MonsterMagic.hurt(level, this, (LivingEntity) e, BOLT_DAMAGE);
+				MonsterMagic.hurt(this, (LivingEntity) e, BOLT_DAMAGE);
 			}
 		}
 		ElementFx.stormImpact(level, mark.add(0, 0.2, 0), 1.2);

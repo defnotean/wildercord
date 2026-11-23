@@ -19,7 +19,7 @@ public record ScrollSpell(List<String> runes, String name, String author) {
 		Codec.STRING.optionalFieldOf("author", "").forGetter(ScrollSpell::author)
 	).apply(i, ScrollSpell::new));
 
-	public static final StreamCodec<ByteBuf, ScrollSpell> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<ByteBuf, ScrollSpell> STREAM_CODEC = McStreamCodec.composite(
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(MAX_RUNES)), ScrollSpell::runes,
 		ByteBufCodecs.STRING_UTF8, ScrollSpell::name,
 		ByteBufCodecs.STRING_UTF8, ScrollSpell::author,

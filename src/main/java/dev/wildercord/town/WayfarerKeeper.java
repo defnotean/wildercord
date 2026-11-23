@@ -217,8 +217,8 @@ public class WayfarerKeeper extends WanderingTrader {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		return source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		return source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.hurt(source, amount);
 	}
 
 	@Override

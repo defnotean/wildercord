@@ -51,7 +51,7 @@ public final class BountyHunts {
 			mob.addTag(Town.markTag(player.getUUID()));
 			level.addFreshEntity(mob);
 			level.playSound(null, mob.blockPosition(), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 0.6F, 1.4F);
-			return Direction.getApproximateNearest(x - board.getX(), 0, z - board.getZ());
+			return Direction.getNearest(x - board.getX(), 0, z - board.getZ());
 		}
 		return null;
 	}

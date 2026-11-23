@@ -311,7 +311,7 @@ public class RuneBolt extends Projectile {
 			if (damage > 0) {
 				for (Entity victim : CastEngine.inRadius(owner, at, radius)) {
 					if (Targets.canHarm(player, victim)) {
-						Effects.hurt(owner, (LivingEntity) victim, server.damageSources().indirectMagic(player, player), damage * owner.power);
+						Effects.hurt((LivingEntity) victim, server.damageSources().indirectMagic(player, player), damage * owner.power);
 					}
 				}
 			}
@@ -369,9 +369,9 @@ public class RuneBolt extends Projectile {
 					// This is the Master's own severed Aura, returned by a participant. Keep the original
 					// cast allowance, but do not relabel it as spell damage and erase this counterplay.
 					float admitted = cast.admits(living) ? cast.admitDamage(living, (float) damage) : 0;
-					if (admitted > 0) living.hurtServer((ServerLevel) level(), source, admitted);
+					if (admitted > 0) living.hurt(source, admitted);
 				} else {
-					SpellDefence.hurt((ServerLevel) level(), living, source, (float) damage, cast);
+					SpellDefence.hurt(living, source, (float) damage, cast);
 				}
 			}
 			fizzle();
@@ -548,7 +548,7 @@ public class RuneBolt extends Projectile {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		return false;
 	}
 

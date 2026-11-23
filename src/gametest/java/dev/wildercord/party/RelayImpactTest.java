@@ -27,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.UUID;
+import dev.wildercord.compat.McEntities;
 
 /** Real release callbacks change admission between selection, damage and status writes. */
 public final class RelayImpactTest implements FabricClientGameTest {
@@ -39,13 +40,13 @@ public final class RelayImpactTest implements FabricClientGameTest {
 	private static final class Guest extends FakePlayer {
 		Guest(ServerLevel level) { super(level, new GameProfile(UUID.randomUUID(), "RelayWitness")); }
 		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
-		@Override public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		@Override public boolean hurt(DamageSource source, float amount) {
 			if (source instanceof RelayDamageSource) {
 				incoming++;
 				RelayCircleTest.check(source.getSourcePosition().distanceToSqr(expectedOrigin) < .0001, "Real damage source retains the accepted focus origin");
 				RelayCircleTest.check(source.getEntity() == owner, "Remote origin retains real owner attribution");
 			}
-			return super.hurtServer(level, source, amount);
+			return super.hurt(source, amount);
 		}
 	}
 	@Override public void runTest(ClientGameTestContext context) {
@@ -94,7 +95,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 			LivingEntity[] targets = new LivingEntity[2];
 			world.getServer().runOnServer(server -> {
 				for(int i=0;i<2;i++) {
-					var target=EntityType.HUSK.create(owner.level(), MobSpawnType.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
+					var target=McEntities.create(EntityType.HUSK, owner.level(), MobSpawnType.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
 					target.moveTo(.5+i*2,150,6.5,180,0);target.setNoAi(true);target.setNoGravity(true);owner.level().addFreshEntity(target);targets[i]=target;
 				}
 				RelayCircleTest.reset(owner,Runes.SHOCK);RelayCircleTest.directDown(owner);

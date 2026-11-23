@@ -195,7 +195,7 @@ public final class HollowBell extends PathfinderMob implements Enemy {
 		for (var player : players) {
 			var d = player.position().subtract(position());
 			if (!announced.contains(player.getUUID()) || !hits(move, d.x, d.y, d.z, markX(), markZ(), acrossX())) continue;
-			if (player.hurtServer(server, damageSources().mobAttack(this), damage(move)) && move == CLAPPER) {
+			if (player.hurt(damageSources().mobAttack(this), damage(move)) && move == CLAPPER) {
 				var pull = position().subtract(player.position()).multiply(1, 0, 1).normalize().scale(.35);
 				player.push(pull.x, .08, pull.z);
 				player.hasImpulse = true;
@@ -208,11 +208,11 @@ public final class HollowBell extends PathfinderMob implements Enemy {
 		bar.setName(getType().getDescription());
 	}
 
-	@Override public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
+	@Override public boolean hurt(DamageSource source, float amount) {
 		if (!active || !(source.getEntity() instanceof ServerPlayer player) || !eligible(player) || !(amount > 0)) return false;
 		boolean had = contributors.contains(player.getUUID());
 		if (contributors.size() < MAX_CHALLENGERS) contributors.add(player.getUUID());
-		boolean accepted = super.hurtServer(server, source, amount);
+		boolean accepted = super.hurt(source, amount);
 		if (!accepted && !had) contributors.remove(player.getUUID());
 		return accepted;
 	}

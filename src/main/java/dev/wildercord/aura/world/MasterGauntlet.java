@@ -158,7 +158,6 @@ public final class MasterGauntlet {
 	public static ItemStack blade(ServerPlayer player) {
 		ItemStack blade = new ItemStack(Items.NETHERITE_SWORD);
 		String method = dev.wildercord.aura.Aura.data(player).method();
-		blade.set(DataComponents.ITEM_MODEL, Wildercord.id("master_blade/" + (BLADES.contains(method) ? method : "ember")));
 		blade.set(DataComponents.ITEM_NAME, Component.translatable("item.wildercord.gauntlet_blade"));
 		blade.set(DataComponents.RARITY, Rarity.EPIC);
 		blade.set(DataComponents.LORE, new ItemLore(List.of(Component.translatable("item.wildercord.gauntlet_blade.lore", player.getName())

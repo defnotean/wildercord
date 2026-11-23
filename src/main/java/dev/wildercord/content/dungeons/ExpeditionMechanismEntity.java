@@ -53,7 +53,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 					Scheduler.later(20,()->{
 						if(level!=server||isRemoved()||!server.hasChunkAt(worldPosition)||!player.isAlive()||player.isRemoved()||player.level()!=server)return;
 						for(var target:server.getEntitiesOfClass(LivingEntity.class,new AABB(center,center).inflate(4),e->e instanceof Enemy && Targets.canHarm(player,e)))
-							SpellDefence.hurt(server,target,server.damageSources().indirectMagic(player,player),damage);
+							SpellDefence.hurt(target,server.damageSources().indirectMagic(player,player),damage);
 						Light.groundRing(server,center,0xFFD177,.3,4,.06,18);
 					});
 				}
@@ -138,7 +138,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 			Vec3 center=Vec3.atCenterOf(self.ahead(5));
 			if(self.warningAt==0){self.warningAt=now+40;Sigils.ground(server,center,0xFFCC66,0xFFFFFF,3,42);}
 			else if(now>=self.warningAt){
-				for(var p:server.players())if(!p.isCreative()&&!p.isSpectator()&&p.distanceToSqr(center)<9)SpellDefence.hurt(server,p,server.damageSources().magic(),4);
+				for(var p:server.players())if(!p.isCreative()&&!p.isSpectator()&&p.distanceToSqr(center)<9)SpellDefence.hurt(p,server.damageSources().magic(),4);
 				self.warningAt=0;self.pausedUntil=now+100;
 			}
 		}

@@ -382,8 +382,8 @@ public class BrookOtter extends Animal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hit = super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hit = super.hurt(source, amount);
 		if (hit) {
 			letGo();
 			ejectPassengers();
@@ -550,7 +550,7 @@ public class BrookOtter extends Animal {
 			ticks++;
 			getLookControl().setLookAt(fish, 30, 30);
 			if (distanceTo(fish) < 1.3) {
-				fish.hurtServer(level, damageSources().mobAttack(BrookOtter.this), OtterRules.BITE);
+				fish.hurt(damageSources().mobAttack(BrookOtter.this), OtterRules.BITE);
 				playSound(SoundEvents.FOX_BITE, 0.7F, 1.4F);
 				level.sendParticles(ParticleTypes.BUBBLE, fish.getX(), fish.getY(), fish.getZ(), 8, 0.2, 0.2, 0.2, 0.05);
 				fish = null;

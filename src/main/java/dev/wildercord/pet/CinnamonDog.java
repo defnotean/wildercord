@@ -421,9 +421,9 @@ public final class CinnamonDog extends TamableAnimal {
 	}
 
 	/** Final bite sink: a target admitted by an earlier AI tick can become protected in the meantime. */
-	@Override public boolean doHurtTarget(ServerLevel level, Entity target) {
+	@Override public boolean doHurtTarget(Entity target) {
 		return target instanceof LivingEntity living && target.level() == level && canAttack(living)
-			&& attackReady(getOwner()) && super.doHurtTarget(level, target);
+			&& attackReady(getOwner()) && super.doHurtTarget(target);
 	}
 
 	@Override
@@ -519,9 +519,9 @@ public final class CinnamonDog extends TamableAnimal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		// Operators can deliberately remove her. Ordinary hazards never enter the health-loss path.
-		if (source.is(DamageTypes.GENERIC_KILL)) return super.hurtServer(level, source, amount);
+		if (source.is(DamageTypes.GENERIC_KILL)) return super.hurt(source, amount);
 		if (countingDamage) return false;
 		countingDamage = true;
 		try { return countDamage(level, source, amount); }

@@ -215,8 +215,8 @@ public class LumenStag extends Animal {
 	// ------------------------------------------------------------------ harm
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hurt = super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hurt = super.hurt(source, amount);
 		if (hurt) {
 			frighten(2400);
 		}

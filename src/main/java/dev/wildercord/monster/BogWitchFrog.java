@@ -272,7 +272,7 @@ public class BogWitchFrog extends WildMonster {
 			playSound(SoundEvents.SHIELD_BLOCK, 1.0F, 1.0F);
 			return;
 		}
-		if (at instanceof LivingEntity living && living.hurtServer(level, damageSources().mobAttack(this), TONGUE_DAMAGE)) {
+		if (at instanceof LivingEntity living && living.hurt(damageSources().mobAttack(this), TONGUE_DAMAGE)) {
 			Vec3 pull = mouth.subtract(living.position());
 			double length = pull.length();
 			if (length > 1.0E-3) {

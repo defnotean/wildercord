@@ -71,7 +71,7 @@ public final class Config {
 			WildercordConfig.AuraStrings.DEFAULTS.windowTicks(), combat(WildercordConfig.AuraSettings.DEFAULTS));
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
-		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
+		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.BOOL, WildercordConfig.DefenceSettings::spellguard, ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::spellguardHealth,
 			ByteBufCodecs.VAR_INT, WildercordConfig.DefenceSettings::spellguardRechargeSeconds, ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::maxBonus,
 			ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::armourRate, WildercordConfig.DefenceSettings::new);

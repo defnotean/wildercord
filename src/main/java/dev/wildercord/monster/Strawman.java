@@ -194,7 +194,7 @@ public class Strawman extends WildMonster {
 			face(target);
 			nextStrike = now + StrawmanRules.STRIKE_COOLDOWN;
 			strikeUntil = now + StrawmanRules.STRIKE_TICKS;
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			level.playSound(null, getX(), getY(), getZ(), SoundEvents.GRASS_BREAK, SoundSource.HOSTILE, 1.0F, 0.6F);
 		}
 	}
@@ -219,8 +219,8 @@ public class Strawman extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean hurt = super.hurtServer(level, source, damage * StrawmanRules.damageScale(source.is(DamageTypeTags.IS_FIRE)));
+	public boolean hurt(DamageSource source, float damage) {
+		boolean hurt = super.hurt(source, damage * StrawmanRules.damageScale(source.is(DamageTypeTags.IS_FIRE)));
 		if (hurt) {
 			Vec3 c = getBoundingBox().getCenter();
 			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.HAY_BLOCK.defaultBlockState()), c.x, c.y, c.z, 8,

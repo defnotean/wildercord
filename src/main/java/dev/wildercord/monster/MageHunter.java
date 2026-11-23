@@ -78,14 +78,14 @@ public class MageHunter extends Vindicator implements RuneboundKin {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (spellHarm(source)) damage = MageHunterRules.spellHarm(damage);
-		return super.hurtServer(level, source, damage);
+		return super.hurt(source, damage);
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
-		boolean hit = super.doHurtTarget(level, target);
+	public boolean doHurtTarget(Entity target) {
+		boolean hit = super.doHurtTarget(target);
 		if (hit && target instanceof ServerPlayer player && Spellbooks.tier(player) != null) {
 			float taken = MageHunterRules.drained(Spellbooks.mana(player));
 			if (taken > 0) {

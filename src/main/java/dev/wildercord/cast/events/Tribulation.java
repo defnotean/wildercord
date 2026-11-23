@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import dev.wildercord.compat.McEntities;
 
 /**
  * A heart's tribulation ({@link TribulationRules}): when the 5th, 10th, 15th or 20th circle is ready and its meditation
@@ -213,7 +214,7 @@ public final class Tribulation {
 
 	/** A bolt of light that burns nothing. */
 	private void strike(Vec3 at) {
-		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, MobSpawnType.EVENT);
+		LightningBolt bolt = McEntities.create(EntityType.LIGHTNING_BOLT, level, MobSpawnType.EVENT);
 		if (bolt == null) return;
 		bolt.setPos(at.x, at.y, at.z);
 		bolt.setVisualOnly(true);

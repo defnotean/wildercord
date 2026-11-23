@@ -20,7 +20,7 @@ import java.util.Set;
  * api.effect("example:frostbite", "Frostbite", "frost", EffectKind.HARMFUL)
  *     .tier(2).cost(7).traits(Trait.POWER, Trait.DURATION).category("damage")
  *     .description("4 frost damage, and slows for 5 seconds.")
- *     .onApply(ctx -> ctx.harmed().forEach(t -> ctx.hurt(t, ctx.magic(), 4 * ctx.power())))
+ *     .onApply(ctx -> ctx.harmed().forEach(t -> ctx.hurt(ctx.magic(), 4 * ctx.power())))
  *     .register();
  * }</pre>
  *

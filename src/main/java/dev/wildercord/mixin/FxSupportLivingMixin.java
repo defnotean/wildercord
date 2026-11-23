@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 public abstract class FxSupportLivingMixin {
-	@WrapMethod(method = "hurtServer")
+	@WrapMethod(method = "hurt")
 	private boolean wildercord$fxSupportWards(ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
 		LivingEntity self = (LivingEntity) (Object) this;
 		float through = WardState.incoming(self, source, damage);

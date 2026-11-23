@@ -17,6 +17,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.WorldGenLevel;
+import dev.wildercord.compat.McEntities;
 
 /** A persistent fisher who keeps the first-crossing stories; ordinary trade and villager life remain available. */
 public final class ReedkeeperResident {
@@ -65,7 +66,7 @@ public final class ReedkeeperResident {
 
 	/** The owning structure chunk calls this once, then persists its successful spawn flag. */
 	static boolean spawn(WorldGenLevel level, BlockPos at) {
-		Villager resident = EntityType.VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		Villager resident = McEntities.create(EntityType.VILLAGER, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (resident == null) return false;
 		resident.moveTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
 		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.STRUCTURE, null);

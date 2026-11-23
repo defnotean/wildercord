@@ -184,7 +184,7 @@ public class BloomclawMantis extends WildMonster {
 			Vec3 lookFlat = new Vec3(look.x, 0, look.z);
 			double dot = flat.lengthSqr() < 1e-4 || lookFlat.lengthSqr() < 1e-4 ? 1 : flat.normalize().dot(lookFlat.normalize());
 			if (MantisRules.catches(distanceTo(target), dot)
-				&& target.hurtServer(level, damageSources().mobAttack(this), MantisRules.STRIKE_DAMAGE)) {
+				&& target.hurt(damageSources().mobAttack(this), MantisRules.STRIKE_DAMAGE)) {
 				held = target;
 				heldTicks = 0;
 				phase = Phase.CLUTCH;
@@ -217,7 +217,7 @@ public class BloomclawMantis extends WildMonster {
 			prey.hasImpulse = true;
 		}
 		if (MantisRules.nibbles(heldTicks)) {
-			prey.hurtServer(level, damageSources().mobAttack(this), MantisRules.NIBBLE_DAMAGE);
+			prey.hurt(damageSources().mobAttack(this), MantisRules.NIBBLE_DAMAGE);
 			playSound(SoundEvents.GENERIC_EAT.value(), 0.6F, 1.4F);
 		}
 	}
@@ -228,8 +228,8 @@ public class BloomclawMantis extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean hit = super.hurtServer(level, source, MantisRules.hurt(damage, phase == Phase.REEL));
+	public boolean hurt(DamageSource source, float damage) {
+		boolean hit = super.hurt(source, MantisRules.hurt(damage, phase == Phase.REEL));
 		if (!hit) {
 			return false;
 		}

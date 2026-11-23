@@ -169,7 +169,7 @@ public class FoxfireKitsune extends WildMonster {
 			nextBite = now + KitsuneRules.BITE_COOLDOWN;
 			actingUntil = now + 8;
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			playSound(SoundEvents.FOX_BITE, 1.0F, 0.8F);
 		}
 		getLookControl().setLookAt(target, 30, 30);
@@ -208,7 +208,7 @@ public class FoxfireKitsune extends WildMonster {
 			LivingEntity struck = hit.get(0);
 			// A copy's foxfire is cold: it looks the same, and does nothing.
 			if (!decoy()) {
-				struck.hurtServer(level, damageSources().indirectMagic(this, this), KitsuneRules.FOXFIRE_DAMAGE);
+				struck.hurt(damageSources().indirectMagic(this, this), KitsuneRules.FOXFIRE_DAMAGE);
 				struck.igniteForSeconds(KitsuneRules.FOXFIRE_BURN);
 			}
 			burst(level, struck.position().add(0, struck.getBbHeight() * 0.5, 0));
@@ -234,18 +234,18 @@ public class FoxfireKitsune extends WildMonster {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		// A copy's jaws close on nothing.
 		if (decoy()) {
 			return false;
 		}
-		return super.doHurtTarget(level, target);
+		return super.doHurtTarget(target);
 	}
 
 	// ------------------------------------------------------------------ the split
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (decoy()) {
 			// Any blow scatters a copy.
 			if (!isInvulnerableTo(level, source)) {
@@ -254,7 +254,7 @@ public class FoxfireKitsune extends WildMonster {
 			}
 			return false;
 		}
-		boolean hurt = super.hurtServer(level, source, damage);
+		boolean hurt = super.hurt(source, damage);
 		if (hurt && isAlive() && KitsuneRules.splits(getHealth(), getMaxHealth(), splitsDone)) {
 			split(level);
 		}

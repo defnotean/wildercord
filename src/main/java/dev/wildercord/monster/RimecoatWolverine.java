@@ -208,7 +208,7 @@ public class RimecoatWolverine extends WildMonster {
 		if (distance <= WolverineRules.BITE_REACH && now >= nextBite) {
 			nextBite = now + WolverineRules.biteCooldown(furious);
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			actingUntil = now + 6;
 			setState(ACTING, true);
 		}
@@ -257,7 +257,7 @@ public class RimecoatWolverine extends WildMonster {
 		nextBite = now + WolverineRules.BITE_COOLDOWN;
 		actingUntil = now + 8;
 		setState(ACTING, true);
-		doHurtTarget(level, target);
+		doHurtTarget(target);
 		int slot = foodSlot(target);
 		if (!(target instanceof Player player) || slot < 0) {
 			return;
@@ -332,8 +332,8 @@ public class RimecoatWolverine extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean hurt = super.hurtServer(level, source, damage);
+	public boolean hurt(DamageSource source, float damage) {
+		boolean hurt = super.hurt(source, damage);
 		if (hurt && isAlive() && carrying() && WolverineRules.dropsWhenHit(random.nextFloat())) {
 			dropCarried(level);
 			eatingUntil = -1;

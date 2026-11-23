@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * How the fused effects of frost look ({@link FusedFrost}). Like every fused effect, each draws on both of
@@ -727,7 +728,7 @@ final class FusedFrostVfx {
 		if (Fx.muted()) {
 			return null;
 		}
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

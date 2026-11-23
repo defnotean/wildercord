@@ -305,7 +305,7 @@ public final class Effects {
 				}
 			}
 			case BLOODLETTING -> {
-				if (cast.once("twist_blood")) caster.hurtServer(cast.level, cast.level.damageSources().magic(), dev.wildercord.spell.RuneTwistRules.BLOOD_TOLL);
+				if (cast.once("twist_blood")) caster.hurt(cast.level.damageSources().magic(), dev.wildercord.spell.RuneTwistRules.BLOOD_TOLL);
 			}
 			case HUNGERING -> {
 				if (cast.once("twist_hunger") && caster instanceof net.minecraft.world.entity.player.Player player) {

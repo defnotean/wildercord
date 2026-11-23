@@ -59,7 +59,7 @@ public class DungeonRelicItem extends Item {
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 160, 1));
 			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 160, 0));
 			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(6), m -> m instanceof Enemy)) {
-				mob.hurtServer(server, server.damageSources().indirectMagic(player, player), 4.0F);
+				mob.hurt(server.damageSources().indirectMagic(player, player), 4.0F);
 				mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 2), player);
 			}
 			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 32, 2, 1, 2, 0.1);
@@ -68,7 +68,7 @@ public class DungeonRelicItem extends Item {
 			player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 240, 1));
 			player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 240, 0));
 			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(6), m -> m instanceof Enemy)) {
-				mob.hurtServer(server, server.damageSources().indirectMagic(player, player), 5.0F);
+				mob.hurt(server.damageSources().indirectMagic(player, player), 5.0F);
 				mob.addEffect(new MobEffectInstance(MobEffects.GLOWING, 120, 0), player);
 				var away = mob.position().subtract(player.position());
 				if (away.horizontalDistanceSqr() > 0.01) {

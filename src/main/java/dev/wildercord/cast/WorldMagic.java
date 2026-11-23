@@ -81,6 +81,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Magic that changes the world where it lands, so terrain matters: fire burns the grass, lights
@@ -870,7 +871,7 @@ public final class WorldMagic {
 			admitted++;
 			shockThrough(level, strike, t, waterY, i);
 			double amount = WorldRules.conductDamage(Math.sqrt(t.distanceToSqr(origin))) * power;
-			RelayCircles.from(cast, strike, () -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount));
+			RelayCircles.from(cast, strike, () -> Effects.hurt(t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount));
 		}
 		if (admitted > 0) {
 			Reactions.callout(cast, "conduct", 0xFFE650);
@@ -1174,7 +1175,7 @@ public final class WorldMagic {
 
 	/** One slab of ground: a block display that tilts up out of the floor, holds, and sinks back. */
 	private static void slab(ServerLevel level, Vec3 base, BlockState state, float yaw, int delay) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return;
 		}

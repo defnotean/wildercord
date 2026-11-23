@@ -209,7 +209,7 @@ public class Bramblewalker extends WildMonster {
 				continue;
 			}
 			DamageSource source = damageSources().mobAttack(this);
-			t.hurtServer(level, source, LASH_DAMAGE);
+			t.hurt(source, LASH_DAMAGE);
 			MonsterMagic.root(level, t, ticks);
 		}
 		// The vine itself: a thread of green sap-light, leaves torn off along it.
@@ -239,12 +239,12 @@ public class Bramblewalker extends WildMonster {
 	// ------------------------------------------------------------------ fire
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// Dry wood: fire that isn't a spell's (a spell's goes through its weakness to fire) burns it half again as hard.
 		if (source.is(DamageTypeTags.IS_FIRE) && !MonsterMagic.spellLanding()) {
 			damage *= 1.5F;
 		}
-		boolean hurt = super.hurtServer(level, source, damage);
+		boolean hurt = super.hurt(source, damage);
 		if (hurt && isOnFire() && lashAt > 0) {
 			lashAt = 0;
 			setState(WINDUP, false);

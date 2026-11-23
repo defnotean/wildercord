@@ -89,7 +89,7 @@ public final class TravelCommandsTest implements FabricClientGameTest {
 			c.waitTicks(10);
 			w.getServer().runOnServer(s -> {
 				dev.wildercord.cast.Effects.readyToHurt(p(s));
-				check(p(s).hurtServer(s.overworld(), p(s).damageSources().generic(), 1F), "the hit landed");
+				check(p(s).hurt(p(s).damageSources().generic(), 1F), "the hit landed");
 			});
 			c.waitTicks(3);
 			w.getServer().runOnServer(s -> {

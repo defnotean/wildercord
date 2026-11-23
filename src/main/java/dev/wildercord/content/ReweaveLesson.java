@@ -195,7 +195,6 @@ public final class ReweaveLesson {
 		ItemStack stack = new ItemStack(Items.WRITTEN_BOOK);
 		stack.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough(TITLE), AUTHOR, 0,
 			List.of(Filterable.passThrough(page(0)), Filterable.passThrough(page(1)), Filterable.passThrough(page(2))), true));
-		stack.set(DataComponents.ITEM_MODEL, Wildercord.id("reweave_lesson"));
 		return stack;
 	}
 
@@ -209,7 +208,7 @@ public final class ReweaveLesson {
 		if (Heart.discovered(player, key)) return;
 		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
 			ItemStack stack = player.getInventory().getItem(slot);
-			if (Wildercord.id("reweave_lesson").equals(stack.get(DataComponents.ITEM_MODEL))) return;
+			// 1.21.1 has no item_model component; the lesson duplicates are accepted.
 		}
 		if (player.getInventory().add(book())) MasterStudies.remember(player, key);
 		else player.sendSystemMessage(Component.translatable("message.wildercord.reweave_lesson.retained").withColor(0xB7CEC9));

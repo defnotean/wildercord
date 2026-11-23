@@ -392,7 +392,7 @@ public final class Innates {
 				for (LivingEntity other : members) {
 					if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
 						Effects.readyToHurt(other);
-						SpellDefence.hurt(level, other, source, damage * THREAD_SHARE);
+						SpellDefence.hurt(other, source, damage * THREAD_SHARE);
 						threadPulse(level, entity, other, hop++);
 				}
 			}
@@ -417,7 +417,7 @@ public final class Innates {
 		long now = cast.level.getGameTime();
 		Kindle k = KINDLING.get(t.getUUID());
 		int stacks = k == null || now - k.last() > 120 ? 1 : k.stacks() + 1;
-		Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
+		Effects.hurt(t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
 		Vec3 c = t.getBoundingBox().getCenter();
 		if (stacks < 5) {
 			// One gold ember more in the ring over its head for every stack, and the tick a step higher up the scale.
@@ -433,7 +433,7 @@ public final class Innates {
 					continue;
 				}
 				other.igniteForSeconds(4);
-				Effects.hurt(cast, other, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), KINDLING_BURST * power);
+				Effects.hurt(other, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), KINDLING_BURST * power);
 				if (other != t && other.isAlive()) {
 					// The heat carries: everything the burst reached is left two stacks in.
 					KINDLING.put(other.getUUID(), new Kindle(KINDLING_CHAIN, now));
@@ -565,7 +565,7 @@ public final class Innates {
 		try {
 			Effects.readyToHurt(entity);
 			float observedBefore=entity.getHealth();
-			entity.hurtServer(level,level.damageSources().playerAttack(player),(float)(damage*(LUCKY_MULTIPLIER-1)));
+			entity.hurt(level.damageSources().playerAttack(player),(float)(damage*(LUCKY_MULTIPLIER-1)));
 			if(entity.getHealth()<observedBefore)LifeOwnerEvents.transition(level,"fortune",entity,LifeOwnerEvents.Moment.TRIGGER,1,entity.getHealth()-observedBefore,player.getBoundingBox().getCenter(),player.getUUID());
 		} finally {
 			echoing = false;
@@ -612,7 +612,7 @@ public final class Innates {
 		double soaked = Math.min(8.0, Math.floor(SOAKED.getOrDefault(image.body().getUUID(), 0.0F) / 6.0F));
 		SOAKED.remove(image.body().getUUID());
 		for (Entity e : level.getEntities(image.body(), new AABB(c, c).inflate(3), e -> Targets.canHarm(image.caster(), e))) {
-			Effects.hurt(cast, (LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), (8 + soaked) * image.power());
+			Effects.hurt((LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), (8 + soaked) * image.power());
 		}
 		Sigils.flash(level, c, 0xFFB45AF0, 2.0F);
 		ElementFx.voidImpact(level, c, 2.0);
@@ -644,7 +644,7 @@ public final class Innates {
 			Effects.asElement("earth", () -> {
 				for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
 					LivingEntity t = (LivingEntity) e;
-					Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3.5 * power);
+					Effects.hurt(t, level.damageSources().indirectMagic(entity, entity), 3.5 * power);
 					Vec3 away = t.position().subtract(entity.position());
 					Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize()).scale(0.8).add(0, 0.35, 0));
 				}
@@ -674,7 +674,7 @@ public final class Innates {
 		try {
 			// As spell damage, like Stoneform's aftershock: a player it strikes takes it at the server's pvp scale, and a Shield
 			// meets it. Storm damage, whatever the blow it answers was.
-			Effects.asElement("storm", () -> Effects.hurt(new Cast(entity), attacker, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, entity),
+			Effects.asElement("storm", () -> Effects.hurt(attacker, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, entity),
 				5 * scale(entity)));
 		} finally {
 			echoing = false;
@@ -759,7 +759,7 @@ public final class Innates {
 					repaying = true;
 					try {
 						Effects.readyToHurt(player);
-						player.hurtServer((ServerLevel) player.level(), player.level().damageSources().magic(), pay);
+						player.hurt(player.level().damageSources().magic(), pay);
 					} finally {
 						echoing = false;
 						repaying = false;

@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.Mixin;
 /** Counts native hits and observes the wound for an armed Stone Hinge catch. Damage is never changed. */
 @Mixin(Player.class)
 public abstract class PlayerStoneHingeMixin {
-	@WrapMethod(method = "hurtServer")
+	@WrapMethod(method = "hurt")
 	private boolean wildercord$stoneHingeHit(ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
-		return StoneHingeReceipt.hurt((Player) (Object) this, source, () -> original.call(level, source, amount));
+		return StoneHingeReceipt.hurt(source, () -> original.call(level, source, amount));
 	}
 
 	@WrapMethod(method = "actuallyHurt")

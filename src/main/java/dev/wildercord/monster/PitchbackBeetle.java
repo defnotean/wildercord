@@ -133,7 +133,7 @@ public class PitchbackBeetle extends WildMonster {
 		if (distance <= PitchbackRules.BITE_REACH && now >= nextBite) {
 			nextBite = now + PitchbackRules.BITE_COOLDOWN;
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			actingUntil = now + 6;
 			setState(ACTING, true);
 			playSound(SoundEvents.SPIDER_HURT, 0.7F, 1.4F);
@@ -199,13 +199,13 @@ public class PitchbackBeetle extends WildMonster {
 			e -> e.isAlive() && e.distanceTo(this) <= PitchbackRules.BURST_RADIUS + 0.5)) {
 			near.igniteForSeconds(PitchbackRules.BURST_FIRE_SECONDS);
 			if (near != this) {
-				near.hurtServer(level, level.damageSources().inFire(), PitchbackRules.BURST_DAMAGE);
+				near.hurt(level.damageSources().inFire(), PitchbackRules.BURST_DAMAGE);
 			}
 		}
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (source.is(DamageTypeTags.IS_FIRE)) {
 			damage *= PitchbackRules.FIRE_MULTIPLIER;
 			long now = level.getGameTime();
@@ -213,7 +213,7 @@ public class PitchbackBeetle extends WildMonster {
 				burst(level, now);
 			}
 		}
-		return super.hurtServer(level, source, damage);
+		return super.hurt(source, damage);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Spell visuals made of real blocks: block displays that grow, hold and shrink away (stone spires
@@ -46,7 +47,7 @@ public final class BlockFx {
 	}
 
 	private static Display.BlockDisplay display(ServerLevel level, Vec3 at, BlockState state, Transformation start) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

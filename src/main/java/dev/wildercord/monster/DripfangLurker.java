@@ -218,7 +218,7 @@ public class DripfangLurker extends WildMonster {
 			e -> e != this && e.isAlive() && !(e instanceof DripfangLurker) && Targets.canHarm(this, e))) {
 			double distance = Math.sqrt(Math.pow(hit.getX() - getX(), 2) + Math.pow(hit.getZ() - getZ(), 2));
 			float damage = DripfangRules.landing(distance);
-			if (damage > 0 && hit.hurtServer(level, damageSources().mobAttack(this), damage)) {
+			if (damage > 0 && hit.hurt(damageSources().mobAttack(this), damage)) {
 				hit.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, DripfangRules.SLOW_TICKS, 1, false, true), this);
 				playSound(SoundEvents.POINTED_DRIPSTONE_BREAK, 1.2F, 0.8F);
 			}
@@ -248,7 +248,7 @@ public class DripfangLurker extends WildMonster {
 		if (DripfangRules.bites(distanceTo(target), now, nextBite)) {
 			nextBite = now + DripfangRules.BITE_COOLDOWN;
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			playSound(SoundEvents.SPIDER_AMBIENT, 1.0F, 1.4F);
 		}
 		if (getNavigation().isDone() || tickCount % 10 == 0) {
@@ -314,12 +314,12 @@ public class DripfangLurker extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (source.is(DamageTypeTags.IS_FALL)) {
 			return false;
 		}
 		boolean flipped = phase == Phase.FLIPPED;
-		boolean hit = super.hurtServer(level, source, DripfangRules.hurt(damage, flipped));
+		boolean hit = super.hurt(source, DripfangRules.hurt(damage, flipped));
 		if (hit && (phase == Phase.HANG || phase == Phase.CLIMB)) {
 			let(level, true);
 		}

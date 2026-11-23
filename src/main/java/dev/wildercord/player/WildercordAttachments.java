@@ -356,7 +356,7 @@ public final class WildercordAttachments {
 			Codec.INT.fieldOf("count").forGetter(Cracks::count),
 			Codec.LONG.fieldOf("until").forGetter(Cracks::until)
 		).apply(i, Cracks::new));
-		public static final StreamCodec<ByteBuf, Cracks> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Cracks> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Cracks::count, ByteBufCodecs.VAR_LONG, Cracks::until, Cracks::new);
 
 		public int active(long now) {
@@ -375,7 +375,7 @@ public final class WildercordAttachments {
 	/** Rhythm: casts chained on the beat, and the window in which the next one counts. */
 	public record Rhythm(int stacks, long windowStart, long windowEnd) {
 		public static final Rhythm NONE = new Rhythm(0, 0, 0);
-		public static final StreamCodec<ByteBuf, Rhythm> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Rhythm> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Rhythm::stacks, ByteBufCodecs.VAR_LONG, Rhythm::windowStart, ByteBufCodecs.VAR_LONG, Rhythm::windowEnd, Rhythm::new);
 	}
 
@@ -395,7 +395,7 @@ public final class WildercordAttachments {
 	 * ({@code stageTime}), and whether the server counts a traced glyph ({@code traceable}).
 	 */
 	public record Charge(int spell, long start, List<String> runes, int full, int stages, int stage, long stageTime, boolean traceable) {
-		public static final StreamCodec<ByteBuf, Charge> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Charge> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Charge::spell, ByteBufCodecs.VAR_LONG, Charge::start,
 			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), Charge::runes, ByteBufCodecs.VAR_INT, Charge::full,
 			ByteBufCodecs.VAR_INT, Charge::stages, ByteBufCodecs.VAR_INT, Charge::stage, ByteBufCodecs.VAR_LONG, Charge::stageTime,
@@ -418,7 +418,7 @@ public final class WildercordAttachments {
 	 * draw its circle; not saved (it lasts seconds).
 	 */
 	public record SpellShield(float strength, long until, int color, List<String> runes) {
-		public static final StreamCodec<ByteBuf, SpellShield> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, SpellShield> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.FLOAT, SpellShield::strength, ByteBufCodecs.VAR_LONG, SpellShield::until, ByteBufCodecs.INT, SpellShield::color,
 			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), SpellShield::runes, SpellShield::new);
 
@@ -446,7 +446,7 @@ public final class WildercordAttachments {
 	 */
 	public record CordLook(String tier, List<Integer> beads) {
 		public static final CordLook NONE = new CordLook("", List.of());
-		public static final StreamCodec<ByteBuf, CordLook> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, CordLook> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8, CordLook::tier, ByteBufCodecs.INT.apply(ByteBufCodecs.list(12)), CordLook::beads, CordLook::new);
 	}
 
@@ -468,7 +468,7 @@ public final class WildercordAttachments {
 
 	/** The spell just cast, for its casting pose: the shape's id and the game time it went off. Synced to everyone nearby. */
 	public record CastPose(String shape, long start) {
-		public static final StreamCodec<ByteBuf, CastPose> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, CastPose> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8, CastPose::shape, ByteBufCodecs.VAR_LONG, CastPose::start, CastPose::new);
 		/** How long a casting pose lasts, in ticks. */
 		public static final int TICKS = 12;
@@ -505,7 +505,7 @@ public final class WildercordAttachments {
 	 * time its telegraphed cast lands (0 when none is coming), so the marks flare while it telegraphs.
 	 */
 	public record RuneMarks(int color, boolean adept, long castAt) {
-		public static final StreamCodec<ByteBuf, RuneMarks> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, RuneMarks> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.INT, RuneMarks::color, ByteBufCodecs.BOOL, RuneMarks::adept, ByteBufCodecs.VAR_LONG, RuneMarks::castAt, RuneMarks::new);
 
 		public RuneMarks casting(long at) {
@@ -547,7 +547,7 @@ public final class WildercordAttachments {
 			Codec.FLOAT.fieldOf("speed").forGetter(Soaring::speed),
 			Codec.BOOL.fieldOf("falling").forGetter(Soaring::falling)
 		).apply(i, Soaring::new));
-		public static final StreamCodec<ByteBuf, Soaring> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Soaring> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_LONG, Soaring::until, ByteBufCodecs.FLOAT, Soaring::speed, ByteBufCodecs.BOOL, Soaring::falling, Soaring::new);
 	}
 
@@ -611,10 +611,10 @@ public final class WildercordAttachments {
 			buf -> new dev.wildercord.spell.ResonanceLore.View(ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf),
 				ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(8)).decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf),
 				ByteBufCodecs.INT.decode(buf), ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf)));
-		private static final StreamCodec<ByteBuf, dev.wildercord.spell.ResonanceLore.QuirkView> QUIRK = StreamCodec.composite(
+		private static final StreamCodec<ByteBuf, dev.wildercord.spell.ResonanceLore.QuirkView> QUIRK = McStreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8, dev.wildercord.spell.ResonanceLore.QuirkView::id, ByteBufCodecs.STRING_UTF8, dev.wildercord.spell.ResonanceLore.QuirkView::text,
 			dev.wildercord.spell.ResonanceLore.QuirkView::new);
-		public static final StreamCodec<ByteBuf, WorldLore> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, WorldLore> STREAM_CODEC = McStreamCodec.composite(
 			VIEW.apply(ByteBufCodecs.list(64)), WorldLore::resonances, QUIRK.apply(ByteBufCodecs.list(64)), WorldLore::quirks, ByteBufCodecs.VAR_INT, WorldLore::total,
 			WorldLore::new);
 	}

@@ -196,7 +196,7 @@ public class ReefgraspOctopus extends WildMonster {
 		if (distance <= OctopusRules.BITE_REACH && now >= nextBite) {
 			nextBite = now + OctopusRules.BITE_COOLDOWN;
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			actingUntil = now + 6;
 			setState(ACTING, true);
 		}
@@ -220,7 +220,7 @@ public class ReefgraspOctopus extends WildMonster {
 			harm = 0;
 			setState(ALT, true);
 			roused = now + 400;
-			target.hurtServer(level, damageSources().mobAttack(this), OctopusRules.SQUEEZE_DAMAGE);
+			target.hurt(damageSources().mobAttack(this), OctopusRules.SQUEEZE_DAMAGE);
 		}
 	}
 
@@ -247,7 +247,7 @@ public class ReefgraspOctopus extends WildMonster {
 			prey.setAirSupply(OctopusRules.drains(prey.getAirSupply()));
 		}
 		if (OctopusRules.squeezes(heldTicks)) {
-			prey.hurtServer(level, damageSources().mobAttack(this), OctopusRules.SQUEEZE_DAMAGE);
+			prey.hurt(damageSources().mobAttack(this), OctopusRules.SQUEEZE_DAMAGE);
 			actingUntil = now + 5;
 			setState(ACTING, true);
 			playSound(SoundEvents.SLIME_SQUISH, 0.7F, 0.5F);
@@ -287,7 +287,7 @@ public class ReefgraspOctopus extends WildMonster {
 	/** Out of the water: it dries out, and flops about hoping to land back in. */
 	private void dryOut(ServerLevel level, long now) {
 		if (now % OctopusRules.DRY_EVERY == 0) {
-			hurtServer(level, damageSources().dryOut(), 1.0F);
+			hurt(level, damageSources().dryOut(), 1.0F);
 		}
 		if (onGround() && random.nextFloat() < 0.08F) {
 			setDeltaMovement(getDeltaMovement().add((random.nextFloat() * 2 - 1) * 0.15, 0.35, (random.nextFloat() * 2 - 1) * 0.15));
@@ -297,8 +297,8 @@ public class ReefgraspOctopus extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean hurt = super.hurtServer(level, source, damage);
+	public boolean hurt(DamageSource source, float damage) {
+		boolean hurt = super.hurt(source, damage);
 		if (hurt && isAlive()) {
 			long now = level.getGameTime();
 			if (held != null) {

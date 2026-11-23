@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import java.util.Set;
+import dev.wildercord.compat.McEntities;
 
 /** Actual draw packets, interruption, unique acquisition, bond ownership, defensive tradeoff and terrain generation. */
 public final class SleepingBladeTest implements FabricClientGameTest {
@@ -72,7 +73,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			use(c,at);c.waitTicks(40);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(((ServerLevel) p.level()),p.getX()+.7,p.getY(),p.getZ(),Set.<RelativeMovement>of(),p.getYRot(),p.getXRot());});c.waitTicks(15);
 			unclaimed(world,at,"Movement cancels without claiming");check(!world.getServer().computeOnServer(s->SleepingBlades.drawingAt(s.overworld(),at)),"Movement removes the active draw");
 			c.runOnClient(mc->mc.options.keyShift.setDown(false));stand(world,at,4);c.waitTicks(20);aim(c,at);c.runOnClient(mc->mc.options.keyShift.setDown(true));c.waitTicks(10);
-			use(c,at);c.waitTicks(35);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.hurtServer(s.overworld(),s.overworld().damageSources().generic(),1);});c.waitTicks(20);
+			use(c,at);c.waitTicks(35);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.hurt(s.overworld().damageSources().generic(),1);});c.waitTicks(20);
 			unclaimed(world,at,"Actual damage cancels the draw");check(!world.getServer().computeOnServer(s->SleepingBlades.drawingAt(s.overworld(),at)),"Damage removes the active draw");
 			// A saved scheduled pose from an interrupted server returns to rest without duplicating a blade.
 			world.getServer().runOnServer(s->{var stone=(SleepingBladeEntity)s.overworld().getBlockEntity(at);stone.phase(3);s.overworld().scheduleTick(at,SleepingBlades.STONE,1);});c.waitTicks(10);
@@ -101,11 +102,11 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				p.getInventory().setItem(8,ItemStack.EMPTY);p.setItemInHand(InteractionHand.MAIN_HAND,blade);
 				p.setAttached(AuraAttachments.STATE,AuraAttachments.State.NONE);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",4,0,100,0));
 				check(AuraGuard.raise(p),"Oathkeeper raises guard");check(Math.abs((100-Aura.aura(p))-ordinary*.85)<.001,"Actual guard raise costs 15% less");
-				Momentum.reset(p);p.setYRot(0);p.setXRot(0);var enemy=EntityType.ZOMBIE.create(s.overworld(),MobSpawnType.COMMAND);enemy.moveTo(p.getX(),p.getY(),p.getZ()+2,0,0);enemy.setNoAi(true);s.overworld().addFreshEntity(enemy);
-				float health=p.getHealth();p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
+				Momentum.reset(p);p.setYRot(0);p.setXRot(0);var enemy=McEntities.create(EntityType.ZOMBIE, s.overworld(), MobSpawnType.COMMAND);enemy.moveTo(p.getX(),p.getY(),p.getZ()+2,0,0);enemy.setNoAi(true);s.overworld().addFreshEntity(enemy);
+				float health=p.getHealth();p.hurt(s.overworld().damageSources().mobAttack(enemy),4);
 				check(p.getHealth()==health,"Actual perfect guard turns the blow aside");check(Math.abs(Momentum.value(p)-MomentumRules.PERFECT_GUARD*MomentumRules.temper("stone").guard()*1.3)<.01,"Perfect guard actually builds 30% more momentum");
 				var guardPaid=new double[]{-1};var playerId=p.getUUID();AuraApi.onSpend((who,paid,reason,backlash)->{if(who.getUUID().equals(playerId) && reason.equals("guard"))guardPaid[0]=paid;});
-				dev.wildercord.compat.McEntities.clearHurtCooldown(p);p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
+				dev.wildercord.compat.McEntities.clearHurtCooldown(p);p.hurt(s.overworld().damageSources().mobAttack(enemy),4);
 				double absorbed=4*dev.wildercord.config.Config.get().aura().guardShare();
 				check(p.getHealth()<health,"Held guard still admits damage after the perfect moment");
 				check(Math.abs(guardPaid[0]-absorbed*AuraRules.GUARD_COST_PER_POINT*.85)<.01,"Actual held guard pays the reduced cost for absorbed damage: "+guardPaid[0]);

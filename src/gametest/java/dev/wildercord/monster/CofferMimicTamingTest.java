@@ -22,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import dev.wildercord.compat.McEntities;
 /** Books tame a coffer mimic through the real use key; tamed, it follows, opens as a chest for its owner alone, keeps what it holds and spills it when it dies. */
 public final class CofferMimicTamingTest implements FabricClientGameTest {
 	private static UUID id;
@@ -197,7 +198,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				wild.settleHere(180);
 				l.addFreshEntity(wild);
 				wildId = wild.getUUID();
-				var golem = EntityType.IRON_GOLEM.create(l, MobSpawnType.COMMAND);
+				var golem = McEntities.create(EntityType.IRON_GOLEM, l, MobSpawnType.COMMAND);
 				check(golem != null, "A real iron golem stands in the square");
 				golem.setPos(20.5, 101, 23.5);
 				l.addFreshEntity(golem);

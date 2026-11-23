@@ -96,7 +96,7 @@ public final class LanternNewt extends PathfinderMob {
 		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(l))) && tickCount%20==0)
 			l.sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,getX(),getY()+.3,getZ(),2,.16,.05,.16,0);
 	}
-	@Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount) {boolean hit=super.hurtServer(l,source,amount);if(hit) {frightenedUntil=l.getGameTime()+200;entityData.set(RESPONSE,0L);entityData.set(RESTING,false);}return hit;}
+	@Override public boolean hurt(DamageSource source, float amount) {boolean hit=super.hurt(source,amount);if(hit) {frightenedUntil=l.getGameTime()+200;entityData.set(RESPONSE,0L);entityData.set(RESTING,false);}return hit;}
 	@Override protected InteractionResult mobInteract(Player p,InteractionHand hand) {
 		var stack=p.getItemInHand(hand);if(!stack.is(Items.SEAGRASS))return super.mobInteract(p,hand);
 		if(level() instanceof ServerLevel l) {

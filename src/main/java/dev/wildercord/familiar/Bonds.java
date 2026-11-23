@@ -35,7 +35,7 @@ public record Bonds(List<Bond> bonds, String out, String last) {
 			Codec.INT.optionalFieldOf("xp", 0).forGetter(Bond::xp),
 			Codec.BOOL.optionalFieldOf("waiting", false).forGetter(Bond::waiting)
 		).apply(i, Bond::new));
-		public static final StreamCodec<ByteBuf, Bond> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Bond> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8, Bond::id, ByteBufCodecs.STRING_UTF8, Bond::element, ByteBufCodecs.STRING_UTF8, Bond::name,
 			ByteBufCodecs.VAR_INT, Bond::xp, ByteBufCodecs.BOOL, Bond::waiting, Bond::new);
 
@@ -61,7 +61,7 @@ public record Bonds(List<Bond> bonds, String out, String last) {
 		Codec.STRING.optionalFieldOf("out", "").forGetter(Bonds::out),
 		Codec.STRING.optionalFieldOf("last", "").forGetter(Bonds::last)
 	).apply(i, Bonds::new));
-	public static final StreamCodec<ByteBuf, Bonds> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<ByteBuf, Bonds> STREAM_CODEC = McStreamCodec.composite(
 		Bond.STREAM_CODEC.apply(ByteBufCodecs.list(WispRules.MAX_BONDS)), Bonds::bonds, ByteBufCodecs.STRING_UTF8, Bonds::out,
 		ByteBufCodecs.STRING_UTF8, Bonds::last, Bonds::new);
 

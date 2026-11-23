@@ -194,7 +194,7 @@ public class FallenKnight extends AuraFighter implements Enemy {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		float through = guarded(level, source, damage);
 		if (through < 0) {
 			return false;
@@ -203,7 +203,7 @@ public class FallenKnight extends AuraFighter implements Enemy {
 			// Its guard broken, it reels: a quarter more.
 			through *= (float) AuraWorldRules.KNIGHT_BROKEN_BONUS;
 		}
-		boolean hurt = super.hurtServer(level, source, through);
+		boolean hurt = super.hurt(source, through);
 		if (hurt && isAlive() && !guarding() && slashAt == 0 && source.getEntity() instanceof LivingEntity && getRandom().nextDouble() < 0.4) {
 			guardNext = true;
 		}

@@ -1,6 +1,8 @@
 package dev.wildercord.compat;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -22,8 +24,11 @@ import net.minecraft.world.item.ItemStack;
 public final class McEntities {
 	private McEntities() {}
 
-	/** Version-independent snapshot of hurt-cooldown state around an extra damage hit. */
-	public record HurtCooldown(int invulnerableTime, int damageCooldownTime) {}
+/** 1.21.1 has no 2-argument {@code EntityType.create(Level, MobSpawnType)}; the spawn type is dropped here. */
+	public static <T extends Entity> T create(EntityType<T> type, Level level, net.minecraft.world.entity.MobSpawnType spawnType) {
+		return type.create(level);
+	}
+
 
 	/** Version-independent callback for custom projectile deflection. */
 	@FunctionalInterface

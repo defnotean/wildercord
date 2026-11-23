@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Cinder Warden, keeper of the Ember Sanctum: a hulking figure of magma plates and chains. Its
@@ -359,7 +360,7 @@ public class CinderWarden extends DungeonBoss {
 			if ((pool.until() - now) % POOL_EVERY == 0) {
 				for (LivingEntity t : foes(level, at, POOL_RADIUS + 0.5)) {
 					if (Math.hypot(t.getX() - at.x, t.getZ() - at.z) <= POOL_RADIUS + 0.3 && Math.abs(t.getY() - at.y) < 1.0) {
-						t.hurtServer(level, level.damageSources().hotFloor(), (float) (POOL_DAMAGE * Runebound.power(level)));
+						t.hurt(level.damageSources().hotFloor(), (float) (POOL_DAMAGE * Runebound.power(level)));
 						t.igniteForSeconds(2);
 					}
 				}
@@ -377,7 +378,7 @@ public class CinderWarden extends DungeonBoss {
 
 	/** Harm {@code t} for {@code damage} (scaled by difficulty), setting them alight {@code burn} seconds. */
 	private void hurt(ServerLevel level, LivingEntity t, double damage, int burn) {
-		t.hurtServer(level, level.damageSources().mobAttack(this), (float) (damage * Runebound.power(level)));
+		t.hurt(level.damageSources().mobAttack(this), (float) (damage * Runebound.power(level)));
 		if (burn > 0) {
 			t.igniteForSeconds(burn);
 		}
@@ -1354,7 +1355,7 @@ public class CinderWarden extends DungeonBoss {
 		announce(level, "message.wildercord.cinder_warden_phase." + phase, COLOR);
 		// Two of its keepers climb out of the forge: Runebound, carrying fire (Adepts the second time).
 		for (int i = 0; i < 2; i++) {
-			Mob guard = EntityType.WITHER_SKELETON.create(level, MobSpawnType.MOB_SUMMONED);
+			Mob guard = McEntities.create(EntityType.WITHER_SKELETON, level, MobSpawnType.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}
@@ -1402,7 +1403,7 @@ public class CinderWarden extends DungeonBoss {
 				LivingEntity t = (LivingEntity) e;
 				Vec3 away = t.position().subtract(c);
 				Vec3 push = new Vec3(away.x, 0, away.z).lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : new Vec3(away.x, 0, away.z).normalize();
-				t.hurtServer(level, level.damageSources().mobAttack(this), (float) (SHIFT_DAMAGE * power));
+				t.hurt(level.damageSources().mobAttack(this), (float) (SHIFT_DAMAGE * power));
 				Effects.push(t, new Vec3(push.x * 1.6, 0.5, push.z * 1.6));
 			}
 			ElementFx.groundRing(level, c.add(0, 0.05, 0), COLOR, 0.5, SHIFT_REACH + 0.5, 0.3, 14);
@@ -1489,7 +1490,7 @@ public class CinderWarden extends DungeonBoss {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		return false;
 	}
 }

@@ -453,7 +453,7 @@ public final class Aura {
 	/** The Aura key, pressed one of its ways (see {@link AuraApi.Trigger}): the server picks the technique. */
 	public record Key(int trigger) implements CustomPacketPayload {
 		public static final Type<Key> TYPE = new Type<>(Wildercord.id("aura_key"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Key> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Key::trigger, Key::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Key> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Key::trigger, Key::new).cast();
 
 		@Override
 		public Type<Key> type() {

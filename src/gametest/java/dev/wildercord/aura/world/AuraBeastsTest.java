@@ -52,12 +52,12 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(l,0,101,-9,Set.<RelativeMovement>of(),0,0);
 				for(var beast:List.of(stone,gale)) {
 					beast.pose(BeastRules.IDLE,0);float full=beast.getMaxHealth();beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);
-					SpellDefence.hurt(l,beast,l.damageSources().source(DamageTypes.FREEZE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Elemental spell is resisted through the shared pipeline");
-					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);SpellDefence.hurt(l,beast,l.damageSources().source(DamageTypes.IN_FIRE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Fire spell follows the same resistance: "+(full-beast.getHealth())+" expected "+10*BeastRules.spell(beast.gale(),false));
-					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurtServer(l,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Direct magic is resisted once");
-					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurtServer(l,l.damageSources().playerAttack(p),10);check(close(full-beast.getHealth(),10),"Physical blades retain their damage");
-					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurtServer(l,l.damageSources().source(Aura.DAMAGE,p,p),10);check(close(full-beast.getHealth(),10),"Aura damage retains its identity");
-					beast.pose(BeastRules.RECOVER,50);beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);SpellDefence.hurt(l,beast,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),true)),"Recovery opens an opportunity for supporting spells");
+					SpellDefence.hurt(beast,l.damageSources().source(DamageTypes.FREEZE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Elemental spell is resisted through the shared pipeline");
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);SpellDefence.hurt(beast,l.damageSources().source(DamageTypes.IN_FIRE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Fire spell follows the same resistance: "+(full-beast.getHealth())+" expected "+10*BeastRules.spell(beast.gale(),false));
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurt(l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Direct magic is resisted once");
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurt(l.damageSources().playerAttack(p),10);check(close(full-beast.getHealth(),10),"Physical blades retain their damage");
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurt(l.damageSources().source(Aura.DAMAGE,p,p),10);check(close(full-beast.getHealth(),10),"Aura damage retains its identity");
+					beast.pose(BeastRules.RECOVER,50);beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);SpellDefence.hurt(beast,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),true)),"Recovery opens an opportunity for supporting spells");
 					beast.pose(BeastRules.IDLE,0);beast.aggression=0;beast.setTarget(null);beast.setHealth(full);
 				}
 				return new int[]{stone.getId(),gale.getId()};

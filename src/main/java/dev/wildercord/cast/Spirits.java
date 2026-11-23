@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.animal.WolfVariants;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Temporary magic on creatures: summoned spirit wolves, and mobs frozen solid by Freeze. Both
@@ -102,7 +103,7 @@ public final class Spirits {
 		int lifetime = (int) Math.round((shadow ? 15 : 20) * 20 * duration);
 		LivingEntity target = caster.getLastHurtMob() != null && caster.getLastHurtMob().isAlive() ? caster.getLastHurtMob() : null;
 		for (int i = 0; i < count; i++) {
-			Wolf wolf = EntityType.WOLF.create(level, MobSpawnType.MOB_SUMMONED);
+			Wolf wolf = McEntities.create(EntityType.WOLF, level, MobSpawnType.MOB_SUMMONED);
 			if (wolf == null) {
 				continue;
 			}

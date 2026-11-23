@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(Player.class)
 public abstract class StoneHingePlayerProbeMixin {
-	@WrapMethod(method = "hurtServer")
+	@WrapMethod(method = "hurt")
 	private boolean stoneHinge$hit(ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
         dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate((Player) (Object) this, "Intervening hurt during natural dispatch");
 		var hit = StoneHingeImpulseProbe.begin((Player) (Object) this, source);

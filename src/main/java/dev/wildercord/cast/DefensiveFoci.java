@@ -54,7 +54,7 @@ public final class DefensiveFoci {
      // These installments ignore vanilla's recent-hit timer but retain Resistance and absorption.
      var savedCooldown = dev.wildercord.compat.McEntities.saveHurtCooldown(player);
      Effects.readyToHurt(player);
-     try { SpellDefence.guarded(player, () -> player.hurtServer((ServerLevel) player.level(),source(player),due)); }
+     try { SpellDefence.guarded(player, () -> player.hurt(source(player),due)); }
      finally { dev.wildercord.compat.McEntities.restoreHurtCooldown(player, savedCooldown); }
      owed = Math.max(0,owed-due); delay = owed > 0 ? 10 : 0;
      player.displayClientMessage(Component.translatable("message.wildercord.reprieve.debt", String.format(java.util.Locale.ROOT,"%.1f",owed)), true);

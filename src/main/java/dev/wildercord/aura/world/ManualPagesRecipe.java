@@ -28,7 +28,7 @@ public final class ManualPagesRecipe implements CraftingRecipe {
 		ItemStack.CODEC.fieldOf("result").forGetter(o -> o.result),
 		Ingredient.CODEC.listOf(1, 9).fieldOf("ingredients").forGetter(o -> o.ingredients)
 	).apply(i, ManualPagesRecipe::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, ManualPagesRecipe> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, ManualPagesRecipe> STREAM_CODEC = McStreamCodec.composite(
 		CraftingBookCategory.STREAM_CODEC, o -> o.category,
 		ItemStack.STREAM_CODEC, o -> o.result,
 		Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), o -> o.ingredients,

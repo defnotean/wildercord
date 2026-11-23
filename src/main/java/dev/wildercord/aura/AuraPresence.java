@@ -39,7 +39,7 @@ public final class AuraPresence {
 	public record Look(boolean shell, long shellStruckAt, int bladeSpell, long bladeUntil, long fightUntil, int momentum) {
 		public static final Look NONE = new Look(false, -1, 0, -1, 0, 0);
 
-		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.BOOL, Look::shell, ByteBufCodecs.VAR_LONG, Look::shellStruckAt, ByteBufCodecs.INT, Look::bladeSpell,
 			ByteBufCodecs.VAR_LONG, Look::bladeUntil, ByteBufCodecs.VAR_LONG, Look::fightUntil, ByteBufCodecs.VAR_INT, Look::momentum, Look::new);
 
@@ -94,7 +94,7 @@ public final class AuraPresence {
 			Codec.LONG.optionalFieldOf("dominion_until", 0L).forGetter(Timers::dominionUntil)
 		).apply(i, Timers::new));
 
-		public static final StreamCodec<ByteBuf, Timers> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Timers> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_LONG, Timers::stepReadyAt, ByteBufCodecs.VAR_LONG, Timers::dominionReadyAt, ByteBufCodecs.VAR_LONG, Timers::dominionUntil,
 			Timers::new);
 

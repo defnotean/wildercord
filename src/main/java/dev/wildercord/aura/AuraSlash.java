@@ -117,7 +117,7 @@ public final class AuraSlash {
 				// The end of its flight: a spell that cut nothing bursts here, and the rest of it follows.
 				if (carried[0] == 0) {
 					dev.wildercord.cast.BladeCasting.broke(spell.cast(), spell.root(), at, flat, origin, blocked,
-						blocked == null ? null : net.minecraft.core.Direction.getApproximateNearest(-flat.x, -flat.y, -flat.z));
+						blocked == null ? null : net.minecraft.core.Direction.getNearest(-flat.x, -flat.y, -flat.z));
 				}
 				dev.wildercord.cast.BladeCasting.follow(spell.cast(), spell.root(), at, flat, first[0]);
 			});

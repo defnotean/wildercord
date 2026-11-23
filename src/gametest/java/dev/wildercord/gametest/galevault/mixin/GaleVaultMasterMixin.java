@@ -18,7 +18,7 @@ public abstract class GaleVaultMasterMixin {
         var trial = GaleVaultProbe.current((SwordMaster) (Object) this);
         if (trial != null && noAi) trial.abort(GaleVaultProbe.Result.NO_AI);
     }
-    @Inject(method = "hurtServer", at = @At("RETURN"))
+    @Inject(method = "hurt", at = @At("RETURN"))
     private void gale$fallResult(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         var trial = GaleVaultProbe.current((SwordMaster) (Object) this);
         if (trial != null && source.is(DamageTypes.FALL)) trial.fallDamage(cir.getReturnValue());

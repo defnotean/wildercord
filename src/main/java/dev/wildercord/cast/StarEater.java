@@ -420,7 +420,7 @@ public class StarEater extends DungeonBoss {
 		if (hit != null && !hit.add(foe.getUUID())) {
 			return false;
 		}
-		SpellDefence.hurt(level, foe, level.damageSources().indirectMagic(this, this), hurtBy(level, share));
+		SpellDefence.hurt(foe, level.damageSources().indirectMagic(this, this), hurtBy(level, share));
 		return true;
 	}
 
@@ -1546,7 +1546,7 @@ public class StarEater extends DungeonBoss {
 				Fx.sound(level, c, WildercordSounds.SHIELD_BLOCK, 1.4F, 0.8F);
 			}
 		} else if (shard.parriedBy != null) {
-			hurtServer(level, level.damageSources().indirectMagic(shard.parriedBy, shard.parriedBy), shard.heavy ? 15 : 10);
+			hurt(level, level.damageSources().indirectMagic(shard.parriedBy, shard.parriedBy), shard.heavy ? 15 : 10);
 		}
 	}
 
@@ -1684,7 +1684,7 @@ public class StarEater extends DungeonBoss {
 				LivingEntity t = (LivingEntity) e;
 				Vec3 out = t.position().subtract(c);
 				Vec3 flat = new Vec3(out.x, 0, out.z).lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(out.x, 0, out.z).normalize();
-				SpellDefence.hurt(level, t, level.damageSources().indirectMagic(this, this), (float) (5 * Runebound.power(level)));
+				SpellDefence.hurt(t, level.damageSources().indirectMagic(this, this), (float) (5 * Runebound.power(level)));
 				Effects.push(t, new Vec3(flat.x * 1.5, 0.4, flat.z * 1.5));
 			}
 			Vfx.radial(level, ParticleTypes.END_ROD, c, 60, 0.5);
@@ -1793,7 +1793,7 @@ public class StarEater extends DungeonBoss {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		return false;
 	}
 

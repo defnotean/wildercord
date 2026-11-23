@@ -695,7 +695,7 @@ public class SandmawWyrm extends EliteMonster {
 			broke = 0;
 			pose(SandmawRules.GULPED, 0, SandmawRules.GULP_HOLD);
 			playSound(SoundEvents.GENERIC_EAT.value(), 2F, 0.4F);
-			caught.hurtServer(level, damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_CHEW));
+			caught.hurt(damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_CHEW));
 		} else {
 			pose(SandmawRules.CHOKING, 0, SandmawRules.CHOKING_TICKS);
 			playSound(SoundEvents.RAVAGER_STUNNED, 1.6F, 0.6F);
@@ -736,14 +736,14 @@ public class SandmawWyrm extends EliteMonster {
 				maw.x, maw.y + 0.5, maw.z, 4, 0.6, 0.4, 0.6, 0.02);
 		}
 		if (s > 0 && s % SandmawRules.GULP_CHEW_EVERY == 0) {
-			victim.hurtServer(level, damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_CHEW));
+			victim.hurt(damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_CHEW));
 			victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0), this);
 			playSound(SoundEvents.GENERIC_EAT.value(), 1.6F, 0.5F);
 			level.sendParticles(MAW, maw.x, maw.y + 0.5, maw.z, 6, 0.4, 0.3, 0.4, 0);
 		}
 		if (left == 0) {
 			spitOut(level, victim, SandmawRules.GULP_THROW, SandmawRules.GULP_THROW_UP);
-			victim.hurtServer(level, damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_SPAT));
+			victim.hurt(damageSources().mobAttack(this), tier().hit(SandmawRules.GULP_SPAT));
 			settle();
 			rest = SandmawRules.GULP_RECOVER;
 		}
@@ -1169,7 +1169,7 @@ public class SandmawWyrm extends EliteMonster {
 
 	/** A blow from it, the victim thrown away from a point and up; whether it landed. */
 	private boolean strike(ServerLevel level, LivingEntity victim, double damage, Vec3 at, double push, double lift) {
-		if (!victim.hurtServer(level, damageSources().mobAttack(this), tier().hit(damage))) {
+		if (!victim.hurt(damageSources().mobAttack(this), tier().hit(damage))) {
 			return false;
 		}
 		Vec3 away = flat(victim.position().subtract(at), dir).scale(push);
@@ -1246,13 +1246,13 @@ public class SandmawWyrm extends EliteMonster {
 	// ------------------------------------------------------------------ out of reach under the sand
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		float dealt = SandmawRules.hurt(damage, burrowed(), move());
+	public boolean hurt(DamageSource source, float damage) {
+		float dealt = SandmawRules.hurt(burrowed(), move());
 		if (dealt <= 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return false;
 		}
 		float before = getHealth();
-		boolean hit = super.hurtServer(level, source, dealt > 0 ? dealt : damage);
+		boolean hit = super.hurt(source, dealt > 0 ? dealt : damage);
 		if (hit) {
 			float lost = Math.max(0, before - getHealth());
 			hurtSinceRise += lost;

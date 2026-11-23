@@ -52,7 +52,7 @@ public final class RootmoltStrider extends Monster {
  private void recover(ServerLevel l) {release();setTarget(null);attackReady=Math.max(attackReady,l.getGameTime()+RootmoltRules.ATTACK_REST);pose(RECOVERING,RootmoltRules.RECOVERY);}
  /** Authoritative visible bell answer. Range/ownership/rest are checked by the relic caller too. */
  public boolean answerBell(ServerPlayer p) {if(!(level() instanceof ServerLevel l) || !isAlive() || isRemoved() || p.isSpectator() || p.isCreative() || !p.isAlive() || ((ServerLevel) p.level())!=l || distanceToSqr(p)>25 || !hasLineOfSight(p) || (pose()!=WARNING && pose()!=RAKING && pose()!=HOLDING))return false;RootmoltContent.countered(p,this);recover(l);Feels.sound(l,position(),"rootmolt_release",.5F,1);return true;}
- @Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount) {boolean wasCounter=pose()==WARNING || pose()==RAKING || pose()==HOLDING;boolean hit=super.hurtServer(l,source,amount);if(hit) {if(wasCounter && source.getEntity() instanceof ServerPlayer p && source.getDirectEntity()==p && source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK) && !dev.wildercord.cast.Dungeons.spellLanding())RootmoltContent.countered(p,this);recover(l);if(source.getEntity() instanceof LivingEntity e && valid(e))setTarget(e);}return hit;}
+ @Override public boolean hurt(DamageSource source, float amount) {boolean wasCounter=pose()==WARNING || pose()==RAKING || pose()==HOLDING;boolean hit=super.hurt(source,amount);if(hit) {if(wasCounter && source.getEntity() instanceof ServerPlayer p && source.getDirectEntity()==p && source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK) && !dev.wildercord.cast.Dungeons.spellLanding())RootmoltContent.countered(p,this);recover(l);if(source.getEntity() instanceof LivingEntity e && valid(e))setTarget(e);}return hit;}
  @Override public void die(DamageSource s) {release();super.die(s);}
  @Override public void remove(RemovalReason reason) {release();super.remove(reason);}
  @Override public void tick() {super.tick();if(level().isClientSide()) {warnO=warn;rakeO=rake;feedO=feed;warn=WildlifeRules.approach(warn,pose()==WARNING?1:0,.09F);rake=WildlifeRules.approach(rake,pose()==RAKING || pose()==HOLDING?1:0,.2F);feed=WildlifeRules.approach(feed,pose()==BROWSING?1:0,.08F);}}
@@ -72,7 +72,7 @@ public final class RootmoltStrider extends Monster {
    if(rakeSpent){recover(l);return;}
    var target=getTarget();if(valid(target) && hasLineOfSight(target) && onLine(target.position())) {
     rakeSpent=true;
-    boolean hit=target.hurtServer(l,damageSources().mobAttack(this),4);
+    boolean hit=target.hurt(damageSources().mobAttack(this),4);
     if(hit && target.isAlive() && !target.isRemoved() && target.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(RootmoltContent.NO_OWNER)) {if(RootmoltContent.resistRoot(target,this)) {recover(l);return;}
      // A callback may change actors; re-admit the original contact before claiming control.
      if(!isAlive() || isRemoved())return;

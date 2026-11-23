@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The six monsters of the wilds in a real world: each is spawned and its signature tried for real. A Bramblewalker's lash
@@ -265,7 +266,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = ((ServerLevel) player(server).level());
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, new AABB(base, base).inflate(400),
 				e -> e.getTags().contains("wildercord.camera")).forEach(Entity::discard);
-			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, MobSpawnType.COMMAND);
+			net.minecraft.world.entity.Display.TextDisplay camera = McEntities.create(EntityType.TEXT_DISPLAY, level, MobSpawnType.COMMAND);
 			camera.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			camera.addTag("wildercord.camera");
 			camera.addTag("wildercord.rolled");
@@ -614,7 +615,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		String guard = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ThunderwingHarpy harpy = (ThunderwingHarpy) player.level().getEntity(live);
-			MonsterMagic.hurt(((ServerLevel) player.level()), harpy, player, 200);
+			MonsterMagic.hurt(harpy, player, 200);
 			return player.isAlive() && player.getHealth() <= 2.5F ? null
 				: "the spellguard should leave a full-health player on one heart (health " + player.getHealth() + ", alive " + player.isAlive() + ")";
 		});
@@ -671,13 +672,13 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			crawler.holdPose(0);
 			crawler.setNoAi(false);
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-			crawler.hurtServer(level, player.damageSources().playerAttack(player), 3);
+			crawler.hurt(player.damageSources().playerAttack(player), 3);
 			if (!crawler.curled()) {
 				return "a struck Geode Crawler should curl up";
 			}
 			Effects.readyToHurt(crawler);
 			float before = crawler.getHealth();
-			crawler.hurtServer(level, player.damageSources().playerAttack(player), 10);
+			crawler.hurt(player.damageSources().playerAttack(player), 10);
 			float plain = before - crawler.getHealth();
 			if (plain <= 0 || plain > 3) {
 				return "curled, a plain blow of 10 should do little (it did " + plain + ")";
@@ -685,7 +686,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_PICKAXE));
 			Effects.readyToHurt(crawler);
 			before = crawler.getHealth();
-			crawler.hurtServer(level, player.damageSources().playerAttack(player), 10);
+			crawler.hurt(player.damageSources().playerAttack(player), 10);
 			float cracked = before - crawler.getHealth();
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			if (cracked < 8) {
@@ -754,7 +755,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = level(server);
 			((BogWitchFrog) level.getEntity(id)).holdPose(0);
 			((BogWitchFrog) level.getEntity(id)).setNoAi(false);
-			Chicken snack = EntityType.CHICKEN.create(level, MobSpawnType.COMMAND);
+			Chicken snack = McEntities.create(EntityType.CHICKEN, level, MobSpawnType.COMMAND);
 			snack.moveTo(spot.x + 3, spot.y, spot.z, 0, 0);
 			snack.setNoAi(true);
 			level.addFreshEntity(snack);
@@ -798,7 +799,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			bubble.setPos(at.x + 4, at.y + 4, at.z);
 			bubble.setNoGravity(true);
 			level.addFreshEntity(bubble);
-			bubble.hurtServer(level, level.damageSources().generic(), 1);
+			bubble.hurt(level.damageSources().generic(), 1);
 			return bubble.isRemoved();
 		});
 		check(popped, "a bubble struck in the air should pop");

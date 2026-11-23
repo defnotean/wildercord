@@ -255,7 +255,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		for(int i=0;i<=n;i++){var at=from.add(step.scale(i/(double)n));level.sendParticles(MINT,at.x,at.y,at.z,1,.05,.05,.05,0);}
 		level.sendParticles(ParticleTypes.HAPPY_VILLAGER,to.x,to.y,to.z,8,.3,.4,.3,0);
 		sound(level,to,SoundEvents.AMETHYST_BLOCK_CHIME,1.2F,.8F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().mobAttack(this),Float.MAX_VALUE);
+		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -1034,7 +1034,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		float d=net.minecraft.util.Mth.wrapDegrees(yaw-getYRot());face(getYRot()+Math.max(-most,Math.min(most,d)));
 	}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;
 		int move=move();
 		if(MojitoRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){
@@ -1053,7 +1053,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			}
 			damage*=(float)MojitoRules.armour(move,frontal,move==MojitoRules.CHOP && since()<tell());
 		}
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt){lastCut=now;if(source.getEntity() instanceof ServerPlayer)blows.addLast(now);}
 		return hurt;
 	}

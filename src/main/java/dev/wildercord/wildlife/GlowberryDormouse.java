@@ -209,8 +209,8 @@ public class GlowberryDormouse extends Animal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hit = super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hit = super.hurt(source, amount);
 		if (hit) {
 			wake();
 		}

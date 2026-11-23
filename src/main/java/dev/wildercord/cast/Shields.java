@@ -428,7 +428,7 @@ public final class Shields {
 		Sigils.flash(cast.level, hit, 0xFF000000 | color, 1.4F);
 		Fx.send(cast.level, ParticleTypes.ELECTRIC_SPARK, hit, 10, 0.3, 0.3);
 		Fx.sound(cast.level, hit, WildercordSounds.SHIELD_BLOCK, 0.9F, 1.3F);
-		Effects.hurt(turned, caster, cast.level.damageSources().indirectMagic(defender, defender), Parry.counter(cast.weight()) * cast.power);
+		Effects.hurt(caster, cast.level.damageSources().indirectMagic(defender, defender), Parry.counter(cast.weight()) * cast.power);
 	}
 
 	/** A spell is closing in: the circle spawns in, in front of it (once per spell and creature). */

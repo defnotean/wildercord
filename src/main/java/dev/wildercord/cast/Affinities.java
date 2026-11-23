@@ -45,6 +45,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import dev.wildercord.mixin.TextDisplayAccessor;
 import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Creature affinities at runtime: a blaze takes frost 50% harder and shrugs off half of fire's blasts,
@@ -276,7 +277,7 @@ public final class Affinities {
 		if (Fx.muted()) {
 			return;
 		}
-		Display.TextDisplay display = EntityType.TEXT_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.TextDisplay display = McEntities.create(EntityType.TEXT_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return;
 		}

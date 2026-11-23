@@ -195,8 +195,8 @@ public class CapcrownSnail extends Animal implements Shearable {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hit = super.hurtServer(level, source, SnailRules.blunted(amount, hidden()));
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hit = super.hurt(source, SnailRules.blunted(amount, hidden()));
 		if (hit && isAlive()) {
 			hideAway(level, SnailRules.HIDE_TICKS);
 		}

@@ -427,7 +427,7 @@ final class MatriarchFight extends GiantFight {
 		level.sendParticles(snow, mid.x, mid.y + 0.3, mid.z, 30, TAIL_RADIUS * 0.4, 0.2, TAIL_RADIUS * 0.4, 0.15);
 		for (LivingEntity e : prey(level, TAIL_RADIUS)) {
 			if (!high(e) && across(e) <= TAIL_RADIUS && GiantRules.Matriarch.behind(dot(e.position())) && first(e)
-					&& e.hurtServer(level, mob.damageSources().mobAttack(mob), TAIL_HIT)) {
+					&& e.hurt(mob.damageSources().mobAttack(mob), TAIL_HIT)) {
 				Vec3 away = flat(e.position().subtract(feet), back).scale(0.3);
 				Vec3 fling = right().scale(-side * TAIL_THROW).add(away);
 				MonsterMagic.shove(e, new Vec3(fling.x, 0.45, fling.z));
@@ -533,7 +533,7 @@ final class MatriarchFight extends GiantFight {
 			if (k % BREATH_EVERY == 0) {
 				for (LivingEntity e : prey(level, BREATH_RADIUS)) {
 					if (!high(e) && GiantRules.inArc(across(e), angleTo(e.position()) - angle, BREATH_RADIUS, BREATH_WIDTH)
-							&& e.hurtServer(level, mob.damageSources().freeze(), BREATH_HIT)) {
+							&& e.hurt(mob.damageSources().freeze(), BREATH_HIT)) {
 						chill(e, 30);
 					}
 				}
@@ -703,7 +703,7 @@ final class MatriarchFight extends GiantFight {
 			ElementFx.frostImpact(level, at.add(0, 0.3, 0), 1.0);
 			sound(level, at, SoundEvents.GLASS_BREAK, 1.6F, 0.7F + mob.getRandom().nextFloat() * 0.3F);
 			for (LivingEntity e : preyAt(level, at, ICICLE_RADIUS, 2)) {
-				if (e.hurtServer(level, mob.damageSources().mobAttack(mob), ICICLE_HIT)) {
+				if (e.hurt(mob.damageSources().mobAttack(mob), ICICLE_HIT)) {
 					chill(e, 30);
 				}
 			}

@@ -157,12 +157,12 @@ public class BondedSkyray extends Skyray {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		Entity by = source.getEntity();
 		if (by != null && (hasPassenger(by) || by.getUUID().equals(owner))) {
 			return false;
 		}
-		return super.hurtServer(level, source, amount);
+		return super.hurt(source, amount);
 	}
 
 	@Override

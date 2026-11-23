@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.UUID;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Starfall craters. At night a star now and then streaks down somewhere 60 to 150 blocks from a
@@ -406,7 +407,7 @@ public final class FallenStars {
 			if (Math.abs(y - cell.getY()) > 2) {
 				continue;
 			}
-			Display.BlockDisplay mark = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+			Display.BlockDisplay mark = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 			if (mark == null) {
 				continue;
 			}

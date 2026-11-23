@@ -18,6 +18,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Stone and ice that an art raises and lets sink: block displays (as the earth spells' heaved ground and stone spires are), never
@@ -45,7 +46,7 @@ public final class ArtBlocks {
 		if (live >= MAX) {
 			return null;
 		}
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

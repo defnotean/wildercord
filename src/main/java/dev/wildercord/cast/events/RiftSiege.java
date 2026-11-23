@@ -50,6 +50,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McEntities;
 
 /**
  * A rift siege. A tear of violet light opens beside a settled place, a spell circle turning on
@@ -191,7 +192,7 @@ public final class RiftSiege {
 		if (!level.isPositionEntityTicking(net.minecraft.core.BlockPos.containing(base))) {
 			return;
 		}
-		ArmorStand stand = EntityType.ARMOR_STAND.create(level, MobSpawnType.EVENT);
+		ArmorStand stand = McEntities.create(EntityType.ARMOR_STAND, level, MobSpawnType.EVENT);
 		if (stand == null) {
 			return;
 		}

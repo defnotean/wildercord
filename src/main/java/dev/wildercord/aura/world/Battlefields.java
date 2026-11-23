@@ -53,7 +53,6 @@ public final class Battlefields {
 			List.of(Filterable.passThrough(Component.translatable("book.wildercord.battlefield."+memory.id()+".1")),
 				Filterable.passThrough(Component.translatable("book.wildercord.battlefield."+memory.id()+".2")),
 				Filterable.passThrough(Component.translatable("book.wildercord.battlefield."+memory.id()+".3"))),true));
-		stack.set(DataComponents.ITEM_MODEL,Wildercord.id("battlefield_"+memory.id()));
 		return stack;
 	}
 

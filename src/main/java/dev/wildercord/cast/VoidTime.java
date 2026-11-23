@@ -157,7 +157,7 @@ public final class VoidTime {
 			stabbing = true;
 			try {
 				Effects.readyToHurt(target);
-				target.hurtServer(level, level.damageSources().playerAttack(attacker), (float) (damage * (BACKSTAB - 1.0)));
+				target.hurt(level.damageSources().playerAttack(attacker), (float) (damage * (BACKSTAB - 1.0)));
 			} finally {
 				stabbing = false;
 			}

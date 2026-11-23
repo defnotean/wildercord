@@ -15,7 +15,7 @@ public final class GuardianBite {
 	/** {@code attacker}'s blow of {@code damage} landing on {@code victim} as a mob attack, through {@code share} of its defences. */
 	public static boolean land(ServerLevel level,LivingEntity attacker,LivingEntity victim,float damage,double share){
 		double was=piercing;piercing=share;
-		try{return victim.hurtServer(level,level.damageSources().mobAttack(attacker),damage);}
+		try{return victim.hurt(level.damageSources().mobAttack(attacker),damage);}
 		finally{piercing=was;}
 	}
 

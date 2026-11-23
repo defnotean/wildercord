@@ -353,7 +353,7 @@ public final class WardState {
 					if (guardian.isAlive() && guardian.level() instanceof ServerLevel at) {
 						redirecting = true;
 						try {
-							guardian.hurtServer(at, at.damageSources().magic(), shared);
+							guardian.hurt(at.damageSources().magic(), shared);
 						} finally {
 							redirecting = false;
 						}

@@ -33,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
 import dev.wildercord.mixin.TextDisplayAccessor;
 import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * A straw practice dummy for trying spells out. It never dies: every hit floats up as a number
@@ -78,7 +79,7 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		lastDamage = 0;
 		// A sneaking punch picks it up; a sneaking caster's spell still hits it (for If Sneaking).
 		if (source.getDirectEntity() instanceof ServerPlayer player && source.getEntity() == player && player.isShiftKeyDown()
@@ -87,10 +88,10 @@ public class TrainingDummy extends LivingEntity {
 			return true;
 		}
 		if (source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.GENERIC_KILL)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		float before = getHealth();
-		boolean hurt = super.hurtServer(level, source, damage);
+		boolean hurt = super.hurt(source, damage);
 		float dealt = Math.max(0, before - getHealth());
 		lastDamage = dealt;
 		setHealth(getMaxHealth());
@@ -153,7 +154,7 @@ public class TrainingDummy extends LivingEntity {
 
 	/** A number that pops out of the dummy, drifts up and fades. */
 	private void number(ServerLevel level, float amount, int color) {
-		Display.TextDisplay text = EntityType.TEXT_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.TextDisplay text = McEntities.create(EntityType.TEXT_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (text == null) {
 			return;
 		}

@@ -153,7 +153,7 @@ public class GulperPitcher extends WildMonster {
 				nextBite = now + GulperPitcherRules.BITE_COOLDOWN;
 				biteUntil = now + GulperPitcherRules.BITE_TICKS;
 				level.playSound(null, getX(), getY(), getZ(), SoundEvents.SLIME_ATTACK, SoundSource.HOSTILE, 1.0F, 0.5F);
-				if (doHurtTarget(level, target)) {
+				if (doHurtTarget(target)) {
 					target.addEffect(new MobEffectInstance(MobEffects.POISON, GulperPitcherRules.ACID_TICKS, GulperPitcherRules.ACID_LEVEL), this);
 				}
 			}
@@ -182,7 +182,7 @@ public class GulperPitcher extends WildMonster {
 		if (distance > GulperPitcherRules.LASH_RANGE + 0.75 || !hasLineOfSight(target)) {
 			return;
 		}
-		target.hurtServer(level, damageSources().mobAttack(this), GulperPitcherRules.LASH_DAMAGE);
+		target.hurt(damageSources().mobAttack(this), GulperPitcherRules.LASH_DAMAGE);
 		double pull = GulperPitcherRules.pull(distance) * (1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) * 0.5);
 		Vec3 toward = new Vec3(getX() - target.getX(), 0, getZ() - target.getZ());
 		if (pull > 0 && toward.lengthSqr() > 1.0E-4) {
@@ -202,8 +202,8 @@ public class GulperPitcher extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		return super.hurtServer(level, source, GulperPitcherRules.damage(damage, source.is(DamageTypeTags.IS_FIRE)));
+	public boolean hurt(DamageSource source, float damage) {
+		return super.hurt(source, GulperPitcherRules.damage(damage, source.is(DamageTypeTags.IS_FIRE)));
 	}
 
 	@Override

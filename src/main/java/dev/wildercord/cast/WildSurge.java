@@ -228,7 +228,7 @@ public final class WildSurge {
 			case BACKFIRE -> {
 				float damage = Math.min(WildMagic.BACKFIRE, player.getHealth() - 1.0F);
 				if (damage > 0 && !player.isCreative()) {
-					player.hurtServer(level, level.damageSources().magic(), damage);
+					player.hurt(level.damageSources().magic(), damage);
 				}
 				Motes.clouds(level, heart, 5, 0.35, Motes.SMOKE, 1.1, 34, new Vec3(0, 0.03, 0), 0.06, 0.45);
 				Motes.burst(level, heart, 14, surge.color, 0.16, 18, 0.22);

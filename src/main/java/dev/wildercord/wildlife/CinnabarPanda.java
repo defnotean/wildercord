@@ -235,8 +235,8 @@ public class CinnabarPanda extends Animal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hit = super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hit = super.hurt(source, amount);
 		if (hit && pose() != RedPandaRules.IDLE) {
 			pose(RedPandaRules.IDLE, 0);
 		}

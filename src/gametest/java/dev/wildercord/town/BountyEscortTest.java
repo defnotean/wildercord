@@ -119,7 +119,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 				take(s);
 				earlier[1] = BountyEscorts.llama(p(s));
 				check(earlier[1] != earlier[0], "the new escort's llama is its own, not the one left from before");
-				earlier[0].hurtServer(s.overworld(), s.overworld().damageSources().generic(), 1000F);
+				earlier[0].hurt(s.overworld().damageSources().generic(), 1000F);
 				check(Town.standing(p(s)).bounty().isPresent(), "an earlier escort's llama dying loses nothing");
 				take(s);
 			});
@@ -136,7 +136,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 0);
 				take(s);
 				var llama = BountyEscorts.llama(p(s));
-				llama.hurtServer(s.overworld(), s.overworld().damageSources().generic(), 1000F);
+				llama.hurt(s.overworld().damageSources().generic(), 1000F);
 				check(!llama.isAlive(), "the llama died");
 				Town.Standing standing = Town.standing(p(s));
 				check(standing.bounty().isEmpty(), "a dead llama loses the escort");

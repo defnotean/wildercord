@@ -112,7 +112,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s -> {
 				var f = ferryman(s, guardian);
 				dev.wildercord.cast.Effects.readyToHurt(f);
-				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(oarsman(s, oarsman)), 20);
+				f.hurt(s.overworld().damageSources().playerAttack(oarsman(s, oarsman)), 20);
 			});
 			// Both stand on the crossing while the ferryman is brought to its second count, one blow per tick,
 			// the two of them taking turns so each earns a place among its contributors.
@@ -126,7 +126,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					// Its moment of invulnerability after the last blow would swallow this one, and a
 					// blow that does not land takes the striker off the contributors again.
 					dev.wildercord.cast.Effects.readyToHurt(f);
-					f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(striker), 40);
+					f.hurt(s.overworld().damageSources().playerAttack(striker), 40);
 					return false;
 				});
 				if (phaseTwo) break;
@@ -199,7 +199,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				p.teleportTo(s.overworld(), mooring.getX() + .5, mooring.getY(), mooring.getZ() - 3.5, Set.<RelativeMovement>of(), 0, 0);
 				f.setHealth(1);
 				dev.wildercord.cast.Effects.readyToHurt(f);
-				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 20);
+				f.hurt(s.overworld().damageSources().playerAttack(p), 20);
 				check(s.overworld().getBlockEntity(bell) instanceof CrossingBellEntity keep && keep.slain(),
 					"The saved guardian marks its bell slain");
 			});
@@ -284,7 +284,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				UUID.nameUUIDFromBytes("ferryman-coop-oarsman".getBytes(java.nio.charset.StandardCharsets.UTF_8)), "Oarsman"));
 		}
 		// A fake player is not run by the world's damage rules: it keeps its own account of the Ferryman's blows.
-		@Override public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+		@Override public boolean hurt(net.minecraft.world.damagesource.DamageSource source, float amount) {
 			if (!(source.getEntity() instanceof ReedCrownedFerryman)) return false;
 			blows++;
 			setHealth(Math.max(1f, getHealth() - amount));

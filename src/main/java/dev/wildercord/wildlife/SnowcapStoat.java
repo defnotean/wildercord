@@ -234,12 +234,12 @@ public class SnowcapStoat extends Animal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		// Under the snow, nothing reaches it.
 		if (buried() && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return false;
 		}
-		boolean hit = super.hurtServer(level, source, amount);
+		boolean hit = super.hurt(source, amount);
 		// Struck on snow, it's gone: in headfirst and out somewhere else.
 		if (hit && isAlive() && pose() != StoatRules.DIVE && StoatRules.dives(isBaby(), onSnow(blockPosition()))) {
 			hunting = false;
@@ -419,7 +419,7 @@ public class SnowcapStoat extends Animal {
 			}
 			// The dart and the bite.
 			if (distance < 1.3) {
-				rabbit.hurtServer(level, damageSources().mobAttack(SnowcapStoat.this), StoatRules.BITE);
+				rabbit.hurt(damageSources().mobAttack(SnowcapStoat.this), StoatRules.BITE);
 				playSound(SoundEvents.FOX_BITE, 0.7F, 1.6F);
 				rabbit = null;
 			} else if (ticks % 4 == 0) {

@@ -205,7 +205,7 @@ public final class MountBonds {
 			if (target.distanceToSqr(mount) > MountBondRules.STRIKE_RADIUS * MountBondRules.STRIKE_RADIUS) {
 				continue;
 			}
-			if (target.hurtServer(level, level.damageSources().mobAttack(mount), MountBondRules.STRIKE_DAMAGE)) {
+			if (target.hurt(level.damageSources().mobAttack(mount), MountBondRules.STRIKE_DAMAGE)) {
 				struck++;
 			}
 			Vec3 away = target.position().subtract(mount.position()).multiply(1, 0, 1).normalize().scale(MountBondRules.STRIKE_KNOCKBACK);

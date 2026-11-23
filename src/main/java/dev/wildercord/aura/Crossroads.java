@@ -58,7 +58,7 @@ public final class Crossroads {
 
 	/** One standard: the Way it stands for and where its foot is. */
 	public record Standard(String way, Vec3 foot) {
-		public static final StreamCodec<ByteBuf, Standard> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Standard> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Standard::way, McVec3.STREAM_CODEC, Standard::foot, Standard::new);
 	}
 
@@ -74,7 +74,7 @@ public final class Crossroads {
 	 * @param reason    why it rose ({@link Reason}'s ordinal)
 	 */
 	public record State(Vec3 centre, List<Standard> standards, long opened, long until, String leaning, long leanUntil, int reason) {
-		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
 			McVec3.STREAM_CODEC, State::centre, Standard.STREAM_CODEC.apply(ByteBufCodecs.list(8)), State::standards, ByteBufCodecs.VAR_LONG, State::opened,
 			ByteBufCodecs.VAR_LONG, State::until, ByteBufCodecs.stringUtf8(128), State::leaning, ByteBufCodecs.VAR_LONG, State::leanUntil,
 			ByteBufCodecs.VAR_INT, State::reason, State::new);

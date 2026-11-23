@@ -136,7 +136,7 @@ public class CragcleaverRam extends WildMonster {
 			nextButt = now + RamRules.BUTT_COOLDOWN;
 			buttingUntil = now + 8;
 			face(target);
-			if (doHurtTarget(level, target)) {
+			if (doHurtTarget(target)) {
 				MonsterMagic.knock(target, position(), RamRules.BUTT_KNOCK);
 			}
 			playSound(SoundEvents.GOAT_RAM_IMPACT, 1.0F, 0.8F);
@@ -194,7 +194,7 @@ public class CragcleaverRam extends WildMonster {
 		boolean struck = false;
 		for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.3),
 			e -> e != this && e.isAlive() && !(e instanceof CragcleaverRam) && Targets.canHarm(this, e))) {
-			if (hit.hurtServer(level, damageSources().mobAttack(this), RamRules.CHARGE_DAMAGE)) {
+			if (hit.hurt(damageSources().mobAttack(this), RamRules.CHARGE_DAMAGE)) {
 				MonsterMagic.shove(hit, aim.scale(RamRules.CHARGE_KNOCK).add(0, 0.55, 0));
 			}
 			struck = true;
@@ -235,8 +235,8 @@ public class CragcleaverRam extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		return super.hurtServer(level, source, RamRules.hurt(damage, dazed()));
+	public boolean hurt(DamageSource source, float damage) {
+		return super.hurt(source, RamRules.hurt(damage, dazed()));
 	}
 
 	// ------------------------------------------------------------------ sounds

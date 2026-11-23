@@ -360,8 +360,8 @@ public class StonecrestPuffin extends Animal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hit = super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hit = super.hurt(source, amount);
 		if (hit && pose() != PuffinRules.IDLE && pose() != PuffinRules.FLY) {
 			pose(PuffinRules.IDLE, 0);
 		}

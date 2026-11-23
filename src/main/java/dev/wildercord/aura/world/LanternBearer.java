@@ -297,7 +297,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		for(int i=0;i<=n;i++){var at=from.add(step.scale(i/(double)n));level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,at.x,at.y,at.z,1,.03,.03,.03,0);}
 		level.sendParticles(ParticleTypes.SOUL,to.x,to.y,to.z,10,.3,.4,.3,.04);
 		Feels.sound(level,to,"aura_lantern_bearer_burst",.8F,1.2F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().magic(),Float.MAX_VALUE);
+		m.hurt(damageSources().magic(),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -1079,10 +1079,10 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	/** Turned toward {@code yaw} by at most {@code most} degrees. */
 	private void turn(float yaw,float most){face(turned(getYRot(),yaw,most));}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING) || source.is(DamageTypes.FREEZE))return false;
 		int move=move();
-		if(source.is(DamageTypes.GENERIC_KILL))return super.hurtServer(level,source,damage);
+		if(source.is(DamageTypes.GENERIC_KILL))return super.hurt(source,damage);
 		// Down in the grave, rising or sinking there is nothing yet to strike; gone to smoke, a blow passes through.
 		if(LanternBearerRules.scripted(move) || move==LanternBearerRules.FADE)return false;
 		// Out in the dark there is nothing there; caught glimmering, its lantern flares and the dark is broken.
@@ -1090,7 +1090,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			if(unseen())return false;
 			int stage=LanternBearerRules.lightsStage(since());
 			if(stage==LanternBearerRules.GLIMMER || stage==LanternBearerRules.SWING){
-				boolean hurt=super.hurtServer(level,source,damage*(float)LanternBearerRules.armour(LanternBearerRules.RECOVER,false,false));
+				boolean hurt=super.hurt(source,damage*(float)LanternBearerRules.armour(LanternBearerRules.RECOVER,false,false));
 				if(hurt){lastCut=level.getGameTime();relight(level,LanternBearerRules.LIGHTS_BROKEN);}
 				return hurt;
 			}
@@ -1104,7 +1104,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			return false;
 		}
 		damage*=(float)LanternBearerRules.armour(move,frontal,LanternBearerRules.open(move,since(),tell(),roused()));
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt){
 			lastCut=now;stung+=damage;
 			if(LanternBearerRules.leaps(move(),stung,now-lastLeap))leapAway(level,source.getSourcePosition());

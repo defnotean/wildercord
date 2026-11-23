@@ -15,6 +15,7 @@ import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.List;
+import dev.wildercord.compat.McEntities;
 
 /** Sends wandering caravans to travellers out in the overworld. See {@link CaravanRules}. */
 public final class Caravans {
@@ -56,14 +57,14 @@ public final class Caravans {
 			keeper.setRole(WayfarerKeeper.Role.CARAVANEER);
 			level.addFreshEntity(keeper);
 			for (int i = 0; i < CaravanRules.LLAMAS; i++) {
-				TraderLlama llama = EntityType.TRADER_LLAMA.create(level, MobSpawnType.EVENT);
+				TraderLlama llama = McEntities.create(EntityType.TRADER_LLAMA, level, MobSpawnType.EVENT);
 				if (llama == null) continue;
 				llama.moveTo(ground.getX() + 0.5 + (i == 0 ? 2 : -2), ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 				if (!level.noCollision(llama)) llama.moveTo(keeper.getX(), keeper.getY(), keeper.getZ(), 0, 0);
 				level.addFreshEntity(llama);
 				llama.setLeashedTo(keeper, true);
 			}
-			Direction way = Direction.getApproximateNearest(keeper.getX() - player.getX(), 0, keeper.getZ() - player.getZ());
+			Direction way = Direction.getNearest(keeper.getX() - player.getX(), 0, keeper.getZ() - player.getZ());
 			player.sendSystemMessage(Component.translatable("message.wildercord.caravan.camp",
 				Component.translatable("town.wildercord.way." + way.getSerializedName())).withStyle(ChatFormatting.YELLOW));
 			return keeper;

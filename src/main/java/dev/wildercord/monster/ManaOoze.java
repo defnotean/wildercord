@@ -157,7 +157,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	// ------------------------------------------------------------------ eating spells
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (source.is(DamageTypeTags.IS_FIRE) && !MonsterMagic.spellLanding()) {
 			// Flames boil it.
 			damage *= 1.5F;
@@ -166,7 +166,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 			drink(level, damage, source.getEntity());
 			return false;
 		}
-		return super.hurtServer(level, source, damage);
+		return super.hurt(source, damage);
 	}
 
 	/** A spell's harm sinks into it: it fills, and grows or bursts when full. */
@@ -226,7 +226,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 		}
 		for (Entity e : level.getEntities(this, new AABB(c, c).inflate(3.0), e -> Targets.canHarm(this, e))) {
 			if (e.distanceToSqr(c) <= 9) {
-				MonsterMagic.hurt(level, this, (LivingEntity) e, BURST_DAMAGE);
+				MonsterMagic.hurt(this, (LivingEntity) e, BURST_DAMAGE);
 			}
 		}
 		dev.wildercord.cast.Sigils.flash(level, c, PINK, 3.0F);

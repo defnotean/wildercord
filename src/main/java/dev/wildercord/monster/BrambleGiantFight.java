@@ -551,7 +551,7 @@ final class BrambleGiantFight extends GiantFight {
 				4, 0.4, 0.5, 0.4, 0.01);
 		}
 		if (t > 0 && t % SQUEEZE_EVERY == 0) {
-			if (victim.hurtServer(level, mob.damageSources().mobAttack(mob), SQUEEZE_HIT) && colossus) {
+			if (victim.hurt(mob.damageSources().mobAttack(mob), SQUEEZE_HIT) && colossus) {
 				victim.igniteForSeconds(2);
 			}
 			sound(level, grip, SoundEvents.WOOD_BREAK, 1.6F, 0.5F);
@@ -572,7 +572,7 @@ final class BrambleGiantFight extends GiantFight {
 		if (victim == null) {
 			return;
 		}
-		victim.hurtServer(level, mob.damageSources().mobAttack(mob), THROWN_HIT);
+		victim.hurt(mob.damageSources().mobAttack(mob), THROWN_HIT);
 		MonsterMagic.shove(victim, dir.scale(CLUTCH_THROW).add(0, CLUTCH_THROW_UP, 0));
 		sound(level, victim.position(), SoundEvents.PLAYER_ATTACK_SWEEP, 2.0F, 0.4F);
 		sound(level, feet(), SoundEvents.RAVAGER_ROAR, 1.6F, 0.7F);
@@ -842,7 +842,7 @@ final class BrambleGiantFight extends GiantFight {
 				30, r * 0.5, 0.4, r * 0.5, 0.2);
 			ElementFx.leafSpiral(level, at, r, 2, 8);
 			for (LivingEntity e : preyAt(level, at, r, 2)) {
-				if (e.getY() - at.y < 1.5 && e.hurtServer(level, mob.damageSources().mobAttack(mob), BRAMBLE_HIT)) {
+				if (e.getY() - at.y < 1.5 && e.hurt(mob.damageSources().mobAttack(mob), BRAMBLE_HIT)) {
 					MonsterMagic.root(level, e, BRAMBLE_ROOT);
 				}
 			}
@@ -856,7 +856,7 @@ final class BrambleGiantFight extends GiantFight {
 		if (age % 10 == 0) {
 			for (LivingEntity e : preyAt(level, at, r, 1.5)) {
 				if (e.onGround()) {
-					e.hurtServer(level, mob.damageSources().mobAttack(mob), BRAMBLE_PRICK);
+					e.hurt(mob.damageSources().mobAttack(mob), BRAMBLE_PRICK);
 				}
 			}
 		}
@@ -905,7 +905,7 @@ final class BrambleGiantFight extends GiantFight {
 
 	/** A blow that sends its victim off along an impulse of its own. */
 	private void smack(ServerLevel level, LivingEntity e, float damage, Vec3 impulse) {
-		if (e.hurtServer(level, mob.damageSources().mobAttack(mob), damage)) {
+		if (e.hurt(mob.damageSources().mobAttack(mob), damage)) {
 			MonsterMagic.shove(e, impulse);
 		}
 	}

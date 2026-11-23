@@ -20,7 +20,7 @@ public abstract class MobStoneHingeMixin {
 	}
 
 	@WrapOperation(method = "doHurtTarget", at = @At(value = "INVOKE", target =
-		"Lnet/minecraft/world/entity/Entity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+		"Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private boolean wildercord$stoneHingeSource(Entity target, ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
 		StoneHingeReceipt.meleeSource((Mob) (Object) this, target, source);
 		return original.call(target, level, source, amount);

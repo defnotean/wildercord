@@ -202,7 +202,7 @@ public class SnapjawTurtle extends WildMonster {
 		if (distance <= SnapjawRules.BITE_REACH && now >= nextBite) {
 			nextBite = now + SnapjawRules.BITE_COOLDOWN;
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			actingUntil = now + 6;
 			setState(ACTING, true);
 			playSound(SoundEvents.EVOKER_FANGS_ATTACK, 0.8F, 1.4F);
@@ -259,7 +259,7 @@ public class SnapjawTurtle extends WildMonster {
 			setDeltaMovement(getDeltaMovement().add(toward.normalize().scale(0.45)));
 		}
 		playSound(SoundEvents.EVOKER_FANGS_ATTACK, 1.2F, 1.2F);
-		if (distanceTo(target) <= SnapjawRules.SNAP_REACH + 0.6 && doHurtTarget(level, target)) {
+		if (distanceTo(target) <= SnapjawRules.SNAP_REACH + 0.6 && doHurtTarget(target)) {
 			held = target;
 			heldTicks = 0;
 			harm = 0;
@@ -293,7 +293,7 @@ public class SnapjawTurtle extends WildMonster {
 			prey.hasImpulse = true;
 		}
 		if (SnapjawRules.worries(heldTicks)) {
-			prey.hurtServer(level, damageSources().mobAttack(this), SnapjawRules.WORRY_DAMAGE);
+			prey.hurt(damageSources().mobAttack(this), SnapjawRules.WORRY_DAMAGE);
 			actingUntil = now + 5;
 			setState(ACTING, true);
 			playSound(SoundEvents.EVOKER_FANGS_ATTACK, 0.6F, 0.8F);
@@ -312,7 +312,7 @@ public class SnapjawTurtle extends WildMonster {
 	// ------------------------------------------------------------------ its shell
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		long now = level.getGameTime();
 		Vec3 from = source.getSourcePosition();
 		boolean shell = false;
@@ -331,7 +331,7 @@ public class SnapjawTurtle extends WildMonster {
 		if (shell || in) {
 			playSound(SoundEvents.SHIELD_BLOCK, 0.8F, 0.7F);
 		}
-		boolean hurt = super.hurtServer(level, source, dealt);
+		boolean hurt = super.hurt(source, dealt);
 		if (hurt && isAlive()) {
 			roused = now + 400;
 			if (held != null) {

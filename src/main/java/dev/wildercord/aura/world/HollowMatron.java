@@ -32,6 +32,7 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Hollow Matron ({@link HollowMatronRules}). Generation leaves her hanging head-down on her thread under the nest in the Silk
@@ -243,7 +244,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		for(int i=0;i<=n;i++){var at=h.add(step.scale(i/(double)n));level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y,at.z,1,.05,.05,.05,0);}
 		level.sendParticles(ParticleTypes.ITEM_COBWEB,to.x,to.y,to.z,16,.4,.5,.4,.05);
 		Feels.sound(level,to,"aura_hollow_matron_splat",.8F,1.1F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().mobAttack(this),Float.MAX_VALUE);
+		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -989,7 +990,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			var c=spot();var in=new Vec3(c.x-(sac.getX()+.5),0,c.z-(sac.getZ()+.5));
 			in=in.lengthSqr()<1e-4?Vec3.ZERO:in.normalize();
 			var at=new Vec3(sac.getX()+.5+in.x*2,sac.getY(),sac.getZ()+.5+in.z*2);
-			var spider=EntityType.CAVE_SPIDER.create(level,MobSpawnType.MOB_SUMMONED);if(spider==null)continue;
+			var spider=McEntities.create(EntityType.CAVE_SPIDER, level, MobSpawnType.MOB_SUMMONED);if(spider==null)continue;
 			spider.moveTo(at.x,at.y,at.z,random.nextFloat()*360,0);
 			spider.finalizeSpawn(level,level.getCurrentDifficultyAt(BlockPos.containing(at)),MobSpawnType.MOB_SUMMONED,null);
 			spider.addTag(BROOD);
@@ -1031,7 +1032,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		spent(HollowMatronRules.CUT_RECOVER);
 		stung=0;lastBack=level.getGameTime();
 		var by=cutBy;cutBy=null;
-		hurtServer(level,by!=null && by.isAlive()?damageSources().playerAttack(by):damageSources().generic(),(float)HollowMatronRules.CUT_DAMAGE);
+		hurt(level,by!=null && by.isAlive()?damageSources().playerAttack(by):damageSources().generic(),(float)HollowMatronRules.CUT_DAMAGE);
 	}
 	/** Listening for players striking silk, for whoever is up a pillar. */
 	public static void listen(){
@@ -1096,7 +1097,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		float d=net.minecraft.util.Mth.wrapDegrees(yaw-getYRot());face(getYRot()+Math.max(-most,Math.min(most,d)));
 	}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;
 		int move=move();
 		if(HollowMatronRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){
@@ -1115,7 +1116,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			}
 			damage*=(float)HollowMatronRules.armour(move,since()>tell(),at!=null && HollowMatronRules.frontal(angle),at!=null && HollowMatronRules.rear(angle));
 		}
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt){
 			lastCut=now;stung+=damage;
 			// Blows on her while she hauls someone in snap her thread.

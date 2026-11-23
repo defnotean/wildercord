@@ -218,9 +218,9 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		coat();
-		boolean hit = super.doHurtTarget(level, target);
+		boolean hit = super.doHurtTarget(target);
 		if (hit) {
 			Vec3 at = target.getBoundingBox().getCenter();
 			Motes.burst(level, at, 4, AuraVfx.hot(auraColor(), 0.3), 0.07, 12, 0.08);
@@ -509,7 +509,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 		double amount = target instanceof Player ? damage * SpellDefenceRules.capBonus(bonus, Config.get().defence().maxBonus()) : damage * bonus;
 		float before = target.getHealth();
 		Effects.readyToHurt(target);
-		SpellDefence.hurt(level, target, source, (float) amount);
+		SpellDefence.hurt(target, source, (float) amount);
 		return Math.max(0, before - Math.max(0, target.getHealth()));
 	}
 

@@ -19,7 +19,7 @@ public final class WildercordNetworking {
 	public record CastSpell(int spell) implements CustomPacketPayload {
 		public static final Type<CastSpell> TYPE = new Type<>(Wildercord.id("cast_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, CastSpell> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, CastSpell::spell, CastSpell::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, CastSpell::spell, CastSpell::new).cast();
 
 		@Override
 		public Type<CastSpell> type() {
@@ -30,7 +30,7 @@ public final class WildercordNetworking {
 	public record SelectSpell(int spell) implements CustomPacketPayload {
 		public static final Type<SelectSpell> TYPE = new Type<>(Wildercord.id("select_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, SelectSpell> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, SelectSpell::spell, SelectSpell::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, SelectSpell::spell, SelectSpell::new).cast();
 
 		@Override
 		public Type<SelectSpell> type() {
@@ -41,7 +41,7 @@ public final class WildercordNetworking {
 	public record EditSpell(int spell, List<String> runes, long editorSession, long editorRevision) implements CustomPacketPayload {
 		public EditSpell(int spell, List<String> runes) { this(spell, runes, 0, 0); }
 		public static final Type<EditSpell> TYPE = new Type<>(Wildercord.id("edit_spell"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, EditSpell> CODEC = StreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, EditSpell> CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, EditSpell::spell,
 			ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(32)), EditSpell::runes,
 			ByteBufCodecs.LONG, EditSpell::editorSession, ByteBufCodecs.LONG, EditSpell::editorRevision,
@@ -55,7 +55,7 @@ public final class WildercordNetworking {
 
 	public record EditPassive(int slot, List<String> runes) implements CustomPacketPayload {
 		public static final Type<EditPassive> TYPE = new Type<>(Wildercord.id("edit_passive"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, EditPassive> CODEC = StreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, EditPassive> CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, EditPassive::slot,
 			ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(16)), EditPassive::runes,
 			EditPassive::new).cast();
@@ -69,7 +69,7 @@ public final class WildercordNetworking {
 	public record TogglePassive(int slot) implements CustomPacketPayload {
 		public static final Type<TogglePassive> TYPE = new Type<>(Wildercord.id("toggle_passive"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, TogglePassive> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, TogglePassive::slot, TogglePassive::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, TogglePassive::slot, TogglePassive::new).cast();
 
 		@Override
 		public Type<TogglePassive> type() {
@@ -81,7 +81,7 @@ public final class WildercordNetworking {
 	public record ChargeSpell(int spell, boolean start) implements CustomPacketPayload {
 		public static final Type<ChargeSpell> TYPE = new Type<>(Wildercord.id("charge_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ChargeSpell> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, ChargeSpell::spell, ByteBufCodecs.BOOL, ChargeSpell::start, ChargeSpell::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, ChargeSpell::spell, ByteBufCodecs.BOOL, ChargeSpell::start, ChargeSpell::new).cast();
 
 		@Override
 		public Type<ChargeSpell> type() {
@@ -97,7 +97,7 @@ public final class WildercordNetworking {
 	public record TraceSpell(long chargeStart, float accuracy) implements CustomPacketPayload {
 		public static final Type<TraceSpell> TYPE = new Type<>(Wildercord.id("trace_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, TraceSpell> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_LONG, TraceSpell::chargeStart, ByteBufCodecs.FLOAT, TraceSpell::accuracy, TraceSpell::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_LONG, TraceSpell::chargeStart, ByteBufCodecs.FLOAT, TraceSpell::accuracy, TraceSpell::new).cast();
 
 		@Override
 		public Type<TraceSpell> type() {
@@ -109,7 +109,7 @@ public final class WildercordNetworking {
 	public record RenameSpell(int spell, String name) implements CustomPacketPayload {
 		public static final Type<RenameSpell> TYPE = new Type<>(Wildercord.id("rename_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, RenameSpell> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, RenameSpell::spell, ByteBufCodecs.stringUtf8(64), RenameSpell::name, RenameSpell::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, RenameSpell::spell, ByteBufCodecs.stringUtf8(64), RenameSpell::name, RenameSpell::new).cast();
 
 		@Override
 		public Type<RenameSpell> type() {
@@ -121,7 +121,7 @@ public final class WildercordNetworking {
 	public record InscribeScroll(int spell) implements CustomPacketPayload {
 		public static final Type<InscribeScroll> TYPE = new Type<>(Wildercord.id("inscribe_scroll"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, InscribeScroll> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, InscribeScroll::spell, InscribeScroll::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, InscribeScroll::spell, InscribeScroll::new).cast();
 
 		@Override
 		public Type<InscribeScroll> type() {
@@ -137,7 +137,7 @@ public final class WildercordNetworking {
 	 */
 	public record LoadoutRequest(int kind, int index, String name) implements CustomPacketPayload {
 		public static final Type<LoadoutRequest> TYPE = new Type<>(Wildercord.id("loadout"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, LoadoutRequest> CODEC = StreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, LoadoutRequest> CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, LoadoutRequest::kind, ByteBufCodecs.VAR_INT, LoadoutRequest::index, ByteBufCodecs.stringUtf8(64), LoadoutRequest::name,
 			LoadoutRequest::new).cast();
 
@@ -151,7 +151,7 @@ public final class WildercordNetworking {
 	public record Discovery(String key) implements CustomPacketPayload {
 		public static final Type<Discovery> TYPE = new Type<>(Wildercord.id("discovery"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Discovery> CODEC =
-			StreamCodec.composite(ByteBufCodecs.stringUtf8(128), Discovery::key, Discovery::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.stringUtf8(128), Discovery::key, Discovery::new).cast();
 
 		@Override
 		public Type<Discovery> type() {
@@ -166,7 +166,7 @@ public final class WildercordNetworking {
 	public record LeySeed(long seed) implements CustomPacketPayload {
 		public static final Type<LeySeed> TYPE = new Type<>(Wildercord.id("ley_seed"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, LeySeed> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_LONG, LeySeed::seed, LeySeed::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.VAR_LONG, LeySeed::seed, LeySeed::new).cast();
 
 		@Override
 		public Type<LeySeed> type() {
@@ -189,7 +189,7 @@ public final class WildercordNetworking {
 		public static final int TINT = 3;
 		public static final Type<ScreenFx> TYPE = new Type<>(Wildercord.id("screen_fx"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ScreenFx> CODEC =
-			StreamCodec.composite(ByteBufCodecs.VAR_INT, ScreenFx::kind, ByteBufCodecs.FLOAT, ScreenFx::strength, ByteBufCodecs.VAR_INT, ScreenFx::ticks,
+			McStreamCodec.composite(ByteBufCodecs.VAR_INT, ScreenFx::kind, ByteBufCodecs.FLOAT, ScreenFx::strength, ByteBufCodecs.VAR_INT, ScreenFx::ticks,
 				ScreenFx::new).cast();
 
 		@Override

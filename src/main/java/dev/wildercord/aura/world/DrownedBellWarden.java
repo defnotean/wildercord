@@ -209,7 +209,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		for(int i=0;i<=n;i++){var at=b.add(step.scale(i/(double)n));level.sendParticles(ParticleTypes.GLOW,at.x,at.y,at.z,1,.05,.05,.05,0);}
 		level.sendParticles(ParticleTypes.DAMAGE_INDICATOR,to.x,to.y,to.z,6,.3,.3,.3,.1);
 		Feels.sound(level,b,"aura_bell_warden_toll",.6F,1.5F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().mobAttack(this),Float.MAX_VALUE);
+		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -786,7 +786,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	/** Whether {@code move} has it bare to blows from anywhere just now: its bell down over the floor, its head out of it. */
 	private boolean open(int move){return move==BellWardenRules.COVER && since()>tell();}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;
 		int move=move();
 		if(BellWardenRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){
@@ -808,7 +808,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			damage*=(float)BellWardenRules.armour(move,frontal,open(move));
 			if(move==BellWardenRules.SHELL)ring(level,source);
 		}
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt){
 			lastCut=now;stung+=damage;
 			if(BellWardenRules.shells(move(),stung,now-lastShell))shellDown(level);

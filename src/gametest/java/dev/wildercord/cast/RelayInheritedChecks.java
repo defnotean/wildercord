@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McEntities;
 
 /** Native regressions for inherited elemental hooks, scoped resonance and bounded physical target selection. */
 public final class RelayInheritedChecks {
@@ -196,7 +197,7 @@ public final class RelayInheritedChecks {
 				LivingEntity[] pet=new LivingEntity[1];TrainingDummy[] behind=new TrainingDummy[1];
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.HARM);behind[0]=dummy(owner,.5,6.5);
-					var wolf=EntityType.WOLF.create(((ServerLevel) owner.level()),MobSpawnType.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.moveTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
+					var wolf=McEntities.create(EntityType.WOLF, ((ServerLevel) owner.level()), MobSpawnType.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.moveTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
 					RelayCircleTest.directDown(owner);owner.teleportTo(((ServerLevel) owner.level()),-1.5,150,.5,Set.of(),0,0);
 				});c.waitTicks(2);
 				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,behind[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);

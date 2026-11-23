@@ -223,12 +223,12 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float damage) {
+	public boolean hurt(net.minecraft.world.damagesource.DamageSource source, float damage) {
 		if (fight == null) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		float before = getHealth();
-		boolean hit = super.hurtServer(level, source, fight.taking(source, damage));
+		boolean hit = super.hurt(source, fight.taking(source, damage));
 		if (hit) {
 			fight.took(level, source, Math.max(0, before - getHealth()));
 		}
@@ -315,8 +315,8 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
-		boolean hit = super.doHurtTarget(level, target);
+	public boolean doHurtTarget(Entity target) {
+		boolean hit = super.doHurtTarget(target);
 		if (hit && target instanceof LivingEntity living) {
 			switch (variant()) {
 				case FROST -> {

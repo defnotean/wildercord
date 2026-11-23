@@ -66,7 +66,7 @@ public record Loadout(String name, List<List<String>> spells, List<String> names
 		Codec.INT.optionalFieldOf("selected", 0).forGetter(Loadout::selected)
 	).apply(i, Loadout::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, Loadout> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, Loadout> STREAM_CODEC = McStreamCodec.composite(
 		ByteBufCodecs.STRING_UTF8, Loadout::name,
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).apply(ByteBufCodecs.list()), Loadout::spells,
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), Loadout::names,

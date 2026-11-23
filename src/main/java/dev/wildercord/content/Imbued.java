@@ -10,7 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.item.Equipable;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +35,7 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 		Codec.LONG.optionalFieldOf("serial", 0L).forGetter(Imbued::serial)
 	).apply(i, Imbued::new));
 
-	public static final StreamCodec<ByteBuf, Imbued> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<ByteBuf, Imbued> STREAM_CODEC = McStreamCodec.composite(
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(MAX_RUNES)), Imbued::runes,
 		ByteBufCodecs.VAR_INT, Imbued::charges,
 		ByteBufCodecs.INT, Imbued::color,
@@ -81,8 +81,8 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 		if (stack.getItem() instanceof ProjectileWeaponItem) {
 			return Release.SHOT;
 		}
-		Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
-		if (equippable != null && equippable.slot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR || stack.getItem() instanceof net.minecraft.world.item.ShieldItem) {
+		Equipable equippable = stack.get(DataComponents.EQUIPPABLE);
+		if (equippable != null && equippable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR || stack.getItem() instanceof net.minecraft.world.item.ShieldItem) {
 			return Release.WORN;
 		}
 		// Swords carry a tool component too (for cobwebs), but one that can't break blocks in creative: they're weapons.

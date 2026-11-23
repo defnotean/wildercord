@@ -796,7 +796,7 @@ public final class StormConductor extends DungeonBoss {
 	/** A blow of {@code base} (scaled as its spells are) landing on {@code t}, caught for this swing in {@code swing}: once each. */
 	private boolean strike(ServerLevel level, LivingEntity t, double base, Set<UUID> swing) {
 		if (!swing.add(t.getUUID())) return false;
-		return t.hurtServer(level, level.damageSources().mobAttack(this), (float) (base * power()));
+		return t.hurt(level.damageSources().mobAttack(this), (float) (base * power()));
 	}
 
 	/** {@code t} thrown {@code strength} along the floor the way of {@code dir}, and {@code up} into the air. */

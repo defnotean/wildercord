@@ -39,7 +39,7 @@ public record Inscription(String key, List<String> traits, long seed, int rank, 
 		Codec.STRING.optionalFieldOf("author", "").forGetter(Inscription::author)
 	).apply(i, Inscription::new));
 
-	public static final StreamCodec<ByteBuf, Inscription> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<ByteBuf, Inscription> STREAM_CODEC = McStreamCodec.composite(
 		ByteBufCodecs.stringUtf8(1024), Inscription::key,
 		ByteBufCodecs.stringUtf8(128).apply(ByteBufCodecs.list(MasteryRules.SLOTS)), Inscription::traits,
 		ByteBufCodecs.VAR_LONG, Inscription::seed,

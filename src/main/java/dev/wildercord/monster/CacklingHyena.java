@@ -213,7 +213,7 @@ public class CacklingHyena extends WildMonster {
 		if (!bitten && distanceTo(target) <= HyenaRules.BITE_REACH) {
 			bitten = true;
 			face(target);
-			if (doHurtTarget(level, target)) {
+			if (doHurtTarget(target)) {
 				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, HyenaRules.HAMSTRING_TICKS, 0), this);
 			}
 			playSound(SoundEvents.FOX_BITE, 1.0F, 0.7F);
@@ -259,12 +259,12 @@ public class CacklingHyena extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// Caught stumbling, it takes the blow worse.
 		if (state(STUNNED)) {
 			damage *= 1.5F;
 		}
-		return super.hurtServer(level, source, damage);
+		return super.hurt(source, damage);
 	}
 
 	@Override

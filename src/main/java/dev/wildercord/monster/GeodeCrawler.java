@@ -172,7 +172,7 @@ public class GeodeCrawler extends WildMonster {
 					}
 				}
 				if (target != null && target.isAlive() && getBoundingBox().inflate(0.2).intersects(target.getBoundingBox())) {
-					if (target.hurtServer(level, damageSources().mobAttack(this), ROLL_DAMAGE)) {
+					if (target.hurt(damageSources().mobAttack(this), ROLL_DAMAGE)) {
 						MonsterMagic.knock(target, position(), 0.9);
 					}
 					MonsterMagic.sound(level, position(), "monster_geode_curl", 1.0F, 0.8F);
@@ -246,15 +246,15 @@ public class GeodeCrawler extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		long now = level.getGameTime();
 		if (curled()) {
 			boolean cracks = cracking(source);
 			float dealt = MonsterRules.curled(damage, cracks);
-			boolean hurt = super.hurtServer(level, source, dealt);
+			boolean hurt = super.hurt(source, dealt);
 			if (cracks) {
 				// Cracked open: it uncurls, dazed.
 				daze(level, now);
@@ -272,7 +272,7 @@ public class GeodeCrawler extends WildMonster {
 			}
 			return hurt;
 		}
-		boolean hurt = super.hurtServer(level, source, damage);
+		boolean hurt = super.hurt(source, damage);
 		if (hurt && isAlive() && phase == Phase.CRAWL && now >= nextCurl && !cracking(source)) {
 			curl(level, CURL);
 		}

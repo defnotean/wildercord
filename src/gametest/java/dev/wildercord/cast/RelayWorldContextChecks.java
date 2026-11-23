@@ -26,6 +26,7 @@ import net.minecraft.world.level.storage.ServerLevelData;
 
 import java.util.List;
 import java.util.Map;
+import dev.wildercord.compat.McEntities;
 
 /** Real inherited water damage must retain its Relay effect context through mastery and world mutations. */
 public final class RelayWorldContextChecks {
@@ -72,7 +73,7 @@ public final class RelayWorldContextChecks {
                         if(dryResidueSite)entry=entry.withTrait(0,MasteryTraits.LINGERING_MARK.id(),false);
                         owner.setAttached(MasteryAttachments.MASTERY,new MasteryBook(List.of(entry)));
                         for(int x=-1;x<=7;x++) for(int z=5;z<=7;z++) owner.level().setBlock(new BlockPos(x,150,z),Blocks.WATER.defaultBlockState(),2);
-                        primary[0]=EntityType.CREEPER.create(owner.level(),MobSpawnType.MOB_SUMMONED);
+                        primary[0]=McEntities.create(EntityType.CREEPER, owner.level(), MobSpawnType.MOB_SUMMONED);
                         RelayCircleTest.check(primary[0]!=null,"Native primary creeper creates");primary[0].moveTo(.5,150,6.5,180,0);primary[0].setNoAi(true);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
                         secondary=dryResidueSite?WildercordEntities.TRAINING_DUMMY.create(owner.level(),MobSpawnType.MOB_SUMMONED)
                             :new ChargeWitness(((ServerLevel) owner.level()));
@@ -143,8 +144,8 @@ public final class RelayWorldContextChecks {
     /** Runs the complete native dummy damage path; only the fixture's random pin moves past its VFX. */
     private static final class ChargeWitness extends TrainingDummy {
         ChargeWitness(ServerLevel level){super(WildercordEntities.TRAINING_DUMMY,level);}
-        @Override public boolean hurtServer(ServerLevel level,DamageSource source,float amount){
-            boolean hurt=super.hurtServer(level,source,amount);
+        @Override public boolean hurt(DamageSource source, float amount){
+            boolean hurt=super.hurt(source,amount);
             if(this==secondary&&source instanceof RelayDamageSource&&lastDamage()>0){
                 pinNextCharge(level);
                 chargeEvidence("after_native_dummy_return",null);

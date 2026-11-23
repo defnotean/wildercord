@@ -264,10 +264,10 @@ public class Duelist extends AuraFighter {
 	// ------------------------------------------------------------------ harm
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// The void and /kill take anything.
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		if (!DuelistDuels.counts(this, source)) {
 			// Outside its duel nothing touches it: a blow is turned aside, the rest it walks through.
@@ -289,7 +289,7 @@ public class Duelist extends AuraFighter {
 			DuelistDuels.yielded(this);
 			return true;
 		}
-		boolean hurt = super.hurtServer(level, source, through);
+		boolean hurt = super.hurt(source, through);
 		if (hurt && !guarding() && getRandom().nextDouble() < AuraWorldRules.duelistGuardChance(stage())) {
 			guardNext = true;
 		}

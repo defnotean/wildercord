@@ -329,7 +329,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 				if (phaseTicks == MimicRules.BITE_AT) {
 					play(level, SoundEvents.EVOKER_FANGS_ATTACK, 0.9F, 1.3F);
 					if (live && distanceTo(target) <= MimicRules.BITE_REACH + 0.6) {
-						doHurtTarget(level, target);
+						doHurtTarget(target);
 					}
 				}
 				if (phaseTicks >= MimicRules.BITE_TICKS) {
@@ -369,7 +369,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 			}
 			case LUNGE -> {
 				if (live && getBoundingBox().inflate(0.4).intersects(target.getBoundingBox())) {
-					if (target.hurtServer(level, damageSources().mobAttack(this), MimicRules.LUNGE_DAMAGE)) {
+					if (target.hurt(damageSources().mobAttack(this), MimicRules.LUNGE_DAMAGE)) {
 						MonsterMagic.knock(target, position(), 0.7);
 					}
 					play(level, SoundEvents.EVOKER_FANGS_ATTACK, 1.0F, 1.0F);
@@ -523,7 +523,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 		play(level, SoundEvents.EVOKER_FANGS_ATTACK, 1.0F, 0.9F);
 		for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(MimicRules.AMBUSH_REACH),
 				e -> e != this && !(e instanceof CofferMimic) && (e instanceof Player || e == getTarget()) && canAttack(e) && Targets.canHarm(this, e))) {
-			if (victim.hurtServer(level, damageSources().mobAttack(this), MimicRules.AMBUSH_DAMAGE)) {
+			if (victim.hurt(damageSources().mobAttack(this), MimicRules.AMBUSH_DAMAGE)) {
 				MonsterMagic.knock(victim, position(), 0.5);
 			}
 		}
@@ -590,7 +590,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	/** Its tongue shoots out and hauls its prey in, and its next bite is ready. */
 	private void pull(ServerLevel level, LivingEntity target, long now) {
-		target.hurtServer(level, damageSources().mobAttack(this), MimicRules.LASH_DAMAGE);
+		target.hurt(damageSources().mobAttack(this), MimicRules.LASH_DAMAGE);
 		Vec3 to = position().subtract(target.position());
 		double flat = Math.sqrt(to.x * to.x + to.z * to.z);
 		if (flat > 1.0E-3) {
@@ -625,10 +625,10 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	// ------------------------------------------------------------------ being struck, being opened
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		boolean wasShut = disguised();
 		float scaled = damage * MimicRules.damageScale(phase == Phase.CLAMP, phase == Phase.FLIPPED);
-		boolean hurt = super.hurtServer(level, source, scaled);
+		boolean hurt = super.hurt(source, scaled);
 		if (!hurt) {
 			return false;
 		}

@@ -175,7 +175,7 @@ public final class RootGuardian extends DungeonBoss {
 	}
 
 	private void hurt(ServerLevel level, LivingEntity t, double damage) {
-		t.hurtServer(level, level.damageSources().mobAttack(this), (float) (damage * Runebound.power(level)));
+		t.hurt(level.damageSources().mobAttack(this), (float) (damage * Runebound.power(level)));
 	}
 
 	/** Strikes {@code t} once in its move under way, at most. True if it did. */

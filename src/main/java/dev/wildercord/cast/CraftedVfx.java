@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Visuals for the second batch of new runes: Glaive, Imprint and Latch, the cue of On Reaction and On
@@ -230,7 +231,7 @@ final class CraftedVfx {
 	 * Prospect of the same caster's can put it out early.
 	 */
 	static Display oreGlow(ServerLevel level, BlockPos pos, BlockState ore, int color, int ticks) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay display = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

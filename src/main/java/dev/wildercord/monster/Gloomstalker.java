@@ -233,7 +233,7 @@ public class Gloomstalker extends WildMonster {
 	}
 
 	private void strike(ServerLevel level, LivingEntity target, long now) {
-		if (target.hurtServer(level, damageSources().mobAttack(this), POUNCE_DAMAGE)) {
+		if (target.hurt(damageSources().mobAttack(this), POUNCE_DAMAGE)) {
 			MonsterMagic.knock(target, position(), 0.6);
 			ElementFx.slash(level, target.getBoundingBox().getCenter(), new Vec3(0, 1, 0), getLookAngle(), ElementFx.dark(VIOLET), 0.9, 1.6, 0.12, 4, 10);
 		}
@@ -326,7 +326,7 @@ public class Gloomstalker extends WildMonster {
 			// Cornered or caught close: a quick swipe.
 			if (d < MonsterPressureRules.GLOOM_SWIPE_RANGE && now >= nextSwipe && hasLineOfSight(target)) {
 				nextSwipe = now + MonsterPressureRules.GLOOM_SWIPE_INTERVAL;
-				doHurtTarget(level, target);
+				doHurtTarget(target);
 			}
 			boolean sight = hasLineOfSight(target);
 			if (--stalkTime <= 0 && now >= nextPounce
@@ -356,8 +356,8 @@ public class Gloomstalker extends WildMonster {
 	// ------------------------------------------------------------------ being struck
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean hurt = super.hurtServer(level, source, damage);
+	public boolean hurt(DamageSource source, float damage) {
+		boolean hurt = super.hurt(source, damage);
 		if (hurt && !giant()) {
 			LivingEntity by = source.getEntity() instanceof LivingEntity l ? l : null;
 			boolean light = MonsterMagic.spellLanding() && MonsterRules.revealing(MonsterMagic.spellElement());

@@ -44,8 +44,8 @@ public class FrostLynx extends BlackBobcat {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel level, Entity target) {
-		boolean hit = super.doHurtTarget(level, target);
+	public boolean doHurtTarget(Entity target) {
+		boolean hit = super.doHurtTarget(target);
 		if (hit && target instanceof LivingEntity bitten) {
 			chill(bitten);
 		}

@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class StoneHingeKnockbackProbeMixin {
 	// 26.1.2 dispatches the default damage knockback straight from hurtServer into knockback(DDD);
 	// the route, call, invocation and write scopes all nest around that single native call site.
-	@WrapOperation(method = "hurtServer", at = @At(value = "INVOKE",
+	@WrapOperation(method = "hurt", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))
 	private void stoneHinge$defaultRoute(LivingEntity entity, double x, double y, double z, Operation<Void> original,
 			@Local(argsOnly = true) DamageSource source) {

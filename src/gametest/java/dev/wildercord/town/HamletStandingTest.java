@@ -25,6 +25,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import dev.wildercord.compat.McEntities;
 
 /**
  * A hamlet in the real game: a bell is one only with three villagers about it, the traveller is greeted on the way in,
@@ -44,7 +45,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 	}
 
 	private static void villager(ServerLevel l, double x, double z) {
-		Villager villager = EntityType.VILLAGER.create(l, MobSpawnType.COMMAND);
+		Villager villager = McEntities.create(EntityType.VILLAGER, l, MobSpawnType.COMMAND);
 		villager.moveTo(x, 101, z, 0, 0);
 		villager.setNoAi(true);
 		l.addFreshEntity(villager);
@@ -53,11 +54,11 @@ public final class HamletStandingTest implements FabricClientGameTest {
 	/** The traveller kills a monster at {@code pos} with their own hand. */
 	private static void slay(MinecraftServer s, BlockPos pos) {
 		ServerLevel l = s.overworld();
-		var zombie = EntityType.ZOMBIE.create(l, MobSpawnType.COMMAND);
+		var zombie = McEntities.create(EntityType.ZOMBIE, l, MobSpawnType.COMMAND);
 		zombie.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
 		zombie.setNoAi(true);
 		l.addFreshEntity(zombie);
-		zombie.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1000);
+		zombie.hurt(p(s).damageSources().playerAttack(p(s)), 1000);
 		check(!zombie.isAlive(), "The monster dies");
 	}
 

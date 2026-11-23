@@ -29,13 +29,13 @@ public final class MasterFormLessons {
 	/** {@code form} is the taught Master form: a Gale teacher shows Wall Turn, a Stone teacher Stone Hinge. */
 	public record Open(long nonce, boolean known, int form) implements CustomPacketPayload {
 		public static final Type<Open> TYPE = new Type<>(Wildercord.id("master_form_lesson"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Open> CODEC = StreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Open> CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_LONG, Open::nonce, ByteBufCodecs.BOOL, Open::known, ByteBufCodecs.VAR_INT, Open::form, Open::new).cast();
 		@Override public Type<Open> type() { return TYPE; }
 	}
 	public record Accept(long nonce) implements CustomPacketPayload {
 		public static final Type<Accept> TYPE = new Type<>(Wildercord.id("master_form_lesson_accept"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Accept> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_LONG, Accept::nonce, Accept::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Accept> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_LONG, Accept::nonce, Accept::new).cast();
 		@Override public Type<Accept> type() { return TYPE; }
 	}
 	private record Offer(Duelist teacher, ServerLevel level, long until, long nonce, dev.wildercord.aura.arts.ReleasedArtOwner owner, int form) {}
@@ -96,7 +96,6 @@ public final class MasterFormLessons {
 	public static ItemStack book(int form) {
 		if (form == MasterForms.STONE_HINGE) {
 			ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
-			book.set(DataComponents.ITEM_MODEL, Wildercord.id("stone_hinge_lesson"));
 			book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough("The Gatepost Ledger"), "Maren Holt, quarry warden", 0,
 				List.of(Filterable.passThrough(Component.translatable("book.wildercord.stone_hinge.1")),
 					Filterable.passThrough(Component.translatable("book.wildercord.stone_hinge.2")),
@@ -104,7 +103,6 @@ public final class MasterFormLessons {
 			return book;
 		}
 		ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
-		book.set(DataComponents.ITEM_MODEL, Wildercord.id("wall_turn_lesson"));
 		book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough("The Scout's Unfinished Step"), "Iven Reed, road tutor", 0,
 			List.of(Filterable.passThrough(Component.translatable("book.wildercord.wall_turn.1")),
 				Filterable.passThrough(Component.translatable("book.wildercord.wall_turn.2")),

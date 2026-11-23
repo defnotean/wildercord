@@ -382,7 +382,7 @@ public final class ManaStorm {
 		player.displayClientMessage(Component.translatable("message.wildercord.surge.backfire").withColor(0xFF8C8C), true);
 		float hurt = Math.min(3.0F, player.getHealth() - 2.0F);
 		if (hurt > 0 && !player.isCreative()) {
-			player.hurtServer(level, level.damageSources().magic(), hurt);
+			player.hurt(level.damageSources().magic(), hurt);
 		}
 		Vec3 back = player.getLookAngle().scale(-0.6).add(0, 0.35, 0);
 		player.push(back.x, back.y, back.z);

@@ -60,7 +60,7 @@ public final class Momentum {
 	public record State(float value, long heldUntil, float ebbPerTick, float floor, long floorUntil) {
 		public static final State NONE = new State(0, 0, 0, 0, 0);
 
-		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.FLOAT, State::value, ByteBufCodecs.VAR_LONG, State::heldUntil, ByteBufCodecs.FLOAT, State::ebbPerTick,
 			ByteBufCodecs.FLOAT, State::floor, ByteBufCodecs.VAR_LONG, State::floorUntil, State::new);
 

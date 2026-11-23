@@ -128,7 +128,7 @@ public final class Giants {
 			if (!level.noCollision(giant)) continue;
 			level.addFreshEntity(giant);
 			level.playSound(null, giant.blockPosition(), SoundEvents.RAVAGER_ROAR, SoundSource.HOSTILE, 4.0F, 0.5F);
-			Direction way = Direction.getApproximateNearest(giant.getX() - player.getX(), 0, giant.getZ() - player.getZ());
+			Direction way = Direction.getNearest(giant.getX() - player.getX(), 0, giant.getZ() - player.getZ());
 			player.sendSystemMessage(Component.translatable("message.wildercord.giant.wakes", giant.getDisplayName(),
 				Component.translatable("town.wildercord.way." + way.getSerializedName())).withStyle(ChatFormatting.GOLD));
 			return giant;
@@ -226,7 +226,7 @@ public final class Giants {
 			double distance = Math.sqrt(victim.distanceToSqr(mob.getX(), victim.getY(), mob.getZ())) - mob.getBbWidth() / 2;
 			float damage = GiantRules.stompDamage(Math.max(0, distance));
 			if (damage <= 0) continue;
-			victim.hurtServer(level, level.damageSources().mobAttack(mob), damage);
+			victim.hurt(level.damageSources().mobAttack(mob), damage);
 			Vec3 away = new Vec3(victim.getX() - mob.getX(), 0, victim.getZ() - mob.getZ());
 			away = away.lengthSqr() < 1.0E-4 ? Vec3.ZERO : away.normalize().scale(GiantRules.STOMP_THROW
 				* (1 - victim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));

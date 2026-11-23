@@ -87,7 +87,7 @@ public final class PlayerAffinities {
 	public record Rise(String element, int level) implements CustomPacketPayload {
 		public static final Type<Rise> TYPE = new Type<>(Wildercord.id("affinity_rise"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Rise> CODEC =
-			StreamCodec.composite(ByteBufCodecs.stringUtf8(32), Rise::element, ByteBufCodecs.VAR_INT, Rise::level, Rise::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.stringUtf8(32), Rise::element, ByteBufCodecs.VAR_INT, Rise::level, Rise::new).cast();
 
 		@Override
 		public Type<Rise> type() {

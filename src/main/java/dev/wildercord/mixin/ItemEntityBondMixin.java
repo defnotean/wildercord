@@ -104,7 +104,7 @@ public abstract class ItemEntityBondMixin extends Entity {
 		}
 	}
 
-	@Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
 	private void wildercord$unharmed(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
 		if (BondedBlades.bonded(getItem())) {
 			cir.setReturnValue(false);

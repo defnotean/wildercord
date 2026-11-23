@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Rootcoil Serpent ({@link SerpentRules}). Generation leaves it coiled round the grove's tree, bound to the trunk and facing
@@ -199,7 +200,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		for(int i=0;i<=n;i++){var at=from.add(step.scale(i/(double)n));level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,at.x,at.y,at.z,1,.1,.1,.1,0);}
 		level.sendParticles(ParticleTypes.DAMAGE_INDICATOR,to.x,to.y,to.z,6,.3,.3,.3,.1);
 		Feels.sound(level,to,"aura_serpent_strike",1.1F,1.1F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().mobAttack(this),Float.MAX_VALUE);
+		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -588,7 +589,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 
 	/** A root stands up out of the ground at {@code base}, leaning out along {@code yaw}, holds a moment and sinks back. */
 	private void spike(ServerLevel level,Vec3 base,float yaw,float h,float w,int hold){
-		var shown=EntityType.BLOCK_DISPLAY.create(level,MobSpawnType.TRIGGERED);
+		var shown=McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if(shown==null)return;
 		var turn=new Quaternionf().rotateY((float)Math.toRadians(-yaw)).rotateX(.2F+random.nextFloat()*.35F).rotateY(random.nextFloat()*1.6F);
 		shown.setPos(base.x,base.y-.1,base.z);((BlockDisplayAccessor) shown).wildercord$setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());((DisplayAccessor) shown).wildercord$setTransformation(stand(turn,w,.02F));
@@ -728,7 +729,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 
 	private static final float CLOD=.8F;
 	private void throwClod(ServerLevel level,Vec3 from,Vec3 vel,BlockState state){
-		var shown=EntityType.BLOCK_DISPLAY.create(level,MobSpawnType.TRIGGERED);
+		var shown=McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if(shown==null)return;
 		var spin=new Quaternionf().rotateXYZ(random.nextFloat()*6.28F,random.nextFloat()*6.28F,random.nextFloat()*6.28F);
 		shown.setPos(from.x,from.y,from.z);((BlockDisplayAccessor) shown).wildercord$setBlockState(state);((DisplayAccessor) shown).wildercord$setTransformation(clod(spin));((DisplayAccessor) shown).wildercord$setPosRotInterpolationDuration(1);
@@ -1009,7 +1010,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private void face(float yaw){setYRot(yaw);yBodyRot=yaw;yHeadRot=yaw;}
 	private Vec3 mouth(){return position().add(ahead(getYRot()).scale(2.2)).add(0,4.0,0);}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;
 		int move=move();
 		if(SerpentRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){
@@ -1032,7 +1033,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			damage*=(float)SerpentRules.scales(move,frontal);
 			if(move==SerpentRules.SQUEEZE)heldDamage+=damage;
 		}
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt)lastCut=level.getGameTime();
 		return hurt;
 	}

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 /** Native damage resolves first; interruption observes the wound before Mana Skin's bounded rebate. */
 @Mixin(Player.class)
 public abstract class PlayerMasterHitReceiptMixin {
-	@WrapMethod(method = "hurtServer")
+	@WrapMethod(method = "hurt")
 	private boolean wildercord$manaSkinScope(ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
 		return ManaSkinDamage.during((Player) (Object) this, source, () -> original.call(level, source, amount));
 	}

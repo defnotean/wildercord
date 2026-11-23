@@ -52,7 +52,7 @@ public final class SporebackSnail extends PathfinderMob {
   return true;
  }
  @Override protected void customServerAiStep(ServerLevel l) {super.customServerAiStep(l);if(l.getGameTime()<hiddenUntil) {entityData.set(POSE,2);getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);}else if(pose()==2 && !shelterRest)entityData.set(POSE,0);if(answerUntil>l.getGameTime() && tickCount%12==0)l.sendParticles(net.minecraft.core.particles.ParticleTypes.SPORE_BLOSSOM_AIR,getX(),getY()+.5,getZ(),2,.12,.05,.12,0);}
- @Override public boolean hurtServer(ServerLevel l,DamageSource s,float amount) {boolean hit=super.hurtServer(l,s,amount);if(hit) {hiddenUntil=l.getGameTime()+SporebackRules.HIDE_TICKS;answerUntil=0;entityData.set(POSE,2);getNavigation().stop();}return hit;}
+ @Override public boolean hurt(DamageSource source, float amount) {boolean hit=super.hurt(s,amount);if(hit) {hiddenUntil=l.getGameTime()+SporebackRules.HIDE_TICKS;answerUntil=0;entityData.set(POSE,2);getNavigation().stop();}return hit;}
  @Override protected InteractionResult mobInteract(Player player,InteractionHand hand) {
   if(player.isSpectator() || !player.isAlive() || player.level()!=level() || distanceToSqr(player)>9 || !player.hasLineOfSight(this))return InteractionResult.PASS;
   if(!player.getItemInHand(hand).isEmpty())return super.mobInteract(player,hand);

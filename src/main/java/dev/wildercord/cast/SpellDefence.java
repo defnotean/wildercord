@@ -156,25 +156,25 @@ public final class SpellDefence {
 		if (!(target instanceof Player player)) {
 			spellDepth++;
 			try {
-				return target.hurtServer(level, spell, amount);
+				return target.hurt(spell, amount);
 			} finally {
 				spellDepth--;
 			}
 		}
 		float left = reduce(level, player, spell, amount);
 		if (ArmorResponses.mirrorReady(player)) {
-			boolean hurt = guarded(target, castIdentity, () -> target.hurtServer(level, spell, left*.5F));
+			boolean hurt = guarded(target, castIdentity, () -> target.hurt(spell, left*.5F));
 			if(hurt) ArmorResponses.fragment(level,player,spell,left);
 			return hurt;
 		}
 		if (player instanceof ServerPlayer serverPlayer && DefensiveFoci.available(serverPlayer, left)) {
 			float delayed = left * DefensiveFoci.DELAY_SHARE;
 			float immediate = left - delayed;
-			boolean hurt = guarded(target, castIdentity, () -> target.hurtServer(level, spell, immediate));
+			boolean hurt = guarded(target, castIdentity, () -> target.hurt(spell, immediate));
 			if (hurt && (!(spell instanceof RelayDamageSource relay) || relay.admits(serverPlayer))) DefensiveFoci.defer(serverPlayer, delayed,spell);
 			return hurt;
 		}
-		return guarded(target, castIdentity, () -> target.hurtServer(level, spell, left));
+		return guarded(target, castIdentity, () -> target.hurt(spell, left));
 	}
 
 	/**

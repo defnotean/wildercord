@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McEntities;
 
 /**
  * What a mount bond gives in the real game: each level's speed and health on the mount, the rider's real sprint key
@@ -121,12 +122,12 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 				check(MountBonds.grow(l, p(s), stag(s), 6000).level() == MountBondRules.STRIKE_LEVEL, "Enough points make bond 5");
 				perks(stag(s), 5, "At bond 5");
 				double x = stag(s).getX(), z = stag(s).getZ();
-				var pig = EntityType.PIG.create(l, MobSpawnType.COMMAND);
+				var pig = McEntities.create(EntityType.PIG, l, MobSpawnType.COMMAND);
 				pig.moveTo(x + 2, 101, z, 0, 0);
 				pig.setNoAi(true);
 				l.addFreshEntity(pig);
 				pigId = pig.getUUID();
-				Wolf wolf = EntityType.WOLF.create(l, MobSpawnType.COMMAND);
+				Wolf wolf = McEntities.create(EntityType.WOLF, l, MobSpawnType.COMMAND);
 				wolf.moveTo(x - 2, 101, z, 0, 0);
 				wolf.setNoAi(true);
 				wolf.tame(p(s));

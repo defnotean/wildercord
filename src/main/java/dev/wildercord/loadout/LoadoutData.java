@@ -68,7 +68,7 @@ public record LoadoutData(List<Loadout> loadouts, int current) {
 		Codec.INT.optionalFieldOf("current", -1).forGetter(LoadoutData::current)
 	).apply(i, LoadoutData::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, LoadoutData> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, LoadoutData> STREAM_CODEC = McStreamCodec.composite(
 		Loadout.STREAM_CODEC.apply(ByteBufCodecs.list()), LoadoutData::loadouts,
 		ByteBufCodecs.VAR_INT, LoadoutData::current,
 		LoadoutData::new

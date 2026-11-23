@@ -200,14 +200,14 @@ public class ThistleHedgehog extends TamableAnimal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		boolean curled = curled();
 		// Struck curled up, by something close enough to touch it: the quills prick back.
 		if (curled && source.getEntity() instanceof LivingEntity attacker && source.getDirectEntity() == attacker && attacker != this) {
-			attacker.hurtServer(level, damageSources().thorns(this), HedgehogRules.PRICK);
+			attacker.hurt(damageSources().thorns(this), HedgehogRules.PRICK);
 			playSound(SoundEvents.THORNS_HIT, 0.6F, 1.4F);
 		}
-		boolean hit = super.hurtServer(level, source, HedgehogRules.blunted(amount, curled));
+		boolean hit = super.hurt(source, HedgehogRules.blunted(amount, curled));
 		if (hit && isAlive()) {
 			curlUp();
 		}

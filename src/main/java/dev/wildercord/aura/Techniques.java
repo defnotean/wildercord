@@ -81,7 +81,7 @@ public final class Techniques {
 			Codec.STRING.optionalFieldOf("string", "").forGetter(Written::string)
 		).apply(i, Written::new));
 
-		public static final StreamCodec<ByteBuf, Written> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Written> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Written::name, ByteBufCodecs.stringUtf8(64), Written::stroke, ByteBufCodecs.stringUtf8(64), Written::release,
 			ByteBufCodecs.stringUtf8(64), Written::intent, ByteBufCodecs.stringUtf8(64), Written::string, Written::new);
 
@@ -137,7 +137,7 @@ public final class Techniques {
 			Codec.LONG.optionalFieldOf("used", 0L).forGetter(Honing::used)
 		).apply(i, Honing::new));
 
-		public static final StreamCodec<ByteBuf, Honing> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Honing> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.stringUtf8(256), Honing::key, ByteBufCodecs.FLOAT, Honing::xp, ByteBufCodecs.FLOAT, Honing::practice,
 			ByteBufCodecs.stringUtf8(32), Honing::temper, ByteBufCodecs.stringUtf8(32), Honing::edge, ByteBufCodecs.VAR_LONG, Honing::used, Honing::new);
 
@@ -170,7 +170,7 @@ public final class Techniques {
 			Honing.CODEC.listOf().optionalFieldOf("records", List.of()).forGetter(Book::records)
 		).apply(i, Book::new));
 
-		public static final StreamCodec<ByteBuf, Book> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, Book> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.stringUtf8(64).apply(ByteBufCodecs.list(64)), Book::learned,
 			Written.STREAM_CODEC.apply(ByteBufCodecs.list(TechniqueRules.MAX_SLOTS)), Book::slots,
 			Honing.STREAM_CODEC.apply(ByteBufCodecs.list(64)), Book::records, Book::new);
@@ -549,7 +549,7 @@ public final class Techniques {
 	/** Client to server: write a technique into slot {@code slot} (its name as typed; the server makes it safe). */
 	public record Write(int slot, String name, String stroke, String release, String intent, String string) implements CustomPacketPayload {
 		public static final Type<Write> TYPE = new Type<>(Wildercord.id("technique_write"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Write> CODEC = StreamCodec.composite(
+		public static final StreamCodec<RegistryFriendlyByteBuf, Write> CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Write::slot, ByteBufCodecs.stringUtf8(96), Write::name, ByteBufCodecs.stringUtf8(64), Write::stroke,
 			ByteBufCodecs.stringUtf8(64), Write::release, ByteBufCodecs.stringUtf8(64), Write::intent, ByteBufCodecs.stringUtf8(64), Write::string,
 			Write::new).cast();
@@ -563,7 +563,7 @@ public final class Techniques {
 	/** Client to server: erase the technique in slot {@code slot} (its record is kept). */
 	public record Erase(int slot) implements CustomPacketPayload {
 		public static final Type<Erase> TYPE = new Type<>(Wildercord.id("technique_erase"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Erase> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Erase::slot, Erase::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Erase> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Erase::slot, Erase::new).cast();
 
 		@Override
 		public Type<Erase> type() {
@@ -574,7 +574,7 @@ public final class Techniques {
 	/** Client to server: temper ({@code edge} false) or edge the technique in slot {@code slot} with {@code choice} ("" as written). */
 	public record Choose(int slot, boolean edge, String choice) implements CustomPacketPayload {
 		public static final Type<Choose> TYPE = new Type<>(Wildercord.id("technique_choose"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Choose> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Choose::slot, ByteBufCodecs.BOOL,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Choose> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Choose::slot, ByteBufCodecs.BOOL,
 			Choose::edge, ByteBufCodecs.stringUtf8(32), Choose::choice, Choose::new).cast();
 
 		@Override
@@ -586,7 +586,7 @@ public final class Techniques {
 	/** Client to server: set part {@code part} of the Peerless technique in slot {@code slot} down on a scroll. */
 	public record Inscribe(int slot, String part) implements CustomPacketPayload {
 		public static final Type<Inscribe> TYPE = new Type<>(Wildercord.id("technique_inscribe"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Inscribe> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Inscribe::slot,
+		public static final StreamCodec<RegistryFriendlyByteBuf, Inscribe> CODEC = McStreamCodec.composite(ByteBufCodecs.VAR_INT, Inscribe::slot,
 			ByteBufCodecs.stringUtf8(64), Inscribe::part, Inscribe::new).cast();
 
 		@Override

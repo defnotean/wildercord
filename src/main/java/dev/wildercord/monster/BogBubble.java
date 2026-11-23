@@ -134,7 +134,7 @@ public class BogBubble extends Projectile {
 				if (t.getBoundingBox().getCenter().distanceTo(at) > radius + t.getBbWidth() * 0.5) {
 					continue;
 				}
-				MonsterMagic.hurt(level, frog, t, DAMAGE * (big ? 1.5F : 1.0F));
+				MonsterMagic.hurt(frog, t, DAMAGE * (big ? 1.5F : 1.0F));
 				t.addEffect(new MobEffectInstance(MobEffects.POISON, POISON, big ? 1 : 0), frog);
 			}
 			AreaEffectCloud mist = new AreaEffectCloud(level, at.x, at.y - 0.3, at.z);
@@ -172,7 +172,7 @@ public class BogBubble extends Projectile {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// Struck before it lands (an arrow, a snowball, a blade): it pops where it is, its poison spilled for nothing.
 		if (!isRemoved()) {
 			pop(level, position(), RADIUS * 0.6);

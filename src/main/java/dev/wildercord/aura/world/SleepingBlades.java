@@ -65,7 +65,6 @@ public final class SleepingBlades {
 	public static double guardCost(Player p) { return held(p) ? SleepingBladeRules.guardCost() : 1; }
 	public static ItemStack history() {
 		var s = new ItemStack(Items.WRITTEN_BOOK);
-		s.set(DataComponents.ITEM_MODEL, Wildercord.id("last_oath"));
 		s.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough("The Last Oath"), "The Marchkeepers", 0,
 			List.of(Filterable.passThrough(Component.translatable("book.wildercord.last_oath.1")),
 				Filterable.passThrough(Component.translatable("book.wildercord.last_oath.2")),

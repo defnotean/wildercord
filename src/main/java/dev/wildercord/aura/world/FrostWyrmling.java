@@ -36,6 +36,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Frost Wyrmling ({@link FrostWyrmlingRules}). Generation leaves it curled up on the snow mound at the back of the Glacier Den's
@@ -217,7 +218,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.ITEM_SNOWBALL,to.x,to.y,to.z,12,.3,.4,.3,.05);
 		level.sendParticles(ParticleTypes.CLOUD,to.x,to.y,to.z,8,.3,.4,.3,.02);
 		Feels.sound(level,to,"aura_frost_wyrmling_frost",.8F,1.2F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().freeze(),Float.MAX_VALUE);
+		m.hurt(damageSources().freeze(),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -773,7 +774,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	}
 	/** An icicle growing down out of the dome at {@code top} over {@code at}. */
 	private Display.BlockDisplay hang(ServerLevel level,Vec3 at,double top){
-		var d=EntityType.BLOCK_DISPLAY.create(level,MobSpawnType.TRIGGERED);
+		var d=McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if(d==null)return null;
 		d.setPos(at.x,top,at.z);((BlockDisplayAccessor) d).wildercord$setBlockState(Blocks.BLUE_ICE.defaultBlockState());((DisplayAccessor) d).wildercord$setTransformation(spike(.05F,.05F,0));
 		BlockFx.fresh(d);level.addFreshEntity(d);
@@ -1004,7 +1005,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	/** Turned toward {@code yaw} by at most {@code most} degrees. */
 	private void turn(float yaw,float most){face(turned(getYRot(),yaw,most));}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING) || source.is(DamageTypes.FREEZE))return false;
 		int move=move();
 		if(FrostWyrmlingRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){
@@ -1023,7 +1024,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			}
 			damage*=(float)FrostWyrmlingRules.armour(move,frontal);
 		}
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt){
 			lastCut=now;stung+=damage;
 			if(FrostWyrmlingRules.leaps(move(),stung,now-lastLeap))leapAway(level,source.getSourcePosition());

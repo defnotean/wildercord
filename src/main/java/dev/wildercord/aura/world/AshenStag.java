@@ -245,7 +245,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.LAVA,to.x,to.y,to.z,4,.3,.3,.3,0);
 		level.sendParticles(ParticleTypes.LARGE_SMOKE,to.x,to.y,to.z,8,.3,.4,.3,.03);
 		Feels.sound(level,h,"aura_ashen_stag_snort",.8F,1.2F+random.nextFloat()*.2F);
-		m.hurtServer(level,damageSources().mobAttack(this),Float.MAX_VALUE);
+		m.hurt(damageSources().mobAttack(this),Float.MAX_VALUE);
 		if(m.isAlive())m.kill(level);
 	}
 
@@ -968,7 +968,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		};
 	}
 
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;
 		int move=move();
 		if(AshenStagRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){
@@ -987,7 +987,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 			}
 			damage*=(float)AshenStagRules.armour(move,frontal,open(move));
 		}
-		boolean hurt=super.hurtServer(level,source,damage);
+		boolean hurt=super.hurt(source,damage);
 		if(hurt){
 			lastCut=now;stung+=damage;
 			// Two blows to its throat while it holds someone wrench its antlers free.

@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.List;
 import java.util.function.Consumer;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Bearer's Lantern: the soul lantern the Lantern-Bearer leaves at the foot of its gibbet. While it walks the Barrow Field it will
@@ -99,7 +100,7 @@ public final class BearersLantern {
 	 */
 	static boolean steed(ServerPlayer player) {
 		ServerLevel level = (ServerLevel) player.level();
-		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, MobSpawnType.TRIGGERED);
+		SkeletonHorse horse = McEntities.create(EntityType.SKELETON_HORSE, level, MobSpawnType.TRIGGERED);
 		if (horse == null) return false;
 		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);

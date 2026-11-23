@@ -275,7 +275,7 @@ final class FusedFrostWards {
 			}
 			if (geode != null && live(GEODES, geode, entity, now) && punishable(geode, attacker)) {
 				FusedFrostVfx.geodeShards(level, entity, attacker);
-				geode.context.accept(() -> Effects.hurt(geode.cast, attacker, level.damageSources().thorns(entity), geode.damage));
+				geode.context.accept(() -> Effects.hurt(attacker, level.damageSources().thorns(entity), geode.damage));
 				// The crystals open it up: every spell (the geode's caster's side too) hits it 20% harder for 5 s.
 				Reactions.mark(attacker, Reactions.Mark.CRACKED);
 			}
@@ -352,7 +352,7 @@ final class FusedFrostWards {
 			}
 			struck++;
 			FusedFrostVfx.blackIceShard(level, at, t);
-			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), 4 * brittle.power());
+			Effects.hurt(t, level.damageSources().indirectMagic(cast.caster, cast.caster), 4 * brittle.power());
 			// The cold runs on: the survivors are brittle in their turn, so a chain of kills cascades.
 			if (t.isAlive()) {
 				brittle(cast, t, FusedFrostRules.CASCADE_TICKS, brittle.power());
@@ -494,7 +494,7 @@ final class FusedFrostWards {
 					Vec3 away = Effects.horizontal(t.position().subtract(ally.position()), ally.getLookAngle());
 					Effects.push(t, away.scale(FusedFrostRules.BURST_KNOCK).add(0, 0.3, 0));
 				}
-				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), FusedFrostRules.BURST_DAMAGE);
+				Effects.hurt(t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), FusedFrostRules.BURST_DAMAGE);
 				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FusedFrostRules.BURST_SLOW_TICKS, 1, false, true), cast.caster);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 			}

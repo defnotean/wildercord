@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Revalidate a paid remote hit after native pre-damage callbacks, before health and armour writes. */
 @Mixin(LivingEntity.class)
 public abstract class RelayLivingDamageMixin {
-	@WrapOperation(method = "hurtServer", at = @At(value = "INVOKE",
+	@WrapOperation(method = "hurt", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))
 	private void wildercord$relayKnockback(LivingEntity entity, double x, double y, double z, Operation<Void> original,
 			@Local(argsOnly = true) DamageSource source) {
@@ -23,7 +23,7 @@ public abstract class RelayLivingDamageMixin {
 		original.call(entity, x, y, z);
 	}
 	@Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
-	private void wildercord$relayAdmission(ServerLevel level, DamageSource source, float amount, CallbackInfo ci) {
+	private void wildercord$relayAdmission(DamageSource source, float amount, CallbackInfo ci) {
 		if (source instanceof RelayDamageSource relay && !relay.admits((LivingEntity) (Object) this)) ci.cancel();
 	}
 }

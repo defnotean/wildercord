@@ -164,9 +164,9 @@ public class SakuraVillager extends PathfinderMob {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (source.is(DamageTypes.GENERIC_KILL)) {
-			return super.hurtServer(level, source, amount);
+			return super.hurt(source, amount);
 		}
 		return false;
 	}

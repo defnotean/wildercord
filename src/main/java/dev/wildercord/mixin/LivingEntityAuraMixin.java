@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.Mixin;
  */
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityAuraMixin {
-	@WrapMethod(method = "hurtServer")
+	@WrapMethod(method = "hurt")
 	private boolean wildercord$auraGuard(ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
 		LivingEntity self = (LivingEntity) (Object) this;
 		if (dev.wildercord.party.Parties.blocksDamage(self, source)) return false;

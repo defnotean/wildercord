@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Pillager;
 import java.util.*;
+import dev.wildercord.compat.McEntities;
 
 /** Negative cases exercise the final damage gate directly, not public spell delivery.
  * The finite Fortune mark and positive Bolt/Harm cases use actual paid public casts.
@@ -86,7 +87,7 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
      // the synchronous assertion. This fixture never creates or awards XP itself.
      s.overworld().getEntitiesOfClass(ExperienceOrb.class,new net.minecraft.world.phys.AABB(-2,99,5,3,106,12)).forEach(Entity::discard);
      target=foe(caster);target.setHealth(1);dev.wildercord.compat.McEntities.clearHurtCooldown(target);
-     target.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(caster),4);
+     target.hurt(s.overworld().damageSources().playerAttack(caster),4);
      check(target.isDeadOrDying(),"Ordinary actual player attack really kills each bounded hostile");target.discard();
     }
     check(rewards[0]>0,"Bounded seeded genuine kills enter Fortune's real XP reward branch");
@@ -96,6 +97,6 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
  private double unmarked;
  private float positiveBefore;
  private static boolean trigger(LifeOwnerEvents.Event e){return e.rune().equals("fortune")&&e.moment()==LifeOwnerEvents.Moment.TRIGGER;}
- private static Pillager foe(ServerPlayer p){var t=EntityType.PILLAGER.create(p.level(),MobSpawnType.COMMAND);check(t!=null,"Real hostile fixture");t.setNoAi(true);t.moveTo(.5,101,8.5,180,0);p.level().addFreshEntity(t);return t;}
+ private static Pillager foe(ServerPlayer p){var t=McEntities.create(EntityType.PILLAGER, p.level(), MobSpawnType.COMMAND);check(t!=null,"Real hostile fixture");t.setNoAi(true);t.moveTo(.5,101,8.5,180,0);p.level().addFreshEntity(t);return t;}
  private static void check(boolean yes,String message){if(!yes)throw new AssertionError(message);}
 }

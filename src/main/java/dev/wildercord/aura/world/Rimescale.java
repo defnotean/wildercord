@@ -86,7 +86,7 @@ public final class Rimescale {
 		}
 		mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FrostWyrmlingRules.RIME_SLOW, 1, false, true));
 		if (mob.canFreeze()) mob.setTicksFrozen(Math.max(mob.getTicksFrozen(), FrostWyrmlingRules.RIME_FROST));
-		mob.hurtServer((ServerLevel) level, player.damageSources().freeze(), (float) FrostWyrmlingRules.RIME_DAMAGE);
+		mob.hurt(player.damageSources().freeze(), (float) FrostWyrmlingRules.RIME_DAMAGE);
 		player.displayClientMessage(Component.translatable("message.wildercord.rimescale.rime").withColor(0xA8DCF4), true);
 	}
 }

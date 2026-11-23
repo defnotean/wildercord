@@ -88,7 +88,7 @@ public class PaperLanternSpirit extends WildMonster {
 				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.7, getZ(), 18, 1.5, 0.25, 1.5, 0.05);
 				double distSq = distanceToSqr(target);
 				if (distSq <= 16.0) {
-					target.hurtServer(level, damageSources().indirectMagic(this, this), 6.5F);
+					target.hurt(damageSources().indirectMagic(this, this), 6.5F);
 					target.setRemainingFireTicks(60);
 				} else if (distSq <= 256.0 && hasLineOfSight(target)) {
 					Vec3 from = position().add(0, 0.85, 0);
@@ -97,7 +97,7 @@ public class PaperLanternSpirit extends WildMonster {
 						Vec3 p = from.lerp(to, step / 8.0);
 						level.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 2, 0.08, 0.08, 0.08, 0.01);
 					}
-					target.hurtServer(level, damageSources().indirectMagic(this, this), 4.5F);
+					target.hurt(damageSources().indirectMagic(this, this), 4.5F);
 					target.setRemainingFireTicks(40);
 				}
 			}

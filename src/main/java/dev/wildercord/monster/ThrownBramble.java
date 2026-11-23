@@ -49,7 +49,7 @@ public class ThrownBramble extends ThrowableItemProjectile {
 		super.onHitEntity(result);
 		Entity entity = result.getEntity();
 		if (level() instanceof ServerLevel level && entity instanceof LivingEntity living) {
-			living.hurtServer(level, damageSources().thrown(this, getOwner()), 1.0F);
+			living.hurt(damageSources().thrown(this, getOwner()), 1.0F);
 			MonsterMagic.root(level, living, ROOT_TICKS);
 		}
 	}

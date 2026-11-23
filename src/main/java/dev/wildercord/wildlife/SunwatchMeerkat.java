@@ -275,12 +275,12 @@ public class SunwatchMeerkat extends Animal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		// Right down its hole, there is nothing to hit.
 		if (pose() == MeerkatRules.HIDE && poseLeft() > MeerkatRules.PEEK_TICKS && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return false;
 		}
-		boolean hit = super.hurtServer(level, source, amount);
+		boolean hit = super.hurt(source, amount);
 		if (hit) {
 			wantsWatch = false;
 			if (pose() != MeerkatRules.IDLE) {

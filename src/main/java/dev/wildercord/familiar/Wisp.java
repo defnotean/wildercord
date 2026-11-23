@@ -564,10 +564,10 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	// ------------------------------------------------------------------ never hurt, never saved by accident
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// Mana given a shape: only the void or a kill command can end a wisp.
 		if (source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.GENERIC_KILL)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		return false;
 	}

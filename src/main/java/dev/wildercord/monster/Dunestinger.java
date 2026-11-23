@@ -256,7 +256,7 @@ public class Dunestinger extends WildMonster {
 				face(target);
 				nextPinch = now + DunestingerRules.PINCH_COOLDOWN;
 				pinchUntil = now + DunestingerRules.PINCH_TICKS;
-				doHurtTarget(level, target);
+				doHurtTarget(target);
 				level.playSound(null, getX(), getY(), getZ(), SoundEvents.ARMADILLO_HURT_REDUCED, SoundSource.HOSTILE, 0.9F, 1.6F);
 			}
 			default -> { }
@@ -271,7 +271,7 @@ public class Dunestinger extends WildMonster {
 		setState(ACTING, true);
 		level.playSound(null, getX(), getY(), getZ(), SoundEvents.BEE_STING, SoundSource.HOSTILE, 1.0F, 0.6F);
 		if (target != null && distanceTo(target) <= DunestingerRules.STING_REACH + 0.6
-				&& target.hurtServer(level, damageSources().mobAttack(this), DunestingerRules.STING_DAMAGE)) {
+				&& target.hurt(damageSources().mobAttack(this), DunestingerRules.STING_DAMAGE)) {
 			target.addEffect(new MobEffectInstance(MobEffects.POISON, DunestingerRules.POISON_TICKS, DunestingerRules.POISON_LEVEL), this);
 		}
 	}
@@ -338,12 +338,12 @@ public class Dunestinger extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// Gone under mid-fight, nothing reaches it.
 		if (burrowing() && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return false;
 		}
-		return super.hurtServer(level, source, damage);
+		return super.hurt(source, damage);
 	}
 
 	@Override

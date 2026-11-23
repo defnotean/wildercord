@@ -49,7 +49,7 @@ public final class Climate {
 	public record Sync(List<String> conditions, float crossing, float celestial) implements CustomPacketPayload {
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("climate"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC =
-			StreamCodec.composite(ByteBufCodecs.stringUtf8(32).apply(ByteBufCodecs.list(24)), Sync::conditions, ByteBufCodecs.FLOAT, Sync::crossing,
+			McStreamCodec.composite(ByteBufCodecs.stringUtf8(32).apply(ByteBufCodecs.list(24)), Sync::conditions, ByteBufCodecs.FLOAT, Sync::crossing,
 				ByteBufCodecs.FLOAT, Sync::celestial, Sync::new).cast();
 
 		@Override

@@ -1144,7 +1144,7 @@ public class Archivist extends SpellcasterIllager {
 	/** A blow from one of its tricks, as strong as its spells. */
 	private void strike(ServerLevel level, LivingEntity victim, double damage) {
 		Effects.readyToHurt(victim);
-		SpellDefence.hurt(level, victim, level.damageSources().indirectMagic(this, this), (float) (damage * power()));
+		SpellDefence.hurt(victim, level.damageSources().indirectMagic(this, this), (float) (damage * power()));
 	}
 
 	/** Turns it to face {@code dir} across the floor, head and body. */
@@ -1342,10 +1342,10 @@ public class Archivist extends SpellcasterIllager {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// A command's kill and the void always go through, even while it rewrites.
 		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		if (rewriting > 0 || source.is(DamageTypes.FALL) || source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player)) {
 			return false;
@@ -1360,7 +1360,7 @@ public class Archivist extends SpellcasterIllager {
 			}
 		}
 		// Caught shut, wiped blank or leafing for its place, it takes more from every blow.
-		boolean hurt = super.hurtServer(level, source, damage * (float) ArchivistRules.taken(move));
+		boolean hurt = super.hurt(source, damage * (float) ArchivistRules.taken(move));
 		// A blow that reached its next phase starts the rewriting now, before anything else can land.
 		shiftIfDue(level);
 		return hurt;

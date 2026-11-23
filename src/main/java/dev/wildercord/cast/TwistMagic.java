@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.function.IntPredicate;
+import dev.wildercord.compat.McEntities;
 
 /**
  * What each twist of a world's resonances does (see {@link ResonanceTwists} for the catalogue, {@link TwistVfx} for how
@@ -567,7 +568,7 @@ public final class TwistMagic {
 			TwistVfx.almost(level, ride.caster(), ride.resonance.color());
 			return;
 		}
-		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, MobSpawnType.TRIGGERED);
+		SkeletonHorse horse = McEntities.create(EntityType.SKELETON_HORSE, level, MobSpawnType.TRIGGERED);
 		if (horse == null) {
 			return;
 		}
@@ -812,7 +813,7 @@ public final class TwistMagic {
 
 	/** Damage from a twist: through the one door every spell's damage goes through, as its own element (or none). */
 	private static void hurt(Cast cast, LivingEntity target, String element, DamageSource source, double amount) {
-		Effects.asElement(element, () -> Effects.hurt(cast, target, source, amount * cast.power));
+		Effects.asElement(element, () -> Effects.hurt(target, source, amount * cast.power));
 	}
 
 	private static DamageSource magic(Cast cast) {

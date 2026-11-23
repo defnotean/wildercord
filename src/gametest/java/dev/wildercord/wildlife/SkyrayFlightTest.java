@@ -143,11 +143,11 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 				// Its rider can't hurt it; anything else can, and its death grounds the bridle.
 				p(s).startRiding(ray);
 				float health = ray.getHealth();
-				check(!ray.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 5) && ray.getHealth() == health, "Its rider can't hurt it");
+				check(!ray.hurt(p(s).damageSources().playerAttack(p(s)), 5) && ray.getHealth() == health, "Its rider can't hurt it");
 				p(s).stopRiding();
-				check(!ray.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 5), "Nor can its owner on foot");
-				check(ray.hurtServer(l, l.damageSources().magic(), 5) && ray.getHealth() < health, "Other harm hurts it");
-				ray.hurtServer(l, l.damageSources().fellOutOfWorld(), 1000);
+				check(!ray.hurt(p(s).damageSources().playerAttack(p(s)), 5), "Nor can its owner on foot");
+				check(ray.hurt(l.damageSources().magic(), 5) && ray.getHealth() < health, "Other harm hurts it");
+				ray.hurt(l.damageSources().fellOutOfWorld(), 1000);
 				check(!ray.isAlive(), "It dies");
 				var bridle = new ItemStack(MountContent.SKYRAY_BRIDLE);
 				check(p(s).getCooldowns().isOnCooldown(bridle) && p(s).getCooldowns().getCooldownPercent(bridle, 0) > 0.99F,

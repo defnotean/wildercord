@@ -107,12 +107,12 @@ public abstract class AuraBeast extends PathfinderMob {
 	}
 	public boolean hurtBySpell(ServerLevel level,DamageSource source,float amount) {
 		boolean previous=spellHit; spellHit=true;
-		try { return hurtServer(level,source,amount); } finally { spellHit=previous; }
+		try { return hurt(level,source,amount); } finally { spellHit=previous; }
 	}
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float amount) {
+	@Override public boolean hurt(DamageSource source, float amount) {
 		boolean magic=spellHit || source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC);
 		if(magic) amount*=(float)BeastRules.spell(gale(),pose()==BeastRules.RECOVER);
-		float before=getHealth();boolean hit=super.hurtServer(level,source,amount);
+		float before=getHealth();boolean hit=super.hurt(source,amount);
 		if(hit && before>getHealth() && isAlive() && !isRemoved() && level()==level && source.getEntity() instanceof LivingEntity attacker && valid(attacker)) { aggression=200; calm=0; setTarget(attacker); }
 		if(hit && isAlive() && !isRemoved() && level()==level && magic && tickCount%5==0) { dust(getBoundingBox().getCenter(),5); }
 		return hit;
@@ -142,7 +142,7 @@ public abstract class AuraBeast extends PathfinderMob {
 	protected DamageSource hitOwned(ServerLevel level,LivingEntity target,float damage,double knock) {
 		int epoch=attackEpoch,phase=pose();
 		if(!attackActive(level,epoch,phase) || !valid(target) || struck.size()>=BeastRules.VICTIMS || !struck.add(target.getUUID()))return null;
-		var source=level.damageSources().mobAttack(this);float health=target.getHealth();boolean admitted=target.hurtServer(level,source,damage);
+		var source=level.damageSources().mobAttack(this);float health=target.getHealth();boolean admitted=target.hurt(source,damage);
 		if(admitted && target.getLastDamageSource()==source && attackActive(level,epoch,phase) && valid(target)) {
 			target.knockback(knock,-direction.x,-direction.z);
 			if(target.getLastDamageSource()==source && attackActive(level,epoch,phase) && valid(target))AuraFx.groundScar(level,target.position(),1.5,35,2);

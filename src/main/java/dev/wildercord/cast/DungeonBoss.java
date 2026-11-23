@@ -611,10 +611,10 @@ public abstract class DungeonBoss extends Monster {
 	// ------------------------------------------------------------------ harm
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		// A command's kill and the void always go through, even between phases.
 		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt(source, damage);
 		}
 		if (shifting > 0 || source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL)
 				|| source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player) && source.getEntity() != this) {
@@ -627,7 +627,7 @@ public abstract class DungeonBoss extends Monster {
 		if (source.getEntity() instanceof ServerPlayer player) {
 			fighters.add(player.getUUID());
 		}
-		boolean hurt = super.hurtServer(level, source, taken);
+		boolean hurt = super.hurt(source, taken);
 		// A blow that reached its next phase starts it now, before anything else can land.
 		shiftIfDue(level);
 		return hurt;

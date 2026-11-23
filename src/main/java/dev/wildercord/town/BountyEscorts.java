@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Escort bounties (0.13): the board hands you a traveller's pack llama on a lead, and you bring it to where they're bound, 160 to
@@ -156,7 +157,7 @@ public final class BountyEscorts {
 
 	/** Hands {@code player} the escort's pack llama by the board; returns the bounty bound for its end, or null with no room. */
 	public static Town.Active start(ServerPlayer player, ServerLevel level, BlockPos board, Town.Active bounty) {
-		Llama llama = EntityType.LLAMA.create(level, MobSpawnType.EVENT);
+		Llama llama = McEntities.create(EntityType.LLAMA, level, MobSpawnType.EVENT);
 		if (llama == null) return null;
 		BlockPos at = player.blockPosition();
 		llama.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, player.getYRot(), 0);
@@ -223,7 +224,7 @@ public final class BountyEscorts {
 			return;
 		}
 		if (tickCount % 200 == 0) {
-			Direction way = Direction.getApproximateNearest(bounty.destX() - llama.getX(), 0, bounty.destZ() - llama.getZ());
+			Direction way = Direction.getNearest(bounty.destX() - llama.getX(), 0, bounty.destZ() - llama.getZ());
 			player.displayClientMessage(Component.translatable("message.wildercord.bounty.escort_road", Town.targetName(bounty), (int) toEnd,
 				Component.translatable("town.wildercord.way." + way.getSerializedName())).withStyle(ChatFormatting.YELLOW), true);
 		}

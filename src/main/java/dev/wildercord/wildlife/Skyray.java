@@ -177,8 +177,8 @@ public class Skyray extends AmbientCreature {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-		boolean hurt = super.hurtServer(level, source, amount);
+	public boolean hurt(DamageSource source, float amount) {
+		boolean hurt = super.hurt(source, amount);
 		if (hurt && source.getEntity() != null && anchor != null) {
 			// Up and away from whoever did it.
 			Vec3 away = position().subtract(source.getEntity().position()).multiply(1, 0, 1);

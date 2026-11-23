@@ -69,6 +69,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import dev.wildercord.compat.McEntities;
 
 /**
  * Full end-to-end in-game verification suite for:
@@ -145,7 +146,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	}
 
 	private static Husk spawnHusk(ServerLevel l, double x, double y, double z, boolean noAi) {
-		Husk husk = EntityType.HUSK.create(l, MobSpawnType.COMMAND);
+		Husk husk = McEntities.create(EntityType.HUSK, l, MobSpawnType.COMMAND);
 		check(husk != null, "Husk created");
 		husk.moveTo(x, y, z, 0.0F, 0.0F);
 		husk.setNoAi(noAi);
@@ -367,8 +368,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				tea.mobInteract(player, InteractionHand.MAIN_HAND);
 				maiden.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(tea.bowTick() == 26 && maiden.bowTick() == 26, "Sakura villagers bow on greeting");
-				check(!tea.hurtServer(l, l.damageSources().playerAttack(player), 10.0F)
-					&& !maiden.hurtServer(l, l.damageSources().playerAttack(player), 10.0F),
+				check(!tea.hurt(l.damageSources().playerAttack(player), 10.0F)
+					&& !maiden.hurt(l.damageSources().playerAttack(player), 10.0F),
 					"Sakura villagers are protected from player harm");
 
 				hold(s, new ItemStack(Items.EMERALD, 2));
@@ -672,14 +673,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				player.teleportTo(l, yuki.getX(), yuki.getY(), yuki.getZ() - 2.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				float preAegisHp = yuki.getHealth();
-				yuki.hurtServer(l, l.damageSources().playerAttack(player), 10.0F);
+				yuki.hurt(l.damageSources().playerAttack(player), 10.0F);
 				check(yuki.getHealth() > preAegisHp - 3.5F,
 					"Guardian Shrine Aegis mitigates normal damage while Floor 1 sentries live (" + yuki.getHealth() + "/" + preAegisHp + ")");
 				hold(s, new ItemStack(Items.COOKED_SALMON, 4));
 				yuki.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(!yuki.isTame() && yuki.getRole() == ShrineCatRules.ROLE_GUARDIAN, "Guardian Yuki refuses taming mid-fight");
 
-				yuki.hurtServer(l, l.damageSources().playerAttack(player), yuki.getMaxHealth() * 0.85F);
+				yuki.hurt(l.damageSources().playerAttack(player), yuki.getMaxHealth() * 0.85F);
 				check(yuki.isAlive() && yuki.getRole() == ShrineCatRules.ROLE_CLEARED, "Yuki yields non-lethally");
 				check(yuki.getHealth() >= yuki.getMaxHealth(), "Yuki restores full health on yield");
 				check(player.hasEffect(MobEffects.DAMAGE_RESISTANCE), "Yuki grants Whisker Ward (Resistance I)");
@@ -687,18 +688,18 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				yuki.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(!yuki.isTame(), "Cannot tame cleared Yuki before clearing Kuro on Floor 4");
 
-				odie.hurtServer(l, l.damageSources().playerAttack(player), odie.getMaxHealth() * 0.85F);
+				odie.hurt(l.damageSources().playerAttack(player), odie.getMaxHealth() * 0.85F);
 				check(odie.getRole() == ShrineCatRules.ROLE_CLEARED, "Odie yields non-lethally");
 				check(player.hasEffect(MobEffects.REGENERATION) && player.hasEffect(MobEffects.FIRE_RESISTANCE),
 					"Odie grants Sunbeam Loaf (Regeneration I + Fire Resistance)");
 
-				freya.hurtServer(l, l.damageSources().playerAttack(player), freya.getMaxHealth() * 0.85F);
+				freya.hurt(l.damageSources().playerAttack(player), freya.getMaxHealth() * 0.85F);
 				check(freya.getRole() == ShrineCatRules.ROLE_CLEARED, "Freya yields non-lethally");
 				check(player.hasEffect(MobEffects.ABSORPTION) && player.hasEffect(MobEffects.DIG_SPEED),
 					"Freya grants Silver-Bell Chime (Absorption I + Haste I)");
 
 				player.teleportTo(l, kuro.getX(), kuro.getY(), kuro.getZ() - 2.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
-				kuro.hurtServer(l, l.damageSources().playerAttack(player), kuro.getMaxHealth() * 0.85F);
+				kuro.hurt(l.damageSources().playerAttack(player), kuro.getMaxHealth() * 0.85F);
 				check(kuro.isAlive() && kuro.getRole() == ShrineCatRules.ROLE_CLEARED, "Kuro yields non-lethally");
 				check(player.hasEffect(MobEffects.MOVEMENT_SPEED) && player.hasEffect(MobEffects.DAMAGE_BOOST) && player.hasEffect(MobEffects.NIGHT_VISION),
 					"Kuro grants Night-Stalker Grace (Speed II, Strength I, Night Vision)");
@@ -825,8 +826,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				freya.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(freya.getHealth() >= 24.0F && player.getMainHandItem().getCount() == 1,
 					"Feeding cooked salmon heals hurt tamed ShrineCat (+6 HP)");
-				freya.hurtServer(l, l.damageSources().thorns(player), 500.0F);
-				freya.hurtServer(l, l.damageSources().magic(), 500.0F);
+				freya.hurt(l.damageSources().thorns(player), 500.0F);
+				freya.hurt(l.damageSources().magic(), 500.0F);
 				check(freya.isAlive() && freya.getHealth() >= 10.0F,
 					"Tamed Freya cannot die from thorns or lethal non-/kill damage (" + freya.getHealth() + ")");
 
@@ -972,7 +973,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(player.hasEffect(MobEffects.ABSORPTION), "Ofuda Ward granted Absorption I");
 
 				Effects.readyToHurt(player);
-				boolean hurt = player.hurtServer(l, l.damageSources().mobAttack(thornsAttacker), 2.0F);
+				boolean hurt = player.hurt(l.damageSources().mobAttack(thornsAttacker), 2.0F);
 				check(hurt, "Hostile strike registered against Ofuda Ward");
 			});
 			c.waitTicks(6);
@@ -1045,12 +1046,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				// (a) Dist > 14.5 rejected.
 				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 1.0, lectern.getZ() + 17.5, Set.<RelativeMovement>of(), 180.0F, 0.0F);
-				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
+				check(!archivist.hurt(l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects out-of-arena attack at dist > 14.5");
 
 				// (b) Vertical dy > 16.0 rejected.
 				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 18.0, lectern.getZ() + 0.5, Set.<RelativeMovement>of(), 0.0F, 90.0F);
-				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
+				check(!archivist.hurt(l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects overhead roof attack at dy > 16.0");
 
 				// (c) Wall-occluded outer-rim peephole cheese (dist ~ 13.1 > 12.6 with !hasLineOfSight) rejected.
@@ -1060,12 +1061,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				}
 				player.teleportTo(l, lectern.getX() + 13.6, lectern.getY() + 1.0, lectern.getZ() + 0.5, Set.<RelativeMovement>of(), 90.0F, 0.0F);
 				check(!archivist.hasLineOfSight(player), "Outer rim wall blocks Archivist line of sight");
-				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
+				check(!archivist.hurt(l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects wall-hole cheese attack at dist > 12.6 without line of sight");
 
 				// (d) Direct in-arena fight hit accepted.
 				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 1.0, lectern.getZ() - 4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
-				check(archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
+				check(archivist.hurt(l.damageSources().playerAttack(player), 12.0F),
 					"Archivist accepts normal in-arena attack");
 
 				player.setGameMode(GameType.SPECTATOR);

@@ -27,7 +27,7 @@ public abstract class CounterSpellDamageCaptureMixin {
 		return CounterSpellCapture.identity(identity, () -> original.call(level, target, source, amount, identity));
 	}
 	@WrapOperation(method = "hurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;FLjava/lang/Object;)Z",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"), require = 1, expect = 1, allow = 1)
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"), require = 1, expect = 1, allow = 1)
 	private static boolean wildercord$nativeDamage(LivingEntity target, ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
 		return CounterSpellCapture.nativeDamage(target, level, source, () -> original.call(target, level, source, amount));
 	}

@@ -324,7 +324,7 @@ public abstract class GiantFight extends Goal {
 
 	/** A blow from it, the victim thrown away from a point and up; whether it landed. */
 	protected boolean strike(ServerLevel level, LivingEntity victim, double damage, Vec3 at, double push, double lift) {
-		if (!victim.hurtServer(level, mob.damageSources().mobAttack(mob), (float) damage)) {
+		if (!victim.hurt(mob.damageSources().mobAttack(mob), (float) damage)) {
 			return false;
 		}
 		throwFrom(victim, at, push, lift);

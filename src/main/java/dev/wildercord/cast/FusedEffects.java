@@ -106,7 +106,7 @@ public final class FusedEffects {
 				int burning = 0;
 				for (LivingEntity t : harmed) {
 					t.igniteForSeconds((float) (6 * duration));
-					Effects.hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 5 * power * Reactions.fire(cast, t));
+					Effects.hurt(t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 5 * power * Reactions.fire(cast, t));
 					caught.add(t.getUUID());
 					// Every target burns; only the first few spread it (and show it), so a crowd can't flood the server.
 					if (burning++ < MAX_TARGETS) {
@@ -126,7 +126,7 @@ public final class FusedEffects {
 				List<Vec3> clouds = new ArrayList<>();
 				harmed.forEach(t -> clouds.add(t.position()));
 				harmed.forEach(t -> {
-					Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, caster), 5 * power * Reactions.fire(cast, t));
+					Effects.hurt(t, level.damageSources().source(DamageTypes.HOT_FLOOR, caster), 5 * power * Reactions.fire(cast, t));
 					t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Effects.ticks(3, duration), 0, false, true));
 					if (t instanceof net.minecraft.world.entity.Mob mob) {
 						mob.setTarget(null);
@@ -162,8 +162,8 @@ public final class FusedEffects {
 			case "plasma" -> harmed.forEach(t -> {
 				// Half of it through the armour as usual, half straight past it.
 				double storm = Reactions.storm(cast, t);
-				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 5 * power * storm);
-				Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 5 * power * storm);
+				Effects.hurt(t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 5 * power * storm);
+				Effects.hurt(t, level.damageSources().indirectMagic(caster, caster), 5 * power * storm);
 				// Ionised: the air round it conducts, so the next storm hit on it Conducts even when it is dry.
 				Reactions.mark(t, Reactions.Mark.IONISED);
 				StormEarthFx.ionised(level, t, 100);
@@ -182,7 +182,7 @@ public final class FusedEffects {
 							return;
 						}
 						FusionVfx.hailstone(level, t, stone % 3);
-						Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 2 * power);
+						Effects.hurt(t, level.damageSources().source(DamageTypes.FREEZE, caster), 2 * power);
 						if (flinch && t.isAlive()) {
 							Statuses.stagger(t, 5);
 						}
@@ -192,7 +192,7 @@ public final class FusedEffects {
 			case "glacier" -> glacier(cast, harmed, duration);
 			case "lifesteal" -> harmed.forEach(t -> {
 				float before = t.getHealth();
-				Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 5 * power);
+				Effects.hurt(t, level.damageSources().indirectMagic(caster, caster), 5 * power);
 				float taken = Math.max(0.0F, before - t.getHealth());
 				if (taken > 0 && caster.isAlive()) {
 					caster.heal(taken);
@@ -283,7 +283,7 @@ public final class FusedEffects {
 				caught.add(near.getUUID());
 				out.add(near);
 				near.igniteForSeconds((float) burn);
-				Effects.hurt(cast, near, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster),	damage * power);
+				Effects.hurt(near, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster),	damage * power);
 				FireBloodVfx.firestormHop(cast.level, source, near);
 			}
 		}
@@ -385,7 +385,7 @@ public final class FusedEffects {
 			if (Statuses.claim(t, "glacier", ticks + 20)) {
 				Scheduler.later(ticks, Effects.carryContext(() -> {
 					if (cast.alive() && t.isAlive() && t.level() == level) {
-						Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), GLACIER_CRACK);
+						Effects.hurt(t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), GLACIER_CRACK);
 					}
 				}));
 			}
@@ -421,7 +421,7 @@ public final class FusedEffects {
 						double burn = onIt && horizontal(t.position(), at) <= reach ? unstacked(cast, t, "magma", MAGMA_EVERY, 2 * power) : 0;
 						if (burn > 0) {
 							t.igniteForSeconds(2);
-							Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), burn);
+							Effects.hurt(t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), burn);
 						}
 					}
 				};
@@ -450,7 +450,7 @@ public final class FusedEffects {
 			if (strike <= 0) {
 				continue;
 			}
-			Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), strike * Reactions.storm(cast, t));
+			Effects.hurt(t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), strike * Reactions.storm(cast, t));
 			if (!Spirits.isBoss(t)) {
 				Vec3 away = Effects.horizontal(t.position().subtract(hit.origin()), hit.dir());
 				Effects.push(t, away.scale(2.8 * Math.sqrt(power)).add(0, 0.9, 0));
@@ -469,7 +469,7 @@ public final class FusedEffects {
 			LivingEntity t = (LivingEntity) e;
 			double strike = unstacked(cast, t, "tempest_landing", 10, 4 * power);
 			if (strike > 0) {
-				Effects.lingering(() -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster),
+				Effects.lingering(() -> Effects.hurt(t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster),
 					strike * Reactions.storm(cast, t)));
 			}
 		}

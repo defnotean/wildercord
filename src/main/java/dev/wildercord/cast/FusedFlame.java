@@ -337,7 +337,7 @@ final class FusedFlame {
 			LivingEntity near = (LivingEntity) e;
 			if (near.getBoundingBox().getCenter().distanceTo(c) <= 3.0 + near.getBbWidth() / 2) {
 				near.igniteForSeconds(3);
-				Effects.hurt(cast, near, fire(cast), REBIRTH_BURST * power);
+				Effects.hurt(near, fire(cast), REBIRTH_BURST * power);
 			}
 		}
 	}
@@ -360,7 +360,7 @@ final class FusedFlame {
 			burned++;
 			FusedFlameVfx.phoenixScorch(level, t, near);
 			near.igniteForSeconds(2);
-			Effects.hurt(cast, near, fire(cast), 1 * power);
+			Effects.hurt(near, fire(cast), 1 * power);
 		}
 	}
 
@@ -422,7 +422,7 @@ final class FusedFlame {
 			if (burn && d <= core) {
 				FusedFlameVfx.hellmouthBurn(level, t);
 				t.igniteForSeconds(2);
-				Effects.hurt(cast, t, fire(cast), 2 * power * (age == 0 ? Reactions.fire(cast, t) : 1.0));
+				Effects.hurt(t, fire(cast), 2 * power * (age == 0 ? Reactions.fire(cast, t) : 1.0));
 			}
 			if (d > 0.35 && !Spirits.isBoss(t) && t.isAlive() && inSight(level, mouth, t)) {
 				drag(t, in.scale(1 / d), FusedFlameRules.hellmouthDrag(d));
@@ -445,7 +445,7 @@ final class FusedFlame {
 				continue;
 			}
 			n++;
-			Effects.hurt(cast, (LivingEntity) e, magic(cast), 4 * power);
+			Effects.hurt((LivingEntity) e, magic(cast), 4 * power);
 		}
 	}
 
@@ -529,7 +529,7 @@ final class FusedFlame {
 			if (age[0] >= 4 && d <= speed + 0.35) {
 				FusedFlameVfx.starfireMote(level, pos[0], goal, index, age[0]);
 				FusedFlameVfx.starfireStrike(level, goal, index);
-				Effects.hurt(cast, t, fire(cast), 2 * power * Reactions.fire(cast, t));
+				Effects.hurt(t, fire(cast), 2 * power * Reactions.fire(cast, t));
 				t.igniteForSeconds((float) (3 * duration));
 				return;
 			}
@@ -615,7 +615,7 @@ final class FusedFlame {
 						double react = first[0] ? Reactions.fire(cast, t) : 1.0;
 						first[0] = false;
 						FusedFlameVfx.everburnTick(level, t, rekindled[0]);
-						Effects.lingering(() -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.ON_FIRE, cast.caster), EVERBURN_EXTRA * power * react));
+						Effects.lingering(() -> Effects.hurt(t, level.damageSources().source(DamageTypes.ON_FIRE, cast.caster), EVERBURN_EXTRA * power * react));
 						due = 20;
 					}
 					wait = Math.max(1, Math.min(5, due));
@@ -676,7 +676,7 @@ final class FusedFlame {
 	private static void bloodboil(Cast cast, LivingEntity t, double power, int ticks, boolean mark) {
 		ServerLevel level = cast.level;
 		FusedFlameVfx.bloodboil(level, t);
-		Effects.hurt(cast, t, magic(cast), 3 * power);
+		Effects.hurt(t, magic(cast), 3 * power);
 		if (!mark || !onHand(cast, t)) {
 			return;
 		}
@@ -729,7 +729,7 @@ final class FusedFlame {
 		b.job[0] = () -> {
 			boiling = true;
 			try {
-				Effects.lingering(() -> Effects.hurt(cast, t, fire(cast), 2 * b.power));
+				Effects.lingering(() -> Effects.hurt(t, fire(cast), 2 * b.power));
 			} finally {
 				boiling = false;
 			}
@@ -791,7 +791,7 @@ final class FusedFlame {
 					return;
 				}
 				FusedFlameVfx.flareUp(level, heart, t);
-				Effects.hurt(cast, t, fire(cast), (CONFLAGRATION_FLARE + Math.min(CONFLAGRATION_CROWD, flare.size() - 1)) * power * Reactions.fire(cast, t));
+				Effects.hurt(t, fire(cast), (CONFLAGRATION_FLARE + Math.min(CONFLAGRATION_CROWD, flare.size() - 1)) * power * Reactions.fire(cast, t));
 								if (t.isOnFire()) {
 					t.setRemainingFireTicks(t.getRemainingFireTicks() + longer);
 				}
@@ -812,7 +812,7 @@ final class FusedFlame {
 		Vec3 floor = ElementFx.floor(level, t.position().add(0, 0.1, 0), 3.0);
 		double width = Math.max(0.8, Math.min(1.6, t.getBbWidth() + 0.3));
 		FusedFlameVfx.monolith(level, t, floor == null ? t.position() : floor, width, column && floor != null);
-		Effects.hurt(cast, t, magic(cast), 8 * power);
+		Effects.hurt(t, magic(cast), 8 * power);
 		if (Spirits.isBoss(t) || !t.isAlive()) {
 			return;
 		}
@@ -833,7 +833,7 @@ final class FusedFlame {
 				LivingEntity hit = (LivingEntity) e;
 				double slam = FusedEffects.unstacked(cast, hit, "monolith_slam", 20, 3 * power);
 				if (slam > 0) {
-					Effects.lingering(() -> Effects.hurt(cast, hit, magic(cast), slam));
+					Effects.lingering(() -> Effects.hurt(hit, magic(cast), slam));
 				}
 			}
 		});
@@ -897,7 +897,7 @@ final class FusedFlame {
 				if (last == null || now - last >= 20) {
 					shocked.put(other.getUUID(), now);
 					FusedFlameVfx.magnetShock(level, t, other);
-					Effects.hurt(cast, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 3 * power * Reactions.storm(cast, other));
+					Effects.hurt(other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 3 * power * Reactions.storm(cast, other));
 				}
 				continue;
 			}
@@ -982,7 +982,7 @@ final class FusedFlame {
 				for (LivingEntity t : caught) {
 					if (onHand(cast, t) && flat(t.position(), centre) <= radius + 1.0 && Math.abs(t.getY() - centre.y) < 3.0) {
 						FusedFlameVfx.sinkholeCrushed(level, t);
-						Effects.hurt(cast, t, magic(cast), 6 * power);
+						Effects.hurt(t, magic(cast), 6 * power);
 					}
 				}
 			});

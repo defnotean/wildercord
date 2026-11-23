@@ -188,7 +188,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		for(var p:level.getEntitiesOfClass(ServerPlayer.class,getBoundingBox().inflate(8),e->e.isAlive() && !e.isCreative() && !e.isSpectator())){
 			Vec3 delta=p.position().subtract(position());
 			if(!SwordTombRules.hit(attack,delta.dot(direction),delta.dot(side),delta.y) || !hasLineOfSight(p))continue;
-			if(p.hurtServer(level,level.damageSources().mobAttack(this),(float)SwordTombRules.damage(attack))){
+			if(p.hurt(level.damageSources().mobAttack(this),(float)SwordTombRules.damage(attack))){
 				p.knockback(.35,-direction.x,-direction.z);AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);
 			}
 		}
@@ -411,7 +411,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		for(var p:prey(level))if(p.distanceToSqr(this)<=r*r)hit(level,p,SwordTombRules.damage(SwordTombRules.RITE),1.6,position(),.5);
 		deck.clear();settle();
 	}
-	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
+	@Override public boolean hurt(DamageSource source, float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL))return false;
 		boolean front=false,axe=false;
 		var from=source.getDirectEntity();var origin=source instanceof dev.wildercord.cast.RelayDamageSource?source.getSourcePosition():from==null?null:from.position();if(origin!=null){var delta=origin.subtract(position()).multiply(1,0,1).normalize();front=delta.dot(direction)>.3;}
@@ -420,7 +420,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 			if(move()==SwordTombRules.GUARD && front && axe){pose(SwordTombRules.BROKEN,SwordTombRules.BROKEN_TICKS);Feels.sound(level,position(),"aura_tomb_break",1,1);}
 		}
 		float through=(float)(damage*SwordTombRules.multiplier(move(),front,axe));
-		boolean hurt=super.hurtServer(level,source,through);
+		boolean hurt=super.hurt(source,through);
 		if(hurt && source.getEntity() instanceof ServerPlayer p){
 			fought=true;var t=tomb(level);if(t!=null)t.participant(p);
 			// Struck while it listens, it knows exactly where its striker stands.
@@ -441,7 +441,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	}
 	private List<ServerPlayer> prey(ServerLevel level){var c=home==null?position():Vec3.atCenterOf(home);return level.getEntitiesOfClass(ServerPlayer.class,new AABB(c,c).inflate(20,8,20),p->p.isAlive() && !p.isCreative() && !p.isSpectator());}
 	private boolean hit(ServerLevel level,ServerPlayer p,double damage,double shove,Vec3 from,double lift){
-		if(!p.hurtServer(level,level.damageSources().mobAttack(this),(float)damage))return false;
+		if(!p.hurt(level.damageSources().mobAttack(this),(float)damage))return false;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
 		p.hasImpulse=true;AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);

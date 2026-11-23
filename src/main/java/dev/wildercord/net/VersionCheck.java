@@ -26,7 +26,7 @@ public final class VersionCheck {
 	public record ServerVersion(String version) implements CustomPacketPayload {
 		public static final Type<ServerVersion> TYPE = new Type<>(Wildercord.id("server_version"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ServerVersion> CODEC =
-			StreamCodec.composite(ByteBufCodecs.stringUtf8(64), ServerVersion::version, ServerVersion::new).cast();
+			McStreamCodec.composite(ByteBufCodecs.stringUtf8(64), ServerVersion::version, ServerVersion::new).cast();
 
 		@Override
 		public Type<ServerVersion> type() {

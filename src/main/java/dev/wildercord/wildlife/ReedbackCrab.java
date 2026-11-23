@@ -79,7 +79,7 @@ public final class ReedbackCrab extends PathfinderMob {
    var delta=getTarget().position().subtract(position()).multiply(1,0,1);if(delta.lengthSqr()>.01)facing=delta.normalize();pose(WARNING,40);sound("warn");
   } else if(distanceToSqr(Vec3.atBottomCenterOf(home))>100)getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.7);
  }
- @Override public boolean hurtServer(ServerLevel l,DamageSource s,float amount) {boolean hit=super.hurtServer(l,s,amount);if(hit && s.getEntity() instanceof LivingEntity e) {calmUntil=0;if(pose()==CALM)pose(IDLE,0);if(valid(e))setTarget(e);}return hit;}
+ @Override public boolean hurt(DamageSource source, float amount) {boolean hit=super.hurt(s,amount);if(hit && s.getEntity() instanceof LivingEntity e) {calmUntil=0;if(pose()==CALM)pose(IDLE,0);if(valid(e))setTarget(e);}return hit;}
  private boolean current(ServerLevel l,int action,Vec3 origin,LivingEntity quarry) {
   return isAlive()&&!isRemoved()&&level()==l&&l.getEntity(getUUID())==this
    &&pose()==SWEEP&&epoch==action&&position().equals(origin)&&getTarget()==quarry
@@ -94,7 +94,7 @@ public final class ReedbackCrab extends PathfinderMob {
    if(!valid(e)||(!(e instanceof Player)&&e!=quarry))continue;
    var victim=e.position();var delta=victim.subtract(origin);double forward=delta.dot(direction),side=Math.abs(delta.dot(new Vec3(-direction.z,0,direction.x)));
    if(forward<=.1||forward>=2.8||side>=1.25||Math.abs(delta.y)>=1.4||!hasLineOfSight(e))continue;
-   var source=damageSources().mobAttack(this);boolean admitted=e.hurtServer(l,source,5);
+   var source=damageSources().mobAttack(this);boolean admitted=e.hurt(source,5);
    // Native damage callbacks can remove, move, transfer, calm or replace either actor.
    if(!current(l,action,origin,quarry))return;
    if(admitted&&valid(e)&&e.position().equals(victim))e.knockback(.45,-direction.x,-direction.z);

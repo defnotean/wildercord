@@ -57,6 +57,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
 import dev.wildercord.mixin.DisplayAccessor;
 import dev.wildercord.mixin.BlockDisplayAccessor;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Timbermaul Bear: a huge old brown bear of the taigas, moss and ferns grown in the fur of its back and shoulder hump,
@@ -888,7 +889,7 @@ public class TimbermaulBear extends EliteMonster {
 		sound(level, start, SoundEvents.WOOD_BREAK, 1.4F, 0.6F);
 		sound(level, start, SoundEvents.POLAR_BEAR_WARNING, 1.6F, 0.7F);
 		dirt(level, start, 20, 1.0, 0.15);
-		Display.BlockDisplay shown = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
+		Display.BlockDisplay shown = McEntities.create(EntityType.BLOCK_DISPLAY, level, MobSpawnType.TRIGGERED);
 		if (shown == null) {
 			return;
 		}
@@ -1179,7 +1180,7 @@ public class TimbermaulBear extends EliteMonster {
 
 	/** A blow from it, scaled to its tier; whether it landed. */
 	private boolean hit(ServerLevel level, LivingEntity victim, double damage) {
-		return victim.hurtServer(level, damageSources().mobAttack(this), tier().hit(damage));
+		return victim.hurt(damageSources().mobAttack(this), tier().hit(damage));
 	}
 
 	/** Whoever it struck thrown across the ground and up. */
@@ -1232,11 +1233,11 @@ public class TimbermaulBear extends EliteMonster {
 	// ------------------------------------------------------------------ blows
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		int move = move();
 		boolean reared = (move == TimbermaulRules.CRUSH || move == TimbermaulRules.HUG) && since() < tell();
 		float before = getHealth();
-		boolean hit = super.hurtServer(level, source, TimbermaulRules.hurt(damage, move));
+		boolean hit = super.hurt(source, TimbermaulRules.hurt(damage, move));
 		if (!hit) {
 			return false;
 		}

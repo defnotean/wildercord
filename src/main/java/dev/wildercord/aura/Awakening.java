@@ -75,7 +75,7 @@ public final class Awakening {
 			Codec.INT.optionalFieldOf("extended", 0).forGetter(State::extended)
 		).apply(i, State::new));
 
-		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = StreamCodec.composite(
+		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = McStreamCodec.composite(
 			ByteBufCodecs.VAR_INT, State::phase, ByteBufCodecs.VAR_LONG, State::since, ByteBufCodecs.VAR_LONG, State::until,
 			ByteBufCodecs.VAR_LONG, State::spentUntil, ByteBufCodecs.VAR_LONG, State::readyAt, ByteBufCodecs.FLOAT, State::price,
 			ByteBufCodecs.VAR_INT, State::extended, State::new);

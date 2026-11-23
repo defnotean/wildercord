@@ -188,7 +188,7 @@ public class GlowlureAngler extends WildMonster {
 		if (!landed) {
 			for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.5),
 				e -> e != this && e.isAlive() && !(e instanceof GlowlureAngler) && Targets.canHarm(this, e))) {
-				if (hit.hurtServer(level, damageSources().mobAttack(this), AnglerRules.SNAP_DAMAGE)) {
+				if (hit.hurt(damageSources().mobAttack(this), AnglerRules.SNAP_DAMAGE)) {
 					hit.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, AnglerRules.SNAP_SLOW_TICKS, 1, false, true), this);
 					playSound(SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 0.6F);
 				}
@@ -229,7 +229,7 @@ public class GlowlureAngler extends WildMonster {
 		if (AnglerRules.bites(distance, now, nextBite)) {
 			nextBite = now + AnglerRules.BITE_COOLDOWN;
 			face(target);
-			doHurtTarget(level, target);
+			doHurtTarget(target);
 			playSound(SoundEvents.FROG_EAT, 1.0F, 0.6F);
 		}
 		if (getNavigation().isDone() || tickCount % 10 == 0) {
@@ -244,8 +244,8 @@ public class GlowlureAngler extends WildMonster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		boolean hit = super.hurtServer(level, source, AnglerRules.hurt(damage, phase == Phase.WINDED));
+	public boolean hurt(DamageSource source, float damage) {
+		boolean hit = super.hurt(source, AnglerRules.hurt(damage, phase == Phase.WINDED));
 		if (hit && phase == Phase.LURK && source.getEntity() instanceof LivingEntity attacker && Targets.canHarm(this, attacker)) {
 			setTarget(attacker);
 			phase = Phase.CHASE;

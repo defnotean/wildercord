@@ -220,7 +220,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		// The school's own blade on the master's sword. It never drops, so the look cannot leave the fight.
 		ItemStack sword = getMainHandItem();
 		if (sword.is(Items.NETHERITE_SWORD))
-			sword.set(net.minecraft.core.component.DataComponents.ITEM_MODEL, dev.wildercord.Wildercord.id("master_blade/" + method().id()));
 	}
 
 	/** The school shown and credited: Ember, Gale or Stone, or a {@link MethodsBMasters} school. */
@@ -233,7 +232,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		BreathingMethods.byId(MethodsBMasters.id(school)).ifPresent(this::setMethod);
 		ItemStack sword = getMainHandItem();
 		if (sword.is(Items.NETHERITE_SWORD))
-			sword.set(net.minecraft.core.component.DataComponents.ITEM_MODEL, dev.wildercord.Wildercord.id("master_blade/" + method().id()));
 	}
 
 	/** Starts a bounded trial on safe, loaded ground without changing blocks or enrolling bystanders. */
@@ -1629,8 +1627,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurtServer(level, source, damage);
+	public boolean hurt(DamageSource source, float damage) {
+		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurt(source, damage);
 		// Spellbane: magic never lands on a Master, from any side, guard or none. Only blade and aura reach it.
 		if (spellHit(source)) {
 			erased(level);
@@ -1643,7 +1641,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		StoneFracture braced = fracture;
 		boolean rear = braced != null && braced.rearHit(source, level.getGameTime());
 		float health = getHealth(), absorption = getAbsorptionAmount();
-		boolean hurt = super.hurtServer(level, source, through);
+		boolean hurt = super.hurt(source, through);
 		if (getHealth() < health) lastCut = level.getGameTime();
 		if (rear && fracture == braced && (getHealth() < health || getAbsorptionAmount() < absorption)) cancelAttack();
 		return hurt;

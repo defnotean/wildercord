@@ -12,7 +12,7 @@ public final class SiltcrestBankReturnTest implements FabricClientGameTest {
   var probe=w.getServer().computeOnServer(s->EcologyReturnProbe.begin(EcologyReturnProbe.BANK,s.overworld(),witness));
   try{
   await(c,w,60,s->witness.onGround(),"Actual bank witness settles on physical floor");
-  float before=w.getServer().computeOnServer(s->{check(BitternHabitat.standingBank(witness),"Initial supplied bank is genuine dry habitat");float hp=witness.getHealth();boolean hurt=witness.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(s.getPlayerList().getPlayers().getFirst()),1);check(hurt&&witness.getHealth()<hp&&witness.pose()==SiltcrestBittern.RETREATING,"Actual physical injury owns finite retreat and rest");return witness.getHealth();});
+  float before=w.getServer().computeOnServer(s->{check(BitternHabitat.standingBank(witness),"Initial supplied bank is genuine dry habitat");float hp=witness.getHealth();boolean hurt=witness.hurt(s.overworld().damageSources().playerAttack(s.getPlayerList().getPlayers().getFirst()),1);check(hurt&&witness.getHealth()<hp&&witness.pose()==SiltcrestBittern.RETREATING,"Actual physical injury owns finite retreat and rest");return witness.getHealth();});
   await(c,w,100,s->witness.onGround()&&!BitternHabitat.standingBank(witness)&&witness.position().distanceToSqr(new Vec3(.5,101,.5))>1,"Ordinary native backstep really leaves the bank; no position/pose injection");
   long rest=w.getServer().computeOnServer(s->witness.huntReady());
   int allowance=w.getServer().computeOnServer(s->(int)Math.max(0,rest-s.overworld().getGameTime())+SiltcrestBittern.JOURNEY+20);

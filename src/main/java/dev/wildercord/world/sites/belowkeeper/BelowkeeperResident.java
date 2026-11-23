@@ -19,6 +19,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.WorldGenLevel;
 
 import java.util.List;
+import dev.wildercord.compat.McEntities;
 
 /**
  * The Belowkeeper Listener at a Belowkeeper Listening Station. Normal use opens subterranean supply trades;
@@ -72,7 +73,7 @@ public final class BelowkeeperResident {
 
 	/** The owning structure chunk calls this once, then persists its successful spawn flag. */
 	public static boolean spawn(WorldGenLevel level, BlockPos at) {
-		Villager resident = EntityType.VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		Villager resident = McEntities.create(EntityType.VILLAGER, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (resident == null) return false;
 		resident.moveTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
 		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.STRUCTURE, null);
