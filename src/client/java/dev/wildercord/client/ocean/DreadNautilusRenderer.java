@@ -57,7 +57,7 @@ public final class DreadNautilusRenderer extends MobRenderer<DreadNautilusSentin
 		public void render(PoseStack pose, MultiBufferSource collector, int light, OceanRenderStates.DreadNautilusState state, float yaw, float pitch) {
 			if (state.isInvisible) return;
 			int color = state.laserTicks > 0 ? 0xFFFFFFFF : 0xB8FFFFFF;
-			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, color, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, color, RenderCompat.outlineOf(state));
 		}
 	}
 }
