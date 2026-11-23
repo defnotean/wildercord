@@ -18,6 +18,7 @@ import java.util.UUID;
 public final class CrossingBellEntity extends BlockEntity {
 	private UUID guardian;
 	private boolean slain;
+	private long slainAt;
 	public CrossingBellEntity(BlockPos pos, BlockState state) { super(FerrymanContent.BELL_ENTITY, pos, state); }
 	public UUID guardian() { return guardian; }
 	public boolean slain() { return slain; }
@@ -31,7 +32,15 @@ public final class CrossingBellEntity extends BlockEntity {
 			if (piece instanceof LastCrossingPiece found && found.bellPosition().equals(worldPosition)) { crossing = found; break; }
 		}
 		if (crossing == null) { say(player, "decorative"); return; }
-		if (slain) { say(player, "finished"); return; }
+		if (slain) {
+			long remaining = dev.wildercord.cast.BossRules.respawnTicksRemaining(slainAt, server.getGameTime());
+			if (remaining > 0) {
+				player.sendSystemMessage(Component.literal("The arena rests. You can challenge the guardian again in "
+					+ dev.wildercord.cast.BossRules.formatRespawnRemaining(remaining) + "."), true);
+				return;
+			}
+			slain = false; slainAt = 0; guardian = null; setChanged();
+		}
 		if (!Guardians.enabled() || server.getDifficulty() == Difficulty.PEACEFUL || player.isCreative()) { say(player, "quiet"); return; }
 		if (guardian != null) {
 			if (server.getEntity(guardian) instanceof ReedCrownedFerryman ferryman && ferryman.belongsTo(worldPosition)) {
@@ -52,12 +61,12 @@ public final class CrossingBellEntity extends BlockEntity {
 	/** Called before rewards; only the actual saved guardian can complete this crossing. */
 	public boolean complete(UUID id) {
 		if (slain || !id.equals(guardian)) return false;
-		slain = true; setChanged(); return true;
+		slain = true; slainAt = level != null ? level.getGameTime() : 0L; setChanged(); return true;
 	}
 	@Override protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input); guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null); slain = input.getBooleanOr("slain", false);
+		super.loadAdditional(input); guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null); slain = input.getBooleanOr("slain", false); slainAt = input.getLongOr("slain_at", 0L);
 	}
 	@Override protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output); if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian); output.putBoolean("slain", slain);
+		super.saveAdditional(output); if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian); output.putBoolean("slain", slain); output.putLong("slain_at", slainAt);
 	}
 }

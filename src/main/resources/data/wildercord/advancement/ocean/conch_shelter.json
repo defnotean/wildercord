@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:ocean/deep_diver",
+  "criteria": {
+    "conch_shelter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:tidecaller_conch"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:tidecaller_conch"
+    },
+    "title": {
+      "translate": "advancements.wildercord.ocean.conch_shelter.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.ocean.conch_shelter.description"
+    }
+  },
+  "requirements": [
+    [
+      "conch_shelter"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

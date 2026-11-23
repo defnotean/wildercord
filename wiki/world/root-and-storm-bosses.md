@@ -13,7 +13,7 @@ Two dungeon bosses. Each one waits on an altar in the top vault of its structure
 - The **Root Guardian** lives in the **Rootbound Maze**, found in swamps and mangrove swamps.
 - The **Storm Conductor** lives in the **Storm Spire**, found on jagged, frozen and stony peaks.
 
-Both fights have three phases and a boss bar. Older saved structures keep the layout they were built with.
+Both fights have three phases and a boss bar, and defeated altars rest for **10 minutes** before re-arming. Older saved structures keep the layout they were built with.
 
 ## How to get it
 
@@ -32,7 +32,7 @@ A glass-insulated conductor runs up the middle to a copper crown. The crown is o
 
 ### Root Guardian
 
-It has 220 health and starts with three glowing **bindings**. While it is bound, it takes only 35% damage.
+It has 850 health and starts with three glowing **bindings**. While it is bound, it takes only 35% damage.
 
 - Right-click it with **shears** to prune a binding.
 - Fire damage also prunes a binding. So does a spell that hits it while it is burning.
@@ -77,7 +77,7 @@ distance.
 
 ### Storm Conductor
 
-It has 240 health. It never leaves its podium: it conducts the storm with a baton, and the storm answers on the beat.
+It has 950 health. It never leaves its podium: it conducts the storm with a baton, and the storm answers on the beat.
 While charged it takes half damage.
 
 - One of three lightning rods in the arena sparks. Stand within 2 blocks of that rod to **ground** the boss.

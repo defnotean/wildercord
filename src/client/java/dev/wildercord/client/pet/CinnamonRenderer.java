@@ -31,7 +31,11 @@ public final class CinnamonRenderer extends MobRenderer<CinnamonDog, CinnamonRen
 		state.ringing = (mood & CinnamonDog.RINGING) != 0;
 		state.tongue = (mood & CinnamonDog.TONGUE) != 0;
 		state.wearingBow = (mood & CinnamonDog.BOW) != 0;
+		state.wearingGrandBow = (mood & CinnamonDog.GRAND_BOW) != 0;
+		state.wearingHarness = (mood & CinnamonDog.HARNESS) != 0;
+		state.flying = (mood & CinnamonDog.FLYING) != 0;
 		state.exhausted = (mood & CinnamonDog.EXHAUSTED) != 0;
+		state.hitPaused = (mood & CinnamonDog.HIT_PAUSED) != 0;
 		state.lick = (mood & CinnamonDog.LICKING) != 0 ? dog.lickAge + partial : -1;
 	}
 }

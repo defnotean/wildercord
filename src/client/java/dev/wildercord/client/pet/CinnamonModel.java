@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 
 /** Cinnamon's own short, round shape: dark saddle, white belly from the chest back, floppy ears, fluffy legs and a black nub of a tail. */
 public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
-	private final ModelPart body, head, tail, frontLeft, frontRight, backLeft, backRight, bell, tongue, bow;
+	private final ModelPart body, head, tail, frontLeft, frontRight, backLeft, backRight, bell, tongue, bow, grandBow, harness, leftEar, rightEar;
 
 	public CinnamonModel(ModelPart root) {
 		super(root);
@@ -25,8 +25,12 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 		backLeft = root.getChild("back_left");
 		backRight = root.getChild("back_right");
 		bell = body.getChild("bell");
+		harness = body.getChild("harness");
 		tongue = head.getChild("tongue");
 		bow = head.getChild("bow");
+		grandBow = head.getChild("grand_bow");
+		leftEar = head.getChild("left_ear");
+		rightEar = head.getChild("right_ear");
 	}
 
 	public static LayerDefinition createLayer() {
@@ -44,6 +48,16 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 		PartDefinition body = root.getChild("body");
 		// The little gold bell on her collar, hung from its top so it can swing.
 		body.addOrReplaceChild("bell", CubeListBuilder.create().texOffs(24, 100).addBox(-1, 0, -1, 2, 2, 2), PartPose.offset(0, 15.3F, -5));
+		// Flying harness: leather saddle pad, belly straps, and twin oak chests mounted on both sides.
+		body.addOrReplaceChild("harness", CubeListBuilder.create()
+			.texOffs(60, 82).addBox(-6.0F, 11.1F, -1.5F, 12, 1, 10)
+			.texOffs(60, 96).addBox(-6.0F, 11.6F, -0.5F, 12, 9, 2)
+			.texOffs(60, 96).addBox(-6.0F, 11.6F, 5.5F, 12, 9, 2)
+			.texOffs(92, 96).addBox(6.0F, 12.5F, 0.0F, 4, 6, 7)
+			.texOffs(116, 96).addBox(9.8F, 14.5F, 3.0F, 1, 2, 1)
+			.texOffs(92, 96).mirror().addBox(-10.0F, 12.5F, 0.0F, 4, 6, 7)
+			.texOffs(116, 96).addBox(-10.8F, 14.5F, 3.0F, 1, 2, 1),
+			PartPose.ZERO);
 		// A round head (a wide core with a taller, narrower block through it to take its corners off), a little tuft on top,
 		// and a small snout under her eyes with a black nose.
 		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create()
@@ -61,6 +75,14 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			.texOffs(46, 100).addBox(-2.5F, -1, -0.5F, 2, 2, 1)
 			.texOffs(46, 100).mirror().addBox(0.5F, -1, -0.5F, 2, 2, 1),
 			PartPose.offsetAndRotation(-2.5F, -5, -5.5F, 0, 0, 0.35F));
+		// Ornate Grand Bow: royal crimson loops and flowing tails anchored by a gold centerpiece.
+		head.addOrReplaceChild("grand_bow", CubeListBuilder.create()
+			.texOffs(88, 0).addBox(-1.0F, -1.5F, -1.0F, 2, 2, 2)
+			.texOffs(98, 0).addBox(1.0F, -2.5F, -1.0F, 4, 3, 2)
+			.texOffs(98, 0).mirror().addBox(-5.0F, -2.5F, -1.0F, 4, 3, 2)
+			.texOffs(112, 0).addBox(1.5F, 0.2F, 0.2F, 2, 3, 1)
+			.texOffs(112, 0).mirror().addBox(-3.5F, 0.2F, 0.2F, 2, 3, 1),
+			PartPose.offsetAndRotation(0.0F, -4.6F, -4.5F, -0.08F, 0.0F, 0.0F));
 		head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(0, 46).addBox(0, 0, -2, 3, 5, 3), PartPose.offset(4, -3, -3));
 		head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(0, 46).mirror().addBox(-3, 0, -2, 3, 5, 3), PartPose.offset(-4, -3, -3));
 		// Short legs, fluffy all the way down to the ground.
@@ -113,13 +135,22 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 		}
 		tongue.visible = state.tongue;
 		if (state.lick >= 0) lick(state.lick);
-		bow.visible = state.wearingBow;
+		bow.visible = state.wearingBow && !state.wearingGrandBow;
+		grandBow.visible = state.wearingGrandBow;
+		harness.visible = state.wearingHarness;
 		// The bell swings as she trots, and shivers when it rings.
 		bell.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 0.5F * state.walkAnimationSpeed;
 		if (state.ringing) {
 			bell.zRot = Mth.sin(state.ageInTicks * 1.7F) * 0.5F;
 		}
 		tail.yRot = Mth.sin(state.ageInTicks * 0.18F) * 0.3F;
+		if (state.flying && !state.sleeping) {
+			leftEar.zRot = -(0.65F + Mth.sin(state.ageInTicks * 0.55F) * 0.45F);
+			rightEar.zRot = -leftEar.zRot;
+			frontLeft.xRot = frontRight.xRot = -0.45F;
+			backLeft.xRot = backRight.xRot = 0.55F;
+			body.y = Mth.sin(state.ageInTicks * 0.2F) * 0.6F;
+		}
 		if (state.greeting || state.playing) {
 			tail.yRot = Mth.sin(state.ageInTicks * 0.48F) * 0.65F;
 			head.zRot = Mth.sin(state.ageInTicks * 0.14F) * 0.16F;
@@ -141,6 +172,12 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			tail.yRot = Mth.sin(state.ageInTicks * 0.08F) * 0.06F;
 			tail.xRot = -0.25F;
 			tongue.visible = true;
+		}
+		if (state.hitPaused && !state.sleeping) {
+			leftEar.zRot = 0.22F;
+			rightEar.zRot = -0.22F;
+			head.xRot += 0.25F;
+			head.zRot = Mth.sin(state.ageInTicks * 0.9F) * 0.12F;
 		}
 	}
 }
