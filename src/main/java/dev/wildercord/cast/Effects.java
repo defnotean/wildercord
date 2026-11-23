@@ -369,7 +369,7 @@ public final class Effects {
 			case "soar" -> Soar.lift(cast, node, helped, SoarRules.flightTicks(duration));
 			case "swift" -> helped.forEach(t -> {
 				shakeOffCold(t);
-				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks(10, duration), Math.min(4, 2 + amplify), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(10, duration), Math.min(4, 2 + amplify), false, true));
 				Vfx.swift(level, t);
 			});
 			case "night_eye" -> helped.forEach(t -> {
@@ -414,7 +414,7 @@ public final class Effects {
 				Vfx.pull(level, t, hit.origin());
 				// Left staggered where it lands, and marked long enough to follow with a blast.
 				Reactions.mark(t, Reactions.Mark.PULLED, 80);
-				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, false));
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2, false, false));
 				push(t, towards.normalize().scale(Math.min(2.6, 0.5 + distance * 0.22) * power).add(0, 0.3, 0));
 			});
 			case "launch" -> moved.forEach(t -> {
@@ -462,7 +462,7 @@ public final class Effects {
     int priorFrost=t.getTicksFrozen();
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 5 * power);
 				if (!cast.admits(t)) return;
-				boolean freshSlow=t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks(4, duration), 2, false, true));
+				boolean freshSlow=t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 2, false, true));
 				if (!cast.admits(t)) return;
 				t.setTicksFrozen(Math.max(t.getTicksFrozen(), t.getTicksRequiredToFreeze() + ticks(4, duration)));
 				if (!cast.admits(t)) return;
@@ -518,7 +518,7 @@ public final class Effects {
 			}
 			case "shock" -> harmed.forEach(t -> shock(cast, t, power));
 			case "haste" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, ticks(30, duration), Math.min(3, 1 + amplify), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks(30, duration), Math.min(3, 1 + amplify), false, true));
 				Vfx.haste(level, t);
 			});
 			case "reveal" -> harmed.forEach(t -> {
@@ -568,27 +568,36 @@ public final class Effects {
 				LifeOwnerEvents.changed(cast,"cleanse",t,observedCleanse,null,LifeOwnerEvents.Moment.APPLY);
 			});
 			case "stoneskin" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks(10, duration), Math.min(3, 1 + amplify), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks(10, duration), Math.min(3, 1 + amplify), false, true));
 				// Stone is heavy: the price of the best long ward is a step slower.
-				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks(10, duration), 0, false, false));
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(10, duration), 0, false, false));
 				Vfx.stoneskin(level, t);
 				if (!cast.passive) {
 					StormEarthFx.stoneskinHold(level, t, ticks(10, duration));
 				}
 			});
 			case "root" -> harmed.forEach(t -> {
-				boolean rooted = t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks(3, duration), 6, false, false));
+				int rootTicks = ticks(3, duration);
+				if (Spirits.isBoss(t)) {
+					if (!Spirits.tryClaimBossHold(t, rootTicks, caster)) {
+						return;
+					}
+					rootTicks = BossRules.bossHoldTicks(rootTicks);
+				}
+				boolean rooted = t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, rootTicks, 6, false, false));
 				if (rooted && t instanceof ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
-				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-				Vfx.root(level, t, ticks(3, duration));
-				StormEarthFx.rootHold(level, t, ticks(3, duration));
+				if (!Spirits.isBoss(t)) {
+					t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
+				}
+				Vfx.root(level, t, rootTicks);
+				StormEarthFx.rootHold(level, t, rootTicks);
 			});
 			case "veil" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks(12, duration), 0, false, true));
 				VoidTime.veiled(t, ticks(12, duration));
 				for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(16.0), e -> e instanceof net.minecraft.world.entity.Mob)) {
 					net.minecraft.world.entity.Mob mob = (net.minecraft.world.entity.Mob) e;
-					if (mob.getTarget() == t) {
+					if (mob.getTarget() == t && !Spirits.isBoss(mob)) {
 						mob.setTarget(null);
 					}
 				}
@@ -598,7 +607,7 @@ public final class Effects {
 			case "empower" -> helped.forEach(t -> {
 				int strength = ticks(10, duration);
 				// A passive carries only Strength I; a cast's borrowed strength is paid back as a comedown when it runs out.
-				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, strength, passiveEffect ? 0 : Math.min(3, 1 + amplify), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, strength, passiveEffect ? 0 : Math.min(3, 1 + amplify), false, true));
 				if (!passiveEffect) {
 					Scheduler.later(strength, () -> {
 						if (t.isAlive() && t.level() == level) {
@@ -612,7 +621,7 @@ public final class Effects {
 			case "levitate" -> moved.forEach(t -> {
 				// Bosses are only ever slowed: lifted out of reach, a fight could be won by the fall.
 				boolean boss = t != caster && Spirits.isBoss(t);
-				t.addEffect(new MobEffectInstance(boss ? MobEffects.MOVEMENT_SLOWDOWN : MobEffects.LEVITATION, ticks(3, duration), boss ? 1 : 0, false, true));
+				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), boss ? 1 : 0, false, true));
 				if (t != caster) {
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT, ticks(3, duration) + 20);
 					if (!boss) {
@@ -691,13 +700,13 @@ public final class Effects {
 				Vfx.blind(level, t);
 			});
 			case "chill" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks(6, duration), chillLevel(t, ticks(6, duration)), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(6, duration), chillLevel(t, ticks(6, duration)), false, true));
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 1 * power);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 				Vfx.chill(level, t);
 			});
 			case "silence" -> harmed.forEach(t -> {
-				if (t instanceof net.minecraft.world.entity.Mob mob) {
+				if (t instanceof net.minecraft.world.entity.Mob mob && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
 				t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks(6, duration), 0, false, true));
@@ -739,7 +748,7 @@ public final class Effects {
 			});
    }
 			case "leap" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.JUMP, ticks(15, duration), Math.min(4, 2 + amplify), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks(15, duration), Math.min(4, 2 + amplify), false, true));
 				Vfx.leap(level, t);
 			});
 			case "grapple" -> grapple(cast, hit, power);
@@ -830,7 +839,7 @@ public final class Effects {
 				FireBloodVfx.ember(level, t, stoked);
 			});
 			case "icicle" -> harmed.forEach(t -> {
-				boolean slowed = t.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) || Reactions.has(t, Reactions.Mark.FROZEN);
+				boolean slowed = t.hasEffect(MobEffects.SLOWNESS) || Reactions.has(t, Reactions.Mark.FROZEN);
 				ExpansionVfx.icicle(level, t, slowed);
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), (slowed ? 6 : 4) * power);
 				// A touch of frost on the skin, well short of frozen solid.
@@ -886,7 +895,7 @@ public final class Effects {
 				ExpansionVfx.jolt(level, t);
 				StormEarthFx.stunRing(level, t, ticks(1, duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4 * power * Reactions.storm(cast, t));
-				Spirits.hold(t, ticks(1, duration));
+				Spirits.hold(t, ticks(1, duration), caster);
 				// The counter-spell: a caster caught mid-charge loses the spell.
 				if (t instanceof ServerPlayer charging && charging.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)) {
 					Charging.forget(charging);
@@ -1195,7 +1204,7 @@ public final class Effects {
 				hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), dealt * Reactions.storm(cast, target));
 			}
 			struck.add(target);
-			target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 3, false, false));
+			target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 3, false, false));
 		}
 	}
 
@@ -1408,8 +1417,8 @@ public final class Effects {
 				hurt(cast, t, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 5 * power * Reactions.storm(cast, t));
 				Vec3 away = horizontal(t.position().subtract(point), cast.caster.getLookAngle());
 				push(t, away.scale(0.8 * Math.sqrt(power)).add(0, 0.3, 0));
-				Spirits.hold(t, 10);
-				if (t instanceof Mob mob) {
+				Spirits.hold(t, 10, cast.caster);
+				if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
@@ -2087,7 +2096,7 @@ public final class Effects {
 		if (BRACED.size() > 256) {
 			BRACED.values().removeIf(until -> until < now);
 		}
-		t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 3, false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 3, false, true));
 		ExpansionVfx.brace(cast.level, t, Vfx.theme("earth"));
 	}
 
@@ -2173,7 +2182,7 @@ public final class Effects {
 				foes.add(living);
 			}
 			if (Targets.canHelp(cast.caster, living)) {
-				living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks(6, duration), Math.min(2, amplify), false, true));
+				living.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(6, duration), Math.min(2, amplify), false, true));
 				Vfx.swift(level, living);
 			}
 		}
@@ -2345,9 +2354,9 @@ public final class Effects {
 
 	/** Swift: it shakes off the cold: Slowness (not a hold) and frozen skin are gone. */
 	private static void shakeOffCold(LivingEntity t) {
-		MobEffectInstance slow = t.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+		MobEffectInstance slow = t.getEffect(MobEffects.SLOWNESS);
 		if (slow != null && slow.getAmplifier() < 6) {
-			t.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
+			t.removeEffect(MobEffects.SLOWNESS);
 		}
 		t.setTicksFrozen(0);
 		Reactions.clear(t, Reactions.Mark.FROZEN);
@@ -3229,7 +3238,7 @@ public final class Effects {
 					return;
 				}
 				hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 4 * power);
-				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slow, 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slow, 1, false, true));
 				Reactions.mark(t, Reactions.Mark.FROZEN, COLDSNAP_WINDOW);
 				ExpansionVfx.chilled(cast.level, t);
 			};
@@ -3257,7 +3266,7 @@ public final class Effects {
 				continue;
 			}
 			ally.setTicksFrozen(0);
-			ally.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
+			ally.removeEffect(MobEffects.SLOWNESS);
 			Reactions.clear(ally, Reactions.Mark.FROZEN);
 			Reactions.clear(ally, Reactions.Mark.WET);
 			Reactions.clear(ally, Reactions.Mark.SOAKED);
@@ -3293,7 +3302,7 @@ public final class Effects {
 				mob.setTarget(null);
 			}
 			// It comes out of the void dazed.
-			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, true));
 			return;
 			}
 			ExpansionVfx.banishResisted(level, t);

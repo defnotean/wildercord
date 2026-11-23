@@ -5,31 +5,43 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.level.saveddata.SavedData;
 import dev.wildercord.compat.McSavedDataType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /** Identity and recovery journal. An absent registered body is never permission to manufacture another one. */
 final class CinnamonJournal extends SavedData {
 	static final int MAX_OWNERS = 64;
-	record Care(boolean sitting, boolean bow, double scale, long growthUntil, float damage, long recoveryUntil, long immuneUntil) {
+	record Care(boolean sitting, boolean bow, boolean grandBow, boolean harness,
+			double scale, long growthUntil, float damage, long recoveryUntil, long immuneUntil,
+			long hitPauseUntil, List<ItemStackWithSlot> saddlebags) {
 		static final Codec<Care> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.BOOL.optionalFieldOf("sitting", false).forGetter(Care::sitting),
 			Codec.BOOL.optionalFieldOf("bow", false).forGetter(Care::bow),
+			Codec.BOOL.optionalFieldOf("grand_bow", false).forGetter(Care::grandBow),
+			Codec.BOOL.optionalFieldOf("harness", false).forGetter(Care::harness),
 			Codec.DOUBLE.optionalFieldOf("scale", 1D).forGetter(Care::scale),
 			Codec.LONG.optionalFieldOf("growth_until", 0L).forGetter(Care::growthUntil),
 			Codec.FLOAT.optionalFieldOf("damage", 0F).forGetter(Care::damage),
 			Codec.LONG.optionalFieldOf("recovery_until", 0L).forGetter(Care::recoveryUntil),
-			Codec.LONG.optionalFieldOf("immune_until", 0L).forGetter(Care::immuneUntil)
+			Codec.LONG.optionalFieldOf("immune_until", 0L).forGetter(Care::immuneUntil),
+			Codec.LONG.optionalFieldOf("hit_pause_until", 0L).forGetter(Care::hitPauseUntil),
+			ItemStackWithSlot.CODEC.listOf().optionalFieldOf("saddlebags", List.of()).forGetter(Care::saddlebags)
 		).apply(i, Care::new));
 		static Care of(CinnamonDog dog) {
-			return new Care(dog.savedSitting(), dog.wearingBow(), dog.growthScale(), dog.growthExpiresAt(),
-				dog.accumulatedDamage(), dog.recoveryExpiresAt(), dog.damageImmuneUntil());
+			return new Care(dog.savedSitting(), dog.wearingBow(), dog.wearingGrandBow(), dog.wearingHarness(),
+				dog.growthScale(), dog.growthExpiresAt(),
+				dog.accumulatedDamage(), dog.recoveryExpiresAt(), dog.damageImmuneUntil(),
+				dog.hitPauseUntil(), dog.snapshotSaddlebags());
 		}
-		void restore(CinnamonDog dog) { dog.restoreState(sitting, bow, scale, growthUntil, damage, recoveryUntil, immuneUntil); }
+		void restore(CinnamonDog dog) {
+			dog.restoreState(sitting, bow, grandBow, harness, scale, growthUntil, damage, recoveryUntil, immuneUntil, hitPauseUntil, saddlebags);
+		}
 	}
 	record Entry(UUID entity, String dimension, int chunkX, int chunkZ, Care care, long whistleUntil, boolean retired) {
 		static final Codec<Entry> CODEC = RecordCodecBuilder.create(i -> i.group(

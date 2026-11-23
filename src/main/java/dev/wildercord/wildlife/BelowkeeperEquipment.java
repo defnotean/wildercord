@@ -2,6 +2,7 @@ package dev.wildercord.wildlife;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.feel.Feels;
+import dev.wildercord.compat.McHands;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

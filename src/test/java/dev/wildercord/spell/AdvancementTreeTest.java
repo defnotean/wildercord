@@ -29,7 +29,8 @@ class AdvancementTreeTest {
 	private static final Path RESOURCES = Path.of("src/main/resources");
 	private static final Path ADVANCEMENTS = RESOURCES.resolve("data/wildercord/advancement");
 	private static final Set<String> TRIGGERS = Set.of("wildercord:feat", "wildercord:grimoire", "wildercord:heart_circle",
-		"wildercord:runes_known", "wildercord:cord", "wildercord:moment", "minecraft:inventory_changed", "minecraft:location", "minecraft:consume_item");
+		"wildercord:runes_known", "wildercord:cord", "wildercord:moment", "minecraft:inventory_changed", "minecraft:location",
+		"minecraft:consume_item", "minecraft:villager_trade", "minecraft:player_killed_entity");
 
 	/** Advancement id (e.g. {@code wildercord:casting/overcast}) -> its JSON, recipe-book unlocks left out. */
 	private static Map<String, JsonObject> tree;

@@ -76,12 +76,12 @@ Recipes are on [Rune Recipes]({{ '/items/rune-recipes/' | relative_url }}). Ever
 <img src="{{ '/assets/images/archive-arena.jpg' | relative_url }}" alt="The Archive's domed arena, its floor inlaid with a glowing magic circle, the Archivist rising over the lectern at its centre under a purple boss bar" class="shot">
 <span class="caption">The Archivist rises. Its boss bar names every spell before it lands.</span>
 
-It rises the first time a player comes within **12 blocks** of the lectern, and only once. If it's ever lost without
+It rises the first time a player comes within **12 blocks** of the lectern, and after the Archivist falls, the lectern rests for **10 minutes** before re-arming for a fresh fight. If it's ever lost without
 being killed, the lectern wakes a new one after players spend about 3 minutes nearby without finding it.
 
 | | |
 |---|---|
-| **Health** | 400 (phases change at 267 and 133) |
+| **Health** | 1,650 (phases change at 1,100 and 550) |
 | **Armour** | 8, and it barely takes knockback |
 | **Immune to** | Burning, falls and other monsters (blasts like Explode still hit) |
 | **Weak to** | Void (+50%). Resists arcane (half). See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |

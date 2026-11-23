@@ -189,6 +189,267 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_back").disableCounterPrefix());
 			}
 			c.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+
+			// Verify Spirits.isBoss classification, 1-2s capped holds, breakout + block shatter, 5s immunity, and pursuit resumption.
+			net.minecraft.core.BlockPos[] holdBlockPos = new net.minecraft.core.BlockPos[1];
+			java.util.UUID[] liveBossId = new java.util.UUID[1];
+			double[] distAtBreakout = new double[1];
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				for (var e : level.getEntities(player, player.getBoundingBox().inflate(48))) e.discard();
+				for (int dx = -12; dx <= 12; dx++) {
+					for (int dz = -12; dz <= 12; dz++) {
+						level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, 100, dz), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+						boolean wall = Math.abs(dx) == 12 || Math.abs(dz) == 12;
+						for (int dy = 101; dy <= 104; dy++) {
+							var state = (wall && dy <= 103)
+								? net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()
+								: net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), state);
+						}
+					}
+				}
+				player.setGameMode(GameType.SURVIVAL);
+				player.setHealth(player.getMaxHealth());
+				player.teleportTo(0.5, 101, 7.5);
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.RESISTANCE, 600, 3, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 5, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 600, 24, false, false));
+
+				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:cinder_warden"));
+				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:rootcoil_serpent"));
+				var warden = wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var serpent = serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var guardianCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var villageCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				check(warden != null && dev.wildercord.cast.Spirits.isBoss(warden), "cinder_warden recognized as boss");
+				check(serpent != null && dev.wildercord.cast.Spirits.isBoss(serpent), "rootcoil_serpent guardian recognized as boss");
+				if (guardianCat != null) {
+					guardianCat.setRole(dev.wildercord.wildlife.ShrineCatRules.ROLE_GUARDIAN);
+					check(dev.wildercord.cast.Spirits.isBoss(guardianCat), "untamed sanctuary guardian ShrineCat recognized as boss");
+				}
+				if (villageCat != null) {
+					villageCat.setRole(dev.wildercord.wildlife.ShrineCatRules.ROLE_VILLAGE);
+					check(!dev.wildercord.cast.Spirits.isBoss(villageCat), "peaceful village ShrineCat not treated as boss");
+				}
+				check(zombie != null && !dev.wildercord.cast.Spirits.isBoss(zombie), "ordinary zombie not treated as boss");
+				if (zombie != null) {
+					zombie.setPos(0.5, 101, -6.5);
+					level.addFreshEntity(zombie);
+					dev.wildercord.cast.Spirits.hold(zombie, 40, player);
+					check(zombie.isNoAi(), "non-boss mob still gets full NoAi hold");
+					zombie.discard();
+				}
+
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+				check(bastion != null && dev.wildercord.cast.Spirits.isBoss(bastion), "oathbound_bastion recognized as boss");
+				bastion.setPos(0.5, 101, -9.5);
+				bastion.setPersistenceRequired();
+				level.addFreshEntity(bastion);
+				liveBossId[0] = bastion.getUUID();
+				bastion.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+				bastion.setTarget(player);
+
+				holdBlockPos[0] = bastion.blockPosition().south();
+				dev.wildercord.cast.TemporaryBlocks.put(level, holdBlockPos[0],
+					net.minecraft.world.level.block.Blocks.PACKED_MUD.defaultBlockState(),
+					net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(),
+					level.getGameTime() + 200);
+				level.setBlockAndUpdate(holdBlockPos[0], net.minecraft.world.level.block.Blocks.PACKED_MUD.defaultBlockState());
+
+				dev.wildercord.cast.Spirits.freeze(bastion, 200);
+				boolean stacked = dev.wildercord.cast.Spirits.tryClaimBossHold(bastion, 200, player);
+				check(!stacked, "cannot extend or stack an already active boss hold");
+				check(dev.wildercord.cast.Spirits.bossHeld(bastion), "boss enters brief temporary hold");
+				check(!bastion.isNoAi(), "boss AI is never set to NoAI");
+				check(bastion.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "boss receives temporary slowness while held");
+			});
+			c.waitTicks(38);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && boss.isAlive(), "live boss remains alive after breakout");
+				check(!dev.wildercord.cast.Spirits.bossHeld(boss), "boss breaks out of 200-tick hold within 38 ticks");
+				check(dev.wildercord.cast.Spirits.bossHoldImmune(boss), "boss gains 5s unstoppable immunity after breakout");
+				check(!boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "breakout clears slowness");
+				check(level.getBlockState(holdBlockPos[0]).isAir() && !dev.wildercord.cast.TemporaryBlocks.recorded(level, holdBlockPos[0]),
+					"breakout shatters surrounding temporary hold blocks");
+				check(!dev.wildercord.cast.Spirits.tryClaimBossHold(boss, 100, player), "follow-up hold claim rejected during 5s immunity");
+				dev.wildercord.cast.Spirits.freeze(boss, 100);
+				check(!dev.wildercord.cast.Spirits.bossHeld(boss) && !boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS),
+					"follow-up freeze cannot re-hold boss during 5s immunity");
+				check(boss.getTarget() == player, "boss retains target on breakout");
+				distAtBreakout[0] = boss.distanceTo(player);
+			});
+			c.waitTicks(20);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && boss.isAlive(), "boss alive during counterattack pursuit");
+				check(boss.getTarget() == player, "boss continues targeting player after breakout");
+				check(boss.distanceTo(player) < distAtBreakout[0] - 0.5, "boss closes distance to resume attacking after breakout");
+				player.setHealth(player.getMaxHealth());
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 600, 24, false, false));
+			});
+			c.waitTicks(90);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && !dev.wildercord.cast.Spirits.bossHoldImmune(boss), "5s hold immunity expires cleanly");
+				check(dev.wildercord.cast.Spirits.tryClaimBossHold(boss, 40, player), "boss can be briefly held again after 5s immunity expires");
+			});
+			c.waitTicks(38);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && !dev.wildercord.cast.Spirits.bossHeld(boss), "second temporary hold also breaks out within 38 ticks");
+				if (boss != null) boss.discard();
+				check(player.isAlive(), "player survives Bastion hold test");
+				player.removeAllEffects();
+				player.setGameMode(GameType.CREATIVE);
+				player.setHealth(player.getMaxHealth());
+			});
+
+			// Verify raised boss health pools, dungeon altar respawn, lair guardian respawn, and clean custom-mob fire rendering.
+			net.minecraft.core.BlockPos altarPos = new net.minecraft.core.BlockPos(0, 101, 0);
+			long[] savedTime = new long[1];
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				savedTime[0] = level.getGameTime();
+				for (var e : level.getEntities(player, player.getBoundingBox().inflate(48))) e.discard();
+
+				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:cinder_warden"));
+				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:rootcoil_serpent"));
+				var archivistType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:archivist"));
+				var maxHealthAttr = (net.minecraft.world.entity.ai.attributes.RangedAttribute) net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH.value();
+				check(maxHealthAttr.getMaxValue() >= dev.wildercord.cast.BossRules.MAX_HEALTH_CAP, "max_health attribute cap raised above vanilla 1024");
+				var warden = (Mob) wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var serpent = (Mob) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var archivist = (Mob) archivistType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var keeper = dev.wildercord.aura.world.SwordTombs.KEEPER.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var ferryman = dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				check(warden != null && warden.getMaxHealth() == 1200.0F, "cinder_warden max health raised to 1200");
+				check(serpent != null && serpent.getMaxHealth() == 750.0F, "rootcoil_serpent max health raised to 750");
+				check(archivist != null && archivist.getMaxHealth() == 1650.0F, "archivist max health raised to 1650");
+				check(bastion != null && bastion.getMaxHealth() == 650.0F, "oathbound_bastion max health raised to 650");
+				check(keeper != null && keeper.getMaxHealth() == 700.0F, "gravekeeper max health raised to 700");
+				check(ferryman != null && ferryman.getMaxHealth() == 720.0F, "reed_crowned_ferryman max health raised to 720");
+
+				// Test DungeonAltarBlockEntity respawn after BossRules.BOSS_RESPAWN_TICKS.
+				player.teleportTo(0.5, 101, 4.5);
+				level.setBlockAndUpdate(altarPos, dev.wildercord.content.dungeons.DungeonBlocks.ALTAR.defaultBlockState()
+					.setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.KIND, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.CINDER)
+					.setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE, true));
+				var altarBe = (dev.wildercord.content.dungeons.DungeonAltarBlockEntity) level.getBlockEntity(altarPos);
+				altarBe.slain();
+				check(altarBe.isSlain(), "dungeon altar marks slain after defeat");
+
+				long dueTime = level.getGameTime() + dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS;
+				long aligned = dueTime + Math.floorMod(-(dueTime + altarPos.asLong()), 100L);
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(aligned);
+				dev.wildercord.content.dungeons.DungeonAltarBlockEntity.serverTick(level, altarPos, level.getBlockState(altarPos), altarBe);
+				check(!altarBe.isSlain() && !level.getBlockState(altarPos).getValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE),
+					"dungeon altar re-arms after respawn delay");
+				level.setBlockAndUpdate(altarPos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
+
+				// Test LairRespawns scheduling on bound guardian death and respawn at home.
+				var boundSerpent = (dev.wildercord.aura.world.RootcoilSerpent) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
+				boundSerpent.snapTo(0.5, 101, 0.5, 0.0F, 0.0F);
+				boundSerpent.bind(altarPos, 0.0F);
+				level.addFreshEntity(boundSerpent);
+				boundSerpent.setHealth(1.0F);
+				boundSerpent.hurtServer(level, level.damageSources().genericKill(), 50.0F);
+				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) >= 1, "bound lair guardian schedules respawn on death");
+				long afterLairRespawn = level.getGameTime() + dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS + 1L;
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(afterLairRespawn);
+				dev.wildercord.aura.world.LairRespawns.tickLevel(level);
+				var respawned = level.getEntitiesOfClass(dev.wildercord.aura.world.RootcoilSerpent.class,
+					new net.minecraft.world.phys.AABB(altarPos).inflate(16.0), dev.wildercord.aura.world.RootcoilSerpent::isAlive);
+				check(respawned.size() == 1
+					&& respawned.getFirst().getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH) == 750.0
+					&& respawned.getFirst().getMaxHealth() >= 750.0F,
+					"lair guardian respawns in its arena with boosted base max health 750 (size=" + respawned.size()
+					+ (respawned.isEmpty() ? "" : ", base=" + respawned.getFirst().getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH)
+						+ ", max=" + respawned.getFirst().getMaxHealth()) + ")");
+				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) == 0, "lair respawn entry clears once spawned");
+				for (var r : respawned) r.discard();
+				boundSerpent.discard();
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
+			});
+
+			// Test custom mob fire rendering: burning custom mob suppresses vanilla flame billboard while burning vanilla mob keeps it.
+			int[] fireIds = new int[2];
+			server.runCommand("weather clear");
+			server.runCommand("time set 6000");
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				for (var e : level.getEntities(player, player.getBoundingBox().inflate(64))) e.discard();
+				for (int dx = -12; dx <= 12; dx++) {
+					for (int dz = -12; dz <= 12; dz++) {
+						for (int dy = 101; dy <= 103; dy++) {
+							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+						}
+					}
+				}
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
+				player.setGameMode(GameType.CREATIVE);
+				player.teleportTo(level, 2.0, 101.0, 7.2, java.util.Set.of(), 180.0F, 6.0F, false);
+
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				bastion.setNoAi(true);
+				bastion.setPos(0.5, 101, 0.5);
+				bastion.setYRot(0.0F);
+				bastion.setYHeadRot(0.0F);
+				bastion.setYBodyRot(0.0F);
+				bastion.setRemainingFireTicks(400);
+				level.addFreshEntity(bastion);
+				fireIds[0] = bastion.getId();
+
+				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				zombie.setNoAi(true);
+				zombie.setPos(3.5, 101, 0.5);
+				zombie.setYRot(0.0F);
+				zombie.setYHeadRot(0.0F);
+				zombie.setYBodyRot(0.0F);
+				zombie.setRemainingFireTicks(400);
+				level.addFreshEntity(zombie);
+				fireIds[1] = zombie.getId();
+			});
+			c.waitTicks(20);
+			c.runOnClient(mc -> {
+				check(mc.screen == null, "no modal or death screen open during fire screenshot");
+				mc.player.setYRot(180.0F);
+				mc.player.setXRot(6.0F);
+				var custom = mc.level.getEntity(fireIds[0]);
+				var vanilla = mc.level.getEntity(fireIds[1]);
+				check(custom != null && custom.displayFireAnimation(), "burning custom mob logically displays fire");
+				check(vanilla != null && vanilla.displayFireAnimation(), "burning vanilla mob logically displays fire");
+				var customState = mc.getEntityRenderDispatcher().extractEntity(custom, 0.0F);
+				var vanillaState = mc.getEntityRenderDispatcher().extractEntity(vanilla, 0.0F);
+				check(!customState.displayFireAnimation, "custom mob suppresses obscuring vanilla fire billboard");
+				check(vanillaState.displayFireAnimation, "vanilla mob preserves vanilla fire billboard");
+				dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
+			});
+			c.waitTicks(4);
+			c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("custom_mob_fire_clean").disableCounterPrefix());
+			server.runOnServer(s -> {
+				var level = s.overworld();
+				for (int id : fireIds) {
+					var e = level.getEntity(id);
+					if (e != null) e.discard();
+				}
+			});
 		}
 	}
 }

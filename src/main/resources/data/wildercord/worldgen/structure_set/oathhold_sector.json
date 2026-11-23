@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20261131,
+    "separation": 7,
+    "spacing": 8
+  },
+  "structures": [
+    {
+      "structure": "wildercord:oathhold_sector",
+      "weight": 1
+    }
+  ]
+}
