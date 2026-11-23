@@ -67,6 +67,21 @@ class NormalizeLootTests(unittest.TestCase):
 
 
 class NormalizeAdvancementTests(unittest.TestCase):
+    LOCATION_263 = {
+        "criteria": {
+            "oathhold": {
+                "trigger": "minecraft:location",
+                "conditions": {
+                    "player": {
+                        "type": "minecraft:entity_properties",
+                        "entity": "this",
+                        "predicate": {"minecraft:location": {"structures": "wildercord:oathhold_sector"}},
+                    }
+                },
+            }
+        }
+    }
+
     def test_262_singularizes_the_trigger_condition(self):
         out = ndf.normalize_advancement(P262, ADVANCEMENT_263)
         conditions = out["criteria"]["has_the_recipe"]["conditions"]
@@ -76,6 +91,24 @@ class NormalizeAdvancementTests(unittest.TestCase):
     def test_263_pluralizes_it_again(self):
         out = ndf.normalize_advancement(P263, ndf.normalize_advancement(P262, ADVANCEMENT_263))
         self.assertEqual(out["criteria"]["has_the_recipe"]["conditions"], {"recipes": "wildercord:cinnamon_grand_bow"})
+
+    def test_262_wraps_the_player_condition_in_a_list(self):
+        out = ndf.normalize_advancement(P262, self.LOCATION_263)
+        player = out["criteria"]["oathhold"]["conditions"]["player"]
+        self.assertIsInstance(player, list)
+        self.assertEqual(player[0]["condition"], "minecraft:entity_properties")
+        self.assertNotIn("type", player[0])
+        self.assertEqual(player[0]["predicate"], {"minecraft:location": {"structures": "wildercord:oathhold_sector"}})
+
+    def test_263_collapses_the_player_list_back_to_one_object(self):
+        out = ndf.normalize_advancement(P263, ndf.normalize_advancement(P262, self.LOCATION_263))
+        player = out["criteria"]["oathhold"]["conditions"]["player"]
+        self.assertIsInstance(player, dict)
+        self.assertEqual(player["type"], "minecraft:entity_properties")
+
+    def test_advancement_normalizing_is_idempotent(self):
+        once = ndf.normalize_advancement(P262, self.LOCATION_263)
+        self.assertEqual(once, ndf.normalize_advancement(P262, once))
 
 
 class RewriteTreeTests(unittest.TestCase):
