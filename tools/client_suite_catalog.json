@@ -1,17 +1,21 @@
 {
   "release-smoke": {
     "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world, mounts and taming, network payloads, mixin targets, shrine sanctuary). A fast sanity check run once before a release; it does not replace the per-area suites.",
-    "expectedCount": 14,
+    "expectedCount": 18,
     "entries": [
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.client.fx.LifeOutcomeQualityTest",
+      "dev.wildercord.gametest.LifeJournalTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
       "dev.wildercord.wildlife.RootmoltPlacementTest",
       "dev.wildercord.familiar.ContentSystemsTest",
       "dev.wildercord.player.ResearchLibraryTest",
+      "dev.wildercord.command.LearnAllFusionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.lore.LoreJournalGameTest",
       "dev.wildercord.world.dungeons.SwordTombTest",
       "dev.wildercord.wildlife.StagFirstRideTest",
       "dev.wildercord.wildlife.ShrineSanctuaryTest",
@@ -22,7 +26,7 @@
   "area-combat-bosses": {
     "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, a cooperative Ferryman crossing, monsters, aura beasts, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world.",
     "purpose": "area",
-    "expectedCount": 12,
+    "expectedCount": 11,
     "entries": [
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
@@ -40,17 +44,21 @@
   "area-combat-arts": {
     "description": "Combat: all fifty sword arts end to end (about 12 minutes on its own).",
     "purpose": "area",
-    "expectedCount": 0,
+    "expectedCount": 1,
     "entries": [
+      "dev.wildercord.gametest.WildercordArtsTest"
     ]
   },
   "area-combat-aura": {
     "description": "Combat: aura wards, sword strings, momentum and aura effects; bound-beast cooldowns reset with the server.",
     "purpose": "area",
-    "expectedCount": 2,
+    "expectedCount": 5,
     "entries": [
       "dev.wildercord.aura.arts.ArtWardsHardeningTest",
-      "dev.wildercord.aura.world.CooldownRestartTest"
+      "dev.wildercord.aura.world.CooldownRestartTest",
+      "dev.wildercord.gametest.WildercordSwordStringsTest",
+      "dev.wildercord.gametest.WildercordMomentumTest",
+      "dev.wildercord.gametest.WildercordAuraFxTest"
     ]
   },
   "area-rituals-parties": {
@@ -59,6 +67,7 @@
     "expectedCount": 8,
     "entries": [
       "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FarmSoilTest",
       "dev.wildercord.ritual.RenamedReagentTest",
@@ -70,7 +79,7 @@
   "area-regions-worldgen": {
     "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, and every dungeon's wards holding their rooms against a survival player.",
     "purpose": "area",
-    "expectedCount": 10,
+    "expectedCount": 11,
     "entries": [
       "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
@@ -79,6 +88,7 @@
       "dev.wildercord.wildlife.SiltcrestBankReturnTest",
       "dev.wildercord.wildlife.FungalNurseryTest",
       "dev.wildercord.wildlife.ReedRefugeTest",
+      "dev.wildercord.wildlife.RainshieldAckTest",
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.cast.RuneSealDoorTest",
       "dev.wildercord.world.dungeons.DungeonWardSealTest"
@@ -87,9 +97,10 @@
   "area-items-crafting": {
     "description": "Items and crafting: research library, learn-all fusion, familiar content systems, Weaver's Silk stow key, casting gear loot, the backpack menu, the fusion altar menu.",
     "purpose": "area",
-    "expectedCount": 6,
+    "expectedCount": 7,
     "entries": [
       "dev.wildercord.player.ResearchLibraryTest",
+      "dev.wildercord.command.LearnAllFusionTest",
       "dev.wildercord.familiar.ContentSystemsTest",
       "dev.wildercord.aura.world.WeaversSilkStowTest",
       "dev.wildercord.gear.GearLootTest",
@@ -100,19 +111,24 @@
   "area-guis-hud": {
     "description": "GUIs and HUD: life journal, lore journal, quality settings, screen-effect setting and strain vignette, colour-blind-safe telegraphs, meditation, creature presentation, Cord loadouts.",
     "purpose": "area",
-    "expectedCount": 5,
+    "expectedCount": 8,
     "entries": [
+      "dev.wildercord.gametest.LifeJournalTest",
+      "dev.wildercord.lore.LoreJournalGameTest",
+      "dev.wildercord.client.fx.LifeOutcomeQualityTest",
       "dev.wildercord.client.fx.ScreenEffectSettingTest",
       "dev.wildercord.client.fx.SafeTelegraphsTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
-      "dev.wildercord.wildlife.SiltcrestPresentationTest"
+      "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "dev.wildercord.loadout.LoadoutsTest"
     ]
   },
   "area-feature-tour": {
     "description": "Feature tour: broad screenshot walk through the mod's systems.",
     "purpose": "area",
-    "expectedCount": 0,
+    "expectedCount": 1,
     "entries": [
+      "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },
   "area-mounts-taming": {

@@ -36,6 +36,7 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.fx.SpellFormations.init();
 		dev.wildercord.client.fx.LifeOutcomeClient.init();
 		dev.wildercord.client.fx.RootCarryClient.init();
+		dev.wildercord.client.fx.RainshieldClient.init();
 		dev.wildercord.client.fx.CampConcordClient.init();
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
 		dev.wildercord.client.compat.ShaderCompat.init();
