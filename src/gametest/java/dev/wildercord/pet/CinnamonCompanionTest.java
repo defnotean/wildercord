@@ -1,5 +1,4 @@
 package dev.wildercord.pet;
-import dev.wildercord.gametest.compat.GametestCompat;
 
 import com.mojang.authlib.GameProfile;
 import dev.wildercord.party.PartyTestHooks;
@@ -286,7 +285,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 				context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
 				context.getInput().holdKey(o -> o.keyJump);
 				context.waitTicks(24);
-				context.runOnClient(mc -> GametestCompat.clearChat(mc));
+				context.runOnClient(mc -> dev.wildercord.gametest.compat.GametestCompat.clearChat(mc));
 				context.takeScreenshot(TestScreenshotOptions.of("cinnamon_flight_ride").disableCounterPrefix());
 				context.getInput().releaseKey(o -> o.keyJump);
 				context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
@@ -322,7 +321,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					aimAtCinnamon(server, p, dog, -3.2, 101.0, -1.6);
 				});
 				context.waitTicks(6);
-				context.runOnClient(mc -> GametestCompat.clearChat(mc));
+				context.runOnClient(mc -> dev.wildercord.gametest.compat.GametestCompat.clearChat(mc));
 				context.takeScreenshot(TestScreenshotOptions.of("cinnamon_grand_harness_chests").disableCounterPrefix());
 
 				// 6. 2-3 second hit pause balance when attacked by an enemy.

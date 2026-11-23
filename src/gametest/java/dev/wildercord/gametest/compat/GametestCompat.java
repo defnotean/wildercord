@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -189,5 +190,14 @@ public final class GametestCompat {
 	/** Flips HUD visibility, so a screenshot can be taken without the hotbar and crosshair. */
 	public static void toggleHud(Minecraft mc) {
 		mc.options.hideGui = !mc.options.hideGui;
+	}
+
+	/**
+	 * Pumps the client until queued clientbound packets are processed. 26.3 added
+	 * TestSingleplayerContext#getConnection; before it, waiting for the chunk download
+	 * to settle is what drains the client's inbound queue.
+	 */
+	public static void awaitClientPackets(TestSingleplayerContext world) {
+		world.getClientLevel().waitForChunksDownload();
 	}
 }

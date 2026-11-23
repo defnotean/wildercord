@@ -1,5 +1,4 @@
 package dev.wildercord.ocean;
-import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.world.StructureClearance;
 import dev.wildercord.world.sites.ocean.AbyssalCitadelPiece;
@@ -79,11 +78,11 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!GametestCompat.hudHidden(mc)) {
-					GametestCompat.toggleHud(mc);
+				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) {
+					dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 				}
-				GametestCompat.clearToasts(mc);
-				GametestCompat.clearChat(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
 			}
 		});
 		context.waitTicks(5);
@@ -102,11 +101,11 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
 			mc.setCameraEntity(mc.player);
-			if (!GametestCompat.hudHidden(mc)) {
-				GametestCompat.toggleHud(mc);
+			if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) {
+				dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 			}
-			GametestCompat.clearToasts(mc);
-			GametestCompat.clearChat(mc);
+			dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+			dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
 		});
 		context.waitTicks(8);
 	}
@@ -127,8 +126,8 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 
 	private static void shot(ClientGameTestContext context, String name) {
 		context.runOnClient(mc -> {
-			GametestCompat.clearToasts(mc);
-			GametestCompat.clearChat(mc);
+			dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+			dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
 		});
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}

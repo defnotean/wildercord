@@ -224,9 +224,9 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(mc.player);
-				if (!GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
-				GametestCompat.clearToasts(mc);
-				GametestCompat.clearChat(mc);
+				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
 			});
 			context.waitTicks(8);
 			context.takeScreenshot(TestScreenshotOptions.of("ocean_placement_coral_dome").disableCounterPrefix());
