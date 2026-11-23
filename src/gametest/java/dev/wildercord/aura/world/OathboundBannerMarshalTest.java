@@ -282,8 +282,8 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				Entity e = level(s).getEntity(allyId);
 				return e instanceof OathboundHalberdier ally
 					&& ally.getHealth() >= 87.5F
-					&& ally.hasEffect(MobEffects.STRENGTH)
-					&& ally.hasEffect(MobEffects.RESISTANCE);
+					&& ally.hasEffect(MobEffects.DAMAGE_BOOST)
+					&& ally.hasEffect(MobEffects.DAMAGE_RESISTANCE);
 			}), "Decree of the Standard did not heal and buff allied knight within 12 blocks");
 			server.runOnServer(s -> {
 				Entity e = level(s).getEntity(allyId);

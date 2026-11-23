@@ -294,7 +294,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 			});
 			check(await(context, world, 20, s -> {
 				ServerPlayer p = player(s);
-				return p.hasEffect(MobEffects.SLOWNESS) && p.getHealth() < 20.0F;
+				return p.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && p.getHealth() < 20.0F;
 			}), "Hook-and-Reap did not damage and slow frontal target");
 
 			// 2c. Thunderbolt Crash 4-way cross hits side arm target

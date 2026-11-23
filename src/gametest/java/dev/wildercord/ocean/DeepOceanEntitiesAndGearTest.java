@@ -407,11 +407,11 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				OceanItems.LEVIATHAN_GLAIVE.use(l, p, InteractionHand.MAIN_HAND);
 				check(target.getHealth() < beforeHp, "Leviathan Glaive Hydro-Slash damages target in 75-deg cone");
 
-				p.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 200, 1));
+				p.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 200, 1));
 				p.setAirSupply(40);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDECALLER_CONCH));
 				OceanItems.TIDECALLER_CONCH.use(l, p, InteractionHand.MAIN_HAND);
-				check(!p.hasEffect(MobEffects.MINING_FATIGUE), "Conch removes Mining Fatigue");
+				check(!p.hasEffect(MobEffects.DIG_SLOWDOWN), "Conch removes Mining Fatigue");
 				check(p.hasEffect(MobEffects.WATER_BREATHING), "Conch grants Water Breathing");
 
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDE_CLEAVER_HARPOON));

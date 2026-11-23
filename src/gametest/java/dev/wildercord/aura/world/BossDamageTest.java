@@ -213,7 +213,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				player.setGameMode(GameType.SURVIVAL);
 				player.setHealth(player.getMaxHealth());
 				player.teleportTo(0.5, 101, 7.5);
-				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.RESISTANCE, 600, 3, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 600, 3, false, false));
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 5, false, false));
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 600, 24, false, false));
 
@@ -264,7 +264,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(!stacked, "cannot extend or stack an already active boss hold");
 				check(dev.wildercord.cast.Spirits.bossHeld(bastion), "boss enters brief temporary hold");
 				check(!bastion.isNoAi(), "boss AI is never set to NoAI");
-				check(bastion.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "boss receives temporary slowness while held");
+				check(bastion.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN), "boss receives temporary slowness while held");
 			});
 			c.waitTicks(38);
 			server.runOnServer(s -> {
@@ -274,12 +274,12 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(boss != null && boss.isAlive(), "live boss remains alive after breakout");
 				check(!dev.wildercord.cast.Spirits.bossHeld(boss), "boss breaks out of 200-tick hold within 38 ticks");
 				check(dev.wildercord.cast.Spirits.bossHoldImmune(boss), "boss gains 5s unstoppable immunity after breakout");
-				check(!boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "breakout clears slowness");
+				check(!boss.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN), "breakout clears slowness");
 				check(level.getBlockState(holdBlockPos[0]).isAir() && !dev.wildercord.cast.TemporaryBlocks.recorded(level, holdBlockPos[0]),
 					"breakout shatters surrounding temporary hold blocks");
 				check(!dev.wildercord.cast.Spirits.tryClaimBossHold(boss, 100, player), "follow-up hold claim rejected during 5s immunity");
 				dev.wildercord.cast.Spirits.freeze(boss, 100);
-				check(!dev.wildercord.cast.Spirits.bossHeld(boss) && !boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS),
+				check(!dev.wildercord.cast.Spirits.bossHeld(boss) && !boss.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN),
 					"follow-up freeze cannot re-hold boss during 5s immunity");
 				check(boss.getTarget() == player, "boss retains target on breakout");
 				distAtBreakout[0] = boss.distanceTo(player);

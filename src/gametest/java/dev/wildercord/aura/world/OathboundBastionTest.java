@@ -348,7 +348,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				b.setTarget(p);
 				b.startMove(l, OathboundBastionRules.SHIELD_BASH, p);
 			});
-			check(await(context, world, 25, s -> player(s).hasEffect(MobEffects.SLOWNESS) && player(s).getHealth() < player(s).getMaxHealth()),
+			check(await(context, world, 25, s -> player(s).hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && player(s).getHealth() < player(s).getMaxHealth()),
 				"Shield-Bash sweep must damage and slow a frontal target");
 
 			// E) Empowered phase below half health, NBT save/load round-trip, and entity loot table drops

@@ -162,7 +162,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
 				p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 12000, 0, false, false));
-				p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 12000, 4, false, false));
+				p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 12000, 4, false, false));
 				p.teleportTo(l, 0.5, 101.0, 0.5, Set.<Relative>of(), -90.0F, 0.0F, false);
 
 				WhiteRabbit rabbit = WhiteRabbitContent.WHITE_RABBIT.create(l, EntitySpawnReason.COMMAND);
