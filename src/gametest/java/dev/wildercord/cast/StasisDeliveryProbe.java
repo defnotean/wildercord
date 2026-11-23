@@ -91,7 +91,7 @@ public final class StasisDeliveryProbe implements AutoCloseable {
         if (!scope.accepts(owner, owner.level(), serverTick) || level.getServer().getPlayerList().getPlayer(owner.getUUID()) != owner) return;
         safe(() -> {
             var row = row("server_motion"); row.add("ownerState", body(owner));
-            row.addProperty("input", owner.getLastClientInput().toString());
+            row.addProperty("input", String.valueOf(dev.wildercord.gametest.compat.GametestCompat.lastClientInput(owner)));
             row.add("residentTerrain", terrain(level, owner.blockPosition())); emit(row);
         });
     }
@@ -109,8 +109,8 @@ public final class StasisDeliveryProbe implements AutoCloseable {
             var row = new JsonObject(); row.addProperty("event", "client_motion"); row.addProperty("case", "wildercord:harm");
             row.addProperty("owner", ownerId); row.addProperty("expectedTarget", targetId);
             row.addProperty("observedServerTick", tick); row.addProperty("clientGameTime", client.level.getGameTime());
-            row.add("ownerState", body(client.player)); row.addProperty("input", client.player.input.keyPresses.toString());
-            row.addProperty("sentInput", client.player.input.keyPresses.toString());
+            row.add("ownerState", body(client.player)); row.addProperty("input", dev.wildercord.gametest.compat.GametestCompat.inputSummary(client.player));
+            row.addProperty("sentInput", dev.wildercord.gametest.compat.GametestCompat.inputSummary(client.player));
             row.addProperty("jumpDown", client.options.keyJump.isDown()); row.addProperty("shiftDown", client.options.keyShift.isDown());
             row.addProperty("forwardDown", client.options.keyUp.isDown()); row.addProperty("backDown", client.options.keyDown.isDown());
             row.addProperty("leftDown", client.options.keyLeft.isDown()); row.addProperty("rightDown", client.options.keyRight.isDown());

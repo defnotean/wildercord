@@ -107,7 +107,7 @@ public final class FungalGillProbe {
   // Immutable cross-thread receipt; never reads a ServerLevel on the render thread.
   try{var p=mc.player;if(p==null||!p.getUUID().equals(player.getUUID()))return;
    client="time="+(mc.level==null?"none":mc.level.getGameTime())+" position="+p.position()+" velocity="+p.getDeltaMovement()+" body="+p.getBoundingBox()
-    +" input="+p.input.keyPresses+" sentInput="+p.input.keyPresses+" keys[up,down,left,right,jump,shift,sprint]="+mc.options.keyUp.isDown()+","+mc.options.keyDown.isDown()+","+mc.options.keyLeft.isDown()+","+mc.options.keyRight.isDown()+","+mc.options.keyJump.isDown()+","+mc.options.keyShift.isDown()+","+mc.options.keySprint.isDown()
+    +" input="+dev.wildercord.gametest.compat.GametestCompat.inputSummary(p)+" sentInput="+dev.wildercord.gametest.compat.GametestCompat.inputSummary(p)+" keys[up,down,left,right,jump,shift,sprint]="+mc.options.keyUp.isDown()+","+mc.options.keyDown.isDown()+","+mc.options.keyLeft.isDown()+","+mc.options.keyRight.isDown()+","+mc.options.keyJump.isDown()+","+mc.options.keyShift.isDown()+","+mc.options.keySprint.isDown()
     +" selected="+p.getInventory().selected+" held="+p.getMainHandItem()+" inventory="+p.getInventory().countItem(FungalGarden.GILLS)+" screen="+(mc.screen==null?"none":mc.screen.getClass().getSimpleName());
   }catch(Exception|AssertionError|LinkageError failure){client="observationError="+failure.getClass().getSimpleName();}
  }

@@ -63,7 +63,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SURVIVAL);
 				var inv = p(s).getInventory();
 				inv.clearContent();
-				inv.setSelectedSlot(0);
+				inv.selected = 0;;
 				inv.setItem(0, new ItemStack(WildercordItems.BACKPACK));
 				inv.setItem(1, new ItemStack(Items.COBBLESTONE, 16));
 				inv.setItem(2, new ItemStack(WildercordItems.REINFORCED_BACKPACK));

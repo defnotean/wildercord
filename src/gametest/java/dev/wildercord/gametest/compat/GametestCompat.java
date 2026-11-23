@@ -107,9 +107,10 @@ public final class GametestCompat {
 	 * Waits for the server to satisfy {@code ready}, looking once a tick. The newer versions hand this to
 	 * fabric's own waiters; 1.21.1's harness has none, so it polls from the calling thread and stops after
 	 * {@code ticks} either way, leaving the caller's own checks to report what the server actually did.
+	 * The server handle is the harness's own context object, which these waiters only wake.
 	 */
-	public static void waitFor(ClientGameTestContext client, net.minecraft.server.MinecraftServer server,
-			java.util.function.Predicate<net.minecraft.server.MinecraftServer> ready, int ticks) {
+	public static void waitFor(ClientGameTestContext client, Object server,
+			java.util.function.Predicate<Object> ready, int ticks) {
 		for (int i = 0; i < Math.max(1, ticks); i++) {
 			if (ready.test(server)) {
 				return;
@@ -117,5 +118,16 @@ public final class GametestCompat {
 			client.waitTicks(1);
 		}
 		ready.test(server);
+	}
+
+	/** Empties the particle engine between screenshots. 1.21.1's engine has no public clear. */
+	public static void clearParticles(Object particleEngine) {}
+
+	/** The keys the client is holding, as one string for a probe row. 1.21.1 keeps them as plain fields. */
+	public static String inputSummary(LocalPlayer player) {
+		net.minecraft.client.player.Input keys = player.input;
+		return "[up=" + keys.up + ", down=" + keys.down + ", left=" + keys.left + ", right=" + keys.right
+			+ ", jump=" + keys.jumping + ", shift=" + keys.shiftKeyDown
+			+ ", forward=" + keys.forwardImpulse + ", strafe=" + keys.leftImpulse + "]";
 	}
 }

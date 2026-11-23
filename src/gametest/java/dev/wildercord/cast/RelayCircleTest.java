@@ -64,7 +64,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				probe = new Probe(); probe.owner = player(server);
 				prepare(probe.owner, Runes.HARM);
-				probe.dummy = WildercordEntities.TRAINING_DUMMY.create(probe.owner.level(), MobSpawnType.MOB_SUMMONED);
+				probe.dummy = dev.wildercord.compat.McEntities.create(WildercordEntities.TRAINING_DUMMY, probe.owner.level(), MobSpawnType.MOB_SUMMONED);
 				check(probe.dummy != null, "Dummy creates");
 				probe.dummy.moveTo(.5, 150, 6.5, 180, 0);
 				probe.owner.level().addFreshEntity(probe.dummy);
@@ -89,7 +89,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 				context.takeScreenshot(TestScreenshotOptions.of("relay_focus_set_rebound_key").disableCounterPrefix());
 				context.getInput().releaseKey(WildercordKeys.castMapping()); context.waitTicks(3);
 				world.getServer().runOnServer(server -> {
-					probe.owner.teleportTo(((ServerLevel) probe.owner.level()), -1.5, 150, .5, Set.<RelativeMovement>of(), 0, 0, false);
+					probe.owner.teleportTo(((ServerLevel) probe.owner.level()), -1.5, 150, .5, Set.<RelativeMovement>of(), 0, 0);
 					aim(probe.owner, probe.dummy.getBoundingBox().getCenter());
 				});
 				context.waitTicks(5);
@@ -294,7 +294,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 	}
 	public static void reset(ServerPlayer player, dev.wildercord.spell.RuneDef effect) {
 		RelayCircles.cancel(player);
-		player.teleportTo(((ServerLevel) player.level()), FEET.x, FEET.y, FEET.z, Set.<RelativeMovement>of(), 0, 55, false);
+		player.teleportTo(((ServerLevel) player.level()), FEET.x, FEET.y, FEET.z, Set.<RelativeMovement>of(), 0, 55);
 		player.setDeltaMovement(Vec3.ZERO); player.setOnGround(true); player.setShiftKeyDown(false);
 		player.setAttached(RelayState.REST, 0L);
 		for (int i = 0; i < dev.wildercord.gear.SpellSlots.ALL; i++) Spellbooks.setReadyAt(player, i, 0);
@@ -307,7 +307,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 		Vec3 to = target.subtract(player.getEyePosition());
 		float yaw = (float)Math.toDegrees(Math.atan2(-to.x, to.z));
 		float pitch = (float)-Math.toDegrees(Math.atan2(to.y, Math.sqrt(to.x*to.x+to.z*to.z)));
-		player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), yaw, pitch, false);
+		player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), yaw, pitch);
 	}
 	public static ServerPlayer player(MinecraftServer server) { return server.getPlayerList().getPlayers().getFirst(); }
 	public static boolean close(double a, double b) { return Math.abs(a-b) < .01; }
