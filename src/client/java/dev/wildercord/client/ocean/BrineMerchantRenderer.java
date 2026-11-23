@@ -71,7 +71,7 @@ public final class BrineMerchantRenderer extends MobRenderer<BrineMerchant, Ocea
 				case ABYSSAL_CARTOGRAPHER -> glowCartographer;
 				case KELP_ALCHEMIST -> glowAlchemist;
 			};
-			RenderCompat.submitModel(collector, getParentModel(), state, pose, type, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, type, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, RenderCompat.outlineOf(state));
 		}
 	}
 }

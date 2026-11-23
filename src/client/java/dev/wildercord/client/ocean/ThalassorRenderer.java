@@ -62,7 +62,7 @@ public final class ThalassorRenderer extends MobRenderer<ThalassorBoss, OceanRen
 		@Override
 		public void render(PoseStack pose, MultiBufferSource collector, int light, OceanRenderStates.ThalassorState state, float yaw, float pitch) {
 			if (state.isInvisible) return;
-			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, RenderCompat.outlineOf(state));
 		}
 	}
 }

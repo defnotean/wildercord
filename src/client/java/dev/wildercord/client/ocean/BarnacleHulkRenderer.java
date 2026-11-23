@@ -56,7 +56,7 @@ public final class BarnacleHulkRenderer extends MobRenderer<BarnacleHulkDredger,
 		@Override
 		public void render(PoseStack pose, MultiBufferSource collector, int light, OceanRenderStates.BarnacleHulkState state, float yaw, float pitch) {
 			if (state.isInvisible) return;
-			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, RenderCompat.outlineOf(state));
 		}
 	}
 }
