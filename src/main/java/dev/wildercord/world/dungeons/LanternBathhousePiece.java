@@ -316,7 +316,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 		// Central multi-tier hanging onsen lantern chandelier cluster over the hinoki bridge
 		for (int[] cl : new int[][]{{18, 17, 6}, {20, 17, 6}, {19, 19, 5}, {18, 22, 6}, {20, 22, 6}, {19, 25, 5}}) {
 			for (int cy = F + 7; cy >= F + cl[2] + 1; cy--) {
-				set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), cl[0], cy, cl[1]);
+				set(level, bb, Blocks.CHAIN.defaultBlockState(), cl[0], cy, cl[1]);
 			}
 			set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cl[0], F + cl[2], cl[1]);
 		}

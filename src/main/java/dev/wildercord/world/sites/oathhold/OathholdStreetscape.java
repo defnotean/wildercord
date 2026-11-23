@@ -27,8 +27,8 @@ public final class OathholdStreetscape {
 	private static final BlockState NOTE = Blocks.NOTE_BLOCK.defaultBlockState();
 	private static final BlockState HAY = Blocks.HAY_BLOCK.defaultBlockState();
 	private static final BlockState BARREL = Blocks.BARREL.defaultBlockState();
-	private static final BlockState RAIL_CHAIN_X = Blocks.IRON_CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
-	private static final BlockState RAIL_CHAIN_Z = Blocks.IRON_CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
+	private static final BlockState RAIL_CHAIN_X = Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+	private static final BlockState RAIL_CHAIN_Z = Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
 
 	private static final BlockState[] FLOWERS = {
 		Blocks.POPPY.defaultBlockState(),
@@ -66,7 +66,7 @@ public final class OathholdStreetscape {
 
 	/** Horizontal iron chain railing along X or Z. */
 	public static BlockState chainAxis(Direction.Axis axis) {
-		return Blocks.IRON_CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis);
+		return Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis);
 	}
 
 	/** Ornate double-arm hanging-lantern streetlamp matching boulevard & esplanade concept renders. */

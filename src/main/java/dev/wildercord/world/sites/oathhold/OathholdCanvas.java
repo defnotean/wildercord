@@ -68,7 +68,7 @@ public final class OathholdCanvas {
 	public static final BlockState LANTERN = Blocks.LANTERN.defaultBlockState();
 	public static final BlockState HANGING_LANTERN = Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
 	public static final BlockState HANGING_SOUL_LANTERN = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
-	public static final BlockState CHAIN = Blocks.IRON_CHAIN.defaultBlockState();
+	public static final BlockState CHAIN = Blocks.CHAIN.defaultBlockState();
 	public static final BlockState IRON_BARS = Blocks.IRON_BARS.defaultBlockState();
 	public static final BlockState EMERALD_GREEN = Blocks.GREEN_CONCRETE.defaultBlockState();
 	public static final BlockState EMERALD_TEAL = Blocks.CYAN_TERRACOTTA.defaultBlockState();

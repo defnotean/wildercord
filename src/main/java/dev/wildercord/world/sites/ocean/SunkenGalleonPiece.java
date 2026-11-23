@@ -106,7 +106,7 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		}
 		// Heavy sunken bow anchor on seabed
 		for (int y = BASE; y <= BASE + 8; y++) {
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 4, y, zMid);
+			set(level, bb, Blocks.CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 4, y, zMid);
 		}
 		fill(level, bb, 3, BASE, zMid - 1, 5, BASE, zMid + 1, DARK_PRISMARINE);
 
@@ -217,8 +217,8 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		}
 		// Diagonal chain shrouds from crow's nest down to gunwales
 		for (int i = 0; i < 4; i++) {
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), mx, nestY - i, zMid - 2 - i);
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), mx, nestY - i, zMid + 2 + i);
+			set(level, bb, Blocks.CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), mx, nestY - i, zMid - 2 - i);
+			set(level, bb, Blocks.CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), mx, nestY - i, zMid + 2 + i);
 		}
 	}
 }

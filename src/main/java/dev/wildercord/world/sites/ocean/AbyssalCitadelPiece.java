@@ -107,7 +107,7 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 					set(level, bb, COPPER_OXIDIZED, cx, y1 + 1, cz);
 					set(level, bb, GOLD, cx, y1 + 2, cz);
 					set(level, bb, SEA_LANTERN, cx, y1 + 3, cz);
-					set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, y1 + 4, cz);
+					set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, y1 + 4, cz);
 				}
 			}
 		}
@@ -134,7 +134,7 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 			}
 			set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.SOUTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ - 9);
 			set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.NORTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ + 9);
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ);
+			set(level, bb, Blocks.CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ);
 			set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 9, CZ);
 		}
 		// Grand Gatehouse Arch opening east (x=28..30, z=27..37) + Flanking Sentinel Pillars

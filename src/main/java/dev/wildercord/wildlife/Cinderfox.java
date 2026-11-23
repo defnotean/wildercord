@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McHands;
 import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Affinities;
 import net.minecraft.core.particles.ParticleTypes;
