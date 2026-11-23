@@ -150,7 +150,7 @@ public class Glimmerwing extends AmbientCreature {
 		}
 		if(flower!=null && tickCount%10==0 && MoonreedBlock.pollinate(level(),flower,this)) {flower=null;lure=null;lureLeft=0;target=null;}
 		// A synchronous pollination callback may remove or transfer this actual actor.
-		if(!isAlive()||isRemoved()||level()()!=level())return;
+		if(!isAlive()||isRemoved()||level()!=level())return;
 		if ((tickCount + getId()) % 40 == 0) {
 			seekLure(level());
 		}

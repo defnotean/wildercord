@@ -89,7 +89,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		if(tickCount%10==0){
 			var center=Vec3.atCenterOf(home);
 			bar.setProgress(getHealth()/getMaxHealth());bar.setName(Component.translatable("boss.wildercord.gravekeeper.status",getType().getDescription(),Component.translatable("boss.wildercord.gravekeeper.move."+move())));
-			for(var p:new ArrayList<>(bar.getPlayers()))if(p.level()()!=level() || !p.isAlive() || p.distanceToSqr(center)>28*28)bar.removePlayer(p);
+			for(var p:new ArrayList<>(bar.getPlayers()))if(p.level()!=level() || !p.isAlive() || p.distanceToSqr(center)>28*28)bar.removePlayer(p);
 			for(var p:level().players())if(p.isAlive() && !p.isSpectator() && p.distanceToSqr(center)<24*24)bar.addPlayer(p);
 			var target=level().players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(center)<20*20 && hasLineOfSight(p)).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			setTarget(target);
