@@ -211,7 +211,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				}
 				BoundingBox box = start.getBoundingBox();
 				check(countBlocks(l, box, Blocks.CONDUIT) >= 1, "Naturally located Coral-Dome placed its central Conduit");
-				check(countBlocks(l, box, Blocks.STAINED_GLASS.cyan()) > 80, "Naturally located Coral-Dome built its cyan glass domes");
+				check(countBlocks(l, box, Blocks.CYAN_STAINED_GLASS) > 80, "Naturally located Coral-Dome built its cyan glass domes");
 
 				// Frame the camera on the placed dome from a close underwater vantage.
 				BlockPos c = stub.position();

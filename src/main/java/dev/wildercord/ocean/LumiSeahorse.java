@@ -41,7 +41,7 @@ public class LumiSeahorse extends AbstractHorse {
 
 	public LumiSeahorse(EntityType<? extends LumiSeahorse> type, Level level) {
 		super(type, level);
-		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.85F, 1.0F, false);
+		this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.85F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0.0F);
 	}
 

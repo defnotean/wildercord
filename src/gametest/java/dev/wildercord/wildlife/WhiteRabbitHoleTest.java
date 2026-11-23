@@ -68,7 +68,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(260),
 				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = net.minecraft.world.entity.EntityTypes.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
+			Display.TextDisplay cam = net.minecraft.world.entity.EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);

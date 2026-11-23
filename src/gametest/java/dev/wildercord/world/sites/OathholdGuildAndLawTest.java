@@ -27,7 +27,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
@@ -75,7 +75,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
 				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = EntityTypes.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
+			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
@@ -188,7 +188,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				}
 				for (int x = -2; x <= 2; x++) {
 					for (int y = 124; y <= 125; y++) {
-						l.setBlock(new BlockPos(x, y, -8), (x == 0 ? Blocks.GOLD_BLOCK : Blocks.CONCRETE.green()).defaultBlockState(), 3);
+						l.setBlock(new BlockPos(x, y, -8), (x == 0 ? Blocks.GOLD_BLOCK : Blocks.GREEN_CONCRETE).defaultBlockState(), 3);
 					}
 				}
 				for (int x : new int[]{-5, 0, 5}) {

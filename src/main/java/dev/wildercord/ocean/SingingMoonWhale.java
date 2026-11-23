@@ -43,7 +43,7 @@ public class SingingMoonWhale extends PathfinderMob {
 	public SingingMoonWhale(EntityType<? extends SingingMoonWhale> type, Level level) {
 		super(type, level);
 		this.xpReward = 15;
-		this.moveControl = new SmoothSwimmingMoveControl<>(this, 45, 10, 0.65F, 1.0F, false);
+		this.moveControl = new SmoothSwimmingMoveControl(this, 45, 10, 0.65F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0.0F);
 	}
 

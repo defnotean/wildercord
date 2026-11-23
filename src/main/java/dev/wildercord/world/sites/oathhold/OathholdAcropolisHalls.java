@@ -161,7 +161,7 @@ public final class OathholdAcropolisHalls {
 		}
 		for (int jz = -136; jz <= -96; jz++) {
 			c.set(-74, AY + 1, jz, Blocks.OAK_FENCE.defaultBlockState());
-			c.set(-74, AY + 2, jz, (jz & 1) == 0 ? Blocks.WOOL.green().defaultBlockState() : Blocks.WOOL.yellow().defaultBlockState());
+			c.set(-74, AY + 2, jz, (jz & 1) == 0 ? Blocks.GREEN_WOOL.defaultBlockState() : Blocks.YELLOW_WOOL.defaultBlockState());
 		}
 		for (int tx : new int[]{-90, -86, -82}) {
 			c.set(tx, AY + 1, -142, Blocks.HAY_BLOCK.defaultBlockState());
@@ -180,8 +180,8 @@ public final class OathholdAcropolisHalls {
 		if (!c.intersects(40, -180, 120, -44)) return;
 
 		int cx = 80, cz = -124;
-		BlockState glassCyan = Blocks.STAINED_GLASS.cyan().defaultBlockState();
-		BlockState glassGold = Blocks.STAINED_GLASS.yellow().defaultBlockState();
+		BlockState glassCyan = Blocks.CYAN_STAINED_GLASS.defaultBlockState();
+		BlockState glassGold = Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
 		c.clear(53, AY + 1, -163, 107, AY + 45, -85);
 
 		// Classical Palladian stone-and-calcite colonnade walls (flat balustraded roof at AY + 18)
@@ -287,12 +287,12 @@ public final class OathholdAcropolisHalls {
 		if (!c.intersects(116, -204, 184, -78)) return;
 
 		int cx = 150, cz = -140;
-		BlockState glassBlue = Blocks.STAINED_GLASS.blue().defaultBlockState();
-		BlockState glassLightBlue = Blocks.STAINED_GLASS.lightBlue().defaultBlockState();
-		BlockState glassPurple = Blocks.STAINED_GLASS.purple().defaultBlockState();
-		BlockState glassGold = Blocks.STAINED_GLASS.yellow().defaultBlockState();
-		BlockState glassOrange = Blocks.STAINED_GLASS.orange().defaultBlockState();
-		BlockState glassRed = Blocks.STAINED_GLASS.red().defaultBlockState();
+		BlockState glassBlue = Blocks.BLUE_STAINED_GLASS.defaultBlockState();
+		BlockState glassLightBlue = Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState();
+		BlockState glassPurple = Blocks.PURPLE_STAINED_GLASS.defaultBlockState();
+		BlockState glassGold = Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
+		BlockState glassOrange = Blocks.ORANGE_STAINED_GLASS.defaultBlockState();
+		BlockState glassRed = Blocks.RED_STAINED_GLASS.defaultBlockState();
 
 		c.clear(131, AY + 1, -191, 169, AY + 38, -89);
 		c.fillWeatheredStone(130, AY + 1, -192, 131, AY + 30, -88);
@@ -309,10 +309,10 @@ public final class OathholdAcropolisHalls {
 				int dx = Math.abs(x - cx);
 				if (dx <= 1 && z >= -176 && z <= -90) {
 					c.set(x, AY, z, (x == cx && Math.floorMod(z, 4) == 0) ? OathholdCanvas.OCHRE_LIGHT : OathholdCanvas.POLISHED_DEEPSLATE);
-					c.set(x, AY + 1, z, Blocks.CARPET.red().defaultBlockState());
+					c.set(x, AY + 1, z, Blocks.RED_CARPET.defaultBlockState());
 				} else if (dx == 2 && z >= -176 && z <= -90) {
 					c.set(x, AY, z, OathholdCanvas.GOLD);
-					c.set(x, AY + 1, z, Blocks.CARPET.yellow().defaultBlockState());
+					c.set(x, AY + 1, z, Blocks.YELLOW_CARPET.defaultBlockState());
 				} else {
 					boolean even = (Math.floorDiv(x, 2) + Math.floorDiv(z, 2)) % 2 == 0;
 					c.set(x, AY, z, even ? OathholdCanvas.CALCITE : OathholdCanvas.POLISHED_DEEPSLATE);

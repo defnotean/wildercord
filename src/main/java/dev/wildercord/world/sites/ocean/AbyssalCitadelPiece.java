@@ -107,7 +107,7 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 					set(level, bb, COPPER_OXIDIZED, cx, y1 + 1, cz);
 					set(level, bb, GOLD, cx, y1 + 2, cz);
 					set(level, bb, SEA_LANTERN, cx, y1 + 3, cz);
-					set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, y1 + 4, cz);
+					set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, y1 + 4, cz);
 				}
 			}
 		}

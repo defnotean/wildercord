@@ -39,7 +39,7 @@ public class BarnacleHulkDredger extends Monster {
 	public BarnacleHulkDredger(EntityType<? extends BarnacleHulkDredger> type, Level level) {
 		super(type, level);
 		this.xpReward = 22;
-		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.5F, 1.0F, false);
+		this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0.0F);
 	}
 

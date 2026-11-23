@@ -530,7 +530,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 			zRatio /= d;
 		}
 		GuardianBite.land(level, this, foe, (float) damage, OathboundHalberdierRules.PIERCE);
-		foe.knockback(shove, xRatio, zRatio, level.damageSources().mobAttack(this), 0.0F);
+		foe.knockback(shove, xRatio, zRatio);
 		if (lift > 0.0) {
 			foe.setDeltaMovement(foe.getDeltaMovement().add(0.0, lift, 0.0));
 		}

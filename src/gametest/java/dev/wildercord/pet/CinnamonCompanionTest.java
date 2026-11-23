@@ -17,7 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.zombie.Husk;
@@ -172,7 +172,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					ServerLevel level = server.overworld();
 					CinnamonDog dog = findCinnamon(server);
 					dog.teleportTo(0.5, 101, 2.5);
-					Husk z = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+					Husk z = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 					check(z != null, "Spawn passive magic husk target");
 					z.setPos(0.5, 101, 8.5);
 					z.setNoAi(true);
@@ -329,7 +329,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 				world.getServer().runOnServer(server -> {
 					ServerLevel level = server.overworld();
 					CinnamonDog dog = findCinnamon(server);
-					Husk z = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+					Husk z = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 					check(z != null, "Spawn hit-pause attacker");
 					z.setPos(2.0, 101, 2.5);
 					z.setNoAi(true);

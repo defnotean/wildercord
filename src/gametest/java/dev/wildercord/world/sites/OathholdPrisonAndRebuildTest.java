@@ -21,7 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -69,7 +69,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
 				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = EntityTypes.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
+			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
@@ -152,7 +152,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 		l.setBlock(new BlockPos(0, baseY + 2, z1),
 			Blocks.SPRUCE_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), 18);
 		for (int ax = -2; ax <= 2; ax++) {
-			BlockState awning = ((ax + 2) & 1) == 0 ? Blocks.WOOL.red().defaultBlockState() : Blocks.WOOL.white().defaultBlockState();
+			BlockState awning = ((ax + 2) & 1) == 0 ? Blocks.RED_WOOL.defaultBlockState() : Blocks.WHITE_WOOL.defaultBlockState();
 			l.setBlock(new BlockPos(ax, baseY + 3, z1 + 1), awning, 3);
 		}
 		l.setBlock(new BlockPos(0, baseY + 4, z1 + 1), Blocks.DARK_OAK_FENCE.defaultBlockState(), 3);

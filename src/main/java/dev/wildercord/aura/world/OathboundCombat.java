@@ -117,8 +117,7 @@ public final class OathboundCombat {
 			return false;
 		}
 		if (knockback > 0.0) {
-			foe.knockback(knockback, from.x - foe.getX(), from.z - foe.getZ(),
-					level.damageSources().mobAttack(self), 0.0F);
+			foe.knockback(knockback, from.x - foe.getX(), from.z - foe.getZ());
 		}
 		if (lift > 0.0) {
 			foe.setDeltaMovement(foe.getDeltaMovement().add(0.0, lift, 0.0));

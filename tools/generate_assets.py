@@ -262,7 +262,10 @@ def write_json(path, data):
         data = loot_format(data)
     elif "recipe" in path.parts:
         data = _normalize_recipe_variants(data)
-    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
+    # ensure_ascii=False: the lang file carries middots, arrows and quotes, and the
+    # committed copy keeps them readable. Escaping them here made the asset check
+    # report lang drift on every branch.
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
 def save(img, path, preview=None):

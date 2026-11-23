@@ -61,7 +61,7 @@ public class ThalassorBoss extends Monster {
 	public ThalassorBoss(EntityType<? extends ThalassorBoss> type, Level level) {
 		super(type, level);
 		this.xpReward = 250;
-		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.85F, 1.0F, false);
+		this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.85F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0.0F);
 		setPersistenceRequired();
 	}

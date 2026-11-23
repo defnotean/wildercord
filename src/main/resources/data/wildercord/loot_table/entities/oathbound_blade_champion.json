@@ -12,23 +12,27 @@
           "type": "minecraft:item",
           "name": "wildercord:manual_page",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:breathing_method": "crimson"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:breathing_method": "crimson"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:manual_page",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:breathing_method": "ember"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:breathing_method": "ember"
+              }
+            }
+          ]
         }
       ]
     },
@@ -38,23 +42,23 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:aura_shard",
-          "modifier": [
+          "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 2,
                 "max": 4
-              },
-              "type": "minecraft:set_count"
+              }
             },
             {
+              "function": "minecraft:enchanted_count_increase",
               "enchantment": "minecraft:looting",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
-              },
-              "type": "minecraft:enchanted_count_increase"
+              }
             }
           ]
         }
@@ -66,14 +70,16 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
         }
       ]
     },
@@ -83,14 +89,16 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 6
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 6
+              }
+            }
+          ]
         }
       ]
     },
@@ -100,14 +108,16 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
         }
       ]
     }

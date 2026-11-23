@@ -6,7 +6,7 @@ import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.DyeColor;
@@ -91,8 +91,8 @@ public final class OathholdInnerCore {
 		OathholdStreetscape.parkBench(c, -13, 2, 182, Direction.EAST);
 		OathholdStreetscape.parkBench(c, 13, 2, 182, Direction.WEST);
 
-		OathholdStreetscape.marketStall(c, -20, 2, 176, Blocks.WOOL.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 1);
-		OathholdStreetscape.marketStall(c, 20, 2, 176, Blocks.WOOL.blue().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 2);
+		OathholdStreetscape.marketStall(c, -20, 2, 176, Blocks.RED_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), 1);
+		OathholdStreetscape.marketStall(c, 20, 2, 176, Blocks.BLUE_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), 2);
 		OathholdStreetscape.merchantWagon(c, -6, 1, 200, true, 3);
 		OathholdStreetscape.merchantWagon(c, 6, 1, 156, true, 4);
 
@@ -129,10 +129,10 @@ public final class OathholdInnerCore {
 		}
 
 		// Canal-Side Promenade Cafe Patios, Benches, Planters & Villagers
-		BlockState redCarpet = Blocks.CARPET.red().defaultBlockState();
-		BlockState cyanCarpet = Blocks.CARPET.cyan().defaultBlockState();
-		BlockState greenCarpet = Blocks.CARPET.green().defaultBlockState();
-		BlockState whiteWool = Blocks.WOOL.white().defaultBlockState();
+		BlockState redCarpet = Blocks.RED_CARPET.defaultBlockState();
+		BlockState cyanCarpet = Blocks.CYAN_CARPET.defaultBlockState();
+		BlockState greenCarpet = Blocks.GREEN_CARPET.defaultBlockState();
+		BlockState whiteWool = Blocks.WHITE_WOOL.defaultBlockState();
 		for (int cz : new int[]{138, 102, 74, 40, 12}) {
 			OathholdStreetscape.patioTable(c, -15, 1, cz, cz % 2 == 0 ? redCarpet : greenCarpet, whiteWool);
 			OathholdStreetscape.patioTable(c, 15, 1, cz, cz % 2 == 0 ? cyanCarpet : redCarpet, whiteWool);
@@ -194,8 +194,8 @@ public final class OathholdInnerCore {
 			c.fill(-200, 15, z, -196, 15, z, OathholdCanvas.WATER);
 		}
 		// Shaded arcade stalls, benches & greenery under and alongside the Aqueduct arches
-		OathholdStreetscape.marketStall(c, -184, 1, 20, Blocks.WOOL.cyan().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 11);
-		OathholdStreetscape.marketStall(c, -154, 1, 20, Blocks.WOOL.orange().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 12);
+		OathholdStreetscape.marketStall(c, -184, 1, 20, Blocks.CYAN_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), 11);
+		OathholdStreetscape.marketStall(c, -154, 1, 20, Blocks.ORANGE_WOOL.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState(), 12);
 		OathholdStreetscape.parkBench(c, -168, 1, 14, Direction.NORTH);
 		OathholdStreetscape.cargoCluster(c, -142, 1, 13, 13);
 		OathholdStreetscape.hedgePlanter(c, -190, 0, 27, -172, 31);
@@ -247,12 +247,12 @@ public final class OathholdInnerCore {
 	private static void buildBazaarSquare(OathholdCanvas c) {
 		if (!c.intersects(-124, 88, -36, 154)) return;
 		BlockState[] awnings = {
-			Blocks.WOOL.red().defaultBlockState(),
-			Blocks.WOOL.blue().defaultBlockState(),
-			Blocks.WOOL.lime().defaultBlockState(),
-			Blocks.WOOL.orange().defaultBlockState(),
-			Blocks.WOOL.yellow().defaultBlockState(),
-			Blocks.WOOL.white().defaultBlockState()
+			Blocks.RED_WOOL.defaultBlockState(),
+			Blocks.BLUE_WOOL.defaultBlockState(),
+			Blocks.LIME_WOOL.defaultBlockState(),
+			Blocks.ORANGE_WOOL.defaultBlockState(),
+			Blocks.YELLOW_WOOL.defaultBlockState(),
+			Blocks.WHITE_WOOL.defaultBlockState()
 		};
 		int idx = 0;
 		for (int sz = 96; sz <= 140; sz += 14) {
@@ -280,8 +280,8 @@ public final class OathholdInnerCore {
 		OathholdStreetscape.merchantWagon(c, -96, 1, 104, false, 22);
 		OathholdStreetscape.cargoCluster(c, -44, 1, 96, 23);
 		OathholdStreetscape.cargoCluster(c, -118, 1, 118, 24);
-		OathholdStreetscape.patioTable(c, -44, 1, 108, Blocks.CARPET.orange().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
-		OathholdStreetscape.patioTable(c, -44, 1, 134, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+		OathholdStreetscape.patioTable(c, -44, 1, 108, Blocks.ORANGE_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
+		OathholdStreetscape.patioTable(c, -44, 1, 134, Blocks.RED_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 		for (int lx : new int[]{-116, -80, -44}) {
 			OathholdStreetscape.ornateStreetLamp(c, lx, 1, 90, false);
 			OathholdStreetscape.ornateStreetLamp(c, lx, 1, 148, false);
@@ -343,7 +343,7 @@ public final class OathholdInnerCore {
 			for (int z = Math.max(z0 + 2, c.clipMinLz()); z <= Math.min(z1 - 2, c.clipMaxLz()); z++) {
 				if (z >= 61 && z <= 65) {
 					c.set(x, 0, z, OathholdCanvas.POLISHED_DEEPSLATE);
-					c.set(x, 1, z, Blocks.CARPET.red().defaultBlockState());
+					c.set(x, 1, z, Blocks.RED_CARPET.defaultBlockState());
 				} else {
 					boolean even = ((x + z) & 1) == 0;
 					c.set(x, 0, z, even ? OathholdCanvas.CALCITE : OathholdCanvas.POLISHED_DEEPSLATE);
@@ -387,7 +387,7 @@ public final class OathholdInnerCore {
 		}
 
 		c.pitchedRoofZ(x0 + 1, 19, z0 + 1, x1 - 1, z1 - 1,
-			Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
+			Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
 			OathholdCanvas.CALCITE, OathholdCanvas.COPPER_OXIDIZED);
 		c.bastionTower(x0 + 4, 0, z0 + 4, 4, 24, 12, OathholdCanvas.COPPER_WEATHERED, false);
 		c.bastionTower(x1 - 4, 0, z0 + 4, 4, 24, 12, OathholdCanvas.COPPER_WEATHERED, false);
@@ -437,8 +437,8 @@ public final class OathholdInnerCore {
 		OathholdStreetscape.hedgePlanter(c, 36, 0, 132, 42, 148);
 		OathholdStreetscape.hedgePlanter(c, 68, 0, 132, 74, 148);
 		for (int px : new int[]{48, 56, 63}) {
-			OathholdStreetscape.patioTable(c, px, 1, 138, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
-			OathholdStreetscape.patioTable(c, px, 1, 145, Blocks.CARPET.green().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+			OathholdStreetscape.patioTable(c, px, 1, 138, Blocks.RED_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
+			OathholdStreetscape.patioTable(c, px, 1, 145, Blocks.GREEN_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 			c.set(px, 5, 141, OathholdStreetscape.horizontalChain(false));
 		}
 		c.set(54, 1, 132, Town.BOUNTY_BOARD.defaultBlockState().setValue(BountyBoardBlock.FACING, Direction.SOUTH));
@@ -457,9 +457,9 @@ public final class OathholdInnerCore {
 					OathholdBuildings.build(c, 0, 35, 67, 55, 89, 2, Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB,
 						false, OathholdBuildings.Theme.CITADEL, false, 777);
 					OathholdStreetscape.hedgePlanter(c, 57, 0, 68, 61, 88);
-					OathholdStreetscape.patioTable(c, 58, 1, 78, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+					OathholdStreetscape.patioTable(c, 58, 1, 78, Blocks.RED_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 					if (c.inClip(52, 1, 82)) {
-						ArmorStand stand = EntityTypes.ARMOR_STAND.create(c.level().getLevel(), EntitySpawnReason.STRUCTURE);
+						ArmorStand stand = EntityType.ARMOR_STAND.create(c.level().getLevel(), EntitySpawnReason.STRUCTURE);
 						if (stand != null) {
 							stand.snapTo(c.wx(52) + 0.5, c.wy(1), c.wz(82) + 0.5, 125.0F, 0.0F);
 							stand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
@@ -483,7 +483,7 @@ public final class OathholdInnerCore {
 					c.fill(gx + 14, 1, gz + 8, gx + 18, 1, gz + 10, OathholdCanvas.STONE_BRICKS);
 					c.set(gx + 16, 1, gz + 9, OathholdCanvas.WATER);
 					OathholdStreetscape.patioTable(c, gx + 9, 1, gz + 16,
-						Blocks.CARPET.yellow().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+						Blocks.YELLOW_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 					OathholdStreetscape.parkBench(c, gx + 22, 1, gz + 16, Direction.WEST);
 				} else {
 					buildMedievalBuilding(c, x0, z0, gx + 14, gz + 14, 2 + (h % 2),
@@ -491,8 +491,8 @@ public final class OathholdInnerCore {
 						h < 50 ? Blocks.SPRUCE_SLAB : Blocks.DEEPSLATE_TILE_SLAB,
 						h % 7 == 0, gx * 31 + gz);
 					buildMedievalBuilding(c, gx + 17, z0, x1, gz + 14, 2 + ((h + 1) % 2),
-						h < 65 ? Blocks.DEEPSLATE_TILE_STAIRS : Blocks.CUT_COPPER_STAIRS.waxed().weathered(),
-						h < 65 ? Blocks.DEEPSLATE_TILE_SLAB : Blocks.CUT_COPPER_SLAB.waxed().weathered(),
+						h < 65 ? Blocks.DEEPSLATE_TILE_STAIRS : Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS,
+						h < 65 ? Blocks.DEEPSLATE_TILE_SLAB : Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
 						false, gx * 37 + gz);
 					buildMedievalBuilding(c, x0, gz + 17, x1, z1, 2 + ((h + 2) % 2),
 						Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB, h % 5 == 0, gx * 41 + gz);

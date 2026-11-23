@@ -18,7 +18,7 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 /**
- * Registers all Deep Ocean Expansion EntityTypes, default attributes, and water spawn placements.
+ * Registers all Deep Ocean Expansion EntityType, default attributes, and water spawn placements.
  */
 public final class OceanEntities {
 	private OceanEntities() {}

@@ -174,7 +174,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				var canalWater = blockAt(l, ox, by - 2, oz + 80);
 				check(canalWater.getFluidState().is(Fluids.WATER), "Central Canal water missing at z=+80 (by-2): " + canalWater);
 				var throneCushion = blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 10, oz - 191);
-				check(throneCushion.is(Blocks.WOOL.red()), "Sovereign Throne cushion missing inside Great Hall: " + throneCushion);
+				check(throneCushion.is(Blocks.RED_WOOL), "Sovereign Throne cushion missing inside Great Hall: " + throneCushion);
 				var cathedralSpire = blockAt(l, ox + 150, by + 115, oz - 140);
 				check(!cathedralSpire.isAir(), "Sovereign Cathedral Bell-Spire missing above y=+115: " + cathedralSpire);
 
