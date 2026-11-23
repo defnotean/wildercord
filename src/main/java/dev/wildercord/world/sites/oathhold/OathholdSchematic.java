@@ -44,7 +44,7 @@ public final class OathholdSchematic {
 		}
 		if (spawnResident) {
 			c.spawnCitizen(ox + s.width / 2, baseY + 1, oz + s.length / 2,
-				OathholdCitizenRules.Archetype.TOWNSFOLK, "Oathhold Resident", seed);
+				OathholdCitizenRules.Archetype.TOWNSFOLK, seed);
 		}
 		return true;
 	}
