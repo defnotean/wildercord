@@ -179,7 +179,7 @@ public final class OathholdJustice {
 	}
 
 	public static JusticeLedger ledger(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(JusticeLedger.TYPE);
+		return McSavedData.computeIfAbsent(server.overworld().getDataStorage(), JusticeLedger.TYPE);
 	}
 
 	public static void recordTntPlaced(ServerPlayer player, BlockPos pos, long now) {

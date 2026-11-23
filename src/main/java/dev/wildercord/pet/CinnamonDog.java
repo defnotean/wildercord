@@ -136,7 +136,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	void bind(ServerPlayer owner) {
 		setTame(true, false);
-		setOwner(owner);
+		setOwnerUUID(owner.getUUID());
 		setOrderedToSit(owner.getAttachedOrElse(CinnamonState.SITTING, false));
 		bow = owner.getAttachedOrElse(CinnamonState.BOW, false);
 		setCustomName(Component.literal("Cinnamon"));
@@ -879,7 +879,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 				settled = 0;
 				held.consume(1, player);
 				changed();
-				level().playSound(null, getX(), getY(), getZ(), SoundEvents.HORSE_SADDLE.value(), SoundSource.NEUTRAL, 0.9F, 1.1F);
+				level().playSound(null, getX(), getY(), getZ(), SoundEvents.HORSE_SADDLE, SoundSource.NEUTRAL, 0.9F, 1.1F);
 				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.harness_on"), true);
 				return InteractionResult.SUCCESS;
 			}

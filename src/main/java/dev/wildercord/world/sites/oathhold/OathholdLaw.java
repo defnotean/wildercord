@@ -288,7 +288,7 @@ public final class OathholdLaw {
 	}
 
 	public static CityLedger ledger(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(CityLedger.TYPE);
+		return McSavedData.computeIfAbsent(server.overworld().getDataStorage(), CityLedger.TYPE);
 	}
 
 	public static Optional<OathholdOrigin.Origin> findContainingCity(ServerLevel level, BlockPos pos) {
@@ -475,8 +475,8 @@ public final class OathholdLaw {
 				if (knight.getLastHurtByMob() == player) {
 					knight.setLastHurtByMob(null);
 				}
-				if (knight.getLastHurtByPlayer() == player) {
-					knight.setLastHurtByPlayer((Player) null, 0);
+				if (((dev.wildercord.mixin.LivingEntityLastHurtAccessor) knight).wildercord$lastHurtByPlayer() == player) {
+					knight.setLastHurtByPlayer((Player) null);
 				}
 			}
 		}
