@@ -1,6 +1,10 @@
 package dev.wildercord.ocean;
 
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import java.util.Optional;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,8 +33,6 @@ import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Tidefolk Brine-Merchant inhabiting Coral-Dome Sanctuaries and coastal shelves.
@@ -166,14 +168,14 @@ public class BrineMerchant extends WanderingTrader {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		setMerchantProfession(OceanRules.MerchantProfession.fromId(input.getIntOr("OceanProfession", 0)));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putInt("OceanProfession", getMerchantProfession().id);
 	}
 }

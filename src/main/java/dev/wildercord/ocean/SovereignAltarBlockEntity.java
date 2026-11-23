@@ -1,10 +1,14 @@
 package dev.wildercord.ocean;
 
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,8 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -146,16 +148,16 @@ public final class SovereignAltarBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input);
+	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag, registries);
 		bossUuid = input.read("BossUuid", UUIDUtil.CODEC).orElse(null);
 		respawnTicksRemaining = input.getIntOr("RespawnTicks", -1);
 		initialSpawnDone = input.getBooleanOr("InitialSpawnDone", false);
 	}
 
 	@Override
-	protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output);
+	protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag, registries);
 		if (bossUuid != null) {
 			output.store("BossUuid", UUIDUtil.CODEC, bossUuid);
 		}

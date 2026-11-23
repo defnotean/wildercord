@@ -4,9 +4,14 @@ import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.cast.feel.Feels;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import dev.wildercord.config.Config;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
@@ -16,8 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 
@@ -90,6 +93,6 @@ public final class TombReliquaryEntity extends BlockEntity {
 		self.missingTicks+=20;if(self.missingTicks<200)return;
 		self.guardian=null;self.participants.clear();self.missingTicks=0;self.state(0);self.setChanged();
 	}
-	@Override protected void saveAdditional(ValueOutput out){super.saveAdditional(out);out.putBoolean("authentic",authentic);out.putBoolean("cleared",cleared);out.putLong("cleared_at",clearedAt);if(guardian!=null)out.store("guardian",UUIDUtil.CODEC,guardian);out.store("participants",UUIDUtil.CODEC.listOf(),List.copyOf(participants));out.store("claimed",UUIDUtil.CODEC.listOf(),List.copyOf(claimed));}
-	@Override protected void loadAdditional(ValueInput in){super.loadAdditional(in);authentic=in.getBooleanOr("authentic",false);cleared=in.getBooleanOr("cleared",false);clearedAt=in.getLongOr("cleared_at",0L);guardian=cleared?null:in.read("guardian",UUIDUtil.CODEC).orElse(null);participants.clear();claimed.clear();in.read("participants",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(participants::add);in.read("claimed",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(claimed::add);missingTicks=0;}
+	@Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag, registries);out.putBoolean("authentic",authentic);out.putBoolean("cleared",cleared);out.putLong("cleared_at",clearedAt);if(guardian!=null)out.store("guardian",UUIDUtil.CODEC,guardian);out.store("participants",UUIDUtil.CODEC.listOf(),List.copyOf(participants));out.store("claimed",UUIDUtil.CODEC.listOf(),List.copyOf(claimed));}
+	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag, registries);authentic=in.getBooleanOr("authentic",false);cleared=in.getBooleanOr("cleared",false);clearedAt=in.getLongOr("cleared_at",0L);guardian=cleared?null:in.read("guardian",UUIDUtil.CODEC).orElse(null);participants.clear();claimed.clear();in.read("participants",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(participants::add);in.read("claimed",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(claimed::add);missingTicks=0;}
 }
