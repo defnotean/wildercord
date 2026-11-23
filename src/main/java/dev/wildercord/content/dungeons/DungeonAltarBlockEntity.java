@@ -37,6 +37,7 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 
 	private UUID boss;
 	private boolean slain;
+	private long slainAt;
 	/** When players were first in the arena with its boss missing (not saved: the count starts again). */
 	private long missingSince;
 
@@ -44,14 +45,19 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 		super(DungeonBlocks.ALTAR_ENTITY, pos, state);
 	}
 
-	/** Its boss has fallen: the altar goes quiet for good. */
+	/** Its boss has fallen: the altar rests for {@link dev.wildercord.cast.BossRules#BOSS_RESPAWN_TICKS} before re-arming. */
 	public void slain() {
 		slain = true;
+		slainAt = level != null ? level.getGameTime() : 0L;
 		setChanged();
 	}
 
 	public boolean isSlain() {
 		return slain;
+	}
+
+	public long slainAt() {
+		return slainAt;
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, DungeonAltarBlockEntity entity) {
@@ -95,10 +101,10 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 		}
 	}
 
-	/** Awake: every few seconds, whether its boss is still about, and if it's long gone, re-arms. */
+	/** Awake: every few seconds, whether its boss is still about or due to respawn, and re-arms when ready. */
 	private void watch(ServerLevel level, BlockPos pos, BlockState state) {
 		long time = level.getGameTime();
-		if (slain || (time + pos.asLong()) % 100 != 0 || !level.isPositionEntityTicking(pos)) {
+		if ((time + pos.asLong()) % 100 != 0 || !level.isPositionEntityTicking(pos)) {
 			return;
 		}
 		Vec3 heart = Vec3.atCenterOf(pos);
@@ -108,6 +114,17 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 				watched = true;
 				break;
 			}
+		}
+		if (slain) {
+			if (watched && dev.wildercord.cast.BossRules.canRespawn(slainAt, time) && !bossHere(level, pos)) {
+				slain = false;
+				slainAt = 0L;
+				missingSince = 0L;
+				boss = null;
+				setChanged();
+				level.setBlock(pos, state.setValue(DungeonAltarBlock.AWAKE, false), Block.UPDATE_ALL);
+			}
+			return;
 		}
 		// (An altar that never knew its boss, woken before altars remembered them, is taken to have seen it fall.)
 		if (!watched || bossHere(level, pos) || boss == null) {
@@ -144,7 +161,8 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.loadAdditional(inputTag, registries);
 		boss = input.read("boss", UUIDUtil.CODEC).orElse(null);
-		slain = (input.contains("slain", 1) ? input.getBoolean("slain") :  false);
+		slain = input.getBooleanOr("slain", false);
+		slainAt = input.getLongOr("slain_at", 0L);
 	}
 
 	@Override
@@ -154,5 +172,6 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 			output.store("boss", UUIDUtil.CODEC, boss);
 		}
 		output.putBoolean("slain", slain);
+		output.putLong("slain_at", slainAt);
 	}
 }

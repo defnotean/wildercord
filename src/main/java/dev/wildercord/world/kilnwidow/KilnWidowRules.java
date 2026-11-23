@@ -7,7 +7,7 @@ public final class KilnWidowRules {
 	public static final int START = 60, QUIET_RESET = 200, RETIRE = 36, MAX_CHALLENGERS = 64;
 	public static final double ARENA = 14, RING_INNER = 3.0, RING_OUTER = 6.5;
 	public static final double SLAG_RADIUS = 2.25, SAFE_HALF_WIDTH = 1.75;
-	public static final float HEALTH = 180;
+	public static final float HEALTH = 720;
 
 	public static int nextMove(int completed, boolean second) {
 		int index = Math.floorMod(completed, 3);

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "executor": "windows-vps",
+  "computer": "WIN-I2GBVRRD872",
+  "head": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+  "launchId": "37a672a0-d5d3-4cb0-9b7f-440c99d31290",
+  "mode": "suite",
+  "suite": "oathbound-knights",
+  "started": "2026-11-23T14:34:43.750246+00:00",
+  "runnerPid": 28240,
+  "status": "passed",
+  "fullClientGate": "unverified",
+  "commands": [
+    {
+      "command": [
+        "C:\\wildercord-ci\\knights\\gradlew.bat",
+        "runClientGameTest",
+        "-PciSuite=oathbound-knights",
+        "-Pwildercord.eulaAccepted=true",
+        "--no-daemon",
+        "--max-workers=2",
+        "--console=plain"
+      ],
+      "pid": 27540,
+      "exit": 0,
+      "log": "native.log",
+      "logSha256": "7c71b3e8d12d248dbaba097d7119a2ba7784ccc0f61d571136257e67d1d3eebe"
+    }
+  ],
+  "selection": {
+    "kind": "suite",
+    "name": "oathbound-knights",
+    "count": 4,
+    "entries": [
+      "dev.wildercord.aura.world.OathboundBastionTest",
+      "dev.wildercord.aura.world.OathboundBladeChampionTest",
+      "dev.wildercord.aura.world.OathboundHalberdierTest",
+      "dev.wildercord.aura.world.OathboundBannerMarshalTest"
+    ]
+  },
+  "identity": {
+    "headSha": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+    "checkoutSha": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+    "workflowSha": "e52acf34e82fba8688aaf2929c4c8963ac532225",
+    "runId": "18",
+    "runAttempt": "1",
+    "job": "smoke-native",
+    "executor": "windows-vps",
+    "computer": "WIN-I2GBVRRD872"
+  },
+  "eulaSource": "C:\\wildercord\\eula.txt",
+  "eulaSha256": "e4db182aa77b5e31657f4b83f8973c79a8c65217a4383200f9f59f7c94752fad",
+  "step": "native",
+  "manifest": "manifest.json",
+  "verificationIssues": [],
+  "finished": "2026-11-23T14:38:31.889067+00:00"
+}

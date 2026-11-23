@@ -323,7 +323,7 @@ public final class HearthModifiers {
 				if (e == caster || e.isDeadOrDying()) {
 					continue;
 				}
-				if (e instanceof Mob mob && mob.getTarget() == caster) {
+				if (e instanceof Mob mob && mob.getTarget() == caster && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
 				if (e instanceof NeutralMob neutral) {

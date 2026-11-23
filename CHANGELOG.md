@@ -4,6 +4,29 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.16.0-alpha] — 2026-11-22
+
+**Sovereigns & Seas.** Oathhold sovereign megacity with citizens, guild requests, guard justice & live NPC house rebuilding; four Oathbound Knights; Deep Ocean expansion with 9 creatures, 5 underwater landmarks & 1:1 translucent models; forest White Rabbit hollow-tree portals; Cinnamon party healing, Grand Bow & flying chest harness; higher boss health pools, arena respawns, perimeter custom-mob fire embers, and global structure non-overlap spacing.
+
+### Added
+- **Oathhold Sovereign Citadel City (`2,048×2,048`) & 750+ Citizens**: colossal capital city with Outer Walls, moat, four cardinal barbican gates and Imperial Causeways, Tournament Colosseum, Imperial Harbor with sailing galleons, King's Square, High Sovereign Abbey, Grand Market Hall, Copper Guildhall, Great Forge Hall, Stone Aqueduct, Arcanum Observatory, Sovereign Cathedral, and Great Hall; populated with `750+` citizens across `16` professions and **Adventurer's Guild Request Boards** offering `30` rotating Rank `F–S` requests (`/adventurer`).
+- **Oathhold Guard Persecution, Watch Stockade Imprisonment & Live Rebuilding**: patrolling neutral High Knights and City Watchmen arrest players seen or heard breaking houses or detonating city TNT into a temporary **Watch Stockade** (`15–45s`), while Master Builders visibly walk up and reconstruct every damaged block before release.
+- **Four Oathbound Champion Knights**: **Oathbound Bastion**, **Oathbound Blade-Champion**, **Oathbound Halberdier**, and **Oathbound Banner-Marshal** with articulated 3D armor rigs, shields/halberds/banners, parries, dive slams, and Colosseum arena bouts.
+- **Deep Ocean Expansion**: `9` custom high-voxel creatures (**Pearl-Pup** tameable sea otter companion, **Lumi-Seahorse** 3D underwater mount, **Singing Moon-Whale**, three **Tidefolk Brine-Merchant** professions, **Barnacle-Hulk Dredger**, **Siren-Veil Jelly**, **Coral-Spine Mako**, **Dread-Nautilus Sentinel**, and `2,400`-HP 14-segment boss **Thalassor, Abyssal Sovereign**), `5` underwater structures (**Coral-Dome Sanctuary**, **Sunken Sovereign Galleon**, **Kelp-Spire Watchtower**, **Hydrothermal Vent Forge**, **Abyssal Trench Citadel**), 6-limb **Abyssal Diving Suit** with translucent turquoise faceplate, **Tide-Cleaver Harpoon**, **Leviathan Glaive**, **Tidecaller Conch**, **Siren-Pearl Lantern**, **Kelp-Wrapped Sashimi**, **Sea-Salt Ramen**, **Trench Anvil**, and **Sovereign Awakening Altar**.
+- **Forest White Rabbit & Hollow Ancient Tree Portals**: rare pocket-watch **White Rabbit** spawns in forests and leads players to a hollowed oak doorway whose swirling portal teleports randomly to a crystal cave, the **Wonderland Root-Vault** treasure chamber, or a sunken colosseum fighting all bosses at once (with return portal back to the forest).
+- **Cinnamon Party Healing, Grand Bow & Flying Chest Harness**: Cinnamon rushes or flies to lick injured owners and party members below `65%` health (`6` HP / `10` HP grown + `Regeneration I`); craft **Cinnamon's Grand Bow** for permanent `3×` growth and boosted stats/spells, and **Cinnamon's Flying Chest Harness** for 4-rider party flight, shared `54`-slot twin side chests, and passive elemental bolts (with a `2–3` second hit pause whenever Cinnamon takes a hit for balance).
+- **Boss Arena Respawns (`LairRespawns`) & Global `StructureClearance`**: dungeon bosses and lair guardians respawn on timed cycles in their cleared arenas/altars, and `StructureClearance` enforces non-overlapping placement clearances across all `89` structure sets with a `96`-block buffer around Oathhold.
+
+### Changed
+- **Boss Survivability & Crowd-Control Balance**: raised boss health pools substantially (raising vanilla's `max_health` ceiling above `1,024` for top-tier bosses), capped sustained boss holds, and added active breakout immunity.
+- **Custom Mob Fire Visibility (`CustomMobFireFx`)**: replaced full-body obscuring flames on burning custom mobs with low perimeter ground embers so custom rigs and models stay clearly readable in combat.
+- **Deep Ocean 1:1 Asset & Structure Polish**: upgraded ocean entity models (`Pearl-Pup`, `Lumi-Seahorse`, `Moon-Whale`, `Brine-Merchants`, `Dredger`, `Jelly`, `Mako`, `Dread-Nautilus`, `Thalassor`), `32×32` translucent item/helmet textures, conduit plaza alignment, and Hydrothermal Forge chimney anchoring.
+
+### Fixed
+- **Structure Overlap Prevention**: fixed cases where neighboring structures could generate overlapping bounding boxes; added `StructureClearance` checks across structure sets and test coverage (`StructureClearanceTest`).
+- **Oathhold Multi-Block Repairs & Snow Exclusion**: fixed bed-part facing calculation and ordered block capture in Watch Stockade live rebuilding, excluded weather snow inside Oathhold, and hardened test bootstrapping for lazy-initialized structure placement.
+- **Abyssal Entity & GameTest Fixes**: replaced `FollowOwnerGoal` on **Pearl-Pup** with amphibious `SwimFollowOwnerGoal`, fixed MC `26.3` `entity_properties` ocean advancement predicates, and ensured `Thalassor` awakens properly in the boss-rush colosseum.
+
 ## [0.15.0-alpha] — 2026-11-20
 
 **Shrine & Sakura.** Four custom Shrine Cats, the four-tier Cat Sanctuary pagoda and Lantern Bathhouse dungeons, four Sakura Village settlements with six kimono villager professions, new runes, deepslate and block-variant crafting, 3D forged weapons, and dungeon ward hardening.

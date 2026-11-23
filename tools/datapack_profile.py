@@ -154,7 +154,10 @@ class DataPackProfile:
             return entry
         entry = dict(entry)
         if "type" in entry and name_key not in entry:
-            entry[name_key] = entry.pop("type")
+            # Hoist the discriminator to the front: that is the order the asset
+            # generators author these entries in, so a converted file and a
+            # generated one have to come out byte-identical.
+            entry = {name_key: entry.pop("type"), **entry}
         return self.loot_table(entry)
 
     def _loot_to_263(self, obj):

@@ -102,6 +102,10 @@ public final class WildlifeRules {
 		"minecraft:frozen_river"));
 	public static final Kind BROOKBILL_DUCK = new Kind("brookbill_duck", Pool.CREATURE, 10, 2, 5, 1 / 2.0, 6, 48, List.of(
 		"minecraft:river", "minecraft:swamp", "minecraft:plains", "minecraft:forest", "minecraft:meadow"));
+	public static final Kind WHITE_RABBIT = new Kind("white_rabbit", Pool.CREATURE, 4, 1, 1, 1 / 3.0, 1, 96, List.of(
+		"minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest",
+		"minecraft:dark_forest", "minecraft:taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga",
+		"minecraft:cherry_grove"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);

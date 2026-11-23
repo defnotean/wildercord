@@ -7,7 +7,7 @@ public final class CartographerRules {
 	public static final int START = 60, QUIET_RESET = 200, RETIRE = 36, MAX_CHALLENGERS = 64;
 	public static final double ARENA = 14, SWEEP_REACH = 6.5, SWEEP_HALF_ANGLE = Math.toRadians(70);
 	public static final double PLUMB_RADIUS = 2.25, SAFE_HALF_WIDTH = 1.75;
-	public static final float HEALTH = 180;
+	public static final float HEALTH = 720;
 
 	public static int nextMove(int completed, boolean second) {
 		int index = Math.floorMod(completed, 3);

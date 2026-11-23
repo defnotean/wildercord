@@ -86,7 +86,7 @@ public final class StormConductor extends DungeonBoss {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createMonsterAttributes().add(Attributes.MAX_HEALTH, 240).add(Attributes.MOVEMENT_SPEED, .24)
+		return createMonsterAttributes().add(Attributes.MAX_HEALTH, 950).add(Attributes.MOVEMENT_SPEED, .24)
 			.add(Attributes.FOLLOW_RANGE, 32).add(Attributes.KNOCKBACK_RESISTANCE, 1).add(Attributes.ATTACK_DAMAGE, 7);
 	}
 

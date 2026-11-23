@@ -1,6 +1,15 @@
 {
   "replace": false,
   "values": [
-    "wildercord:reefback_turtle"
+    "wildercord:reefback_turtle",
+    "wildercord:barnacle_hulk_dredger",
+    "wildercord:siren_veil_jelly",
+    "wildercord:coral_spine_mako",
+    "wildercord:dread_nautilus_sentinel",
+    "wildercord:thalassor",
+    "wildercord:brine_merchant",
+    "wildercord:lumi_seahorse",
+    "wildercord:pearl_pup",
+    "wildercord:singing_moon_whale"
   ]
 }

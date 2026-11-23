@@ -16,17 +16,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
-import dev.wildercord.compat.McValueInput;
-import dev.wildercord.compat.McValueOutput;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 
 /** One keeper per authentic site; saved outcome and claim ledger prevent repeat loot. */
 public final class TombReliquaryEntity extends BlockEntity {
 	private boolean authentic,cleared;
+	private long clearedAt;
 	private UUID guardian;
 	private int missingTicks;
 	private final Set<UUID> participants=new LinkedHashSet<>(),claimed=new LinkedHashSet<>();
@@ -37,9 +35,17 @@ public final class TombReliquaryEntity extends BlockEntity {
 	public UUID guardian(){return guardian;}
 	public BlockPos arena(){return worldPosition.relative(getBlockState().getValue(TombReliquary.FACING).getOpposite(),8);}
 	public void use(ServerPlayer p) {
-		if(!(level instanceof ServerLevel server) || p.isSpectator() || !p.isAlive() || p.distanceToSqr(Vec3.atCenterOf(worldPosition))>25 || !Config.get().auraWorld().swordTombs())return;
+		if(!(level instanceof ServerLevel server) || p.isSpectator() || !playerUsable(p) || !Config.get().auraWorld().swordTombs())return;
 		if(!authentic){p.displayClientMessage(Component.translatable("message.wildercord.tomb.empty"), true);return;}
-		if(cleared){claim(p);return;}
+		if(cleared){
+			if(participants.contains(p.getUUID()) && !claimed.contains(p.getUUID())){claim(p);return;}
+			long remaining=dev.wildercord.cast.BossRules.respawnTicksRemaining(clearedAt,server.getGameTime());
+			if(remaining>0){
+				if(claimed.contains(p.getUUID())){claim(p);}
+				else{p.displayClientMessage(Component.literal("The tomb rests. You can challenge the keeper again in "+dev.wildercord.cast.BossRules.formatRespawnRemaining(remaining)+"."), true);}
+				return;
+			}
+		}
 		if(guardian!=null){p.displayClientMessage(Component.translatable("message.wildercord.tomb.active"), true);return;}
 		if(!SwordTombRules.gate(Aura.stage(p),AuraRules.EDGE,Aura.enabled(p),Aura.holdsWeapon(p))){
 			p.displayClientMessage(Component.translatable("message.wildercord.tomb.challenge"), true);return;
@@ -50,14 +56,15 @@ public final class TombReliquaryEntity extends BlockEntity {
 			p.displayClientMessage(Component.translatable("message.wildercord.tomb.obstructed"), true);return;
 		}
 		var keeper=SwordTombs.KEEPER.create(server,EntitySpawnReason.TRIGGERED);if(keeper==null)return;
-		keeper.bind(worldPosition,home);keeper.moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
+		keeper.bind(worldPosition,home);keeper.snapTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
 		if(!server.addFreshEntity(keeper))return;
-		guardian=keeper.getUUID();missingTicks=0;participants.clear();state(1);setChanged();
+		cleared=false;clearedAt=0;guardian=keeper.getUUID();missingTicks=0;participants.clear();state(1);setChanged();
 		Feels.sound(server,Vec3.atCenterOf(worldPosition),"aura_tomb_awake",1,1);
 		p.sendSystemMessage(Component.translatable("message.wildercord.tomb.wakes"));
 	}
+	private boolean playerUsable(ServerPlayer p){return p.isAlive() && p.distanceToSqr(Vec3.atCenterOf(worldPosition))<=25;}
 	public void participant(ServerPlayer p){if(participants.size()<64 && p.level()==level && p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(Vec3.atCenterOf(arena()))<24*24 && participants.add(p.getUUID()))setChanged();}
-	public void defeated(UUID id){if(!authentic || cleared || !Objects.equals(guardian,id))return;cleared=true;guardian=null;state(2);setChanged();}
+	public void defeated(UUID id){if(!authentic || cleared || !Objects.equals(guardian,id))return;cleared=true;clearedAt=level!=null?level.getGameTime():0L;guardian=null;state(2);setChanged();}
 	private void claim(ServerPlayer p) {
 		if(!participants.contains(p.getUUID()) || !claimed.add(p.getUUID())){p.displayClientMessage(Component.translatable("message.wildercord.tomb.spent"), true);return;}
 		setChanged();
@@ -69,7 +76,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 		give(p,AuraApi.techniqueScroll(first));give(p,AuraApi.techniqueScroll(second));
 		give(p,new ItemStack(AuraWorld.AURA_SHARD,3));give(p,SwordTombs.history());
 		dev.wildercord.cast.Grimoire.unlock(p,"aura:sword_tomb");
-		Feels.sound((ServerLevel) p.level(),p.position(),"aura_tomb_reward",.8F,1);
+		Feels.sound(p.level(),p.position(),"aura_tomb_reward",.8F,1);
 		p.sendSystemMessage(Component.translatable("message.wildercord.tomb.reward"));
 	}
 	private static void give(ServerPlayer p,ItemStack s){if(!p.getInventory().add(s))dev.wildercord.compat.McEntities.drop(p, s, false);}
@@ -83,6 +90,6 @@ public final class TombReliquaryEntity extends BlockEntity {
 		self.missingTicks+=20;if(self.missingTicks<200)return;
 		self.guardian=null;self.participants.clear();self.missingTicks=0;self.state(0);self.setChanged();
 	}
-	@Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag, registries);out.putBoolean("authentic",authentic);out.putBoolean("cleared",cleared);if(guardian!=null)out.store("guardian",UUIDUtil.CODEC,guardian);out.store("participants",UUIDUtil.CODEC.listOf(),List.copyOf(participants));out.store("claimed",UUIDUtil.CODEC.listOf(),List.copyOf(claimed));}
-	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag, registries);authentic=(in.contains("authentic", 1) ? in.getBoolean("authentic") : false);cleared=(in.contains("cleared", 1) ? in.getBoolean("cleared") : false);guardian=cleared?null:in.read("guardian",UUIDUtil.CODEC).orElse(null);participants.clear();claimed.clear();in.read("participants",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(participants::add);in.read("claimed",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(claimed::add);missingTicks=0;}
+	@Override protected void saveAdditional(ValueOutput out){super.saveAdditional(out);out.putBoolean("authentic",authentic);out.putBoolean("cleared",cleared);out.putLong("cleared_at",clearedAt);if(guardian!=null)out.store("guardian",UUIDUtil.CODEC,guardian);out.store("participants",UUIDUtil.CODEC.listOf(),List.copyOf(participants));out.store("claimed",UUIDUtil.CODEC.listOf(),List.copyOf(claimed));}
+	@Override protected void loadAdditional(ValueInput in){super.loadAdditional(in);authentic=in.getBooleanOr("authentic",false);cleared=in.getBooleanOr("cleared",false);clearedAt=in.getLongOr("cleared_at",0L);guardian=cleared?null:in.read("guardian",UUIDUtil.CODEC).orElse(null);participants.clear();claimed.clear();in.read("participants",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(participants::add);in.read("claimed",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(claimed::add);missingTicks=0;}
 }

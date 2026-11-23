@@ -20,6 +20,7 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.renderer.entity.state.*;
 import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
