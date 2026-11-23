@@ -24,7 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -134,8 +134,8 @@ final class ScoutLegendChecks {
 			}
 		}
 		check(book, id + " contains the new authored history page");
-		var structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
-			.getValueOrThrow(ResourceKey.create(Registries.STRUCTURE, Wildercord.id(id)));
+		var structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE)
+			.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Wildercord.id(id)));
 		ChunkPos origin = new ChunkPos(box.minX() >> 4, box.minZ() >> 4);
 		level.getChunk(box.minX() >> 4, box.minZ() >> 4).setStartForStructure(structure, new StructureStart(structure, origin, 0, new PiecesContainer(List.of(piece))));
 		for (int x = box.minX() >> 4; x <= box.maxX() >> 4; x++) for (int z = box.minZ() >> 4; z <= box.maxZ() >> 4; z++)
