@@ -132,7 +132,7 @@ public final class Spirits {
 			wolf.tame(caster);
 			if (shadow) {
 				level.registryAccess().lookupOrThrow(Registries.WOLF_VARIANT).get(WolfVariants.BLACK)
-					.ifPresent(variant -> wolf.setComponent(DataComponents.WOLF_VARIANT, variant));
+					.ifPresent(wolf::setVariant);
 				wolf.setCustomName(Component.translatable("entity.wildercord.shadow_hound").withColor(0x9A6AD0));
 				// Frail and only strong in the dark: 20 health, and Strength only where the light is 7 or less (see the aura below).
 				wolf.addTag(VoidTime.SHADE_TAG);

@@ -113,7 +113,7 @@ public final class LairRespawns extends SavedData {
 
 	/** Number of pending lair respawns in {@code level} (for tests). */
 	public static int pendingCount(ServerLevel level) {
-		LairRespawns data = level.getDataStorage().get(TYPE);
+		LairRespawns data = McSavedData.get(level.getDataStorage(), TYPE);
 		return data == null ? 0 : data.pending.size();
 	}
 
@@ -122,7 +122,7 @@ public final class LairRespawns extends SavedData {
 		if (!Guardians.enabled() || level.getDifficulty() == Difficulty.PEACEFUL) {
 			return;
 		}
-		LairRespawns data = level.getDataStorage().get(TYPE);
+		LairRespawns data = McSavedData.get(level.getDataStorage(), TYPE);
 		if (data == null || data.pending.isEmpty()) {
 			return;
 		}

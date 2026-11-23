@@ -91,10 +91,10 @@ public final class OceanItems {
 
 	// ---- Weapons & Relics ----
 	public static final Item TIDE_CLEAVER_HARPOON = register("tide_cleaver_harpoon",
-		p -> new HarpoonItem(p.sword(ToolMaterial.NETHERITE, 4.0f, OceanRules.HARPOON_ATTACK_SPEED)
+		p -> new HarpoonItem(ToolMaterial.NETHERITE.applySwordProperties(p, 4.0f, OceanRules.HARPOON_ATTACK_SPEED)
 			.durability(1600).rarity(Rarity.EPIC)));
 	public static final Item LEVIATHAN_GLAIVE = register("leviathan_glaive",
-		p -> new GlaiveItem(p.sword(ToolMaterial.NETHERITE, 6.0f, OceanRules.GLAIVE_ATTACK_SPEED)
+		p -> new GlaiveItem(ToolMaterial.NETHERITE.applySwordProperties(p, 6.0f, OceanRules.GLAIVE_ATTACK_SPEED)
 			.durability(2048).rarity(Rarity.EPIC)));
 	public static final Item SIREN_PEARL_LANTERN = register("siren_pearl_lantern",
 		p -> new SirenLanternBlockItem(p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
@@ -162,7 +162,7 @@ public final class OceanItems {
 	private static final ResourceLocation BOOTS_STEP_MOD = Wildercord.id("trench_boots_step");
 
 	private static Item armor(String id, ArmorType type) {
-		return register(id, p -> new AuraWorld.Lore(id, p.humanoidArmor(ABYSSAL_SUIT_MATERIAL, type).rarity(Rarity.RARE)));
+		return register(id, p -> new AuraWorld.Lore(id, ABYSSAL_SUIT_MATERIAL.humanoidProperties(p, type).rarity(Rarity.RARE)));
 	}
 
 	private static Item lore(String id, Rarity rarity) {
@@ -309,7 +309,7 @@ public final class OceanItems {
 					}
 					if (living instanceof ServerPlayer sp) {
 						sp.setAirSupply(sp.getMaxAirSupply());
-						sp.removeEffect(MobEffects.MINING_FATIGUE);
+						sp.removeEffect(MobEffects.DIG_SLOWDOWN);
 						sp.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 45, 0, true, false, true));
 					} else if ((living.getType() == EntityType.DROWNED || living.getType() == EntityType.GUARDIAN
 						|| living instanceof CoralSpineMako) && !BossDamage.boss(living)) {
@@ -443,7 +443,7 @@ public final class OceanItems {
 				int expires = server.getServer().getTickCount() + OceanRules.CONCH_DOME_DURATION_TICKS;
 				ACTIVE_DOMES.put(UUID.randomUUID(), new ActiveDome(server.dimension(), player.getEyePosition(), expires));
 				player.setAirSupply(player.getMaxAirSupply());
-				player.removeEffect(MobEffects.MINING_FATIGUE);
+				player.removeEffect(MobEffects.DIG_SLOWDOWN);
 				player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 160, 0, true, false, true));
 				player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 120, 0, true, false, true));
 				server.playSound(null, player.blockPosition(), SoundEvents.CONDUIT_ACTIVATE, SoundSource.PLAYERS, 1.4f, 0.72f);

@@ -88,7 +88,7 @@ public final class TemporaryBlocks extends SavedData {
 
 	/** Whether the block at {@code pos} is written down as a spell's, to go (for the tests). */
 	public static boolean recorded(ServerLevel level, BlockPos pos) {
-		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		TemporaryBlocks blocks = McSavedData.get(level.getDataStorage(), TYPE);
 		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
 		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos));
 	}
@@ -107,7 +107,7 @@ public final class TemporaryBlocks extends SavedData {
 	 * drops nothing).
 	 */
 	static Placed find(ServerLevel level, BlockPos pos, net.minecraft.world.level.block.Block block) {
-		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		TemporaryBlocks blocks = McSavedData.get(level.getDataStorage(), TYPE);
 		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
 		if (inChunk == null) {
 			return null;
@@ -131,7 +131,7 @@ public final class TemporaryBlocks extends SavedData {
 
 	/** Its spell took the block at {@code pos} down (or it was broken): nothing is left to do for it. */
 	static void remove(ServerLevel level, BlockPos pos) {
-		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		TemporaryBlocks blocks = McSavedData.get(level.getDataStorage(), TYPE);
 		if (blocks != null && blocks.drop(pos)) {
 			blocks.setDirty();
 		}
@@ -153,7 +153,7 @@ public final class TemporaryBlocks extends SavedData {
 			return;
 		}
 		for (ServerLevel level : server.getAllLevels()) {
-			TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+			TemporaryBlocks blocks = McSavedData.get(level.getDataStorage(), TYPE);
 			if (blocks != null && !blocks.byChunk.isEmpty()) {
 				blocks.sweep(level);
 			}
@@ -201,7 +201,7 @@ public final class TemporaryBlocks extends SavedData {
 
 	/** Shatters temporary spell blocks intersecting {@code area} (leaving Light blocks intact). */
 	static void shatterAround(ServerLevel level, AABB area) {
-		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		TemporaryBlocks blocks = McSavedData.get(level.getDataStorage(), TYPE);
 		if (blocks == null || blocks.byChunk.isEmpty()) {
 			return;
 		}

@@ -523,7 +523,7 @@ public final class ExplorerEffects {
 	/** Remedy's transmutations: each ailment and the boon it becomes. */
 	private static final Map<Holder<MobEffect>, Holder<MobEffect>> MOBEFFECT_PAIRS = Map.of(
 		MobEffects.POISON, MobEffects.REGENERATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.MOVEMENT_SPEED, MobEffects.WEAKNESS, MobEffects.DAMAGE_BOOST,
-		MobEffects.BLINDNESS, MobEffects.NIGHT_VISION, MobEffects.DARKNESS, MobEffects.NIGHT_VISION, MobEffects.MINING_FATIGUE, MobEffects.DIG_SPEED,
+		MobEffects.BLINDNESS, MobEffects.NIGHT_VISION, MobEffects.DARKNESS, MobEffects.NIGHT_VISION, MobEffects.DIG_SLOWDOWN, MobEffects.DIG_SPEED,
 		MobEffects.LEVITATION, MobEffects.SLOW_FALLING);
 
 	private static void remedy(Cast cast, Cast.Hit hit, List<LivingEntity> helped, double power, double duration) {
@@ -1040,7 +1040,7 @@ public final class ExplorerEffects {
 			if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 				confuse(cast, mob, Effects.ticks(5, duration));
 			} else {
-				effect(t, MobEffects.NAUSEA, Effects.ticks(6, duration), 0, cast);
+				effect(t, MobEffects.CONFUSION, Effects.ticks(6, duration), 0, cast);
 			}
 		}
 		for (LivingEntity t : alliesAround(cast, centre.add(0, 1, 0), radius)) {

@@ -10,10 +10,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
@@ -27,8 +27,6 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -53,7 +51,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return (ServerLevel) player(server).level();
 	}
 
 	private static float yaw(Vec3 from, Vec3 to) {
@@ -392,11 +390,11 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
-				TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, l.registryAccess());
+				CompoundTag out = new CompoundTag();
 				m.saveWithoutId(out);
 
 				OathboundBannerMarshal reloaded = AuraWorld.OATHBOUND_BANNER_MARSHAL.create(l, EntitySpawnReason.LOAD);
-				reloaded.load(TagValueInput.create(ProblemReporter.DISCARDING, l.registryAccess(), out.buildResult()));
+				reloaded.load(out);
 				check(reloaded.empowered() && reloaded.getHealth() == m.getHealth(),
 					"marshal_empowered failed to persist across NBT reload");
 				check(reloaded.move() == OathboundBannerMarshalRules.SOVEREIGN_MARCH,
