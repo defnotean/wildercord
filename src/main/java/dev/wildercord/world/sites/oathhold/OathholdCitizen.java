@@ -350,7 +350,7 @@ public class OathholdCitizen extends WanderingTrader {
 	}
 
 	@Override
-	protected void updateTrades(ServerLevel level) {
+	protected void updateTrades() {
 	}
 
 	@Override

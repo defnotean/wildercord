@@ -109,7 +109,7 @@ public class BrineMerchant extends WanderingTrader {
 	}
 
 	@Override
-	protected void updateTrades(net.minecraft.server.level.ServerLevel server) {
+	protected void updateTrades() {
 		this.offers = buildOffers(getMerchantProfession());
 	}
 

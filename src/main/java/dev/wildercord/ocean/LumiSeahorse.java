@@ -151,7 +151,7 @@ public class LumiSeahorse extends AbstractHorse {
 		if (isInWater() && dashCooldown <= 0 && getControllingPassenger() instanceof Player rider) {
 			double[] v = OceanRules.seahorseDashVelocity(rider.getYRot(), rider.getXRot());
 			setDeltaMovement(v[0], v[1], v[2]);
-			needsSync = true;
+			hurtMarked = true;
 			dashCooldown = OceanRules.LUMI_SEAHORSE_DASH_COOLDOWN;
 			if (!level().isClientSide()) {
 				entityData.set(DASH_TICKS, 14);

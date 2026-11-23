@@ -87,7 +87,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 						OceanRules.HARPOON_PULL_MAX_SPEED
 					);
 					living.setDeltaMovement(v[0], v[1], v[2]);
-					living.needsSync = true;
+					living.hurtMarked = true;
 				}
 				if (anchorTicks > 35 || owner == null || !owner.isAlive()
 					|| (anchorPos != null && level().getBlockState(anchorPos).isAir())) {
@@ -153,7 +153,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 					OceanRules.HARPOON_REEL_TARGET_SPEED
 				);
 				victim.setDeltaMovement(pull[0], pull[1], pull[2]);
-				victim.needsSync = true;
+				victim.hurtMarked = true;
 			}
 
 			server.playSound(null, blockPosition(), SoundEvents.TRIDENT_HIT, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -179,7 +179,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 					OceanRules.HARPOON_PULL_MAX_SPEED
 				);
 				sp.setDeltaMovement(v[0], v[1], v[2]);
-				sp.needsSync = true;
+				sp.hurtMarked = true;
 			}
 		}
 	}

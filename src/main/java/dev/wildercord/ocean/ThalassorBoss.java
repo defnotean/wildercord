@@ -45,9 +45,7 @@ public class ThalassorBoss extends Monster {
 	private static final EntityDataAccessor<Float> JAW_OPEN = SynchedEntityData.defineId(ThalassorBoss.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Integer> ATTACK_MODE = SynchedEntityData.defineId(ThalassorBoss.class, EntityDataSerializers.INT);
 
-	private final ServerBossEvent bossEvent = new ServerBossEvent(
-		getUUID(),
-		getType().getDescription(),
+	private final ServerBossEvent bossEvent = new ServerBossEvent(getType().getDescription(),
 		BossEvent.BossBarColor.BLUE,
 		BossEvent.BossBarOverlay.NOTCHED_10
 	);

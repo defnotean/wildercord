@@ -174,7 +174,7 @@ public final class KnightSpawner {
 	}
 
 	/** Raises an elite Oathbound high knight inside a deep haunt when headroom allows. */
-	public static @Nullable PathfinderMob spawnChampionIn(ServerLevel level, BlockPos near, Haunt haunt, RandomSource random) {
+	public static PathfinderMob spawnChampionIn(ServerLevel level, BlockPos near, Haunt haunt, RandomSource random) {
 		for (int i = 0; i < 16; i++) {
 			double a = random.nextDouble() * Math.PI * 2;
 			double r = 8 + random.nextDouble() * 12;
@@ -199,7 +199,7 @@ public final class KnightSpawner {
 	}
 
 	/** Places an {@link OathboundBastion} at {@code at} after checking three blocks of vertical clearance. */
-	public static @Nullable OathboundBastion raiseChampion(ServerLevel level, BlockPos at, RandomSource random) {
+	public static OathboundBastion raiseChampion(ServerLevel level, BlockPos at, RandomSource random) {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
@@ -214,7 +214,7 @@ public final class KnightSpawner {
 	}
 
 	/** Places an {@link OathboundBladeChampion} at {@code at} after checking three blocks of vertical clearance. */
-	public static @Nullable OathboundBladeChampion raiseBladeChampion(ServerLevel level, BlockPos at, RandomSource random) {
+	public static OathboundBladeChampion raiseBladeChampion(ServerLevel level, BlockPos at, RandomSource random) {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
@@ -229,7 +229,7 @@ public final class KnightSpawner {
 	}
 
 	/** Places an {@link OathboundHalberdier} at {@code at} after checking three blocks of vertical clearance. */
-	public static @Nullable OathboundHalberdier raiseHalberdier(ServerLevel level, BlockPos at, RandomSource random) {
+	public static OathboundHalberdier raiseHalberdier(ServerLevel level, BlockPos at, RandomSource random) {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
@@ -244,7 +244,7 @@ public final class KnightSpawner {
 	}
 
 	/** Places an {@link OathboundBannerMarshal} at {@code at} after checking three blocks of vertical clearance. */
-	public static @Nullable OathboundBannerMarshal raiseBannerMarshal(ServerLevel level, BlockPos at, RandomSource random) {
+	public static OathboundBannerMarshal raiseBannerMarshal(ServerLevel level, BlockPos at, RandomSource random) {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
