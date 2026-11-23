@@ -33,4 +33,18 @@ public final class MeerkatContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("sunwatch_meerkat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(SUNWATCH_MEERKAT, new Item.Properties()
+		dev.wildercord.compat.McSpawnEgg.create(SUNWATCH_MEERKAT, new Item.Properties()));
+
+	/** What a sunwatch meerkat may stand on to spawn (written by tools/meerkat_art.py). */
+	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/sunwatch_meerkat"));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(SUNWATCH_MEERKAT, SunwatchMeerkat.createAttributes());
+		SpawnPlacements.register(SUNWATCH_MEERKAT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.SUNWATCH_MEERKAT, type, GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.SUNWATCH_MEERKAT, SUNWATCH_MEERKAT);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:sunwatch_meerkat", FieldGuide.Group.WILDLIFE, 0xC8A06A));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+	}
+}

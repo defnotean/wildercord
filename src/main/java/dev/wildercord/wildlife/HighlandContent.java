@@ -32,7 +32,19 @@ import dev.wildercord.compat.McAttachments;
 public final class HighlandContent {
 	private HighlandContent() {}
 	private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("windreed"));
-	public static final WindreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new WindreedBlock(BlockBehaviour.Properties.of().stacksTo(kite?1:16)) {
+	public static final WindreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new WindreedBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS)));
+	public static final Item WINDREED=Registry.register(BuiltInRegistries.ITEM,ResourceKey.create(Registries.ITEM,Wildercord.id("windreed")),
+		new BlockItem(REED,new Item.Properties().useBlockDescriptionPrefix()));
+	public static final Holder<MobEffect> DOWNWIND=Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,Wildercord.id("downwind"),
+		new MobEffect(MobEffectCategory.BENEFICIAL,0x9FAE83) {}.addAttributeModifier(Attributes.MOVEMENT_SPEED,Wildercord.id("downwind_pace"),-.10,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+	public static final Item DRAFT_KITE=tool("draft_kite",true), WINDREED_BRAID=tool("windreed_braid",false);
+	public static final AttachmentType<Long> KITE_READY=McAttachments.create(Wildercord.id("draft_kite_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+	public static final AttachmentType<Long> BRAID_READY=McAttachments.create(Wildercord.id("windreed_braid_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+	private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
+	public static boolean quiet(LivingEntity who) {return who.hasEffect(DOWNWIND) && !who.isSprinting();}
+	private static Item tool(String id,boolean kite) {
+		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id));
+		return Registry.register(BuiltInRegistries.ITEM,key,new AuraWorld.Lore(id,new Item.Properties().stacksTo(kite?1:16)) {
 			@Override public InteractionResult use(Level l,Player p,InteractionHand hand) {
 				var stack=p.getItemInHand(hand);if(p.getCooldowns().isOnCooldown(stack))return InteractionResult.PASS;
 				if(l instanceof ServerLevel server) {

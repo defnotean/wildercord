@@ -38,7 +38,42 @@ public final class BellShard {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("bell_shard"));
 	public static final BellShardBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new BellShardBlock(BlockBehaviour.Properties.of()
-		;
+		.noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.METAL).lightLevel(state -> 4)
+		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
+	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bell_shard"));
+	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
+		new BlockItem(BLOCK, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+
+	/** When each player's knell last tolled, in server ticks. Forgotten on restart, which only ever lets it toll sooner. */
+	private static final Map<UUID, Long> LAST = new HashMap<>();
+
+	/** Whether the shard tolls for this player. */
+	public static boolean bound(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.BELL_SHARD, false);
+	}
+
+	public static void init() {
+		// Tick counts restart with the server, so a remembered tick from the last world would make the cooldown look stuck.
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { LAST.clear(); });
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
+			if (!(entity instanceof ServerPlayer player) || taken <= 0 || !player.isAlive() || !bound(player)) return;
+			long now = player.level().getServer().getTickCount();
+			long since = now - LAST.getOrDefault(player.getUUID(), Long.MIN_VALUE / 2);
+			if (BellWardenRules.knells(player.getHealth(), player.getMaxHealth(), since)) {
+				LAST.put(player.getUUID(), now);
+				knell(player);
+			}
+		});
+	}
+
+	/** It tolls: everything hostile close by is thrown back off them, and they are shielded a few seconds. */
+	private static void knell(ServerPlayer player) {
+		var level = player.level();
+		var at = player.position();
+		Feels.sound((ServerLevel) level, at.add(0, 1, 0), "aura_bell_warden_knell", 1.3F, 1.25F);
+		for (int i = 0; i < 32; i++) {
+			double a = i * Math.PI * 2 / 32;
+			((ServerLevel) level).sendParticles(ParticleTypes.GLOW, at.x + Math.cos(a) * 1.5, at.y + 0.2, at.z + Math.sin(a) * 1.5, 1, 0, 0.05, 0, 0);
 		}
 		((ServerLevel) level).sendParticles(ParticleTypes.SPLASH, at.x, at.y + 0.2, at.z, 30, 1.2, 0.1, 1.2, 0.3);
 		double r = BellWardenRules.KNELL_RADIUS;

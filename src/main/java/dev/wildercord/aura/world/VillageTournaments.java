@@ -31,7 +31,19 @@ import java.util.*;
 public final class VillageTournaments {
 	private VillageTournaments(){}
 	private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("tournament_board")),FLAG_KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("tournament_standard"));
-	public static final TournamentBoard BOARD=Registry.register(BuiltInRegistries.BLOCK,KEY,new TournamentBoard(BlockBehaviour.Properties.of();if(!(ground.is(Blocks.GRASS_BLOCK) || ground.is(BlockTags.DIRT) || ground.is(Blocks.GRAVEL) || ground.is(Blocks.SAND)) || !ground.isFaceSturdy(s,p.below(),Direction.UP) || !s.getFluidState(p.below()).isEmpty())return null;
+	public static final TournamentBoard BOARD=Registry.register(BuiltInRegistries.BLOCK,KEY,new TournamentBoard(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.WOOD).noLootTable().noOcclusion()));
+	public static final Block STANDARD=Registry.register(BuiltInRegistries.BLOCK,FLAG_KEY,new Block(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.WOOL).noLootTable().noOcclusion()));
+	public static final BlockEntityType<TournamentBoardEntity> BOARD_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("tournament_board"),FabricBlockEntityTypeBuilder.create(TournamentBoardEntity::new,BOARD).build());
+	private static final Map<ServerLevel,Map<BlockPos,TournamentBoardEntity>> LOADED=new HashMap<>();
+	static void loaded(TournamentBoardEntity b){if(b.getLevel() instanceof ServerLevel s){var sites=LOADED.computeIfAbsent(s,k->new HashMap<>());sites.values().removeIf(BlockEntity::isRemoved);if(sites.size()<128 || sites.containsKey(b.getBlockPos()))sites.put(b.getBlockPos(),b);}}
+	public static boolean inhabited(ServerLevel s,BlockPos bell){return bell!=null && s.hasChunkAt(bell) && s.getBlockState(bell).is(Blocks.BELL) && s.getEntitiesOfClass(Villager.class,new AABB(bell).inflate(32),v->v.isAlive()).size()>=3;}
+	public static TournamentBoardEntity install(ServerLevel s,BlockPos center,BlockPos bell){
+		if(!Config.get().auraWorld().tournaments() || !s.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get() || !inhabited(s,bell) || center.distSqr(bell)>64*64)return null;
+		var sites=LOADED.computeIfAbsent(s,k->new HashMap<>());sites.values().removeIf(BlockEntity::isRemoved);
+		if(sites.size()>=128 || sites.values().stream().anyMatch(b->b.getBlockPos().distSqr(bell)<96*96))return null;
+		for(int x=-8;x<=8;x++)for(int z=-8;z<=8;z++){
+			BlockPos p=center.offset(x,0,z);if(!s.hasChunkAt(p) || !s.canSeeSky(p))return null;
+			var ground=s.getBlockState(p.below());if(!(ground.is(Blocks.GRASS_BLOCK) || ground.is(BlockTags.DIRT) || ground.is(Blocks.GRAVEL) || ground.is(Blocks.SAND)) || !ground.isFaceSturdy(s,p.below(),Direction.UP) || !s.getFluidState(p.below()).isEmpty())return null;
 			for(int y=0;y<3;y++)if(!s.getBlockState(p.above(y)).isAir())return null;
 		}
 		BlockPos stand=center.offset(0,0,6);s.setBlockAndUpdate(stand,BOARD.defaultBlockState());

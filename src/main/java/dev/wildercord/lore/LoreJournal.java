@@ -70,7 +70,71 @@ public final class LoreJournal {
 
 	/** The keepsake "Four Lamps, One Road" leaves: a lamplighter's lantern, one for each traveller who walks the whole road. */
 	public static final Item LAMPLIGHTER = net.minecraft.core.Registry.register(net.minecraft.core.registries.BuiltInRegistries.ITEM,
-		Wildercord.id("lamplighters_lantern"), new AuraWorld.Lore("lamplighters_lantern", new Item.Properties();
+		Wildercord.id("lamplighters_lantern"), new AuraWorld.Lore("lamplighters_lantern", new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+
+	public static void init() {
+		ServerState.resetOnStop(LAST_TALK, TALKS);
+		ServerTickEvents.END_SERVER_TICK.register(LoreJournal::tick);
+		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
+			if (hand == InteractionHand.MAIN_HAND && player instanceof ServerPlayer server && !player.isSpectator()) {
+				if (entity instanceof Duelist duelist && !duelist.inDuel() && !duelist.leaving()) talk(server, duelist.method().id());
+			}
+			return InteractionResult.PASS;
+		});
+		UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+			if (hand == InteractionHand.MAIN_HAND && player instanceof ServerPlayer server && !player.isSpectator()) {
+				Block block = level.getBlockState(hit.getBlockPos()).getBlock();
+				String place = block == Battlefields.MEMORIAL ? "place:memorial" : block == SwordTombs.RELIQUARY ? "place:tomb"
+					: block == VillageTournaments.BOARD ? "place:tournament" : block == SleepingBlades.STONE ? "place:sleeping_blade" : null;
+				if (place != null) record(server, place, true);
+			}
+			return InteractionResult.PASS;
+		});
+	}
+
+	public static LoreJournalData data(net.minecraft.world.entity.player.Player player) {
+		return player.getAttachedOrElse(JOURNAL, LoreJournalData.EMPTY);
+	}
+
+	private static void set(ServerPlayer player, LoreJournalData data) {
+		player.setAttached(JOURNAL, data);
+	}
+
+	/** Writes an entry. A new one announced brings the journal chime and the key reminder. Returns whether it was new. */
+	public static boolean record(ServerPlayer player, String entry, boolean announce) {
+		LoreJournalData before = data(player);
+		LoreJournalData after = before.with(entry);
+		if (after == before) return false;
+		set(player, after);
+		if (announce) notifyUpdated(player);
+		return true;
+	}
+
+	private static void notifyUpdated(ServerPlayer player) {
+		player.displayClientMessage(Component.translatable("journal.wildercord.updated", Component.keybind("key.wildercord.lore_journal")).withColor(TITLE), true);
+		player.level().playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.6F, 1.2F);
+	}
+
+	// ------------------------------------------------------------------ conversation
+
+	private static void say(ServerPlayer player, String role, String method, String kind) {
+		String line = LoreEntries.line(role, method, kind);
+		Component speaker = Component.translatable("dialogue.wildercord.speaker." + role, methodName(method));
+		player.sendSystemMessage(Component.translatable("dialogue.wildercord.says", speaker, Component.translatable(LoreEntries.lineKey(line))).withColor(SPEECH));
+		set(player, data(player).with("said:" + line));
+	}
+
+	public static Component methodName(String method) {
+		String clean = LoreEntries.clean(method);
+		String plain = clean.substring(clean.lastIndexOf('.') + 1);
+		return Component.translatableWithFallback("aura.wildercord.method." + clean,
+			plain.isEmpty() ? plain : Character.toUpperCase(plain.charAt(0)) + plain.substring(1));
+	}
+
+	/** A duelist spoken to: a greeting the first time, then (not too often) its hint and the journal's open lead. */
+	static void talk(ServerPlayer player, String method) {
+		String clean = LoreEntries.clean(method);
+		long now = player.level().getGameTime();
 		if (!data(player).has("duelist:" + clean)) {
 			say(player, "duelist", method, "greet");
 			record(player, "duelist:" + clean, true);

@@ -38,4 +38,12 @@ public final class DungeonItems {
 
 	private static Item register(String path, Function<Item.Properties, Item> factory) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(path));
-		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
+		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()));
+	}
+
+	public static void init() {
+		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output ->
+			output.addAfter(WildercordBlocks.ARCHIVE_LECTERN, DungeonBlocks.ALTAR, CINDER_HEART, ASTRAL_LENS, DROWNED_QUILL));
+	}
+}

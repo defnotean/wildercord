@@ -53,7 +53,60 @@ public final class BearersLantern {
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("barrow_lantern"));
 	/** The lantern as it stands at the gibbet's foot, there for the taking. */
 	public static final BarrowLanternBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new BarrowLanternBlock(BlockBehaviour.Properties.of()
-		;
+		.noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.LANTERN).lightLevel(state -> 10)
+		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
+	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bearers_lantern"));
+	/** The lantern as it is carried: lit, it calls up the Barrow Steed. */
+	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
+		new LanternItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+
+	/** Whether this player has taken the lantern down before. */
+	public static boolean bound(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.BARROW_LANTERN, false);
+	}
+
+	/** Whether this player carries a Bearer's Lantern now. */
+	static boolean carries(Player player) {
+		return player.getInventory().contains(stack -> stack.is(ITEM));
+	}
+
+	/** Take the lantern down: the lantern itself, and the first time the gravedigger's book with it. */
+	static void take(ServerPlayer player) {
+		boolean first = !bound(player);
+		player.setAttached(WildercordAttachments.BARROW_LANTERN, true);
+		give(player, new ItemStack(ITEM));
+		if (first) give(player, book());
+	}
+
+	private static void give(ServerPlayer player, ItemStack stack) {
+		if (!player.getInventory().add(stack)) dev.wildercord.compat.McEntities.drop(player, stack, false);
+	}
+
+	/** The gravedigger's book: what happened on the Barrow Field, and what still walks it. */
+	static ItemStack book() {
+		var book = new ItemStack(Items.WRITTEN_BOOK);
+		book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(
+			Filterable.passThrough("The Barrow Field"), "a gravedigger", 0,
+			List.of(Filterable.passThrough(Component.translatable("book.wildercord.barrow.1")),
+				Filterable.passThrough(Component.translatable("book.wildercord.barrow.2")),
+				Filterable.passThrough(Component.translatable("book.wildercord.barrow.3")),
+				Filterable.passThrough(Component.translatable("book.wildercord.barrow.4"))), true));
+		return book;
+	}
+
+	/**
+	 * The Barrow Steed rises under {@code player}: tame, saddled and past harm, swifter than any living horse, and it carries them until
+	 * they get down (or die), when it sinks back into the earth.
+	 */
+	static boolean steed(ServerPlayer player) {
+		ServerLevel level = (ServerLevel) player.level();
+		SkeletonHorse horse = McEntities.create(EntityType.SKELETON_HORSE, level, MobSpawnType.TRIGGERED);
+		if (horse == null) return false;
+		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
+		horse.setTamed(true);
+		horse.setOwnerUUID(player.getUUID());
+		horse.equipSaddle(new ItemStack(Items.SADDLE), null);
+		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(horse, true);
 		horse.setPersistenceRequired();
 		horse.setCustomName(Component.translatable("entity.wildercord.barrow_steed"));
 		var speed = horse.getAttribute(Attributes.MOVEMENT_SPEED);

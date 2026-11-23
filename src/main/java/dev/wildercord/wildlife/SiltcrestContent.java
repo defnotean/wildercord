@@ -21,6 +21,12 @@ public final class SiltcrestContent {
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("siltcrest_bittern"));
  public static final EntityType<SiltcrestBittern> BITTERN=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(SiltcrestBittern::new,MobCategory.CREATURE).sized(.65F,1.6F).eyeHeight(1.30F).clientTrackingRange(8).build(KEY));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("siltcrest_bittern_spawn_egg"));
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(BITTERN, new Item.Properties());ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->o.accept(EGG));
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(BITTERN, new Item.Properties()));
+ static boolean room(net.minecraft.server.level.ServerLevel l,BlockPos p){var peers=new ArrayList<SiltcrestBittern>(2);l.getEntities(BITTERN,new AABB(p).inflate(32),Entity::isAlive,peers,2);return peers.size()<2;}
+ public static void init(){FabricDefaultAttributeRegistry.register(BITTERN,SiltcrestBittern.attributes());
+  SpawnPlacements.register(BITTERN,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r)->{if(reason==MobSpawnType.CHUNK_GENERATION)return false;if(reason!=MobSpawnType.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;var cfg=Config.get().wildlife();return level.dimension().equals(Level.OVERWORLD)&&cfg.spawns("siltcrest_bittern")&&r.nextDouble()<Math.min(1,.12*cfg.spawnMultiplier())&&BitternHabitat.bank(l,p)&&l.canSeeSky(p.above())&&room(level,p);});
+  BiomeModifications.create(Wildercord.id("siltcrest_banks")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),c->{var cfg=Config.get().wildlife();if(cfg.spawns("siltcrest_bittern"))dev.wildercord.compat.McWorldgen.addSpawn(c.getSpawnSettings(), MobCategory.CREATURE, BITTERN, 1, 1, Math.max(1,(int)(2*Math.max(1,cfg.spawnMultiplier()))));});
+  FieldGuide.add(new FieldGuide.Entry("wildercord:siltcrest_bittern",FieldGuide.Group.WILDLIFE,0xAD9570));
+  ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(o->o.accept(EGG));ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->o.accept(EGG));
  }
 }

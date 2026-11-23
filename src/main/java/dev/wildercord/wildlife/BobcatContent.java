@@ -33,4 +33,18 @@ public final class BobcatContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("black_bobcat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(BLACK_BOBCAT, new Item.Properties()
+		dev.wildercord.compat.McSpawnEgg.create(BLACK_BOBCAT, new Item.Properties()));
+
+	/** What a bobcat may stand on to spawn (written by tools/bobcat_art.py). */
+	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/black_bobcat"));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(BLACK_BOBCAT, BlackBobcat.createAttributes());
+		SpawnPlacements.register(BLACK_BOBCAT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.BLACK_BOBCAT, type, GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.BLACK_BOBCAT, BLACK_BOBCAT);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:black_bobcat", FieldGuide.Group.WILDLIFE, 0x3A3A48));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+	}
+}

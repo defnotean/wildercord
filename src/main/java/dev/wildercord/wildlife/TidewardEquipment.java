@@ -34,7 +34,29 @@ public final class TidewardEquipment {
  private static ResourceKey<Item> key(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
  private static final net.minecraft.core.Holder<ArmorMaterial> WADER_MATERIAL=McArmor.material(Map.of(ArmorItem.Type.HELMET,0,ArmorItem.Type.CHESTPLATE,0,ArmorItem.Type.LEGGINGS,0,ArmorItem.Type.BOOTS,1),8,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_reedwater")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:reedwater"));
  private static final net.minecraft.core.Holder<ArmorMaterial> GLASS_MATERIAL=McArmor.material(Map.of(ArmorItem.Type.HELMET,0,ArmorItem.Type.CHESTPLATE,0,ArmorItem.Type.LEGGINGS,0,ArmorItem.Type.BOOTS,0),4,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_dewglass")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:dewglass"));
- public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new McArmor.LoreArmor("reedwater_waders",WADER_MATERIAL,ArmorItem.Type.BOOTS,new Item.Properties();var worn=p.getItemBySlot(EquipmentSlot.FEET);var pos=p.position();
+ public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new McArmor.LoreArmor("reedwater_waders",WADER_MATERIAL,ArmorItem.Type.BOOTS,new Item.Properties().rarity(Rarity.UNCOMMON)));
+ public static final Item SPECTACLES=Registry.register(BuiltInRegistries.ITEM,key("dewglass_spectacles"),new McArmor.LoreArmor("dewglass_spectacles",GLASS_MATERIAL,ArmorItem.Type.HELMET,new Item.Properties().rarity(Rarity.UNCOMMON)));
+ private static AttachmentType<Long> rest(String name){return McAttachments.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
+ public static final AttachmentType<Long> WALK_READY=rest("tideward_walk_ready"),SIGHT_READY=rest("tideward_sight_ready");
+ public static final AttachmentType<Integer> WALK_PROGRESS=McAttachments.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());
+ private static final ResourceLocation WALK_ID=Wildercord.id("reedwater_walk");
+ private static final AttributeModifier WALK_MODIFIER=new AttributeModifier(WALK_ID,.25,AttributeModifier.Operation.ADD_VALUE);
+ private static final class Walk {ItemStack worn=ItemStack.EMPTY;ServerLevel world;Vec3 at=Vec3.ZERO;}
+ private static final class Sight {ItemStack worn=ItemStack.EMPTY;ServerLevel world;UUID target;int ticks;}
+ private static final AttachmentType<Walk> WALK=McAttachments.create(Wildercord.id("tideward_walk"),b -> b.initializer(Walk::new));
+ private static final AttachmentType<Sight> SIGHT=McAttachments.create(Wildercord.id("tideward_sight"),b -> b.initializer(Sight::new));
+ public static long clock(ServerPlayer p){return p.level().getServer().overworld().getGameTime();}
+ public static boolean actor(ServerPlayer p){return p.isAlive() && !p.isRemoved() && !p.isSpectator() && !p.isCreative();}
+ public static boolean shallow(ServerPlayer p){
+  var l=p.level();var at=p.blockPosition();var floor=at.below();
+  return actor(p) && p.onGround() && p.isInWater() && !p.isSwimming() && !p.isSprinting() && !p.isPassenger()
+   && l.hasChunkAt(at) && l.hasChunkAt(floor) && l.hasChunkAt(at.above())
+   && l.getFluidState(at).is(FluidTags.WATER) && l.getFluidState(at.above()).isEmpty()
+   && l.getBlockState(floor).isCollisionShapeFullBlock(l,floor);
+ }
+ private static void removeWalk(ServerPlayer p){var a=p.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY);if(a!=null)a.removeModifier(WALK_ID);}
+ private static void walk(ServerPlayer p){
+  var state=p.getAttachedOrCreate(WALK);var worn=p.getItemBySlot(EquipmentSlot.FEET);var pos=p.position();
   boolean same=state.world==p.level() && state.worn==worn;
   boolean eligible=same && worn.is(WADERS) && shallow(p) && clock(p)>=p.getAttachedOrElse(WALK_READY,0L);
   if(!eligible){removeWalk(p);state.world=((ServerLevel) p.level());state.worn=worn;state.at=pos;return;}

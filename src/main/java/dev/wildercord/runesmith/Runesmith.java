@@ -48,4 +48,31 @@ public final class Runesmith {
 			.strength(2.5F)
 			.ignitedByLava()
 			.lightLevel(state -> 5)
-			
+			));
+		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id("scribing_desk"));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.UNCOMMON)));
+		return block;
+	}
+
+	public static void init() {
+		PointOfInterestHelper.register(POI.location(), 1, 1, SCRIBING_DESK);
+		Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, PROFESSION, new VillagerProfession(
+			"runesmith",
+			poi -> poi.is(POI),
+			poi -> poi.is(POI),
+			ImmutableSet.of(),
+			ImmutableSet.of(),
+			SoundEvents.VILLAGER_WORK_LIBRARIAN));
+		VillagerTradeCompat.init();
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_rune"), RandomRuneFunction.TYPE);
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+			.register(output -> output.addAfter(WildercordItems.TRAINING_DUMMY, SCRIBING_DESK));
+		DuplicateSwap.init();
+		Contracts.init();
+	}
+
+	/** Whether this villager is a Runesmith. */
+	public static boolean is(Villager villager) {
+		return villager.getVillagerData().getProfession() == BuiltInRegistries.VILLAGER_PROFESSION.getValue(PROFESSION);
+	}
+}

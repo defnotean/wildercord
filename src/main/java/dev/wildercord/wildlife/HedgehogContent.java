@@ -33,4 +33,18 @@ public final class HedgehogContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("thistle_hedgehog_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(THISTLE_HEDGEHOG, new Item.Properties()
+		dev.wildercord.compat.McSpawnEgg.create(THISTLE_HEDGEHOG, new Item.Properties()));
+
+	/** What a hedgehog may stand on to spawn (written by tools/hedgehog_art.py). */
+	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/thistle_hedgehog"));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(THISTLE_HEDGEHOG, ThistleHedgehog.createAttributes());
+		SpawnPlacements.register(THISTLE_HEDGEHOG, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.THISTLE_HEDGEHOG, type, GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.THISTLE_HEDGEHOG, THISTLE_HEDGEHOG);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:thistle_hedgehog", FieldGuide.Group.WILDLIFE, 0x8A6A4A));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+	}
+}

@@ -31,7 +31,20 @@ public final class TidewardSurvey {
  private TidewardSurvey(){}
  public static final int REST=80,ANCHOR_LIFE=100,ROUTE_LIFE=100,MAX_CELLS=9;
  private static final ResourceKey<Item> KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("bank_surveyors_line"));
- public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,KEY,new AuraWorld.Lore("bank_surveyors_line",new Item.Properties());if(cells.isEmpty() || !cells.getLast().equals(at))cells.add(at);}
+ public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,KEY,new AuraWorld.Lore("bank_surveyors_line",new Item.Properties().durability(96)){
+  @Override public InteractionResult useOn(UseOnContext c){if(c.getPlayer() instanceof ServerPlayer p)survey(p,c);return InteractionResult.SUCCESS;}
+ });
+ public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("bank_survey_ready"),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
+ private static final class State {ServerLevel world;ItemStack held=ItemStack.EMPTY;InteractionHand hand;boolean reading;BlockPos first;List<BlockPos> route=List.of();long until,nonce;}
+ private static final AttachmentType<State> STATE=McAttachments.create(Wildercord.id("bank_survey_state"),b -> b.initializer(State::new));
+ private static boolean current(ServerPlayer p,State s){return TidewardReadAdmission.actor(p) && s.world==p.level() && s.hand!=null && p.getItemInHand(s.hand)==s.held && s.held.is(ITEM);}
+ private static void clear(ServerPlayer p,State s){if(!s.route.isEmpty())TidewardCue.clear(p,s.nonce);s.route=List.of();s.first=null;s.until=0;}
+ private static boolean refuse(ServerPlayer p,String reason){p.displayClientMessage(Component.translatable("message.wildercord.bank_line."+reason), true);return false;}
+ public static List<BlockPos> columns(BlockPos a,BlockPos b){
+  int dx=b.getX()-a.getX(),dy=b.getY()-a.getY(),dz=b.getZ()-a.getZ();int steps=Math.max(Math.abs(dx),Math.abs(dz));
+  if(steps<1 || steps>8 || Math.abs(dy)>1 || (long)dx*dx+(long)dz*dz>64)return List.of();
+  var cells=new ArrayList<BlockPos>(steps+1);
+  for(int i=0;i<=steps;i++){double t=i/(double)steps;var at=a.offset((int)Math.round(dx*t),(int)Math.round(dy*t),(int)Math.round(dz*t));if(cells.isEmpty() || !cells.getLast().equals(at))cells.add(at);}
   return List.copyOf(cells);
  }
  public static boolean footing(ServerPlayer p,BlockPos floor){

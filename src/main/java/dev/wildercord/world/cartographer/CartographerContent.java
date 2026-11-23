@@ -24,7 +24,21 @@ public final class CartographerContent {
 	private CartographerContent() {}
 	private static final ResourceKey<Block> ASTROLABE_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("survey_astrolabe"));
 	public static final SurveyAstrolabeBlock ASTROLABE = Registry.register(BuiltInRegistries.BLOCK, ASTROLABE_KEY,
-		new SurveyAstrolabeBlock(BlockBehaviour.Properties.of(), false));
+		new SurveyAstrolabeBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.COPPER)));
+	public static final Item ASTROLABE_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("survey_astrolabe")),
+		new BlockItem(ASTROLABE, new Item.Properties().useBlockDescriptionPrefix()));
+	public static final BlockEntityType<SurveyAstrolabeEntity> ASTROLABE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("survey_astrolabe"),
+		FabricBlockEntityTypeBuilder.create(SurveyAstrolabeEntity::new, ASTROLABE).build());
+	private static final ResourceKey<Item> COMPASS_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("high_meridian_compass"));
+	public static final Item COMPASS = Registry.register(BuiltInRegistries.ITEM, COMPASS_KEY,
+		new AuraWorld.Lore("high_meridian_compass", new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+	private static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("glass_cartographer"));
+	public static final EntityType<GlassCartographer> CARTOGRAPHER = Registry.register(BuiltInRegistries.ENTITY_TYPE, ENTITY_KEY,
+		EntityType.Builder.of(GlassCartographer::new, MobCategory.MONSTER).sized(2.8F, 3.4F).eyeHeight(2.6F).clientTrackingRange(14).build(ENTITY_KEY));
+
+	public static ItemStack compassTo(ServerLevel level, BlockPos pos) {
+		var stack = new ItemStack(COMPASS);
+		stack.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(GlobalPos.of(level.dimension(), pos.immutable())), false));
 		return stack;
 	}
 

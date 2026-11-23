@@ -33,4 +33,18 @@ public final class PenguinContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("floe_penguin_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(FLOE_PENGUIN, new Item.Properties()
+		dev.wildercord.compat.McSpawnEgg.create(FLOE_PENGUIN, new Item.Properties()));
+
+	/** What a floe penguin may stand on to spawn (written by tools/penguin_art.py). */
+	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/floe_penguin"));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(FLOE_PENGUIN, FloePenguin.createAttributes());
+		SpawnPlacements.register(FLOE_PENGUIN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.FLOE_PENGUIN, type, GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.FLOE_PENGUIN, FLOE_PENGUIN);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:floe_penguin", FieldGuide.Group.WILDLIFE, 0x2A2E36));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+	}
+}

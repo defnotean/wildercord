@@ -47,4 +47,32 @@ public final class ResidueBlocks {
 
 	private static ResidueBlock register(Kind kind, BlockBehaviour.Properties properties) {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id(kind.path));
-		properties
+		properties.pushReaction(kind.placement == dev.wildercord.world.ResidueRules.Placement.COVER
+			? dev.wildercord.compat.McBlocksAndItems.immovablePushReaction()
+			: dev.wildercord.compat.McBlocksAndItems.poppedPushReaction());
+		ResidueBlock block = Registry.register(BuiltInRegistries.BLOCK, key, new ResidueBlock(kind, properties));
+		BY_KIND.put(kind, block);
+		return block;
+	}
+
+	/** The block of one element's mark. */
+	public static ResidueBlock of(Kind kind) {
+		return BY_KIND.get(kind);
+	}
+
+	/** The mark a block is, or null if it isn't one. */
+	public static Kind kindOf(BlockState state) {
+		return state.getBlock() instanceof ResidueBlock residue ? residue.kind : null;
+	}
+
+	public static boolean is(BlockState state) {
+		return state.getBlock() instanceof ResidueBlock;
+	}
+
+	public static void init() {
+		// Animals (any mob that paths) keep off a void scar and step round it, and round a patch of bloodmoss.
+		// 1.21.10 has no fabric land-path registry; PathTypeCompat + WalkNodeEvaluator mixin cover it.
+		dev.wildercord.compat.PathTypeCompat.register(VOID_SCAR, PathType.DANGER_FIRE, PathType.DANGER_OTHER);
+		dev.wildercord.compat.PathTypeCompat.register(BLOODMOSS, PathType.DANGER_OTHER, PathType.DANGER_OTHER);
+	}
+}

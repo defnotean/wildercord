@@ -38,7 +38,49 @@ public final class BladeSmithing {
 
 	private static Item steel() {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id("master_steel"));
-		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties() {
+		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().rarity(Rarity.EPIC)
+			.component(net.minecraft.core.component.DataComponents.LORE, new net.minecraft.world.item.component.ItemLore(java.util.List.of(
+				Component.translatable("item.wildercord.master_steel.use").withStyle(ChatFormatting.GRAY))))));
+	}
+
+	public static void init() {
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+			.register(output -> output.accept(MASTER_STEEL));
+	}
+
+	public static int temper(ItemStack stack) {
+		return stack == null || stack.isEmpty() ? 0 : stack.getOrDefault(TEMPER, 0);
+	}
+
+	/** What tempering {@code blade} with {@code steel} at an anvil makes, how much steel and how many levels it takes. */
+	public record Result(ItemStack out, int steel, int levels) {}
+
+	/**
+	 * The anvil's answer for {@code blade} (left) and {@code steel} (right) under {@code smith}'s hands, or null when it isn't a
+	 * temper: not a bonded blade of theirs, not enough steel, or tempered as far as its bond allows.
+	 */
+	public static Result temper(ItemStack blade, ItemStack steel, Player smith) {
+		if (blade.getCount() != 1 || !steel.is(MASTER_STEEL) || BondedBlades.foreign(smith, blade)) return null;
+		BladeBond bond = BondedBlades.bond(blade);
+		if (bond == null) return null;
+		int now = temper(blade);
+		if (!BladeSmithingRules.canTemper(now, bond.tier())) return null;
+		int next = now + 1;
+		int needed = BladeSmithingRules.steel(next);
+		if (steel.getCount() < needed) return null;
+		ItemStack out = blade.copy();
+		out.set(TEMPER, next);
+		return new Result(out, needed, BladeSmithingRules.levels(next));
+	}
+
+	/** What the blade in {@code player}'s hand multiplies a coated blow's bonus by: its temper, if it is theirs and bonds are on. */
+	public static double coat(ServerPlayer player, LivingEntity target) {
+		if (!BondedBlades.on(player) || BondedBlades.held(player) == null) return 1.0;
+		return BladeSmithingRules.coat(temper(player.getMainHandItem()), target instanceof Player);
+	}
+
+	/** A Master fell and {@code player} was credited: their share of the steel. */
+	public static void reward(ServerPlayer player, boolean firstClear) {
 		int count = BladeSmithingRules.reward(firstClear);
 		ItemStack stack = new ItemStack(MASTER_STEEL, count);
 		if (!player.getInventory().add(stack)) player.spawnAtLocation(stack);

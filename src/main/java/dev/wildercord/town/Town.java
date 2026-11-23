@@ -141,4 +141,100 @@ public final class Town {
 	private static final ResourceKey<Block> BOARD_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("bounty_board"));
 	public static final BountyBoardBlock BOUNTY_BOARD = Registry.register(BuiltInRegistries.BLOCK, BOARD_KEY,
 		new BountyBoardBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F)
-			.noOcclusion().noLootTable()
+			.noOcclusion().noLootTable()));
+	private static final ResourceKey<Item> BOARD_ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bounty_board"));
+	public static final Item BOUNTY_BOARD_ITEM = Registry.register(BuiltInRegistries.ITEM, BOARD_ITEM_KEY,
+		new BlockItem(BOUNTY_BOARD, new Item.Properties().useBlockDescriptionPrefix()));
+
+	private static final ResourceKey<Item> DEED_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("ridgeback_deed"));
+	public static final Item RIDGEBACK_DEED = Registry.register(BuiltInRegistries.ITEM, DEED_KEY,
+		new RidgebackDeedItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+	private static final ResourceKey<Item> ROOM_KEY_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("room_key"));
+	public static final Item ROOM_KEY = Registry.register(BuiltInRegistries.ITEM, ROOM_KEY_KEY,
+		new RoomKeyItem(new Item.Properties().stacksTo(16)));
+
+	private static final ResourceKey<EntityType<?>> KEEPER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("wayfarer_keeper"));
+	public static final EntityType<WayfarerKeeper> KEEPER = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEEPER_KEY,
+		EntityType.Builder.of(WayfarerKeeper::new, MobCategory.MISC).sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(10).build(KEEPER_KEY));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(KEEPER, Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5));
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (source.getEntity() instanceof ServerPlayer player) {
+				counted(player, entity);
+			}
+		});
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+			.register(output -> {
+				output.accept(RIDGEBACK_DEED);
+				output.accept(ROOM_KEY);
+			});
+		InnRooms.init();
+		Hamlets.init();
+		BountyBoardBlock.init();
+	}
+
+	/** The tag an escort's pack llama carries, before the escorting traveller's id. */
+	public static final String ESCORT_TAG = "wildercord.escort.";
+
+	/** The tag a named elite carries: whose bounty it is. */
+	public static String markTag(UUID player) {
+		return "wildercord.bounty_mark." + player;
+	}
+
+	/** A kill by {@code player}: counts toward their bounty when it's what the bounty asks for. */
+	public static void counted(ServerPlayer player, Entity victim) {
+		Standing standing = standing(player);
+		if (standing.bounty().isEmpty()) return;
+		Active bounty = standing.bounty().get();
+		switch (bounty.type()) {
+			case ELITE -> {
+				if (!bounty.done() && victim.getTags().contains(markTag(player.getUUID()))) progress(player, standing, bounty);
+			}
+			case DUNGEON -> {
+				if (!bounty.done() && victim instanceof DungeonBoss) progress(player, standing, bounty);
+			}
+			case GATHER, ESCORT -> { }
+			default -> counted(player, BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString(), victim.getX(), victim.getZ(),
+				victim.level().dimension().location().toString());
+		}
+	}
+
+	/** A kill by {@code player} of a {@code type} at ({@code x}, {@code z}): counts toward a hunt when it's the right creature, near enough its board. */
+	public static void counted(ServerPlayer player, String type, double x, double z, String dimension) {
+		Standing standing = standing(player);
+		if (standing.bounty().isEmpty()) return;
+		Active bounty = standing.bounty().get();
+		BountyRules.Kind kind = bounty.type();
+		if ((kind != BountyRules.Kind.HUNT && kind != BountyRules.Kind.GREAT) || bounty.done() || !bounty.target().equals(type)
+			|| !bounty.dimension().equals(dimension) || !BountyRules.near(x - (bounty.boardX() + 0.5), z - (bounty.boardZ() + 0.5))) {
+			return;
+		}
+		progress(player, standing, bounty);
+	}
+
+	private static void progress(ServerPlayer player, Standing standing, Active bounty) {
+		Active next = bounty.killed();
+		set(player, standing.with(Optional.of(next)));
+		player.displayClientMessage(next.done()
+			? Component.translatable("message.wildercord.bounty.complete", targetName(next)).withStyle(ChatFormatting.GOLD)
+			: Component.translatable("message.wildercord.bounty.progress", next.kills(), next.needed(), targetName(next)).withStyle(ChatFormatting.YELLOW), true);
+	}
+
+	/** A creature's or an item's name by its id. */
+	public static Component targetName(String id) {
+		if (id.equals(BountyRules.DUNGEON_GUARDIAN)) return Component.translatable("town.wildercord.dungeon_guardian");
+		ResourceLocation key = ResourceLocation.tryParse(id);
+		if (key == null) return Component.literal(id);
+		Optional<Component> creature = BuiltInRegistries.ENTITY_TYPE.getOptional(key).map(EntityType::getDescription);
+		if (creature.isPresent()) return creature.get();
+		return BuiltInRegistries.ITEM.getOptional(key).map(item -> item.getName(item.getDefaultInstance())).orElse(Component.literal(id));
+	}
+
+	/** What a bounty is after, as it's shown: a named elite by its name. */
+	public static Component targetName(Active bounty) {
+		if (bounty.type() == BountyRules.Kind.ESCORT) return Component.translatable("town.wildercord.pack_llama", bounty.name());
+		return bounty.name().isEmpty() ? targetName(bounty.target())
+			: Component.translatable("town.wildercord.named_elite", bounty.name(), targetName(bounty.target()));
+	}
+}

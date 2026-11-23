@@ -33,4 +33,18 @@ public final class StoatContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("snowcap_stoat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(SNOWCAP_STOAT, new Item.Properties()
+		dev.wildercord.compat.McSpawnEgg.create(SNOWCAP_STOAT, new Item.Properties()));
+
+	/** What a stoat may stand on to spawn (written by tools/stoat_art.py). */
+	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/snowcap_stoat"));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(SNOWCAP_STOAT, SnowcapStoat.createAttributes());
+		SpawnPlacements.register(SNOWCAP_STOAT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.SNOWCAP_STOAT, type, GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.SNOWCAP_STOAT, SNOWCAP_STOAT);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:snowcap_stoat", FieldGuide.Group.WILDLIFE, 0xE8ECEF));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+	}
+}

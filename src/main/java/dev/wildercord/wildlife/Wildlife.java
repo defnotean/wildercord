@@ -106,4 +106,80 @@ public final class Wildlife {
 
 	private static Item item(String path, Item.Properties properties) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(path));
-		return Registry.register(BuiltInRegistries.ITEM, key, new WildlifeItem(properties
+		return Registry.register(BuiltInRegistries.ITEM, key, new WildlifeItem(properties));
+	}
+
+	private static Item egg(String creature, EntityType<? extends Mob> type) {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(creature + "_spawn_egg"));
+		return Registry.register(BuiltInRegistries.ITEM, key, dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties()));
+	}
+
+	/**
+	 * A wildlife sound from the feel kit ({@code tools/feel/wildlife.py}), by the name after {@code wildlife_}; null when
+	 * the kit has none, which plays nothing.
+	 */
+	public static  SoundEvent sound(String name) {
+		return WildercordSounds.kit("wildlife_" + name);
+	}
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(GLIMMERWING, Glimmerwing.createAttributes());
+		FabricDefaultAttributeRegistry.register(LUMEN_STAG, LumenStag.createAttributes());
+		FabricDefaultAttributeRegistry.register(MOSSBACK_TORTOISE, MossbackTortoise.createAttributes());
+		FabricDefaultAttributeRegistry.register(CINDERFOX, Cinderfox.createAttributes());
+		FabricDefaultAttributeRegistry.register(SKYRAY, Skyray.createAttributes());
+		FabricDefaultAttributeRegistry.register(RIMEHARE, Rimehare.createAttributes());
+		WildlifeSpawns.init();
+		dev.wildercord.compat.McBlocksAndItems.registerFuel(EMBER_TUFT, 1600);
+
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> {
+			DROPS.forEach(output::accept);
+			EGGS.forEach(output::accept);
+		});
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> EGGS.forEach(output::accept));
+
+
+		// Glimmerwings are drawn to fresh magic: remember when each player last cast.
+		WildercordEvents.AFTER_CAST.register((player, spell, runes, spent) -> LAST_CAST.put(player.getUUID(), player.level().getGameTime()));
+		ServerTickEvents.END_SERVER_TICK.register(Wildlife::noticeCreatures);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LAST_CAST.clear());
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> LAST_CAST.remove(handler.player.getUUID()));
+	}
+
+	// ------------------------------------------------------------------ fresh spells
+
+	private static final Map<UUID, Long> LAST_CAST = new HashMap<>();
+
+	/** Whether {@code player} cast a spell within the last {@code ticks}. */
+	public static boolean castRecently(ServerPlayer player, int ticks) {
+		Long at = LAST_CAST.get(player.getUUID());
+		return at != null && player.level().getGameTime() - at <= ticks;
+	}
+
+	// ------------------------------------------------------------------ the field guide
+
+	/** How near a creature must be, and in sight, to count as met (blocks). */
+	private static final double NOTICE = 14;
+
+	/**
+	 * Once a second (each player on their own tick of it), a creature from the field guide in plain sight near a player
+	 * goes into their Grimoire, the first time. Survival or creative alike; spectators watch from outside the world.
+	 */
+	private static void noticeCreatures(MinecraftServer server) {
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (player.isSpectator() || (server.getTickCount() + player.getId()) % 20 != 0) {
+				continue;
+			}
+			List<String> grimoire = Heart.grimoire(player);
+			List<Entity> near = new ArrayList<>(player.level().getEntities(player, player.getBoundingBox().inflate(NOTICE),
+				e -> e.isAlive() && FieldGuide.byType(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).toString()).isPresent()));
+			for (Entity creature : near) {
+				String key = FieldGuide.key(BuiltInRegistries.ENTITY_TYPE.getKey(creature.getType()).toString());
+				if (!grimoire.contains(key) && !creature.isInvisible() && player.hasLineOfSight(creature)) {
+					Grimoire.unlock(player, key);
+					grimoire = Heart.grimoire(player);
+				}
+			}
+		}
+	}
+}

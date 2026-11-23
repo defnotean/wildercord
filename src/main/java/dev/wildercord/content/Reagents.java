@@ -51,4 +51,31 @@ public final class Reagents {
 
 	private static Item register(Kind kind, Item.Properties properties) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(kind.reagent));
-		Item item = Registry.register(BuiltInRegistries.ITEM, key, new ReagentItem(kind, properties
+		Item item = Registry.register(BuiltInRegistries.ITEM, key, new ReagentItem(kind, properties));
+		BY_KIND.put(kind, item);
+		return item;
+	}
+
+	/** The reagent one element's residue gives. */
+	public static Item item(Kind kind) {
+		return BY_KIND.get(kind);
+	}
+
+	/** The residue a reagent comes from (and so its element), if the stack is one. */
+	public static Optional<Kind> kindOf(ItemStack stack) {
+		return stack.getItem() instanceof ReagentItem reagent ? Optional.of(reagent.kind) : Optional.empty();
+	}
+
+	public static boolean is(ItemStack stack) {
+		return stack.getItem() instanceof ReagentItem;
+	}
+
+	/** In the order of the elements, for the creative tab. */
+	public static java.util.Collection<Item> all() {
+		return BY_KIND.values();
+	}
+
+	public static void init() {
+		dev.wildercord.compat.McBlocksAndItems.registerFuel(CINDER_ASH, 800);
+	}
+}

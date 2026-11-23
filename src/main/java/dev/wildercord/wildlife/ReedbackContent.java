@@ -20,7 +20,17 @@ public final class ReedbackContent {
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("reedback_crab"));
  public static final EntityType<ReedbackCrab> CRAB=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(ReedbackCrab::new,MobCategory.CREATURE).sized(1.1F,.7F).eyeHeight(.45F).clientTrackingRange(8).build(KEY));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("reedback_crab_spawn_egg"));
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(CRAB, new Item.Properties();});
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(CRAB, new Item.Properties()));
+ public static void init() {
+  FabricDefaultAttributeRegistry.register(CRAB,ReedbackCrab.attributes());
+  SpawnPlacements.register(CRAB,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,reason,p,r) -> {
+   if(reason==MobSpawnType.CHUNK_GENERATION)return false;if(reason!=MobSpawnType.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
+   var config=Config.get().wildlife();if(!config.spawns("reedback_crab") || l.getDifficulty()==net.minecraft.world.Difficulty.PEACEFUL || r.nextDouble()>=Math.min(1,.2*config.spawnMultiplier()))return false;
+   if(!l.canSeeSky(p.above()) || !l.getBlockState(p.below()).isSolidRender(l, p.below()) || !l.getBlockState(p).getCollisionShape(l,p).isEmpty() || !l.getBlockState(p.above()).isAir())return false;
+   boolean wet=l.getFluidState(p).is(FluidTags.WATER);for(var d:Direction.Plane.HORIZONTAL)wet|=l.getFluidState(p.relative(d)).is(FluidTags.WATER);
+   return wet && WetlandQueries.populationRoom(l.getLevel(),ReedbackCrab.class,new AABB(p).inflate(32),2);
+  });
+  BiomeModifications.create(Wildercord.id("reedback_banks")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),c -> {if(Config.get().wildlife().spawns("reedback_crab"))dev.wildercord.compat.McWorldgen.addSpawn(c.getSpawnSettings(), MobCategory.CREATURE, CRAB, 1, 1, Math.max(1,(int)(3*Math.max(1,Config.get().wildlife().spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:reedback_crab",FieldGuide.Group.WILDLIFE,0x87906A));
   ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(EGG));
   ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(EGG));

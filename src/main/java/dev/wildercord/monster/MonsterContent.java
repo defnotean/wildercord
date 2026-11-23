@@ -160,4 +160,70 @@ public final class MonsterContent {
 
 	private static Item item(String id, Function<Item.Properties, Item> factory) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id));
-		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties()
+		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties()));
+	}
+
+	private static Item egg(String id, EntityType<? extends Mob> type) {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id + "_spawn_egg"));
+		Item egg = Registry.register(BuiltInRegistries.ITEM, key, dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties()));
+		SPAWN_EGGS.add(egg);
+		return egg;
+	}
+
+	public static void init() {
+		dev.wildercord.compat.McBlocksAndItems.registerCompostable(LIVING_BRAMBLE, 0.5F);
+		FabricDefaultAttributeRegistry.register(BRAMBLEWALKER, Bramblewalker.createAttributes());
+		FabricDefaultAttributeRegistry.register(GLOOMSTALKER, Gloomstalker.createAttributes());
+		FabricDefaultAttributeRegistry.register(THUNDERWING_HARPY, ThunderwingHarpy.createAttributes());
+		FabricDefaultAttributeRegistry.register(GEODE_CRAWLER, GeodeCrawler.createAttributes());
+		FabricDefaultAttributeRegistry.register(BOG_WITCH_FROG, BogWitchFrog.createAttributes());
+		FabricDefaultAttributeRegistry.register(MANA_OOZE, ManaOoze.createAttributes());
+		FabricDefaultAttributeRegistry.register(MAGE_HUNTER, MageHunter.createAttributes());
+		FabricDefaultAttributeRegistry.register(COFFER_MIMIC, CofferMimic.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:coffer_mimic", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xB8873A));
+		FabricDefaultAttributeRegistry.register(STRAWMAN, Strawman.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:strawman", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xD8B850));
+		FabricDefaultAttributeRegistry.register(DUNESTINGER, Dunestinger.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:dunestinger", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xD8B070));
+		FabricDefaultAttributeRegistry.register(GULPER_PITCHER, GulperPitcher.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:gulper_pitcher", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xA82E34));
+		FabricDefaultAttributeRegistry.register(CACKLING_HYENA, CacklingHyena.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:cackling_hyena", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xB08A4E));
+		FabricDefaultAttributeRegistry.register(PITCHBACK_BEETLE, PitchbackBeetle.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:pitchback_beetle", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xD0841C));
+		FabricDefaultAttributeRegistry.register(RIMECOAT_WOLVERINE, RimecoatWolverine.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:rimecoat_wolverine", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xA6865E));
+		FabricDefaultAttributeRegistry.register(SNAPJAW_TURTLE, SnapjawTurtle.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:snapjaw_turtle", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x56822C));
+		FabricDefaultAttributeRegistry.register(REEFGRASP_OCTOPUS, ReefgraspOctopus.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:reefgrasp_octopus", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xBE5E36));
+		FabricDefaultAttributeRegistry.register(FOXFIRE_KITSUNE, FoxfireKitsune.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:foxfire_kitsune", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x6AC8F0));
+		FabricDefaultAttributeRegistry.register(CRAGCLEAVER_RAM, CragcleaverRam.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:cragcleaver_ram", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x8C8A84));
+		FabricDefaultAttributeRegistry.register(DRIPFANG_LURKER, DripfangLurker.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:dripfang_lurker", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x8A7A68));
+		FabricDefaultAttributeRegistry.register(GLOWLURE_ANGLER, GlowlureAngler.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:glowlure_angler", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xF2AA3A));
+		FabricDefaultAttributeRegistry.register(BLOOMCLAW_MANTIS, BloomclawMantis.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:bloomclaw_mantis", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xEAAEC4));
+		FabricDefaultAttributeRegistry.register(SANDMAW_WYRM, SandmawWyrm.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:sandmaw_wyrm", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xB89058));
+		FabricDefaultAttributeRegistry.register(TIMBERMAUL_BEAR, TimbermaulBear.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:timbermaul_bear", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x68472C));
+		FabricDefaultAttributeRegistry.register(KARAKURI_SENTINEL, KarakuriSentinel.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:karakuri_sentinel", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xC89048));
+		FabricDefaultAttributeRegistry.register(PAPER_LANTERN_SPIRIT, PaperLanternSpirit.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:paper_lantern_spirit", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xF06848));
+		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
+			output.accept(LIVING_BRAMBLE);
+			output.accept(SHADOW_PELT);
+			output.accept(STORM_FEATHER);
+			output.accept(BOG_GLAND);
+			output.accept(MANA_GEL);
+			SPAWN_EGGS.forEach(output::accept);
+		});
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> SPAWN_EGGS.forEach(output::accept));
+	}
+}

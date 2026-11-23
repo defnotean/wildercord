@@ -39,7 +39,34 @@ public final class Battlefields {
 	private Battlefields() {}
 	private static final ResourceKey<net.minecraft.world.level.block.Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("battlefield_memorial"));
 	public static final BattlefieldMemorial MEMORIAL=Registry.register(BuiltInRegistries.BLOCK,KEY,new BattlefieldMemorial(
-		BlockBehaviour.Properties.of()); return;
+		BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(3,9).noLootTable().noOcclusion()));
+	public static final BlockEntityType<BattlefieldMemoryEntity> MEMORY_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+		Wildercord.id("battlefield_memory"),FabricBlockEntityTypeBuilder.create(BattlefieldMemoryEntity::new,MEMORIAL).build());
+	private record Rite(ServerLevel level,BlockPos at,int kind,int held) {}
+	private static final Map<UUID,Rite> RITES=new HashMap<>();
+	private static final Map<ServerPlayer,Long> READ_AT=new java.util.WeakHashMap<>();
+
+	public static ItemStack book(int kind) {
+		var memory=BattlefieldRules.memory(kind);
+		var stack=new ItemStack(Items.WRITTEN_BOOK);
+		stack.set(DataComponents.WRITTEN_BOOK_CONTENT,new WrittenBookContent(Filterable.passThrough(memory.title()),"The Marchkeepers",0,
+			List.of(Filterable.passThrough(Component.translatable("book.wildercord.battlefield."+memory.id()+".1")),
+				Filterable.passThrough(Component.translatable("book.wildercord.battlefield."+memory.id()+".2")),
+				Filterable.passThrough(Component.translatable("book.wildercord.battlefield."+memory.id()+".3"))),true));
+		return stack;
+	}
+
+	public static void begin(ServerPlayer player,BlockPos pos) {
+		if (!Config.get().auraWorld().battlefields() || !player.level().hasChunkAt(pos) || player.isSpectator() || player.distanceToSqr(Vec3.atCenterOf(pos))>BattlefieldRules.REACH*BattlefieldRules.REACH) return;
+		if (!(player.level().getBlockEntity(pos) instanceof BattlefieldMemoryEntity marker) || !marker.oldGround()) {
+			player.displayClientMessage(Component.translatable("message.wildercord.battlefield.empty"), true); return;
+		}
+		int kind=marker.getBlockState().getValue(BattlefieldMemorial.KIND);
+		if (Heart.discovered(player,BattlefieldRules.memory(kind).key())) {
+			long now=player.level().getGameTime();var last=READ_AT.get(player);
+			if(last!=null && now>=last && now-last<100) return;
+			READ_AT.put(player,now);
+			for (int page=1;page<=3;page++) player.sendSystemMessage(Component.translatable("book.wildercord.battlefield."+BattlefieldRules.memory(kind).id()+"."+page)); return;
 		}
 		if (!holding(player,(ServerLevel) player.level(),pos)) {
 			player.displayClientMessage(Component.translatable("message.wildercord.battlefield.stance"), true); return;

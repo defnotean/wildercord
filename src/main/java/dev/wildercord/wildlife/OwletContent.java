@@ -33,4 +33,18 @@ public final class OwletContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("hushwing_owlet_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(HUSHWING_OWLET, new Item.Properties()
+		dev.wildercord.compat.McSpawnEgg.create(HUSHWING_OWLET, new Item.Properties()));
+
+	/** What a hushwing owlet may stand on to spawn (written by tools/owlet_art.py). */
+	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/hushwing_owlet"));
+
+	public static void init() {
+		FabricDefaultAttributeRegistry.register(HUSHWING_OWLET, HushwingOwlet.createAttributes());
+		SpawnPlacements.register(HUSHWING_OWLET, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.shaded(WildlifeRules.HUSHWING_OWLET, type, GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.HUSHWING_OWLET, HUSHWING_OWLET);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:hushwing_owlet", FieldGuide.Group.WILDLIFE, 0xC8C2B4));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+	}
+}

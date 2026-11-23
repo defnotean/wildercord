@@ -74,4 +74,13 @@ public final class WildercordBlocks {
 
 	private static <T extends Block> T register(String path, Function<BlockBehaviour.Properties, T> factory, BlockBehaviour.Properties properties, Rarity rarity) {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id(path));
-		T block = Registry.register(BuiltInRegistries.BLOCK, key, factory.apply(properties
+		T block = Registry.register(BuiltInRegistries.BLOCK, key, factory.apply(properties));
+		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id(path));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix().rarity(rarity)));
+		return block;
+	}
+
+	public static final RunicHearthBlock RUNIC_HEARTH=register("runic_hearth",RunicHearthBlock::new,BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).strength(3.5F,9).lightLevel(s->3+s.getValue(RunicHearthBlock.CHARGE)*4),Rarity.UNCOMMON);
+	public static final BlockEntityType<RunicHearthEntity> HEARTH_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("runic_hearth"),FabricBlockEntityTypeBuilder.create(RunicHearthEntity::new,RUNIC_HEARTH).build());
+	public static void init() {}
+}
