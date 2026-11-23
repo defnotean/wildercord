@@ -304,7 +304,7 @@ public class ShrineCat extends TamableAnimal {
 
 	@Override
 	protected void customServerAiStep() {
-\t\tServerLevel level = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		int role = getRole();
 		if (role == ShrineCatRules.ROLE_GUARDIAN) {

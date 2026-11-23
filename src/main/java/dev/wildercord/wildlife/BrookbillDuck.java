@@ -125,7 +125,7 @@ public class BrookbillDuck extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
-\t\tServerLevel level = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		boolean afloat = isInWater();
 		if (DuckRules.shakes(wasAfloat, afloat, onGround())) {
