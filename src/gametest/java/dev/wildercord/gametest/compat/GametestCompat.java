@@ -198,6 +198,6 @@ public final class GametestCompat {
 	 * to settle is what drains the client's inbound queue.
 	 */
 	public static void awaitClientPackets(TestSingleplayerContext world) {
-		world.getClientWorld().waitForChunksDownload();
+		world.getClientLevel().waitForChunksDownload();
 	}
 }

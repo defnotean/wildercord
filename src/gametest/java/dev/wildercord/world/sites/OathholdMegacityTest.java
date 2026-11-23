@@ -77,9 +77,9 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 		});
 		ctx.waitTicks(40);
 		try {
-			world.getClientWorld().waitForChunksDownload();
+			world.getClientLevel().waitForChunksDownload();
 			dev.wildercord.gametest.compat.GametestCompat.awaitClientPackets(world);
-			world.getClientWorld().waitForChunksRender();
+			world.getClientLevel().waitForChunksRender();
 		} catch (AssertionError | RuntimeException ignored) {
 		}
 		ctx.waitTicks(40);
