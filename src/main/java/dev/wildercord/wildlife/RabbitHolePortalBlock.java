@@ -45,7 +45,7 @@ public class RabbitHolePortalBlock extends Block implements EntityBlock {
 
 	@Override
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
-			InsideBlockEffectApplier effects, boolean precise) {
+			InsideBlockEffectApplier effects) {
 		if (level instanceof ServerLevel server && entity instanceof ServerPlayer sp && !sp.isSpectator()) {
 			if (server.getBlockEntity(pos) instanceof RabbitHolePortalBlockEntity portal) {
 				portal.enter(server, sp);
