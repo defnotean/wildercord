@@ -7,11 +7,13 @@
   "entrypoints": {
     "fabric-client-gametest": [
       "dev.wildercord.cast.BasinfillTest",
+      "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.FarmSoilTest",
       "dev.wildercord.cast.RuneSealDoorTest",
       "dev.wildercord.ritual.RenamedReagentTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.client.fx.LifeOutcomeQualityTest",
       "dev.wildercord.client.fx.ScreenEffectSettingTest",
       "dev.wildercord.client.fx.SafeTelegraphsTest",
       "dev.wildercord.gametest.LifeJournalTest",
@@ -66,7 +68,6 @@
       "dev.wildercord.gametest.WildercordSwordStringsTest",
       "dev.wildercord.gametest.WildercordMomentumTest",
       "dev.wildercord.gametest.WildercordAuraFxTest",
-      "dev.wildercord.cast.ExcisePlayableTest",
       "dev.wildercord.wildlife.SiltcrestEcologyTest",
       "dev.wildercord.wildlife.SiltcrestBankReturnTest",
       "dev.wildercord.wildlife.FungalNurseryTest",

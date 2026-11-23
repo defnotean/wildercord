@@ -1,5 +1,6 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.compat.McEntities;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.ArtRules;
 import dev.wildercord.aura.Aura;
@@ -942,7 +943,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				float taken = on(world, player -> {
 					Mob attacker = foes(player).getFirst();
 					float hp = player.getHealth();
-					attacker.doHurtTarget(((ServerLevel) player.level()), player);
+					attacker.doHurtTarget(player);
 					return hp - player.getHealth();
 				});
 				check(taken <= 0, scene.id + ": the guard should have been perfect (took " + taken + ")");
@@ -1018,7 +1019,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			set(world, scene);
 			on(world, player -> {
 				dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.5);
-				player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), 0.0F, tpPitch(scene), false);
+				player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), 0.0F, tpPitch(scene));
 				return null;
 			});
 			context.runOnClient(mc -> {
@@ -1047,14 +1048,14 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				context.getInput().pressKey(WildercordKeys.auraMapping());
 				for (int t = 0; t < 4 && !on(world, AuraGuard::perfectNow); t++) context.waitTicks(1);
 				on(world, player -> { check(AuraGuard.perfectNow(player), "Repeated counter presentation earns its real guard");
-					foes(player).getFirst().doHurtTarget(((ServerLevel) player.level()), player); return null; });
+					foes(player).getFirst().doHurtTarget(player); return null; });
 				context.waitTicks(2); swing(context);
 			}
 			String done = earnedCounter ? null : on(world, player -> {
 				AuraApi.StringArt art = AuraApi.string(scene.id).orElseThrow();
 				if (step) {
 					// A rush or a blink starts where a step ended: move the swordsman there first.
-					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ() + 6, Set.<RelativeMovement>of(), 0.0F, tpPitch(scene), false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ() + 6, Set.<RelativeMovement>of(), 0.0F, tpPitch(scene));
 				}
 				return SwordStrings.perform(player, art, marks(art)) ? null : scene.id + " didn't go off on the server";
 			});
@@ -1063,7 +1064,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				// Seen from straight behind, the lance hides behind its swordsman: once it's loosed, the view turns to look across it.
 				context.waitTicks(ArtRules.SPEAR_CHARGE + 1);
 				on(world, player -> {
-					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), -48.0F, 22.0F, false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), -48.0F, 22.0F);
 					return null;
 				});
 				context.waitTicks(Math.max(1, scene.tpDelay - ArtRules.SPEAR_CHARGE - 1));
@@ -1400,7 +1401,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (scene.id.equals(VerdantArts.BLOSSOM_FALL) || scene.id.equals(VerdantArts.WILD_GROWTH) || scene.id.equals(VerdantArts.GROVES_HEART)) {
 				// An ally, hurt, where the art mends: on the blossom, beside the way through the brambles, inside the grove.
 				Vec3 spot = scene.id.equals(VerdantArts.BLOSSOM_FALL) ? at(-1.2, 1.6) : scene.id.equals(VerdantArts.WILD_GROWTH) ? at(0.8, 10.0) : at(-1.5, -1.0);
-				Wolf ally = EntityType.WOLF.create(level, MobSpawnType.COMMAND);
+				Wolf ally = McEntities.create(EntityType.WOLF, level, MobSpawnType.COMMAND);
 				if (ally != null) {
 					ally.moveTo(spot.x, spot.y, spot.z, 180, 0);
 					ally.tame(player);
@@ -1415,7 +1416,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				ArtWards.star(player, foes(player).get(1));
 			}
 			if (scene.id.equals(GaleArts.TAILWIND)) {
-				Wolf wolf = EntityType.WOLF.create(level, MobSpawnType.COMMAND);
+				Wolf wolf = McEntities.create(EntityType.WOLF, level, MobSpawnType.COMMAND);
 				if (wolf != null) {
 					Vec3 p = at(2.5, 9.0);
 					wolf.moveTo(p.x, p.y, p.z, 180, 0);
@@ -1591,7 +1592,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	}
 
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<RelativeMovement>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<RelativeMovement>of(), 0.0F, 8.0F);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());
@@ -1666,7 +1667,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	 * left on, so a lift or a throw carries it as it would a real foe.
 	 */
 	private static <T extends Mob> T spawn(ServerLevel level, EntityType<T> type, Vec3 at, double health) {
-		T mob = type.create(level, MobSpawnType.COMMAND);
+		T mob = McEntities.create(type, level, MobSpawnType.COMMAND);
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}
