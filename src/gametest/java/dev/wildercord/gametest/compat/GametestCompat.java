@@ -107,7 +107,7 @@ public final class GametestCompat {
 		var cs = level.getChunkSource();
 		var gen = cs.getGenerator();
 		return new Structure.GenerationContext(level.registryAccess(), gen, gen.getBiomeSource(),
-			cs.randomState(), level.getStructureTemplateManager(), level.getSeed(), chunk, level, biome -> true);
+			cs.randomState(), level.getStructureManager(), level.getSeed(), chunk, level, biome -> true);
 	}
 
 	public static Vec3 entityPositionSyncTarget(ClientboundEntityPositionSyncPacket sync) {
