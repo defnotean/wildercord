@@ -1,6 +1,5 @@
 package dev.wildercord.config;
 
-import dev.wildercord.compat.McStreamCodec;
 
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
