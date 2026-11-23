@@ -1,0 +1,67 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "helm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:abyssal_diving_helm"
+          }
+        ]
+      }
+    },
+    "chest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:bathysphere_chestplate"
+          }
+        ]
+      }
+    },
+    "legs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:kelp_weave_greaves"
+          }
+        ]
+      }
+    },
+    "boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:trench_boots"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:abyssal_diving_helm"
+    },
+    "title": {
+      "translate": "advancements.wildercord.ocean.deep_diver.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.ocean.deep_diver.description"
+    }
+  },
+  "requirements": [
+    [
+      "helm",
+      "chest",
+      "legs",
+      "boots"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

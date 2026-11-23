@@ -213,7 +213,7 @@ public class Archivist extends SpellcasterIllager {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return Monster.createMonsterAttributes()
-			.add(Attributes.MAX_HEALTH, 400.0)
+			.add(Attributes.MAX_HEALTH, 1650.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.42)
 			.add(Attributes.FOLLOW_RANGE, 48.0)
 			.add(Attributes.ARMOR, 8.0)

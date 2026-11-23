@@ -28,6 +28,6 @@ public abstract class BraceNullItemDrawMixin {
 		int[] tints, List<BakedQuad> quads, ItemStackRenderState.FoilType foil, Operation<Void> original) {
 		var actual = new Matrix4f(pose.last().pose());
 		original.call(collector, pose, context, light, overlay, outline, tints, quads, foil);
-		BraceNullItemDrawProbe.drawn(this$0, pose, collector, context, itemTransform, localTransform, quads, actual);
+		BraceNullItemDrawProbe.drawn(this$0, pose, collector, context, itemTransform, localTransform, quads.all(), actual);
 	}
 }

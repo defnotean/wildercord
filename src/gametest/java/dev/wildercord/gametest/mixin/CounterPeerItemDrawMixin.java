@@ -26,6 +26,6 @@ public abstract class CounterPeerItemDrawMixin {
         int[] tints,List<BakedQuad> quads,ItemStackRenderState.FoilType foil,Operation<Void> original){
         var actual=new Matrix4f(pose.last().pose());var local=new Matrix4f(localTransform);var transform=itemTransform;
         original.call(collector,pose,context,light,overlay,outline,tints,quads,foil);
-        CounterPeerRenderProbe.itemDraw(this$0,transform,local,context,quads,actual,pose,collector);
+        CounterPeerRenderProbe.itemDraw(this$0,transform,local,context,quads.all(),actual,pose,collector);
     }
 }

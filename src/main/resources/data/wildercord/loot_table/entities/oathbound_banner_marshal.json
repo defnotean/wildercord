@@ -1,0 +1,116 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:manual_page",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:breathing_method": "dawn"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:manual_page",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:breathing_method": "hourglass"
+            },
+            "type": "minecraft:set_components"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:aura_shard",
+          "modifier": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 4
+              },
+              "type": "minecraft:set_count"
+            },
+            {
+              "enchantment": "minecraft:looting",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 0.0,
+                "max": 1.0
+              },
+              "type": "minecraft:enchanted_count_increase"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_ingot",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 3,
+              "max": 6
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:emerald",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 4
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "wildercord:entities/oathbound_banner_marshal"
+}

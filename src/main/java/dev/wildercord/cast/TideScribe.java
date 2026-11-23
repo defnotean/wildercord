@@ -145,7 +145,7 @@ public class TideScribe extends DungeonBoss {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return createMonsterAttributes()
-			.add(Attributes.MAX_HEALTH, 340.0)
+			.add(Attributes.MAX_HEALTH, 1450.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.3)
 			.add(Attributes.FOLLOW_RANGE, 40.0)
 			.add(Attributes.ARMOR, 6.0)

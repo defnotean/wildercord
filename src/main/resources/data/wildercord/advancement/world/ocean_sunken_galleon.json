@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "ocean_sunken_galleon": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:ocean_sunken_galleon"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:tide_cleaver_harpoon"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.ocean_sunken_galleon.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.ocean_sunken_galleon.description"
+    }
+  },
+  "requirements": [
+    [
+      "ocean_sunken_galleon"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

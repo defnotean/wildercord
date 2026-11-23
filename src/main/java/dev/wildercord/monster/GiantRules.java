@@ -56,7 +56,7 @@ public final class GiantRules {
 	public static final double SCALE = 2.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.9;
 	/** How much tougher it is than a champion of its kind's tempering, and the least threat it's tempered to. */
-	public static final double TOUGHNESS = 4.0;
+	public static final double TOUGHNESS = 12.0;
 	public static final int THREAT_MIN = 6;
 
 	/** A plain stomp (for the tests and the guide's pictures): how far it reaches, what it deals at its feet, how hard it throws. */

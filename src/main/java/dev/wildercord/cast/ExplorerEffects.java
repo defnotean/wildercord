@@ -1084,7 +1084,7 @@ public final class ExplorerEffects {
 			t.addEffect(new MobEffectInstance(MobEffects.GLOWING, (int) Math.round(120 * duration), 0, false, false), cast.caster);
 			if (sunlit) {
 				t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0, false, true), cast.caster);
-				if (t instanceof Mob mob) {
+				if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
 			}
@@ -1095,6 +1095,12 @@ public final class ExplorerEffects {
 
 	/** Mire: the ground turns to mud under the target. */
 	private static void mire(Cast cast, LivingEntity t, int ticks) {
+		if (Spirits.isBoss(t)) {
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				return;
+			}
+			ticks = BossRules.bossHoldTicks(ticks);
+		}
 		effect(t, MobEffects.SLOWNESS, ticks, 3, cast);
 		Reactions.mark(t, Reactions.Mark.SOAKED, ticks + 20);
 		AttributeInstance jump = t.getAttribute(Attributes.JUMP_STRENGTH);
@@ -1194,7 +1200,7 @@ public final class ExplorerEffects {
 	private static void rootsnare(Cast cast, Vec3 point, double radius, double power, int ticks) {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
 		for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
-			Spirits.hold(t,ticks);
+			Spirits.hold(t,ticks,cast.caster);
 			LifeOwnerEvents.admitted(cast,"rootsnare",t,LifeOwnerEvents.Moment.APPLY,1,null);
 			t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
 			LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast,t,magic(cast),3*power));
@@ -1433,7 +1439,10 @@ public final class ExplorerEffects {
 		Vec3 anchor = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
 		ExplorerVfx.tether(cast.level, anchor, t, true);
 		if (Spirits.isBoss(t)) {
-			effect(t, MobEffects.SLOWNESS, ticks, 1, cast);
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				return;
+			}
+			effect(t, MobEffects.SLOWNESS, BossRules.bossHoldTicks(ticks), 1, cast);
 			return;
 		}
 		long[] lastYank = {-100};

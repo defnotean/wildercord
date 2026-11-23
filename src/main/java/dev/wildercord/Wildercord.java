@@ -32,6 +32,7 @@ public final class Wildercord implements ModInitializer {
 		WildercordBlocks.init();
 		dev.wildercord.content.ResidueBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.content.SacredPigQuest.init();
 		dev.wildercord.cooking.Meals.init();
 		dev.wildercord.content.Reagents.init();
 		dev.wildercord.content.UpgradeRecipe.init();
@@ -138,6 +139,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.wildlife.PuffinContent.init();
 		dev.wildercord.wildlife.SnailContent.init();
 		dev.wildercord.wildlife.DormouseContent.init();
+		dev.wildercord.wildlife.WhiteRabbitContent.init();
+		dev.wildercord.ocean.OceanContent.init();
 		dev.wildercord.wildlife.OwletContent.init();
 		dev.wildercord.wildlife.TanukiContent.init();
 		dev.wildercord.wildlife.CapybaraContent.init();
@@ -150,6 +153,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.town.InnRaid.init();
 		dev.wildercord.town.BountyEscorts.init();
 		dev.wildercord.town.Caravans.init();
+		dev.wildercord.world.sites.oathhold.OathholdContent.init();
 		dev.wildercord.monster.Giants.init();
 		dev.wildercord.aura.BladeSmithing.init();
 		dev.wildercord.NameTags.init();

@@ -49,5 +49,12 @@ public final class WildercordComponents {
 		DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
 	);
 
+	/** Coordinates carried by a Sacred Pig map paper. */
+	public static final DataComponentType<SacredPigMap> SACRED_PIG_MAP = Registry.register(
+		BuiltInRegistries.DATA_COMPONENT_TYPE,
+		Wildercord.id("sacred_pig_map"),
+		DataComponentType.<SacredPigMap>builder().persistent(SacredPigMap.CODEC).networkSynchronized(SacredPigMap.STREAM_CODEC).build()
+	);
+
 	public static void init() {}
 }

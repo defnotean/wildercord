@@ -991,6 +991,12 @@ final class FusedFlame {
 
 	/** Pinned: Slowness IV and no jumping for {@code ticks}. The jump comes back when the last pin on it ends. */
 	private static void pin(Cast cast, LivingEntity t, int ticks) {
+		if (Spirits.isBoss(t)) {
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				return;
+			}
+			ticks = BossRules.bossHoldTicks(ticks);
+		}
 		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, true), cast.caster);
 		AttributeInstance jump = t.getAttribute(Attributes.JUMP_STRENGTH);
 		if (jump != null) {

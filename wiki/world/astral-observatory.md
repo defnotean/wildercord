@@ -20,7 +20,7 @@ shield, or knock its own shards back into it.
 | **Biomes** | End highlands and end midlands (the outer islands) |
 | **How often** | About one in every square 512 blocks across |
 | **Doors** | Void and Arcane, then Time and Wind. The vault's is Void and Life |
-| **Boss** | The Star-Eater, 320 health |
+| **Boss** | The Star-Eater, 1,350 health |
 | **Its own rune** | [Starmaw]({{ '/runes/world/' | relative_url }}#starmaw) (Tier IV) |
 | **Trophy** | The Astral Lens |
 | **Runes found only here** | [Constellation]({{ '/runes/world/' | relative_url }}#constellation), [Eclipse]({{ '/runes/world/' | relative_url }}#eclipse) |
@@ -58,11 +58,11 @@ lapis, ender pearls, a Mana Crystal, chorus fruit, amethyst shards, or (rarely) 
 ## The Star-Eater
 
 It opens its eye the first time a player comes within **14 blocks** of the star-altar, and rises with its shield
-already up. It floats in a slow circle over the altar and never strays more than 20 blocks from it.
+already up. After the Star-Eater falls, the star-altar rests for **10 minutes** before re-arming for a fresh fight. It floats in a slow circle over the altar and never strays more than 20 blocks from it.
 
 | | |
 |---|---|
-| **Health** | 320 (phases change at about 213 and 107) |
+| **Health** | 1,350 (phases change at 900 and 450) |
 | **Armour** | 6, and it can't be knocked back |
 | **Immune to** | Burning, falls and other monsters |
 | **Weak to** | Life (+50%). Resists void (half). See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |

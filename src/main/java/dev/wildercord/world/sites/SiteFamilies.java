@@ -85,5 +85,14 @@ public final class SiteFamilies {
 		// ---- sites-emberwood pack
 		worldgen("wildercord:emberwood_charcoal_yard", "New Emberwood Reach charcoal yard and Kiln Keeper resident; generates only in new chunks.");
 		worldgen("wildercord:emberwood_kiln_court", "Optional Emberwood Kiln Court encounter; generates only in new chunks.");
+		// ---- sites-oathhold megacity pack
+		worldgen("wildercord:oathhold", "2,048x2,048 Sovereign Citadel Megacity anchor; generates only in newly explored chunks.");
+		worldgen("wildercord:oathhold_sector", "128x128 urban sector tile of Oathhold Megacity; generates only in newly explored chunks.");
+		// ---- deep-ocean expansion pack
+		worldgen("wildercord:ocean_coral_dome_sanctuary", "Dry glass Coral-Dome Tidefolk Sanctuary with merchants and conduit plaza; generates only in newly explored oceans.");
+		worldgen("wildercord:ocean_sunken_galleon", "3-deck Sunken Sovereign Galleon warship; generates only in newly explored oceans.");
+		worldgen("wildercord:ocean_kelp_spire_watchtower", "Kelp-Spire Watchtower with bubble elevator and surface boat dock; generates only in newly explored oceans.");
+		worldgen("wildercord:ocean_hydrothermal_forge", "Seabed Hydrothermal Vent Forge housing the Trench Anvil; generates only in newly explored oceans.");
+		worldgen("wildercord:ocean_abyssal_citadel", "Abyssal Trench Citadel ziggurat and Thalassor boss colosseum; generates only in newly explored oceans.");
 	}
 }
