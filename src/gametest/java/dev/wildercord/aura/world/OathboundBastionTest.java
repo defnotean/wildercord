@@ -10,10 +10,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
@@ -27,8 +27,6 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -53,7 +51,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return (ServerLevel) player(server).level();
 	}
 
 	private static float yaw(Vec3 from, Vec3 to) {
@@ -369,10 +367,10 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 
-				var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag saved = new CompoundTag();
 				b.saveWithoutId(saved);
 				OathboundBastion restored = AuraWorld.OATHBOUND_BASTION.create(l, EntitySpawnReason.LOAD);
-				restored.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), saved.buildResult()));
+				restored.load(saved);
 				check(restored.empowered() && restored.getHealth() == b.getHealth(), "Empowered state & health survive save/load");
 				check(restored.move() == OathboundBastionRules.IDLE_MARCH, "Reload resets active swing cleanly to IDLE_MARCH");
 				restored.discard();
