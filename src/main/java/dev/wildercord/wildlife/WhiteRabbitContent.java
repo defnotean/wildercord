@@ -82,7 +82,7 @@ public final class WhiteRabbitContent {
 	public static final Item WHITE_RABBIT_SPAWN_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		EGG_KEY,
-		new SpawnEggItem(WHITE_RABBIT, new Item.Properties().setId(EGG_KEY)));
+		dev.wildercord.compat.McSpawnEgg.create(WHITE_RABBIT, new Item.Properties().setId(EGG_KEY)));
 
 	public static final TagKey<Block> GROUND =
 		TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/white_rabbit"));

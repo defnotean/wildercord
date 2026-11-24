@@ -146,7 +146,7 @@ public final class OceanItems {
 			.rarity(Rarity.RARE)));
 
 	// ---- Player Oxygen Reserve & Active Conch Domes ----
-	public static final AttachmentType<Integer> TANK_OXYGEN = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> TANK_OXYGEN = dev.wildercord.compat.McAttachments.create(
 		Wildercord.id("abyssal_tank_oxygen"),
 		b -> b.initializer(() -> OceanRules.CHEST_OXYGEN_MAX).persistent(Codec.INT).copyOnDeath()
 	);
