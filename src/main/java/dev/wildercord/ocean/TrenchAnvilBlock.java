@@ -102,13 +102,13 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 		if (level instanceof ServerLevel && player instanceof ServerPlayer sp) {
 			sp.sendSystemMessage(Component.translatable("message.wildercord.trench_anvil.hint")
 				.withStyle(ChatFormatting.AQUA));
-			return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+			return net.minecraft.world.ItemInteractionResult.SUCCESS;
 		}
-		return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+		return net.minecraft.world.ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
-	protected net.minecraft.world.item.ItemInteractionResult useItemOn(
+	protected net.minecraft.world.ItemInteractionResult useItemOn(
 		ItemStack stack,
 		BlockState state,
 		Level level,
@@ -118,7 +118,7 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 		BlockHitResult hit
 	) {
 		if (!(level instanceof ServerLevel server) || !(player instanceof ServerPlayer sp)) {
-			return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+			return net.minecraft.world.ItemInteractionResult.SUCCESS;
 		}
 		if (stack.isEmpty()) {
 			return useWithoutItem(state, level, pos, player, hit);
@@ -131,7 +131,7 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 				forgeEffects(server, pos, SoundEvents.ANVIL_USE);
 				sp.sendSystemMessage(Component.translatable("message.wildercord.trench_anvil.repaired")
 					.withStyle(ChatFormatting.GREEN));
-				return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+				return net.minecraft.world.ItemInteractionResult.SUCCESS;
 			}
 		}
 
@@ -149,26 +149,26 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 				consumeItem(sp, mat2, recipe.secondaryCount());
 				ItemStack forged = new ItemStack(outItem);
 				if (!sp.getInventory().add(forged)) {
-					sp.spawnAtLocation(server, forged);
+					sp.spawnAtLocation(forged);
 				}
 				forgeEffects(server, pos, SoundEvents.ANVIL_USE);
 				sp.sendSystemMessage(Component.translatable("message.wildercord.trench_anvil.forged", outItem.getName(forged))
 					.withStyle(ChatFormatting.GOLD));
 				Wildercord.LOGGER.info("Player {} forged {} at Trench Anvil", sp.getScoreboardName(), recipe.outputItemId());
-				return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+				return net.minecraft.world.ItemInteractionResult.SUCCESS;
 			} else {
 				sp.sendSystemMessage(Component.translatable(
 					"message.wildercord.trench_anvil.missing",
 					recipe.primaryCount(), mat1.getName(new ItemStack(mat1)),
 					recipe.secondaryCount(), mat2.getName(new ItemStack(mat2)))
 					.withStyle(ChatFormatting.YELLOW));
-				return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+				return net.minecraft.world.ItemInteractionResult.SUCCESS;
 			}
 		}
 
 		sp.sendSystemMessage(Component.translatable("message.wildercord.trench_anvil.hint")
 			.withStyle(ChatFormatting.AQUA));
-		return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
+		return net.minecraft.world.ItemInteractionResult.SUCCESS;
 	}
 
 	private static int countItem(ServerPlayer player, Item target) {

@@ -964,7 +964,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 					net.minecraft.sounds.SoundSource.NEUTRAL, 0.5F, 1.6F + age * 0.01F);
 			}
 			if (age == LICK_GROW) {
-				level().playSound(null, getX(), getEyeY(), getZ(), net.minecraft.sounds.SoundEvents.GENERIC_DRINK.value(),
+				level().playSound(null, getX(), getEyeY(), getZ(), net.minecraft.sounds.SoundEvents.GENERIC_DRINK,
 					net.minecraft.sounds.SoundSource.NEUTRAL, 0.9F, 1.5F);
 			}
 			return;
@@ -1001,7 +1001,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	private boolean countDamage(ServerLevel level, DamageSource source, float amount) {
 		long now = clock();
 		if (!CinnamonCompanion.active(this) || level != level() || !isAlive() || !Float.isFinite(amount) || amount <= 0
-			|| isInvulnerableTo(level, source) || isExhausted() || now < damageImmuneUntil) return false;
+			|| isInvulnerableTo(source) || isExhausted() || now < damageImmuneUntil) return false;
 		long revision = stateRevision;
 		LivingEntity owner = getOwner();
 		// An immortal override must still honor the same protection event as vanilla hurtServer.
