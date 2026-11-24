@@ -162,7 +162,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	public float attackElapsed(float partial) {
-		return attackAnimation() == 0 ? 0 : Math.max(0, level().getGameTime() - entityData.get(DATA_ATTACK_BEGIN) + partial);
+		return attackAnimation() == 0 ? 0 : Math.max(0, ((ServerLevel) level()).getGameTime() - entityData.get(DATA_ATTACK_BEGIN) + partial);
 	}
 
 	public int attackTellTicks() {
@@ -365,7 +365,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		waitingFor = null;
 		waitingUntil = 0;
 		home = challenger.blockPosition().immutable();
-		begins = level().getGameTime() + MastersRules.PREPARE_TICKS;
+		begins = ((ServerLevel) level()).getGameTime() + MastersRules.PREPARE_TICKS;
 		expires = begins + MastersRules.ENCOUNTER_TICKS;
 		participants.add(challenger.getUUID());
 		ACTIVE.add(this);
@@ -383,11 +383,11 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			refuse(server, started || home != null && !lobbyOpen() ? "in_progress" : "waiting");
 			return InteractionResult.SUCCESS;
 		}
-		if (!mayEnter(server) || level().getDifficulty() == Difficulty.PEACEFUL) {
+		if (!mayEnter(server) || ((ServerLevel) level()).getDifficulty() == Difficulty.PEACEFUL) {
 			refuse(server, "unavailable");
 			return InteractionResult.FAIL;
 		}
-		long now = level().getGameTime();
+		long now = ((ServerLevel) level()).getGameTime();
 		invitations.entrySet().removeIf(entry -> entry.getValue() < now);
 		Long invitation = invitations.remove(player.getUUID());
 		if (invitation == null) {
@@ -438,7 +438,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	public boolean addEffect(MobEffectInstance effect, Entity source) {
 		// Spellbane: no spell's effect takes, harmful or kind.
 		if (underSpell()) {
-			if (level() instanceof ServerLevel server) erased(server);
+			if (((ServerLevel) level()) instanceof ServerLevel server) erased(server);
 			return false;
 		}
 		Entity responsible = source != null ? source : dev.wildercord.cast.Effects.applying();
@@ -526,7 +526,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	/** Stone's brace has frontal reduction, but never adds an unannounced perfect-guard retaliation. */
 	@Override
 	public boolean perfectNow() {
-		return !(fracture != null && fracture.bracing(level().getGameTime())) && super.perfectNow();
+		return !(fracture != null && fracture.bracing(((ServerLevel) level()).getGameTime())) && super.perfectNow();
 	}
 
 	boolean canBeginReprise(long now) {
@@ -546,7 +546,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	/** A wake may never outlive its master, arena or last eligible challenger, even when ticked independently. */
 	boolean canMaintainAfterburn() {
-		return started && isAlive() && !isRemoved() && home != null && level() instanceof ServerLevel level
+		return started && isAlive() && !isRemoved() && home != null && ((ServerLevel) level()) instanceof ServerLevel level
 			&& level.getGameTime() < expires && level.getDifficulty() != Difficulty.PEACEFUL && !staggered() && !Stance.opened(this)
 			&& distanceToSqr(Vec3.atCenterOf(home)) <= MastersRules.ARENA_RADIUS * MastersRules.ARENA_RADIUS
 			&& Math.abs(getY() - home.getY()) <= 8
@@ -554,16 +554,16 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	private boolean lobbyOpen() {
-		return home != null && !started && level().getGameTime() < begins;
+		return home != null && !started && ((ServerLevel) level()).getGameTime() < begins;
 	}
 
 	private boolean enrolled(ServerPlayer player) {
-		return mayEnter(player) && player.level() == level();
+		return mayEnter(player) && player.level() == ((ServerLevel) level());
 	}
 
 	private boolean participant(LivingEntity entity) {
 		return entity instanceof ServerPlayer player && participants.contains(player.getUUID()) && mayEnter(player)
-			&& player.level() == level() && home != null
+			&& player.level() == ((ServerLevel) level()) && home != null
 			&& player.distanceToSqr(Vec3.atCenterOf(home)) <= MastersRules.ARENA_RADIUS * MastersRules.ARENA_RADIUS;
 	}
 
@@ -581,13 +581,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) ((ServerLevel) level());
 
 		super.customServerAiStep();
 		if (!isAlive()) return;
-		long now = level().getGameTime();
+		long now = ((ServerLevel) level()).getGameTime();
 		// Spellbane comes before anything else: whatever the Master is doing, no spell reaches it.
-		eraseBolts(level(), now);
+		eraseBolts(((ServerLevel) level()), now);
 		if (started) {
 			double most = MastersRules.evadeFocus(partySize);
 			evadeFocus = evadeFocus < 0 ? most : Math.min(most, evadeFocus + MastersRules.evadeRegen(partySize));
@@ -602,13 +602,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			if (waitingUntil > 0 && now >= waitingUntil) discard();
 			return;
 		}
-		// Stepping out of the arena only pauses a fighter (participant() is checked at every hit); leaving the level(), dying or
+		// Stepping out of the arena only pauses a fighter (participant() is checked at every hit); leaving the ((ServerLevel) level()), dying or
 		// turning to another duel is what drops them from the roster.
-		if (participants.removeIf(id -> !(level().getPlayerByUUID(id) instanceof ServerPlayer player) || !enrolled(player))) endOrdinaryPhrase();
+		if (participants.removeIf(id -> !(((ServerLevel) level()).getPlayerByUUID(id) instanceof ServerPlayer player) || !enrolled(player))) endOrdinaryPhrase();
 		// Braking belongs before every interruption/abandonment early return, including losing the current target.
 		if (state(DASH) && (now >= dodgeUntil || participants.isEmpty() || staggered() || Stance.opened(this)
 			|| getTarget() == null || !participant(getTarget()))) stopDodge(now);
-		if (now >= expires || level().getDifficulty() == Difficulty.PEACEFUL
+		if (now >= expires || ((ServerLevel) level()).getDifficulty() == Difficulty.PEACEFUL
 			|| distanceToSqr(Vec3.atCenterOf(home)) > MastersRules.ARENA_RADIUS * MastersRules.ARENA_RADIUS
 			|| Math.abs(getY() - home.getY()) > 8) {
 			discard();
@@ -618,7 +618,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			for (ServerPlayer player : new ArrayList<>(bar.getPlayers())) {
 				if (!participant(player)) bar.removePlayer(player);
 			}
-			for (ServerPlayer player : level().players()) {
+			for (ServerPlayer player : ((ServerLevel) level()).players()) {
 				if (participant(player)) bar.addPlayer(player);
 			}
 			bar.setProgress(getHealth() / getMaxHealth());
@@ -652,7 +652,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				: MastersPackB.owns(discipline) ? MastersPackB.id(discipline) + "_lesson" // ---- masters-b pack
 				: MethodsAMasters.owns(discipline) ? MethodsAMasters.id(discipline) + "_lesson" : null; // ---- methods-a pack
 			if (packSchool >= 0) lesson = MethodsBMasters.lessonKey(packSchool); // ---- methods-b pack
-			for (ServerPlayer player : level().players()) if (participant(player)) {
+			for (ServerPlayer player : ((ServerLevel) level()).players()) if (participant(player)) {
 				Component pursuit = Component.translatable("message.wildercord.master.pursuit_lesson");
 				player.sendSystemMessage(lesson == null ? pursuit
 					: Component.translatable("message.wildercord.master." + lesson).append(" ").append(pursuit));
@@ -673,7 +673,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (afterburn != null && !afterburn.tick(now)) afterburn = null;
 		LivingEntity target = getTarget();
 		if (target == null || !participant(target)) {
-			target = level().players().stream().filter(this::participant).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+			target = ((ServerLevel) level()).players().stream().filter(this::participant).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			setTarget(target);
 		}
 		if (ordinaryPlanner != null) {
@@ -691,14 +691,14 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		}
 		quiet = 0;
 		if (attack != null) {
-			tickAttack(level(), now, target);
+			tickAttack(((ServerLevel) level()), now, target);
 			return;
 		}
 		if (now < dodgeUntil) {
 			endOrdinaryPhrase();
 			getNavigation().stop();
 			// Ground or obstacles may have changed since the initial probe.
-			if (safeMotion(level(), dodgeDirection.scale(0.65))) {
+			if (safeMotion(((ServerLevel) level()), dodgeDirection.scale(0.65))) {
 				setDeltaMovement(dodgeDirection.scale(0.65).add(0, getDeltaMovement().y, 0));
 			} else {
 				dodgeUntil = now;
@@ -712,8 +712,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			setState(DASH, false);
 			// The sidestep is the draw: a challenger left in reach takes a cut straight out of it.
 			if (MasterMoveCatalog.legacy().forMove(MastersRules.Move.SWEEP).availableIn(discipline)
-				&& ordinaryEligibility(level(), target, now).contains(MastersRules.Move.SWEEP)) {
-				beginAttack(level(), target, MastersRules.Move.SWEEP, now);
+				&& ordinaryEligibility(((ServerLevel) level()), target, now).contains(MastersRules.Move.SWEEP)) {
+				beginAttack(((ServerLevel) level()), target, MastersRules.Move.SWEEP, now);
 				return;
 			}
 		}
@@ -730,7 +730,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			endOrdinaryPhrase();
 			dropGuard();
 			recoverUntil = breathingUntil = now + MastersRules.BREATH_TICKS;
-			Feels.sound(level(), position(), "aura_breath", 1, 0.8F);
+			Feels.sound(((ServerLevel) level()), position(), "aura_breath", 1, 0.8F);
 			return;
 		}
 		if (guarding()) {
@@ -739,13 +739,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			return;
 		}
 		// Look for an admitted casting opening only while entirely free. Never retarget an accepted dash.
-		for (ServerPlayer caster : level().players().stream().filter(this::participant)
+		for (ServerPlayer caster : ((ServerLevel) level()).players().stream().filter(this::participant)
 			.sorted(Comparator.comparingDouble((ServerPlayer player) -> distanceToSqr(player)).thenComparing(Entity::getUUID)).toList()) {
 			MasterPursuit opening = MasterPursuit.prepare(this, caster, discipline, aura, now, pursuitReadyAt);
 			if (opening != null) {
 				guardNext = false;
 				setTarget(caster);
-				beginAttack(level(), caster, MastersRules.Move.PURSUIT_BREAK, now);
+				beginAttack(((ServerLevel) level()), caster, MastersRules.Move.PURSUIT_BREAK, now);
 				pursuit = opening;
 				pursuitReadyAt = now + MasterPursuitRules.school(discipline).cooldown();
 				pursuit.tick(now);
@@ -758,7 +758,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				StoneFracture opening = packSchool >= 0 ? null : StoneFracture.prepare(this, player, discipline, sequence, aura, now, fractureReadyAt);
 				if (opening != null) {
 					guardNext = false;
-					beginAttack(level(), player, MastersRules.Move.STONE_FRACTURE, now);
+					beginAttack(((ServerLevel) level()), player, MastersRules.Move.STONE_FRACTURE, now);
 					fracture = opening;
 					fractureReadyAt = now + StoneFractureRules.COOLDOWN;
 					fracture.tick(now);
@@ -774,7 +774,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (target instanceof ServerPlayer player) {
 			GaleReprise opening = packSchool >= 0 ? null : GaleReprise.prepare(this, player, discipline, sequence, aura, now, repriseReadyAt);
 			if (opening != null) {
-				beginAttack(level(), player, MastersRules.Move.CROSSWIND_REPRISE, now);
+				beginAttack(((ServerLevel) level()), player, MastersRules.Move.CROSSWIND_REPRISE, now);
 				reprise = opening;
 				repriseReadyAt = now + GaleRepriseRules.COOLDOWN;
 				reprise.tick(now);
@@ -805,7 +805,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			&& next != MastersRules.Move.CINDER_WAKE && target instanceof ServerPlayer player) {
 			EmberKiln opening = packSchool >= 0 ? null : EmberKiln.prepare(this, player, discipline, sequence, aura, now, kilnReadyAt);
 			if (opening != null) {
-				beginAttack(level(), target, MastersRules.Move.KILN_RING, now);
+				beginAttack(((ServerLevel) level()), target, MastersRules.Move.KILN_RING, now);
 				kiln = opening;
 				kilnReadyAt = now + EmberKilnRules.COOLDOWN;
 				// Reserve the complete timeline at admission. Interruption cannot shorten the promised punish window.
@@ -819,20 +819,20 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4)
 			&& next != MastersRules.Move.CINDER_WAKE && target instanceof ServerPlayer player) {
 			StoneMarch opening = packSchool >= 0 ? null : StoneMarch.prepare(this, player, discipline, sequence, aura, now, marchReadyAt);
-			if (opening != null && tryBeginMarch(level(), player, now, opening)) return;
+			if (opening != null && tryBeginMarch(((ServerLevel) level()), player, now, opening)) return;
 		}
 		// ---- masters-a pack: Rime, Thunder, Verdant and Hollow signatures take the same ordinary slot as the Kiln.
 		if (ElementalMasters.owns(discipline) && !MastersRules.needsCrescent(distanceTo(target), targetHeight)
 			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4)
 			&& next != MastersRules.Move.CINDER_WAKE && target instanceof ServerPlayer player
-			&& tryBeginSignature(level(), player, now)) return;
+			&& tryBeginSignature(((ServerLevel) level()), player, now)) return;
 		// ---- masters-b pack: one ordinary slot in four may open the school's signature instead.
 		if (!MastersRules.needsCrescent(distanceTo(target), targetHeight)
 			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4)
 			&& target instanceof ServerPlayer player) {
 			MastersPackBSignature opening = MastersPackBSignature.prepare(this, player, discipline, sequence, aura, now, packBReadyAt);
 			if (opening != null) {
-				beginAttack(level(), target, opening.kind(), now);
+				beginAttack(((ServerLevel) level()), target, opening.kind(), now);
 				packB = opening;
 				packBReadyAt = now + MastersPackB.cooldown(opening.kind());
 				recoverUntil = Math.max(recoverUntil, opening.endsAt());
@@ -847,7 +847,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			&& target instanceof ServerPlayer player) {
 			MethodsASignature opening = MethodsASignature.prepare(this, player, discipline, sequence, aura, now, methodsAReadyAt);
 			if (opening != null) {
-				beginAttack(level(), target, opening.kind(), now);
+				beginAttack(((ServerLevel) level()), target, opening.kind(), now);
 				methodsA = opening;
 				methodsAReadyAt = now + MethodsAMasters.cooldown(opening.kind());
 				recoverUntil = Math.max(recoverUntil, opening.endsAt());
@@ -859,22 +859,22 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		// Once the opener and the planner's first phrase have played plain, most ordinary melee slots become one of the
 		// school's named combos; a plain cut still appears between them.
 		if (techniques && ordinaryPlanner != null && ordinaryPlanner.state().successfulDecisions() >= 2 && (next == MastersRules.Move.SWEEP || next == MastersRules.Move.THRUST) && getRandom().nextInt(4) != 0
-			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4) && beginTechnique(level(), target, now)) return;
+			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4) && beginTechnique(((ServerLevel) level()), target, now)) return;
 		// Only the ordinary pattern fallback varies. Every earlier executor and priority retains its native admission.
 		if (ordinaryPlanner != null && ordinaryPlanner.state().successfulDecisions() > 0
 			&& !MastersRules.needsCrescent(distanceTo(target), targetHeight)
 			&& (next == MastersRules.Move.SWEEP || next == MastersRules.Move.THRUST || next == MastersRules.Move.CRESCENT)) {
-			var eligible = ordinaryEligibility(level(), target, now);
+			var eligible = ordinaryEligibility(((ServerLevel) level()), target, now);
 			if (eligible.isEmpty()) return;
 			var proposal = ordinaryPlanner.propose(next, eligible, aura);
 			if (proposal.move() != null) {
-				tryBeginOrdinary(level(), target, now, proposal);
+				tryBeginOrdinary(((ServerLevel) level()), target, now, proposal);
 				return; // A declined/stale proposal never pays or recursively redraws.
 			}
 			ordinaryPlanner.neutral(proposal);
 			if (!eligible.contains(next)) return;
 		}
-		beginAttack(level(), target, next, now);
+		beginAttack(((ServerLevel) level()), target, next, now);
 	}
 
 	/** This is the server's allowlist, not graph-authored eligibility. Recomputed immediately before the one payment. */
@@ -1258,7 +1258,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	/** Package-private for fixtures: begins one of this Master's own techniques by key, as the live pick would. */
 	boolean beginNamedTechnique(String key) {
-		if (!(level() instanceof ServerLevel level) || !(getTarget() instanceof LivingEntity target)) return false;
+		if (!(((ServerLevel) level()) instanceof ServerLevel level) || !(getTarget() instanceof LivingEntity target)) return false;
 		for (var combo : MasterTechniques.forSchool(school())) if (combo.key().equals(key)) {
 			cancelAttack();
 			return startTechnique(level, target, combo, level.getGameTime());
@@ -1489,28 +1489,28 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		endOrdinaryPhrase();
 		if (march != null) {
 			march.stop();
-			recoverUntil = Math.max(recoverUntil, Math.max(march.endsAt(), level().getGameTime() + StoneMarchRules.RECOVERY));
+			recoverUntil = Math.max(recoverUntil, Math.max(march.endsAt(), ((ServerLevel) level()).getGameTime() + StoneMarchRules.RECOVERY));
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 		}
 		march = null;
 		if (kiln != null) {
 			kiln.stop();
-			recoverUntil = Math.max(recoverUntil, Math.max(kiln.endsAt(), level().getGameTime() + EmberKilnRules.RECOVERY));
+			recoverUntil = Math.max(recoverUntil, Math.max(kiln.endsAt(), ((ServerLevel) level()).getGameTime() + EmberKilnRules.RECOVERY));
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 		}
 		kiln = null;
 		if (signature != null) { // ---- masters-a pack
 			signature.stop();
-			recoverUntil = Math.max(recoverUntil, Math.max(signature.endsAt(), level().getGameTime() + ElementalMasters.MIN_RECOVERY));
+			recoverUntil = Math.max(recoverUntil, Math.max(signature.endsAt(), ((ServerLevel) level()).getGameTime() + ElementalMasters.MIN_RECOVERY));
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 		}
 		signature = null;
 		if (packB != null) { // ---- masters-b pack
 			packB.stop();
-			recoverUntil = Math.max(recoverUntil, Math.max(packB.endsAt(), level().getGameTime() + packB.recovery()));
+			recoverUntil = Math.max(recoverUntil, Math.max(packB.endsAt(), ((ServerLevel) level()).getGameTime() + packB.recovery()));
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 		}
@@ -1518,7 +1518,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (methodsA != null) { // ---- methods-a pack
 			methodsA.stop();
 			methodsAReceipt = methodsA.receipt();
-			recoverUntil = Math.max(recoverUntil, Math.max(methodsA.endsAt(), level().getGameTime() + methodsA.recovery()));
+			recoverUntil = Math.max(recoverUntil, Math.max(methodsA.endsAt(), ((ServerLevel) level()).getGameTime() + methodsA.recovery()));
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 		}
@@ -1527,19 +1527,19 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			dropGuard();
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 			guardNext = false;
-			recoverUntil = Math.max(recoverUntil, level().getGameTime() + StoneFractureRules.RECOVERY);
+			recoverUntil = Math.max(recoverUntil, ((ServerLevel) level()).getGameTime() + StoneFractureRules.RECOVERY);
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 		}
 		fracture = null;
 		if (reprise != null) {
 			setDeltaMovement(0, getDeltaMovement().y, 0);
-			recoverUntil = Math.max(recoverUntil, level().getGameTime() + GaleRepriseRules.RECOVERY);
+			recoverUntil = Math.max(recoverUntil, ((ServerLevel) level()).getGameTime() + GaleRepriseRules.RECOVERY);
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 		}
 		reprise = null;
 		if (pursuit != null) {
 			setDeltaMovement(0, getDeltaMovement().y, 0);
-			recoverUntil = Math.max(recoverUntil, level().getGameTime() + MasterPursuitRules.RECOVERY);
+			recoverUntil = Math.max(recoverUntil, ((ServerLevel) level()).getGameTime() + MasterPursuitRules.RECOVERY);
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 		}
 		pursuit = null;
@@ -1548,7 +1548,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		entityData.set(DATA_TECHNIQUE, 0);
 		entityData.set(DATA_ATTACK, 0);
 		entityData.set(DATA_ATTACK_AIM_PITCH, 0F);
-		if (state(DASH)) stopDodge(level().getGameTime());
+		if (state(DASH)) stopDodge(((ServerLevel) level()).getGameTime());
 		attack = null;
 		lockedAim = null;
 		lockedOrigin = null;
@@ -1565,12 +1565,12 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	/** Slow effects still hinder footwork, but cannot become an indefinitely renewable full-body stagger. */
 	@Override
 	public boolean staggered() {
-		return level().getGameTime() < staggerUntil || Stance.opened(this);
+		return ((ServerLevel) level()).getGameTime() < staggerUntil || Stance.opened(this);
 	}
 
 	/** Shared Statuses.interrupt owns the per-target immunity; this is the master's genuinely interruptible window. */
 	public boolean interruptWindup() {
-		long now = level().getGameTime();
+		long now = ((ServerLevel) level()).getGameTime();
 		if (!started || !isAlive() || underSpell() || !acceptsInfluence(dev.wildercord.cast.Effects.applying())
 			|| !MastersRules.interruptible(attack != null, now, attackAt)) return false;
 		cancelAttack();
@@ -1627,7 +1627,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) ((ServerLevel) level());
 
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurt(source, damage);
 		// Spellbane: magic never lands on a Master, from any side, guard or none. Only blade and aura reach it.
@@ -1677,7 +1677,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	@Override
 	public void die(DamageSource source) {
 		cancelAttack();
-		if (level() instanceof ServerLevel level) {
+		if (((ServerLevel) level()) instanceof ServerLevel level) {
 			ServerPlayer finisher = MasterVictories.owner(source.getEntity());
 			if (finisher == null) finisher = MasterVictories.owner(source.getDirectEntity());
 			boolean legitimate = MasterVictoryRules.legitimate(started, !isNoAi(), source.is(DamageTypeTags.BYPASSES_INVULNERABILITY),
