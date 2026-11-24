@@ -10,15 +10,15 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -27,8 +27,6 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -53,7 +51,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return (ServerLevel) player(server).level();
 	}
 
 	private static float yaw(Vec3 from, Vec3 to) {
@@ -71,8 +69,8 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			ServerLevel l = level(server);
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.marshal_cam")).forEach(Entity::discard);
-			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			Display.TextDisplay cam = dev.wildercord.compat.McEntities.create(EntityType.TEXT_DISPLAY, l, MobSpawnType.COMMAND);
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.marshal_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -117,8 +115,8 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 	}
 
 	private static OathboundBannerMarshal spawnMarshal(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
-		OathboundBannerMarshal m = AuraWorld.OATHBOUND_BANNER_MARSHAL.create(l, EntitySpawnReason.COMMAND);
-		m.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		OathboundBannerMarshal m = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BANNER_MARSHAL, l, MobSpawnType.COMMAND);
+		m.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		m.setYHeadRot(yaw);
 		m.setYBodyRot(yaw);
 		m.setPersistenceRequired();
@@ -233,7 +231,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(studioId);
-						m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						m.setYBodyRot(180.0F);
 						m.setYHeadRot(180.0F);
 						m.poseForPreview(sShot.move(), ft, fe, sShot.counter());
@@ -271,8 +269,8 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			// 2a. Decree of the Standard heals & buffs nearby allied knight within 12m
 			int allyId = server.computeOnServer(s -> {
 				ServerLevel l = level(s);
-				OathboundHalberdier ally = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
-				ally.snapTo(4.5, 121.0, 2.5, 180.0F, 0.0F);
+				OathboundHalberdier ally = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, l, MobSpawnType.COMMAND);
+				ally.moveTo(4.5, 121.0, 2.5, 180.0F, 0.0F);
 				ally.setNoAi(true);
 				ally.setHealth(80.0F);
 				l.addFreshEntity(ally);
@@ -284,8 +282,8 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				Entity e = level(s).getEntity(allyId);
 				return e instanceof OathboundHalberdier ally
 					&& ally.getHealth() >= 87.5F
-					&& ally.hasEffect(MobEffects.STRENGTH)
-					&& ally.hasEffect(MobEffects.RESISTANCE);
+					&& ally.hasEffect(MobEffects.DAMAGE_BOOST)
+					&& ally.hasEffect(MobEffects.DAMAGE_RESISTANCE);
 			}), "Decree of the Standard did not heal and buff allied knight within 12 blocks");
 			server.runOnServer(s -> {
 				Entity e = level(s).getEntity(allyId);
@@ -297,7 +295,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			// 2b. Solar Aegis Guard: arrow deflection + frontal melee block + counter-thrust
 			server.runOnServer(s -> {
 				OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(marshalId);
-				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.setTarget(null);
 				m.startMove(level(s), OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD, null);
 			});
@@ -340,7 +338,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(marshalId);
 				m.setNoAi(true);
-				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.startMove(level(s), OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD, null);
 			});
 			context.waitTicks(OathboundBannerMarshalRules.GUARD_TELL + 2);
@@ -371,7 +369,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
-				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.startMove(l, OathboundBannerMarshalRules.SOVEREIGN_JUDGMENT, p);
 			});
 			check(await(context, world, 36, s -> player(s).getHealth() < 20.0F),
@@ -392,11 +390,11 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
-				TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, l.registryAccess());
+				CompoundTag out = new CompoundTag();
 				m.saveWithoutId(out);
 
-				OathboundBannerMarshal reloaded = AuraWorld.OATHBOUND_BANNER_MARSHAL.create(l, EntitySpawnReason.LOAD);
-				reloaded.load(TagValueInput.create(ProblemReporter.DISCARDING, l.registryAccess(), out.buildResult()));
+				OathboundBannerMarshal reloaded = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BANNER_MARSHAL, l, MobSpawnType.STRUCTURE);
+				reloaded.load(out);
 				check(reloaded.empowered() && reloaded.getHealth() == m.getHealth(),
 					"marshal_empowered failed to persist across NBT reload");
 				check(reloaded.move() == OathboundBannerMarshalRules.SOVEREIGN_MARCH,

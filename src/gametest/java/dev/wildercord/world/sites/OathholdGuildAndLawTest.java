@@ -27,7 +27,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
@@ -76,8 +76,8 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			Display.TextDisplay cam = dev.wildercord.compat.McEntities.create(EntityType.TEXT_DISPLAY, l, MobSpawnType.COMMAND);
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -116,12 +116,12 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 	}
 
 	private static UUID spawnCitizen(ServerLevel l, OathholdCitizenRules.Archetype role, int x, int y, int z, float yaw) {
-		OathholdCitizen npc = OathholdContent.CITIZEN.create(l, EntitySpawnReason.COMMAND);
+		OathholdCitizen npc = dev.wildercord.compat.McEntities.create(OathholdContent.CITIZEN, l, MobSpawnType.COMMAND);
 		check(npc != null, "Failed to create OathholdCitizen for " + role);
 		BlockPos pos = new BlockPos(x, y, z);
 		npc.configure(role, x, y, z, pos, 3);
-		npc.snapTo(x + 0.5, y, z + 0.5, yaw, 0.0F);
-		npc.finalizeSpawn(l, l.getCurrentDifficultyAt(pos), EntitySpawnReason.COMMAND, null);
+		npc.moveTo(x + 0.5, y, z + 0.5, yaw, 0.0F);
+		npc.finalizeSpawn(l, l.getCurrentDifficultyAt(pos), MobSpawnType.COMMAND, null);
 		l.addFreshEntity(npc);
 		return npc.getUUID();
 	}
@@ -298,13 +298,13 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				p.teleportTo(l, 0.5, 120.0, 4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setHealth(p.getMaxHealth());
 
-				OathboundBastion bastion = AuraWorld.OATHBOUND_BASTION.create(l, EntitySpawnReason.COMMAND);
-				OathboundHalberdier halberdier = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
+				OathboundBastion bastion = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BASTION, l, MobSpawnType.COMMAND);
+				OathboundHalberdier halberdier = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, l, MobSpawnType.COMMAND);
 				check(bastion != null && halberdier != null, "Failed to spawn Oathbound Knight patrol");
-				bastion.snapTo(3.5, 120.0, 7.5, 155.0F, 0.0F);
-				halberdier.snapTo(-2.5, 120.0, 7.5, -155.0F, 0.0F);
-				bastion.finalizeSpawn(l, l.getCurrentDifficultyAt(bastion.blockPosition()), EntitySpawnReason.COMMAND, null);
-				halberdier.finalizeSpawn(l, l.getCurrentDifficultyAt(halberdier.blockPosition()), EntitySpawnReason.COMMAND, null);
+				bastion.moveTo(3.5, 120.0, 7.5, 155.0F, 0.0F);
+				halberdier.moveTo(-2.5, 120.0, 7.5, -155.0F, 0.0F);
+				bastion.finalizeSpawn(l, l.getCurrentDifficultyAt(bastion.blockPosition()), MobSpawnType.COMMAND, null);
+				halberdier.finalizeSpawn(l, l.getCurrentDifficultyAt(halberdier.blockPosition()), MobSpawnType.COMMAND, null);
 				l.addFreshEntity(bastion);
 				l.addFreshEntity(halberdier);
 				return new UUID[]{bastion.getUUID(), halberdier.getUUID()};
@@ -431,10 +431,10 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 				p.teleportTo(l, ARENA_CENTER.getX() + 2.5, 120.0, ARENA_CENTER.getZ() + 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
 
-				OathboundHalberdier watcher = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
+				OathboundHalberdier watcher = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, l, MobSpawnType.COMMAND);
 				check(watcher != null, "Failed to spawn arena watcher knight");
-				watcher.snapTo(ARENA_CENTER.getX() + 3.5, 120.0, ARENA_CENTER.getZ() - 5.5, 25.0F, 0.0F);
-				watcher.finalizeSpawn(l, l.getCurrentDifficultyAt(watcher.blockPosition()), EntitySpawnReason.COMMAND, null);
+				watcher.moveTo(ARENA_CENTER.getX() + 3.5, 120.0, ARENA_CENTER.getZ() - 5.5, 25.0F, 0.0F);
+				watcher.finalizeSpawn(l, l.getCurrentDifficultyAt(watcher.blockPosition()), MobSpawnType.COMMAND, null);
 				l.addFreshEntity(watcher);
 
 				var arenaSpec = OathholdQuestRules.byId("arena_fallen_squire");

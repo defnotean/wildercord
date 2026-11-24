@@ -136,7 +136,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	void bind(ServerPlayer owner) {
 		setTame(true, false);
-		setOwner(owner);
+		setOwnerUUID(owner.getUUID());
 		setOrderedToSit(owner.getAttachedOrElse(CinnamonState.SITTING, false));
 		bow = owner.getAttachedOrElse(CinnamonState.BOW, false);
 		setCustomName(Component.literal("Cinnamon"));
@@ -189,8 +189,6 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	@Override public boolean isEffectiveAi() { return super.isEffectiveAi() && CinnamonCompanion.active(this) && !isHitPaused(); }
 
-	@Override public boolean isFlyingVehicle() { return harness && !isExhausted(); }
-
 	/** Vanilla's teleport only checks a small footprint. The registry owns all companion moves. */
 	@Override public void tryToTeleportToOwner() {
 		if (!isVehicle()) CinnamonCompanion.recallFollowing(this);
@@ -198,7 +196,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	@Override public boolean canUsePortal(boolean allowPassengers) { return false; }
 
-	@Override public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource source) {
+	@Override public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource source) {
 		if (harness || flying || grandBow) {
 			resetFallDistance();
 			return false;
@@ -378,7 +376,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		var ownerPosition = player.position();
 		float previousScale = getScale();
 		long revision = stateRevision;
-		boolean safe = CompanionLanding.safe(player.level(), this, proposed);
+		boolean safe = CompanionLanding.safe((ServerLevel) player.level(), this, proposed);
 		// Protection hooks can re-enter, transfer ownership, or replace the hand stack. Fail closed.
 		if (!safe || !CinnamonCompanion.active(this) || !isOwnedBy(player) || player.level() != level()
 			|| stateRevision != revision || !getBoundingBox().equals(before) || !player.position().equals(ownerPosition)
@@ -633,7 +631,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	private static boolean duellingOwner(Entity target) {
 		LivingEntity responsible = target instanceof Player player ? player
-			: target instanceof OwnableEntity pet ? pet.getRootOwner() : null;
+			: target instanceof OwnableEntity pet ? dev.wildercord.compat.McOwnable.rootOwner(pet) : null;
 		return responsible instanceof Player player && Duels.inDuel(player);
 	}
 
@@ -804,8 +802,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 			return;
 		}
 		if (flying) {
-			float speed = (float) getAttributeValue(Attributes.FLYING_SPEED);
-			travelFlying(travelVector, speed, speed, speed);
+			setDeltaMovement(travelVector.scale(0.02)); // 1.21.5 has no travelFlying yet
 			return;
 		}
 		super.travel(travelVector);
@@ -816,7 +813,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		double physical = scaleAt(targetScale);
 		if (player instanceof ServerPlayer sp && physical > getScale()) {
 			AABB proposed = getDimensions(getPose()).scale((float) (physical / Math.max(0.01D, getScale()))).makeBoundingBox(position());
-			if (!CompanionLanding.safe(sp.level(), this, proposed)) {
+			if (!CompanionLanding.safe((ServerLevel) sp.level(), this, proposed)) {
 				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.growth_blocked"), true);
 				return false;
 			}
@@ -882,7 +879,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 				settled = 0;
 				held.consume(1, player);
 				changed();
-				level().playSound(null, getX(), getY(), getZ(), SoundEvents.HORSE_SADDLE.value(), SoundSource.NEUTRAL, 0.9F, 1.1F);
+				level().playSound(null, getX(), getY(), getZ(), SoundEvents.HORSE_SADDLE, SoundSource.NEUTRAL, 0.9F, 1.1F);
 				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.harness_on"), true);
 				return InteractionResult.SUCCESS;
 			}
@@ -893,7 +890,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 					ItemStack ribbon = new ItemStack(CinnamonContent.GRAND_BOW);
 					if (!player.getInventory().add(ribbon)) spawnAtLocation((ServerLevel) level(), ribbon);
 					changed();
-					level().playSound(null, getX(), getY(), getZ(), SoundEvents.SHEARS_SNIP, SoundSource.NEUTRAL, 0.8F, 1.1F);
+					level().playSound(null, getX(), getY(), getZ(), SoundEvents.SHEEP_SHEAR, SoundSource.NEUTRAL, 0.8F, 1.1F);
 					player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.grand_bow_off"), true);
 					return InteractionResult.SUCCESS;
 				}
@@ -913,7 +910,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 					ItemStack gear = new ItemStack(CinnamonContent.HARNESS);
 					if (!player.getInventory().add(gear)) spawnAtLocation((ServerLevel) level(), gear);
 					changed();
-					level().playSound(null, getX(), getY(), getZ(), SoundEvents.SHEARS_SNIP, SoundSource.NEUTRAL, 0.8F, 1.0F);
+					level().playSound(null, getX(), getY(), getZ(), SoundEvents.SHEEP_SHEAR, SoundSource.NEUTRAL, 0.8F, 1.0F);
 					player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.harness_off"), true);
 					return InteractionResult.SUCCESS;
 				}
@@ -986,7 +983,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		settled = 0;
 		player.setAttached(CinnamonState.BOW, on);
 		changed();
-		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value() : net.minecraft.sounds.SoundEvents.SHEARS_SNIP,
+		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value() : net.minecraft.sounds.SoundEvents.SHEEP_SHEAR,
 			net.minecraft.sounds.SoundSource.NEUTRAL, 0.8F, 1.3F);
 	}
 
@@ -1098,7 +1095,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		return deadline <= now ? 0 : Math.min(deadline, now + maximum);
 	}
 
-	@Override protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("CinnamonSitting", savedSitting);
 		output.putBoolean("CinnamonBow", bow);
@@ -1113,7 +1110,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		output.store("CinnamonSaddlebags", McItemStackWithSlot.CODEC.listOf(), snapshotSaddlebags());
 	}
 
-	@Override protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		restoreState(
 			input.getBooleanOr("CinnamonSitting", isOrderedToSit()),

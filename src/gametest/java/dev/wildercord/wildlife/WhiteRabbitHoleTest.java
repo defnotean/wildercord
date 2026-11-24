@@ -23,7 +23,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
@@ -69,8 +69,8 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(260),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = net.minecraft.world.entity.EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			Display.TextDisplay cam = dev.wildercord.compat.McEntities.create(net.minecraft.world.entity.EntityType.TEXT_DISPLAY, l, MobSpawnType.COMMAND);
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -162,12 +162,12 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
 				p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 12000, 0, false, false));
-				p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 12000, 4, false, false));
+				p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 12000, 4, false, false));
 				p.teleportTo(l, 0.5, 101.0, 0.5, Set.<Relative>of(), -90.0F, 0.0F, false);
 
-				WhiteRabbit rabbit = WhiteRabbitContent.WHITE_RABBIT.create(l, EntitySpawnReason.COMMAND);
+				WhiteRabbit rabbit = dev.wildercord.compat.McEntities.create(WhiteRabbitContent.WHITE_RABBIT, l, MobSpawnType.COMMAND);
 				check(rabbit != null, "Create WhiteRabbit");
-				rabbit.snapTo(3.5, 101.0, 0.5, -90.0F, 0.0F);
+				rabbit.moveTo(3.5, 101.0, 0.5, -90.0F, 0.0F);
 				l.addFreshEntity(rabbit);
 				BlockPos portal = rabbit.leadToHollowTree(p, treeBase, WhiteRabbitRules.Outcome.RANDOM_CAVE);
 				check(l.getBlockState(portal).is(WhiteRabbitContent.RABBIT_HOLE_PORTAL),

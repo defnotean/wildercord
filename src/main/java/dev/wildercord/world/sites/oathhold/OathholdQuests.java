@@ -38,7 +38,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -426,13 +426,13 @@ public final class OathholdQuests {
 		Mob duelist = createArenaDuelist(level, job.targetKey());
 		if (duelist == null) return false;
 		BlockPos spawnAt = anchorPos;
-		duelist.snapTo(spawnAt.getX() + 0.5, spawnAt.getY(), spawnAt.getZ() + 0.5, 0.0F, 0.0F);
+		duelist.moveTo(spawnAt.getX() + 0.5, spawnAt.getY(), spawnAt.getZ() + 0.5, 0.0F, 0.0F);
 		duelist.addTag(OathholdLaw.ARENA_DUELIST_TAG);
 		duelist.addTag(cTag);
 		duelist.setCustomName(Component.literal("Colosseum Challenger — " + duelist.getType().getDescription().getString())
 			.withStyle(ChatFormatting.GOLD));
 		duelist.setCustomNameVisible(true);
-		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(spawnAt), EntitySpawnReason.EVENT, null);
+		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(spawnAt), MobSpawnType.EVENT, null);
 		duelist.setTarget(player);
 		level.addFreshEntity(duelist);
 		level.playSound(null, spawnAt, SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 0.75F, 1.15F);
@@ -444,13 +444,13 @@ public final class OathholdQuests {
 	private static Mob createArenaDuelist(ServerLevel level, String targetKey) {
 		return switch (targetKey) {
 			case "fallen_knight" -> {
-				FallenKnight fk = AuraWorld.FALLEN_KNIGHT.create(level, EntitySpawnReason.EVENT);
+				FallenKnight fk = dev.wildercord.compat.McEntities.create(AuraWorld.FALLEN_KNIGHT, level, MobSpawnType.EVENT);
 				yield fk;
 			}
-			case "oathbound_halberdier" -> AuraWorld.OATHBOUND_HALBERDIER.create(level, EntitySpawnReason.EVENT);
-			case "oathbound_blade_champion" -> AuraWorld.OATHBOUND_BLADE_CHAMPION.create(level, EntitySpawnReason.EVENT);
-			case "oathbound_bastion" -> AuraWorld.OATHBOUND_BASTION.create(level, EntitySpawnReason.EVENT);
-			case "oathbound_banner_marshal" -> AuraWorld.OATHBOUND_BANNER_MARSHAL.create(level, EntitySpawnReason.EVENT);
+			case "oathbound_halberdier" -> dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, level, MobSpawnType.EVENT);
+			case "oathbound_blade_champion" -> dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BLADE_CHAMPION, level, MobSpawnType.EVENT);
+			case "oathbound_bastion" -> dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BASTION, level, MobSpawnType.EVENT);
+			case "oathbound_banner_marshal" -> dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BANNER_MARSHAL, level, MobSpawnType.EVENT);
 			default -> null;
 		};
 	}
@@ -566,8 +566,8 @@ public final class OathholdQuests {
 				if (Math.abs(rx - center.getX()) < 6 && Math.abs(rz - center.getZ()) < 6) continue;
 				BlockPos p = new BlockPos(rx, center.getY(), rz);
 				if (level.getBlockState(p).isAir() && level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) {
-					if (type.get().create(level, EntitySpawnReason.EVENT) instanceof Mob mob) {
-						mob.snapTo(rx + 0.5, p.getY(), rz + 0.5, rng.nextFloat() * 360.0F, 0.0F);
+					if (type.get().create(level, MobSpawnType.EVENT) instanceof Mob mob) {
+						mob.moveTo(rx + 0.5, p.getY(), rz + 0.5, rng.nextFloat() * 360.0F, 0.0F);
 						mob.addTag(QUEST_PEST_PREFIX + playerId);
 						mob.setCustomName(Component.literal("Guild Subjugation Target"));
 						level.addFreshEntity(mob);
@@ -640,7 +640,7 @@ public final class OathholdQuests {
 			}))
 			.then(literal("payfine").executes(ctx -> OathholdLaw.tryPayFine(ctx.getSource().getPlayerOrException()) ? 1 : 0))
 			.then(literal("release")
-				.requires(src -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(src)
+				.requires(src -> src.hasPermission(Commands.LEVEL_GAMEMASTERS)
 					|| (src.getEntity() instanceof ServerPlayer sp && sp.isCreative()))
 				.executes(ctx -> {
 					OathholdJustice.forceRelease(ctx.getSource().getPlayerOrException());

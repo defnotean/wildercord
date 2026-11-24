@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -104,7 +104,7 @@ public final class OceanEntities {
 	private static <T extends Mob> void registerMonsterWaterSpawn(EntityType<T> type) {
 		SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.OCEAN_FLOOR,
 			(t, level, reason, pos, random) ->
-				(EntitySpawnReason.isSpawner(reason) || reason != EntitySpawnReason.NATURAL
+				(MobSpawnType.isSpawner(reason) || reason != MobSpawnType.NATURAL
 					|| (level.getDifficulty() != Difficulty.PEACEFUL
 						&& level.getFluidState(pos).is(FluidTags.WATER)
 						&& pos.getY() < level.getSeaLevel() - 6)));
@@ -114,6 +114,6 @@ public final class OceanEntities {
 		SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.OCEAN_FLOOR,
 			(t, level, reason, pos, random) ->
 				level.getFluidState(pos).is(FluidTags.WATER)
-					&& (EntitySpawnReason.isSpawner(reason) || pos.getY() < level.getSeaLevel()));
+					&& (MobSpawnType.isSpawner(reason) || pos.getY() < level.getSeaLevel()));
 	}
 }

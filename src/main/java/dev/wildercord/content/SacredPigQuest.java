@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.npc.Villager;
@@ -81,14 +81,14 @@ public final class SacredPigQuest {
 	public static void spawnNpc(ServerLevel level, double x, double y, double z) {
 		Entity pig = create(level, "minecraft:pig");
 		if (pig instanceof Pig p) {
-			p.snapTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
+			p.moveTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
 			p.setCustomName(Component.literal("Sacred Pig").withStyle(ChatFormatting.LIGHT_PURPLE));
 			p.setCustomNameVisible(true);
 			p.addTag(PIG_TAG);
 			p.setNoAi(true);
 			level.addFreshEntityWithPassengers(p);
 		} else if (pig != null) {
-			pig.snapTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
+			pig.moveTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
 			pig.setCustomName(Component.literal("Sacred Pig").withStyle(ChatFormatting.LIGHT_PURPLE));
 			pig.setCustomNameVisible(true);
 			pig.addTag(PIG_TAG);
@@ -96,7 +96,7 @@ public final class SacredPigQuest {
 		}
 		Entity priest = create(level, "minecraft:villager");
 		if (priest instanceof Villager v) {
-			v.snapTo(x + 2.5, y, z + 0.5, 180.0F, 0.0F);
+			v.moveTo(x + 2.5, y, z + 0.5, 180.0F, 0.0F);
 			v.setCustomName(Component.literal("Pig Priest").withStyle(ChatFormatting.GOLD));
 			v.setCustomNameVisible(true);
 			v.addTag(PRIEST_TAG);
@@ -109,7 +109,7 @@ public final class SacredPigQuest {
 	private static Entity create(ServerLevel level, String id) {
 		return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
 			.getOptional(net.minecraft.resources.ResourceLocation.parse(id))
-			.map(t -> ((EntityType<? extends Entity>) t).create(level, EntitySpawnReason.STRUCTURE))
+			.map(t -> ((EntityType<? extends Entity>) t).create(level, MobSpawnType.STRUCTURE))
 			.orElse(null);
 	}
 }

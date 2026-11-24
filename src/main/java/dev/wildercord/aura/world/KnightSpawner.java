@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
@@ -161,12 +161,12 @@ public final class KnightSpawner {
 
 	/** A knight of {@code haunt}'s rank and one of its methods, standing at {@code at}. */
 	public static  FallenKnight raise(ServerLevel level, BlockPos at, Haunt haunt, RandomSource random) {
-		FallenKnight knight = AuraWorld.FALLEN_KNIGHT.create(level, EntitySpawnReason.NATURAL);
+		FallenKnight knight = dev.wildercord.compat.McEntities.create(AuraWorld.FALLEN_KNIGHT, level, MobSpawnType.NATURAL);
 		if (knight == null) {
 			return null;
 		}
 		knight.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
-		knight.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		knight.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.NATURAL, null);
 		knight.setRank(haunt.rank());
 		knight.setMethod(method(haunt.source(), random));
 		level.addFreshEntityWithPassengers(knight);
@@ -203,12 +203,12 @@ public final class KnightSpawner {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
-		OathboundBastion champion = AuraWorld.OATHBOUND_BASTION.create(level, EntitySpawnReason.NATURAL);
+		OathboundBastion champion = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BASTION, level, MobSpawnType.NATURAL);
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
-		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
 	}
@@ -218,12 +218,12 @@ public final class KnightSpawner {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
-		OathboundBladeChampion champion = AuraWorld.OATHBOUND_BLADE_CHAMPION.create(level, EntitySpawnReason.NATURAL);
+		OathboundBladeChampion champion = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BLADE_CHAMPION, level, MobSpawnType.NATURAL);
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
-		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
 	}
@@ -233,12 +233,12 @@ public final class KnightSpawner {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
-		OathboundHalberdier champion = AuraWorld.OATHBOUND_HALBERDIER.create(level, EntitySpawnReason.NATURAL);
+		OathboundHalberdier champion = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, level, MobSpawnType.NATURAL);
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
-		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
 	}
@@ -248,12 +248,12 @@ public final class KnightSpawner {
 		if (!level.getBlockState(at.above(2)).isAir()) {
 			return null;
 		}
-		OathboundBannerMarshal champion = AuraWorld.OATHBOUND_BANNER_MARSHAL.create(level, EntitySpawnReason.NATURAL);
+		OathboundBannerMarshal champion = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BANNER_MARSHAL, level, MobSpawnType.NATURAL);
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
-		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
 	}

@@ -30,9 +30,9 @@ public final class OathholdAnchorPiece extends StructurePiece {
 
 	public OathholdAnchorPiece(CompoundTag tag) {
 		super(OathholdSites.ANCHOR_PIECE, tag);
-		this.originX = tag.getIntOr("OX", 0);
-		this.baseY = tag.getIntOr("OY", 64);
-		this.originZ = tag.getIntOr("OZ", 0);
+		this.originX = tag.contains("OX") ? tag.getInt("OX") : 0;
+		this.baseY = tag.contains("OY") ? tag.getInt("OY") : 64;
+		this.originZ = tag.contains("OZ") ? tag.getInt("OZ") : 0;
 	}
 
 	@Override

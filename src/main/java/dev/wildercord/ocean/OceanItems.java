@@ -52,11 +52,9 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -81,7 +79,7 @@ public final class OceanItems {
 		OceanRules.SUIT_TOUGHNESS,
 		OceanRules.SUIT_KNOCKBACK_RES,
 		ItemTags.REPAIRS_DIAMOND_ARMOR,
-		ResourceKey.create(EquipmentAssets.ROOT_ID, Wildercord.id("abyssal_diving"))
+		dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:abyssal_diving")
 	);
 
 	// ---- Armor Set ----
@@ -92,10 +90,10 @@ public final class OceanItems {
 
 	// ---- Weapons & Relics ----
 	public static final Item TIDE_CLEAVER_HARPOON = register("tide_cleaver_harpoon",
-		p -> new HarpoonItem(p.sword(ToolMaterial.NETHERITE, 4.0f, OceanRules.HARPOON_ATTACK_SPEED)
+		p -> new HarpoonItem(ToolMaterial.NETHERITE.applySwordProperties(p, 4.0f, OceanRules.HARPOON_ATTACK_SPEED)
 			.durability(1600).rarity(Rarity.EPIC)));
 	public static final Item LEVIATHAN_GLAIVE = register("leviathan_glaive",
-		p -> new GlaiveItem(p.sword(ToolMaterial.NETHERITE, 6.0f, OceanRules.GLAIVE_ATTACK_SPEED)
+		p -> new GlaiveItem(ToolMaterial.NETHERITE.applySwordProperties(p, 6.0f, OceanRules.GLAIVE_ATTACK_SPEED)
 			.durability(2048).rarity(Rarity.EPIC)));
 	public static final Item SIREN_PEARL_LANTERN = register("siren_pearl_lantern",
 		p -> new SirenLanternBlockItem(p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
@@ -163,7 +161,7 @@ public final class OceanItems {
 	private static final ResourceLocation BOOTS_STEP_MOD = Wildercord.id("trench_boots_step");
 
 	private static Item armor(String id, ArmorType type) {
-		return register(id, p -> new AuraWorld.Lore(id, p.humanoidArmor(ABYSSAL_SUIT_MATERIAL, type).rarity(Rarity.RARE)));
+		return register(id, p -> new AuraWorld.Lore(id, ABYSSAL_SUIT_MATERIAL.humanoidProperties(p, type).rarity(Rarity.RARE)));
 	}
 
 	private static Item lore(String id, Rarity rarity) {
@@ -310,7 +308,7 @@ public final class OceanItems {
 					}
 					if (living instanceof ServerPlayer sp) {
 						sp.setAirSupply(sp.getMaxAirSupply());
-						sp.removeEffect(MobEffects.MINING_FATIGUE);
+						sp.removeEffect(MobEffects.DIG_SLOWDOWN);
 						sp.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 45, 0, true, false, true));
 					} else if ((living.getType() == EntityType.DROWNED || living.getType() == EntityType.GUARDIAN
 						|| living instanceof CoralSpineMako) && !BossDamage.boss(living)) {
@@ -444,7 +442,7 @@ public final class OceanItems {
 				int expires = server.getServer().getTickCount() + OceanRules.CONCH_DOME_DURATION_TICKS;
 				ACTIVE_DOMES.put(UUID.randomUUID(), new ActiveDome(server.dimension(), player.getEyePosition(), expires));
 				player.setAirSupply(player.getMaxAirSupply());
-				player.removeEffect(MobEffects.MINING_FATIGUE);
+				player.removeEffect(MobEffects.DIG_SLOWDOWN);
 				player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 160, 0, true, false, true));
 				player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 120, 0, true, false, true));
 				server.playSound(null, player.blockPosition(), SoundEvents.CONDUIT_ACTIVATE, SoundSource.PLAYERS, 1.4f, 0.72f);
@@ -465,9 +463,9 @@ public final class OceanItems {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
-			out.accept(Component.translatable("item.wildercord.siren_pearl_lantern.lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
-			out.accept(Component.translatable("item.wildercord.siren_pearl_lantern.use").withColor(0xB8D8A8));
+		public void appendHoverText(ItemStack stack, TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
+			tooltip.add(Component.translatable("item.wildercord.siren_pearl_lantern.lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
+			tooltip.add(Component.translatable("item.wildercord.siren_pearl_lantern.use").withColor(0xB8D8A8));
 		}
 	}
 
@@ -480,9 +478,9 @@ public final class OceanItems {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
-			out.accept(Component.translatable("item.wildercord." + id + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
-			out.accept(Component.translatable("item.wildercord." + id + ".use").withColor(0xB8D8A8));
+		public void appendHoverText(ItemStack stack, TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
+			tooltip.add(Component.translatable("item.wildercord." + id + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
+			tooltip.add(Component.translatable("item.wildercord." + id + ".use").withColor(0xB8D8A8));
 		}
 	}
 }

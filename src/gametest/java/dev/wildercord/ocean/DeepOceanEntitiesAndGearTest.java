@@ -21,7 +21,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Relative;
@@ -49,7 +49,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 	}
 
 	private static void poseMob(net.minecraft.world.entity.Mob m, double x, double y, double z, float yaw) {
-		m.snapTo(x, y, z, yaw, 0f);
+		m.moveTo(x, y, z, yaw, 0f);
 		m.setYRot(yaw);
 		m.yRotO = yaw;
 		m.setYBodyRot(yaw);
@@ -74,8 +74,8 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			Display.TextDisplay cam = dev.wildercord.compat.McEntities.create(EntityType.TEXT_DISPLAY, l, MobSpawnType.COMMAND);
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -215,24 +215,24 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				ServerLevel l = server.overworld();
 				l.setBlock(altarPos, OceanBlocks.SOVEREIGN_ALTAR.defaultBlockState(), 3);
 
-				BarnacleHulkDredger hulk = OceanEntities.BARNACLE_HULK_DREDGER.create(l, EntitySpawnReason.COMMAND);
+				BarnacleHulkDredger hulk = dev.wildercord.compat.McEntities.create(OceanEntities.BARNACLE_HULK_DREDGER, l, MobSpawnType.COMMAND);
 				poseMob(hulk, -5.8, 90.0, 1.4, -22f);
 				hulk.setPersistenceRequired();
 				l.addFreshEntity(hulk);
 
-				SirenVeilJelly jelly = OceanEntities.SIREN_VEIL_JELLY.create(l, EntitySpawnReason.COMMAND);
+				SirenVeilJelly jelly = dev.wildercord.compat.McEntities.create(OceanEntities.SIREN_VEIL_JELLY, l, MobSpawnType.COMMAND);
 				poseMob(jelly, -2.8, 93.0, 1.6, -12f);
 				l.addFreshEntity(jelly);
 
-				CoralSpineMako mako = OceanEntities.CORAL_SPINE_MAKO.create(l, EntitySpawnReason.COMMAND);
+				CoralSpineMako mako = dev.wildercord.compat.McEntities.create(OceanEntities.CORAL_SPINE_MAKO, l, MobSpawnType.COMMAND);
 				poseMob(mako, 2.7, 92.2, 1.5, 58f);
 				l.addFreshEntity(mako);
 
-				DreadNautilusSentinel nautilus = OceanEntities.DREAD_NAUTILUS_SENTINEL.create(l, EntitySpawnReason.COMMAND);
+				DreadNautilusSentinel nautilus = dev.wildercord.compat.McEntities.create(OceanEntities.DREAD_NAUTILUS_SENTINEL, l, MobSpawnType.COMMAND);
 				poseMob(nautilus, 5.8, 92.2, 1.4, 38f);
 				l.addFreshEntity(nautilus);
 
-				ThalassorBoss thalassor = OceanEntities.THALASSOR.create(l, EntitySpawnReason.EVENT);
+				ThalassorBoss thalassor = dev.wildercord.compat.McEntities.create(OceanEntities.THALASSOR, l, MobSpawnType.EVENT);
 				poseMob(thalassor, -0.4, 94.3, -2.2, 70f);
 				thalassor.setArenaCenter(altarPos);
 				l.addFreshEntity(thalassor);
@@ -296,7 +296,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 				OceanRules.MerchantProfession[] profs = OceanRules.MerchantProfession.values();
 				for (int i = 0; i < 3; i++) {
-					BrineMerchant m = OceanEntities.BRINE_MERCHANT.create(l, EntitySpawnReason.COMMAND);
+					BrineMerchant m = dev.wildercord.compat.McEntities.create(OceanEntities.BRINE_MERCHANT, l, MobSpawnType.COMMAND);
 					m.setMerchantProfession(profs[i]);
 					poseMob(m, -5.2 + i * 1.9, 90.0, 1.8, (i - 1) * -14f);
 					l.addFreshEntity(m);
@@ -305,20 +305,20 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 					friendlyIds[i] = m.getUUID();
 				}
 
-				PearlPup pup = OceanEntities.PEARL_PUP.create(l, EntitySpawnReason.COMMAND);
+				PearlPup pup = dev.wildercord.compat.McEntities.create(OceanEntities.PEARL_PUP, l, MobSpawnType.COMMAND);
 				poseMob(pup, 0.3, 90.0, 1.8, -14f);
 				pup.tame(p);
 				l.addFreshEntity(pup);
 				friendlyIds[4] = pup.getUUID();
 
-				LumiSeahorse seahorse = OceanEntities.LUMI_SEAHORSE.create(l, EntitySpawnReason.COMMAND);
+				LumiSeahorse seahorse = dev.wildercord.compat.McEntities.create(OceanEntities.LUMI_SEAHORSE, l, MobSpawnType.COMMAND);
 				poseMob(seahorse, 2.5, 91.6, 2.0, 80f);
 				l.addFreshEntity(seahorse);
 				seahorse.tameWithName(p);
-				seahorse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+				seahorse.equipSaddle(new ItemStack(Items.SADDLE), net.minecraft.sounds.SoundSource.NEUTRAL);
 				friendlyIds[3] = seahorse.getUUID();
 
-				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
+				SingingMoonWhale whale = dev.wildercord.compat.McEntities.create(OceanEntities.SINGING_MOON_WHALE, l, MobSpawnType.COMMAND);
 				poseMob(whale, 2.8, 94.0, -2.0, 64f);
 				whale.setSinging(true);
 				l.addFreshEntity(whale);
@@ -399,19 +399,19 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(p.hasEffect(MobEffects.NIGHT_VISION), "Abyssal Helm grants submerged Night Vision");
 				check(p.getAirSupply() == p.getMaxAirSupply(), "Pressurized tank preserves air underwater");
 
-				CoralSpineMako target = OceanEntities.CORAL_SPINE_MAKO.create(l, EntitySpawnReason.COMMAND);
-				target.snapTo(0.5, 92.0, -1.0, 0f, 0f);
+				CoralSpineMako target = dev.wildercord.compat.McEntities.create(OceanEntities.CORAL_SPINE_MAKO, l, MobSpawnType.COMMAND);
+				target.moveTo(0.5, 92.0, -1.0, 0f, 0f);
 				target.setNoAi(true);
 				l.addFreshEntity(target);
 				float beforeHp = target.getHealth();
 				OceanItems.LEVIATHAN_GLAIVE.use(l, p, InteractionHand.MAIN_HAND);
 				check(target.getHealth() < beforeHp, "Leviathan Glaive Hydro-Slash damages target in 75-deg cone");
 
-				p.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 200, 1));
+				p.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 200, 1));
 				p.setAirSupply(40);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDECALLER_CONCH));
 				OceanItems.TIDECALLER_CONCH.use(l, p, InteractionHand.MAIN_HAND);
-				check(!p.hasEffect(MobEffects.MINING_FATIGUE), "Conch removes Mining Fatigue");
+				check(!p.hasEffect(MobEffects.DIG_SLOWDOWN), "Conch removes Mining Fatigue");
 				check(p.hasEffect(MobEffects.WATER_BREATHING), "Conch grants Water Breathing");
 
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDE_CLEAVER_HARPOON));

@@ -30,7 +30,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -491,7 +491,7 @@ public final class HollowTreeBuilder {
 
 		// 6: Drowned Bell-Warden in the Northern water ring.
 		BlockPos bellPos = center.offset(0, 1, -12);
-		DrownedBellWarden bellWarden = Guardians.BELL_WARDEN.create(level, EntitySpawnReason.TRIGGERED);
+		DrownedBellWarden bellWarden = dev.wildercord.compat.McEntities.create(Guardians.BELL_WARDEN, level, MobSpawnType.TRIGGERED);
 		if (bellWarden != null) {
 			bellWarden.bind(bellPos, 0.0F, arenaBox);
 			tagBoss(bellWarden);
@@ -513,7 +513,7 @@ public final class HollowTreeBuilder {
 			center.offset(10, 1, 0)      // Tide Scribe
 		);
 
-		RootcoilSerpent serpent = Guardians.SERPENT.create(level, EntitySpawnReason.TRIGGERED);
+		RootcoilSerpent serpent = dev.wildercord.compat.McEntities.create(Guardians.SERPENT, level, MobSpawnType.TRIGGERED);
 		if (serpent != null) {
 			serpent.bind(arcSpots.get(0), 225.0F);
 			tagBoss(serpent);
@@ -522,7 +522,7 @@ public final class HollowTreeBuilder {
 
 		BlockPos bearerSpot = arcSpots.get(1);
 		level.setBlock(bearerSpot.above(5), Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), Block.UPDATE_ALL);
-		LanternBearer bearer = Guardians.LANTERN_BEARER.create(level, EntitySpawnReason.TRIGGERED);
+		LanternBearer bearer = dev.wildercord.compat.McEntities.create(Guardians.LANTERN_BEARER, level, MobSpawnType.TRIGGERED);
 		if (bearer != null) {
 			bearer.bind(bearerSpot, 210.0F, arenaBox, bearerSpot.above(4), List.of());
 			tagBoss(bearer);
@@ -530,7 +530,7 @@ public final class HollowTreeBuilder {
 		}
 
 		BlockPos matronSpot = arcSpots.get(2);
-		HollowMatron matron = Guardians.HOLLOW_MATRON.create(level, EntitySpawnReason.TRIGGERED);
+		HollowMatron matron = dev.wildercord.compat.McEntities.create(Guardians.HOLLOW_MATRON, level, MobSpawnType.TRIGGERED);
 		if (matron != null) {
 			matron.bind(matronSpot.above(7), matronSpot.getY(), (float) (matronSpot.getY() + 13), 180.0F, arenaBox);
 			matron.nestle(List.of(), List.of());
@@ -538,21 +538,21 @@ public final class HollowTreeBuilder {
 			level.addFreshEntity(matron);
 		}
 
-		AshenStag stag = Guardians.ASHEN_STAG.create(level, EntitySpawnReason.TRIGGERED);
+		AshenStag stag = dev.wildercord.compat.McEntities.create(Guardians.ASHEN_STAG, level, MobSpawnType.TRIGGERED);
 		if (stag != null) {
 			stag.bind(arcSpots.get(3), 180.0F, arenaBox);
 			tagBoss(stag);
 			level.addFreshEntity(stag);
 		}
 
-		FrostWyrmling wyrmling = Guardians.FROST_WYRMLING.create(level, EntitySpawnReason.TRIGGERED);
+		FrostWyrmling wyrmling = dev.wildercord.compat.McEntities.create(Guardians.FROST_WYRMLING, level, MobSpawnType.TRIGGERED);
 		if (wyrmling != null) {
 			wyrmling.bind(arcSpots.get(4), 150.0F, arenaBox);
 			tagBoss(wyrmling);
 			level.addFreshEntity(wyrmling);
 		}
 
-		Mojito mojito = Guardians.MOJITO.create(level, EntitySpawnReason.TRIGGERED);
+		Mojito mojito = dev.wildercord.compat.McEntities.create(Guardians.MOJITO, level, MobSpawnType.TRIGGERED);
 		if (mojito != null) {
 			mojito.bind(arcSpots.get(5), 135.0F, arenaBox);
 			tagBoss(mojito);
@@ -568,7 +568,7 @@ public final class HollowTreeBuilder {
 
 	private static void spawnEncounterBosses(ServerLevel level, BlockPos center, ServerPlayer triggerPlayer) {
 		BlockPos ferrySpot = center.offset(-6, 1, 11);
-		ReedCrownedFerryman ferryman = FerrymanContent.FERRYMAN.create(level, EntitySpawnReason.TRIGGERED);
+		ReedCrownedFerryman ferryman = dev.wildercord.compat.McEntities.create(FerrymanContent.FERRYMAN, level, MobSpawnType.TRIGGERED);
 		if (ferryman != null) {
 			ferryman.bind(ferrySpot, ferrySpot.below(2));
 			tagBoss(ferryman);
@@ -577,7 +577,7 @@ public final class HollowTreeBuilder {
 		}
 
 		BlockPos cartoSpot = center.offset(6, 1, 11);
-		GlassCartographer carto = CartographerContent.CARTOGRAPHER.create(level, EntitySpawnReason.TRIGGERED);
+		GlassCartographer carto = dev.wildercord.compat.McEntities.create(CartographerContent.CARTOGRAPHER, level, MobSpawnType.TRIGGERED);
 		if (carto != null) {
 			carto.bind(cartoSpot.below(), cartoSpot.below(2));
 			tagBoss(carto);
@@ -586,7 +586,7 @@ public final class HollowTreeBuilder {
 		}
 
 		BlockPos bellSpot = center.offset(-8, 1, 6);
-		HollowBell hollowBell = HollowBellContent.BELL.create(level, EntitySpawnReason.TRIGGERED);
+		HollowBell hollowBell = dev.wildercord.compat.McEntities.create(HollowBellContent.BELL, level, MobSpawnType.TRIGGERED);
 		if (hollowBell != null) {
 			hollowBell.bind(bellSpot.below(), bellSpot.below(2));
 			tagBoss(hollowBell);
@@ -595,7 +595,7 @@ public final class HollowTreeBuilder {
 		}
 
 		BlockPos widowSpot = center.offset(8, 1, 6);
-		KilnWidow widow = KilnWidowContent.WIDOW.create(level, EntitySpawnReason.TRIGGERED);
+		KilnWidow widow = dev.wildercord.compat.McEntities.create(KilnWidowContent.WIDOW, level, MobSpawnType.TRIGGERED);
 		if (widow != null) {
 			widow.bind(widowSpot.below(), widowSpot.below(2));
 			tagBoss(widow);

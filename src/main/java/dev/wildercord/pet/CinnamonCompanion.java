@@ -157,7 +157,7 @@ final class CinnamonCompanion {
 		if (stopping || !matches(player) || !player.isAlive() || player.isRemoved() || player.isSpectator()
 			|| Duels.inDuel(player) || DuelistDuels.inDuel(player)
 			|| player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player
-			|| DungeonWards.warded(player.level(), player.blockPosition())) return false;
+			|| DungeonWards.warded((ServerLevel) player.level(), player.blockPosition())) return false;
 		if (player.isPassenger() && (dog == null || player.getVehicle() != dog)) return false;
 		var nearby = new java.util.ArrayList<SwordMaster>();
 		player.level().getEntities(EntityTypeTestHolder.MASTERS, player.getBoundingBox().inflate(96), master -> master.distanceToSqr(player) <= 96 * 96, nearby, 17);
@@ -235,7 +235,7 @@ final class CinnamonCompanion {
 		CinnamonDog dog = McEntities.create(CinnamonContent.CINNAMON, player.level(), MobSpawnType.EVENT);
 		if (dog == null) return;
 		dog.bind(player); // Old saves migrate their player-owned sit/bow choices once, here.
-		Vec3 at = CompanionLanding.find(player.level(), player.position(), dog);
+		Vec3 at = CompanionLanding.find((ServerLevel) player.level(), player.position(), dog);
 		if (at == null || !mayRecall(player) || !player.getUUID().equals(ownerId(dog))
 			|| identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
 		dog.moveTo(at.x, at.y, at.z, player.getYRot(), 0);
@@ -280,7 +280,7 @@ final class CinnamonCompanion {
 		recalling = true;
 		try {
 			Vec3 ownerPosition = player.position(), dogPosition = dog.position();
-			ServerLevel ownerLevel = player.level();
+			ServerLevel ownerLevel = (ServerLevel) player.level();
 			var dogBox = dog.getBoundingBox();
 			long revision = dog.stateRevision();
 			var sourcePermit = CompanionLanding.sourcePermit(player, source, dog);
@@ -292,7 +292,7 @@ final class CinnamonCompanion {
 				|| dog.isPassenger() || dog.isVehicle() || DungeonWards.warded(source, dog.blockPosition())
 				|| !id.equals(ownerId(dog)) || identity(player, entry) != CinnamonIdentityRules.Status.REGISTERED
 				|| CinnamonJournal.of(source.getServer()).get(id) != entry || !sourcePermit.valid(player)) return false;
-			ServerLevel destination = player.level();
+			ServerLevel destination = (ServerLevel) player.level();
 			changed(dog);
 			if (source == destination) {
 				dog.teleportTo(at.x, at.y, at.z); dog.setDeltaMovement(Vec3.ZERO); dog.resetFallDistance();

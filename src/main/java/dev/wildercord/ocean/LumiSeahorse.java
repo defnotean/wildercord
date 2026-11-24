@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -83,9 +83,10 @@ public class LumiSeahorse extends AbstractHorse {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -180,7 +181,7 @@ public class LumiSeahorse extends AbstractHorse {
 
 	@Override
 	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		LumiSeahorse foal = OceanEntities.LUMI_SEAHORSE.create(level, EntitySpawnReason.BREEDING);
+		LumiSeahorse foal = dev.wildercord.compat.McEntities.create(OceanEntities.LUMI_SEAHORSE, level, MobSpawnType.BREEDING);
 		if (foal != null) {
 			setOffspringAttributes(partner, foal);
 		}

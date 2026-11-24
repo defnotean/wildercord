@@ -82,9 +82,10 @@ public class DreadNautilusSentinel extends Monster {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public class DreadNautilusSentinel extends Monster {
 			boolean fromFront = getLookAngle().dot(toAttacker) > 0.1;
 			if (!fromFront) {
 				amount *= OceanRules.nautilusShellDamageScale(false);
-				playSound(SoundEvents.SHIELD_BLOCK.value(), 0.9f, 0.8f);
+				playSound(SoundEvents.SHIELD_BLOCK, 0.9f, 0.8f);
 			}
 		}
 		return super.hurtServer(server, source, amount);

@@ -18,7 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -112,9 +112,10 @@ public class ThalassorBoss extends Monster {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -187,7 +188,7 @@ public class ThalassorBoss extends Monster {
 			if (existing < 4) {
 				for (int i = 0; i < 2; i++) {
 					Monster minion = (i == 0 ? OceanEntities.SIREN_VEIL_JELLY : OceanEntities.CORAL_SPINE_MAKO)
-						.create(server, EntitySpawnReason.MOB_SUMMONED);
+						.create(server, MobSpawnType.MOB_SUMMONED);
 					if (minion != null) {
 						minion.setPos(getX() + (i == 0 ? 4.0 : -4.0), getY() + 1.0, getZ());
 						server.addFreshEntity(minion);
@@ -260,14 +261,14 @@ public class ThalassorBoss extends Monster {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		Optional<BlockPos> savedArena = input.read("ArenaCenter", BlockPos.CODEC);
 		arenaCenter = savedArena.orElse(null);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		if (arenaCenter != null) {
 			output.store("ArenaCenter", BlockPos.CODEC, arenaCenter);

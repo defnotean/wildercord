@@ -213,17 +213,17 @@ public final class BossDamageTest implements FabricClientGameTest {
 				player.setGameMode(GameType.SURVIVAL);
 				player.setHealth(player.getMaxHealth());
 				player.teleportTo(0.5, 101, 7.5);
-				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.RESISTANCE, 600, 3, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 600, 3, false, false));
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 5, false, false));
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 600, 24, false, false));
 
 				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:cinder_warden"));
 				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:rootcoil_serpent"));
-				var warden = wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var serpent = serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var guardianCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var villageCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var warden = wardenType.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var serpent = serpentType.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var guardianCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var villageCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
 				check(warden != null && dev.wildercord.cast.Spirits.isBoss(warden), "cinder_warden recognized as boss");
 				check(serpent != null && dev.wildercord.cast.Spirits.isBoss(serpent), "rootcoil_serpent guardian recognized as boss");
 				if (guardianCat != null) {
@@ -243,7 +243,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 					zombie.discard();
 				}
 
-				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.MobSpawnType.EVENT);
 				check(bastion != null && dev.wildercord.cast.Spirits.isBoss(bastion), "oathbound_bastion recognized as boss");
 				bastion.setPos(0.5, 101, -9.5);
 				bastion.setPersistenceRequired();
@@ -264,7 +264,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(!stacked, "cannot extend or stack an already active boss hold");
 				check(dev.wildercord.cast.Spirits.bossHeld(bastion), "boss enters brief temporary hold");
 				check(!bastion.isNoAi(), "boss AI is never set to NoAI");
-				check(bastion.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "boss receives temporary slowness while held");
+				check(bastion.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN), "boss receives temporary slowness while held");
 			});
 			c.waitTicks(38);
 			server.runOnServer(s -> {
@@ -274,12 +274,12 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(boss != null && boss.isAlive(), "live boss remains alive after breakout");
 				check(!dev.wildercord.cast.Spirits.bossHeld(boss), "boss breaks out of 200-tick hold within 38 ticks");
 				check(dev.wildercord.cast.Spirits.bossHoldImmune(boss), "boss gains 5s unstoppable immunity after breakout");
-				check(!boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "breakout clears slowness");
+				check(!boss.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN), "breakout clears slowness");
 				check(level.getBlockState(holdBlockPos[0]).isAir() && !dev.wildercord.cast.TemporaryBlocks.recorded(level, holdBlockPos[0]),
 					"breakout shatters surrounding temporary hold blocks");
 				check(!dev.wildercord.cast.Spirits.tryClaimBossHold(boss, 100, player), "follow-up hold claim rejected during 5s immunity");
 				dev.wildercord.cast.Spirits.freeze(boss, 100);
-				check(!dev.wildercord.cast.Spirits.bossHeld(boss) && !boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS),
+				check(!dev.wildercord.cast.Spirits.bossHeld(boss) && !boss.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN),
 					"follow-up freeze cannot re-hold boss during 5s immunity");
 				check(boss.getTarget() == player, "boss retains target on breakout");
 				distAtBreakout[0] = boss.distanceTo(player);
@@ -330,12 +330,12 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var archivistType = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse("wildercord:archivist"));
 				var maxHealthAttr = (net.minecraft.world.entity.ai.attributes.RangedAttribute) net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH.value();
 				check(maxHealthAttr.getMaxValue() >= dev.wildercord.cast.BossRules.MAX_HEALTH_CAP, "max_health attribute cap raised above vanilla 1024");
-				var warden = (Mob) wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var serpent = (Mob) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var archivist = (Mob) archivistType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var keeper = dev.wildercord.aura.world.SwordTombs.KEEPER.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				var ferryman = dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var warden = (Mob) wardenType.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var serpent = (Mob) serpentType.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var archivist = (Mob) archivistType.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var keeper = dev.wildercord.aura.world.SwordTombs.KEEPER.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
+				var ferryman = dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
 				check(warden != null && warden.getMaxHealth() == 1200.0F, "cinder_warden max health raised to 1200");
 				check(serpent != null && serpent.getMaxHealth() == 750.0F, "rootcoil_serpent max health raised to 750");
 				check(archivist != null && archivist.getMaxHealth() == 1650.0F, "archivist max health raised to 1650");
@@ -362,8 +362,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
 
 				// Test LairRespawns scheduling on bound guardian death and respawn at home.
-				var boundSerpent = (dev.wildercord.aura.world.RootcoilSerpent) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
-				boundSerpent.snapTo(0.5, 101, 0.5, 0.0F, 0.0F);
+				var boundSerpent = (dev.wildercord.aura.world.RootcoilSerpent) serpentType.create(level, net.minecraft.world.entity.MobSpawnType.STRUCTURE);
+				boundSerpent.moveTo(0.5, 101, 0.5, 0.0F, 0.0F);
 				boundSerpent.bind(altarPos, 0.0F);
 				level.addFreshEntity(boundSerpent);
 				boundSerpent.setHealth(1.0F);
@@ -405,7 +405,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				player.setGameMode(GameType.CREATIVE);
 				player.teleportTo(level, 2.0, 101.0, 7.2, java.util.Set.of(), 180.0F, 6.0F, false);
 
-				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
 				bastion.setNoAi(true);
 				bastion.setPos(0.5, 101, 0.5);
 				bastion.setYRot(0.0F);
@@ -415,7 +415,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				level.addFreshEntity(bastion);
 				fireIds[0] = bastion.getId();
 
-				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, net.minecraft.world.entity.MobSpawnType.COMMAND);
 				zombie.setNoAi(true);
 				zombie.setPos(3.5, 101, 0.5);
 				zombie.setYRot(0.0F);

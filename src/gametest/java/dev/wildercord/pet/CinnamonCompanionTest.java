@@ -16,7 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -137,12 +137,12 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					dog.teleportTo(0.5, 101, 2.5);
 					PartyMate ally = new PartyMate(level, "CinnamonMate1");
 					ally.setGameMode(GameType.SURVIVAL);
-					ally.snapTo(1.8, 101, 2.5, 0, 0);
+					ally.moveTo(1.8, 101, 2.5, 0, 0);
 					level.addNewPlayer(ally);
 					ally.setHealth(6.0F);
 					PartyMate stranger = new PartyMate(level, "CinnamonStranger");
 					stranger.setGameMode(GameType.SURVIVAL);
-					stranger.snapTo(-2.0, 101, 2.5, 0, 0);
+					stranger.moveTo(-2.0, 101, 2.5, 0, 0);
 					level.addNewPlayer(stranger);
 					stranger.setHealth(6.0F);
 					long now = level.getGameTime();
@@ -171,7 +171,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					ServerLevel level = server.overworld();
 					CinnamonDog dog = findCinnamon(server);
 					dog.teleportTo(0.5, 101, 2.5);
-					Husk z = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
+					Husk z = dev.wildercord.compat.McEntities.create(EntityType.HUSK, level, MobSpawnType.COMMAND);
 					check(z != null, "Spawn passive magic husk target");
 					z.setPos(0.5, 101, 8.5);
 					z.setNoAi(true);
@@ -239,14 +239,14 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					for (int i = 0; i < 4; i++) {
 						PartyMate mate = new PartyMate(level, "Rider" + i);
 						mate.setGameMode(GameType.SURVIVAL);
-						mate.snapTo(1.5 + i, 101, 3.0, 0, 0);
+						mate.moveTo(1.5 + i, 101, 3.0, 0, 0);
 						level.addNewPlayer(mate);
 						PartyTestHooks.join(server, p.getUUID(), mate.getUUID(), now + (i + 1) * 25L);
 						partyRiders[i] = mate;
 					}
 					nonPartyRider[0] = new PartyMate(level, "Outsider");
 					nonPartyRider[0].setGameMode(GameType.SURVIVAL);
-					nonPartyRider[0].snapTo(-2.5, 101, 3.0, 0, 0);
+					nonPartyRider[0].moveTo(-2.5, 101, 3.0, 0, 0);
 					level.addNewPlayer(nonPartyRider[0]);
 
 					check(!nonPartyRider[0].startRiding(dog), "Non-party outsider cannot ride Cinnamon");
@@ -328,7 +328,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 				world.getServer().runOnServer(server -> {
 					ServerLevel level = server.overworld();
 					CinnamonDog dog = findCinnamon(server);
-					Husk z = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
+					Husk z = dev.wildercord.compat.McEntities.create(EntityType.HUSK, level, MobSpawnType.COMMAND);
 					check(z != null, "Spawn hit-pause attacker");
 					z.setPos(2.0, 101, 2.5);
 					z.setNoAi(true);

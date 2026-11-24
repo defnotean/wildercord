@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
@@ -70,8 +70,8 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
-			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			Display.TextDisplay cam = dev.wildercord.compat.McEntities.create(EntityType.TEXT_DISPLAY, l, MobSpawnType.COMMAND);
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -249,17 +249,17 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 
-				OathboundHalberdier halberdier = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
+				OathboundHalberdier halberdier = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, l, MobSpawnType.COMMAND);
 				check(halberdier != null, "Spawn Oathbound Halberdier guard");
-				halberdier.snapTo(-5.5, 120.0, 0.5, -20.0F, 0.0F);
-				halberdier.finalizeSpawn(l, l.getCurrentDifficultyAt(halberdier.blockPosition()), EntitySpawnReason.COMMAND, null);
+				halberdier.moveTo(-5.5, 120.0, 0.5, -20.0F, 0.0F);
+				halberdier.finalizeSpawn(l, l.getCurrentDifficultyAt(halberdier.blockPosition()), MobSpawnType.COMMAND, null);
 				l.addFreshEntity(halberdier);
 
-				OathholdCitizen watchman = OathholdContent.CITIZEN.create(l, EntitySpawnReason.COMMAND);
+				OathholdCitizen watchman = dev.wildercord.compat.McEntities.create(OathholdContent.CITIZEN, l, MobSpawnType.COMMAND);
 				check(watchman != null, "Spawn City Watchman guard");
 				watchman.configure(OathholdCitizenRules.Archetype.CITY_WATCHMAN, 6, 120, 0, new BlockPos(6, 120, 0), 14);
-				watchman.snapTo(6.5, 120.0, 0.5, 20.0F, 0.0F);
-				watchman.finalizeSpawn(l, l.getCurrentDifficultyAt(watchman.blockPosition()), EntitySpawnReason.COMMAND, null);
+				watchman.moveTo(6.5, 120.0, 0.5, 20.0F, 0.0F);
+				watchman.finalizeSpawn(l, l.getCurrentDifficultyAt(watchman.blockPosition()), MobSpawnType.COMMAND, null);
 				l.addFreshEntity(watchman);
 
 				p.teleportTo(l, 1.5, 120.0, -5.5, Set.<Relative>of(), 180.0F, 0.0F, false);
@@ -311,7 +311,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				for (OathholdCitizen watchman : l.getEntitiesOfClass(OathholdCitizen.class, new AABB(STAGE).inflate(40.0),
 						c -> c.isAlive() && c.archetype() == OathholdCitizenRules.Archetype.CITY_WATCHMAN)) {
-					watchman.snapTo(8.5, 120.0, 2.5, 20.0F, 0.0F);
+					watchman.moveTo(8.5, 120.0, 2.5, 20.0F, 0.0F);
 					watchman.getNavigation().stop();
 				}
 				p.setHealth(p.getMaxHealth());

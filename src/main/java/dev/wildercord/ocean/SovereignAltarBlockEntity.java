@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -119,7 +120,7 @@ public final class SovereignAltarBlockEntity extends BlockEntity {
 	}
 
 	public ThalassorBoss summonThalassor(ServerLevel server) {
-		ThalassorBoss boss = OceanEntities.THALASSOR.create(server, EntitySpawnReason.EVENT);
+		ThalassorBoss boss = dev.wildercord.compat.McEntities.create(OceanEntities.THALASSOR, server, MobSpawnType.EVENT);
 		if (boss == null) return null;
 		boss.setPos(worldPosition.getX() + 0.5, worldPosition.getY() + 3.0, worldPosition.getZ() + 0.5);
 		boss.setArenaCenter(worldPosition);

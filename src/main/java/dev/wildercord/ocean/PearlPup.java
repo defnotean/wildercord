@@ -14,7 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -127,7 +127,7 @@ public class PearlPup extends TamableAnimal {
 			if (--timeToRecalcPath <= 0) {
 				timeToRecalcPath = adjustedTickDelay(10);
 				if (pup.distanceToSqr(owner) >= 324.0 && !pup.isLeashed()) {
-					pup.snapTo(owner.getX() + 1.5, owner.getY(), owner.getZ() + 1.5, pup.getYRot(), pup.getXRot());
+					pup.moveTo(owner.getX() + 1.5, owner.getY(), owner.getZ() + 1.5, pup.getYRot(), pup.getXRot());
 				} else {
 					pup.getNavigation().moveTo(owner, speedModifier);
 				}
@@ -140,9 +140,10 @@ public class PearlPup extends TamableAnimal {
 		return new AmphibiousPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -267,7 +268,7 @@ public class PearlPup extends TamableAnimal {
 
 	@Override
 	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		PearlPup pup = OceanEntities.PEARL_PUP.create(level, EntitySpawnReason.BREEDING);
+		PearlPup pup = dev.wildercord.compat.McEntities.create(OceanEntities.PEARL_PUP, level, MobSpawnType.BREEDING);
 		if (pup != null && isTame() && getOwner() instanceof Player owner) {
 			pup.tame(owner);
 		}

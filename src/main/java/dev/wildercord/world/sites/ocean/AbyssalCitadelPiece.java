@@ -235,9 +235,9 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 		BlockPos altarPos = getWorldPos(ARENA_CX, BASE + 2, CZ);
 		if (bb.isInside(altarPos)) {
 			BlockPos bossPos = getWorldPos(ARENA_CX, BASE + 4, CZ);
-			var boss = OceanEntities.THALASSOR.create(level.getLevel(), net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
+			var boss = OceanEntities.THALASSOR.create(level.getLevel(), net.minecraft.world.entity.MobSpawnType.STRUCTURE);
 			if (boss != null) {
-				boss.snapTo(bossPos.getX() + 0.5, bossPos.getY(), bossPos.getZ() + 0.5, 0.0f, 0.0f);
+				boss.moveTo(bossPos.getX() + 0.5, bossPos.getY(), bossPos.getZ() + 0.5, 0.0f, 0.0f);
 				boss.setArenaCenter(altarPos);
 				level.addFreshEntityWithPassengers(boss);
 				if (level.getBlockEntity(altarPos) instanceof SovereignAltarBlockEntity altar) {

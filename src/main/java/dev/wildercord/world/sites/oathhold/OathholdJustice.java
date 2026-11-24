@@ -10,10 +10,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -38,7 +42,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedData;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -123,12 +128,18 @@ public final class OathholdJustice {
 			RepairSite.CODEC.listOf().optionalFieldOf("repairs", List.of()).forGetter(l -> List.copyOf(l.repairs)),
 			PrisonRecord.CODEC.listOf().optionalFieldOf("prisons", List.of()).forGetter(l -> List.copyOf(l.prisons))
 		).apply(i, JusticeLedger::new));
-		static final SavedDataType<JusticeLedger> TYPE = new SavedDataType<>("oathhold_justice", JusticeLedger::new, CODEC, null);
+		static final McSavedDataType<JusticeLedger> TYPE = new McSavedDataType<>("oathhold_justice", JusticeLedger::new, CODEC);
 
 		final List<RepairSite> repairs = new ArrayList<>();
 		final List<PrisonRecord> prisons = new ArrayList<>();
 
 		public JusticeLedger() {}
+
+		@Override
+		public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+			return (CompoundTag) CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registries), this)
+					.result().orElseThrow();
+		}
 
 		private JusticeLedger(List<RepairSite> repairs, List<PrisonRecord> prisons) {
 			this.repairs.addAll(repairs);
@@ -168,7 +179,7 @@ public final class OathholdJustice {
 	}
 
 	public static JusticeLedger ledger(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(JusticeLedger.TYPE);
+		return McSavedData.computeIfAbsent(server.overworld().getDataStorage(), JusticeLedger.TYPE);
 	}
 
 	public static void recordTntPlaced(ServerPlayer player, BlockPos pos, long now) {
@@ -497,13 +508,13 @@ public final class OathholdJustice {
 		Vec3 towardHouse = Vec3.atCenterOf(lookTarget).subtract(Vec3.atCenterOf(cell));
 		Vec3 side = Math.abs(towardHouse.x) > Math.abs(towardHouse.z) ? new Vec3(0, 0, 3.4) : new Vec3(3.4, 0, 0);
 		BlockPos guardPos = BlockPos.containing(cell.getX() + 0.5 + side.x, cell.getY(), cell.getZ() + 0.5 + side.z);
-		OathholdCitizen warden = OathholdContent.CITIZEN.create(level, EntitySpawnReason.COMMAND);
+		OathholdCitizen warden = dev.wildercord.compat.McEntities.create(OathholdContent.CITIZEN, level, MobSpawnType.COMMAND);
 		if (warden == null) return;
 		warden.configure(OathholdCitizenRules.Archetype.CITY_WATCHMAN, guardPos.getX(), guardPos.getY(), guardPos.getZ(), guardPos, 2);
 		warden.markTemporaryCrew(true);
 		float[] angles = lookAngles(Vec3.atCenterOf(guardPos), Vec3.atCenterOf(cell));
-		warden.snapTo(guardPos.getX() + 0.5, guardPos.getY(), guardPos.getZ() + 0.5, angles[0], 0.0F);
-		warden.finalizeSpawn(level, level.getCurrentDifficultyAt(guardPos), EntitySpawnReason.COMMAND, null);
+		warden.moveTo(guardPos.getX() + 0.5, guardPos.getY(), guardPos.getZ() + 0.5, angles[0], 0.0F);
+		warden.finalizeSpawn(level, level.getCurrentDifficultyAt(guardPos), MobSpawnType.COMMAND, null);
 		level.addFreshEntity(warden);
 		PRISON_WARDENS.put(prisonerId, warden.getUUID());
 	}
@@ -738,12 +749,12 @@ public final class OathholdJustice {
 			int ox = Math.round(Mth.cos(attempts * 1.4F) * (4.0F + (attempts % 3) * 1.5F));
 			int oz = Math.round(Mth.sin(attempts * 1.4F) * (4.0F + (attempts % 3) * 1.5F));
 			BlockPos spawnPos = findCrewGround(level, site.anchor.offset(ox, 0, oz));
-			OathholdCitizen builder = OathholdContent.CITIZEN.create(level, EntitySpawnReason.COMMAND);
+			OathholdCitizen builder = dev.wildercord.compat.McEntities.create(OathholdContent.CITIZEN, level, MobSpawnType.COMMAND);
 			if (builder == null) break;
 			builder.configure(OathholdCitizenRules.Archetype.CARPENTER_MASON, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), spawnPos, 6);
 			builder.markTemporaryCrew(true);
-			builder.snapTo(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5, 0.0F, 0.0F);
-			builder.finalizeSpawn(level, level.getCurrentDifficultyAt(spawnPos), EntitySpawnReason.COMMAND, null);
+			builder.moveTo(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5, 0.0F, 0.0F);
+			builder.finalizeSpawn(level, level.getCurrentDifficultyAt(spawnPos), MobSpawnType.COMMAND, null);
 			level.addFreshEntity(builder);
 			alive.add(builder);
 			trackedIds.add(builder.getUUID());

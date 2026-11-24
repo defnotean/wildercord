@@ -16,7 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -58,8 +58,8 @@ public final class TombReliquaryEntity extends BlockEntity {
 		if(!server.hasChunkAt(home) || !server.getBlockState(home).isAir() || !server.getBlockState(home.above()).isAir() || !server.getBlockState(home.above(2)).isAir()){
 			p.displayClientMessage(Component.translatable("message.wildercord.tomb.obstructed"), true);return;
 		}
-		var keeper=SwordTombs.KEEPER.create(server,EntitySpawnReason.TRIGGERED);if(keeper==null)return;
-		keeper.bind(worldPosition,home);keeper.snapTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
+		var keeper=SwordTombs.KEEPER.create(server,MobSpawnType.TRIGGERED);if(keeper==null)return;
+		keeper.bind(worldPosition,home);keeper.moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
 		if(!server.addFreshEntity(keeper))return;
 		cleared=false;clearedAt=0;guardian=keeper.getUUID();missingTicks=0;participants.clear();state(1);setChanged();
 		Feels.sound(server,Vec3.atCenterOf(worldPosition),"aura_tomb_awake",1,1);
@@ -79,7 +79,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 		give(p,AuraApi.techniqueScroll(first));give(p,AuraApi.techniqueScroll(second));
 		give(p,new ItemStack(AuraWorld.AURA_SHARD,3));give(p,SwordTombs.history());
 		dev.wildercord.cast.Grimoire.unlock(p,"aura:sword_tomb");
-		Feels.sound(p.level(),p.position(),"aura_tomb_reward",.8F,1);
+		Feels.sound((ServerLevel) p.level(),p.position(),"aura_tomb_reward",.8F,1);
 		p.sendSystemMessage(Component.translatable("message.wildercord.tomb.reward"));
 	}
 	private static void give(ServerPlayer p,ItemStack s){if(!p.getInventory().add(s))dev.wildercord.compat.McEntities.drop(p, s, false);}

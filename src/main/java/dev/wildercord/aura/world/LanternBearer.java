@@ -149,7 +149,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	@Override public boolean canBeHitByProjectile(){return move()!=LanternBearerRules.DORMANT && move()!=LanternBearerRules.FADE && !unseen() && super.canBeHitByProjectile();}
 	/** Whether it is out in the dark, its lantern out, and not there to be seen or struck. */
 	public boolean unseen(){return move()==LanternBearerRules.LIGHTS_OUT && !LanternBearerRules.lightsSeen(since());}
-	@Override public boolean causeFallDamage(double distance,float multiplier,DamageSource source){return false;}
+	@Override public boolean causeFallDamage(float distance,float multiplier,DamageSource source){return false;}
 
 	private void pose(int move,int ticks){pose(move,ticks,0);}
 	private void pose(int move,int ticks,int tell){
@@ -309,7 +309,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	/** The nearest player in the field close enough to its grave to wake it, if it is dark out. */
 	private ServerPlayer wakeful(ServerLevel level){
 		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
-		var t=spot();boolean dark=rush || level.isDarkOutside();
+		var t=spot();boolean dark=rush || !(level.isDay() && level.dimensionType().hasSkyLight());
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
 			&& (rush || LanternBearerRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z,dark))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
@@ -344,7 +344,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			var at=spot();teleportTo(at.x,at.y,at.z);setDeltaMovement(Vec3.ZERO);getNavigation().stop();links=0;pose(LanternBearerRules.WATCH,LanternBearerRules.GAP);
 		}
 		long now=level.getGameTime();float heal=LanternBearerRules.regen(getMaxHealth(),now-lastCut);if(heal>0 && getHealth()<getMaxHealth())heal(heal);
-		light=(!getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG) && level.isBrightOutside())?light+1:0;
+		light=(!getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG) && (level.isDay() && level.dimensionType().hasSkyLight()))?light+1:0;
 		if(LanternBearerRules.dawn(light)){sink(level);return;}
 		if(tickCount%10==0){
 			bar.setProgress(getHealth()/getMaxHealth());
@@ -643,7 +643,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 				level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,w.at.x,w.at.y,w.at.z,10,.2,.2,.2,.06);
 				Feels.sound(level,w.at,"aura_lantern_bearer_burst",1,1+random.nextFloat()*.2F);
 				if(landed && GuardianBite.land(level,this,p,(float)LanternBearerRules.WISP_DAMAGE,LanternBearerRules.PIERCE))
-					p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,LanternBearerRules.WISP_SLOW,1,false,true));
+					p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,LanternBearerRules.WISP_SLOW,1,false,true));
 			}
 		}
 	}
