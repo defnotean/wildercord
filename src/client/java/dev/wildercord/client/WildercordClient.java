@@ -1,4 +1,4 @@
-﻿package dev.wildercord.client;
+package dev.wildercord.client;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordParticles;
