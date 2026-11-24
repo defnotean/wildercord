@@ -316,7 +316,7 @@ public final class OathholdJustice {
 			}
 		}
 		targetSite.totalOriginal += added;
-		sortRepairQueue(server, targetSite.remaining);
+		sortRepairQueue(level, targetSite.remaining);
 		data.setDirty();
 
 		if (culprit != null && !culprit.isCreative() && !culprit.isSpectator() && !isImprisoned(culprit)

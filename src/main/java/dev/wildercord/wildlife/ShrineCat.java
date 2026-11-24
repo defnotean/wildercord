@@ -172,7 +172,7 @@ public class ShrineCat extends TamableAnimal {
 			}
 		});
 		targetSelector.addGoal(4, new NearestAttackableTargetGoal<net.minecraft.world.entity.monster.Monster>(this, Monster.class, 10, true, false,
-			(target, lvl) -> !isOrderedToSit() && !isLoafing() && getRole() == ShrineCatRules.ROLE_TAMED && isTame()));
+			target -> !isOrderedToSit() && !isLoafing() && getRole() == ShrineCatRules.ROLE_TAMED && isTame()));
 	}
 
 	public ShrineCatRules.Variant variant() {
