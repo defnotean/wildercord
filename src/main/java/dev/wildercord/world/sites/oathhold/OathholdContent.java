@@ -41,7 +41,7 @@ public final class OathholdContent {
 	public static final Item CITIZEN_SPAWN_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		CITIZEN_EGG_KEY,
-		new SpawnEggItem(CITIZEN, new Item.Properties().setId(CITIZEN_EGG_KEY))
+		dev.wildercord.compat.McSpawnEgg.create(CITIZEN, new Item.Properties().setId(CITIZEN_EGG_KEY))
 	);
 
 	private static final ResourceKey<net.minecraft.world.level.block.Block> BOARD_KEY =
