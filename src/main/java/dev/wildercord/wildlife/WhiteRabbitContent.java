@@ -69,7 +69,7 @@ public final class WhiteRabbitContent {
 		BuiltInRegistries.ITEM,
 		PORTAL_ITEM_KEY,
 		new BlockItem(RABBIT_HOLE_PORTAL,
-			new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+			new Item.Properties().rarity(Rarity.EPIC)));
 
 	public static final BlockEntityType<RabbitHolePortalBlockEntity> RABBIT_HOLE_PORTAL_ENTITY = Registry.register(
 		BuiltInRegistries.BLOCK_ENTITY_TYPE,

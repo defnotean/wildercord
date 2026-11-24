@@ -63,7 +63,7 @@ public final class OathholdContent {
 	public static final Item GUILD_REQUEST_BOARD_ITEM = Registry.register(
 		BuiltInRegistries.ITEM,
 		BOARD_ITEM_KEY,
-		new BlockItem(GUILD_REQUEST_BOARD, new Item.Properties().useBlockDescriptionPrefix())
+		new BlockItem(GUILD_REQUEST_BOARD, new Item.Properties())
 	);
 
 	public static void init() {
