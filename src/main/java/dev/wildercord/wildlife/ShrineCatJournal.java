@@ -7,14 +7,18 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedData;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -81,10 +85,9 @@ final class ShrineCatJournal extends SavedData {
 			.optionalFieldOf("companions", Map.of())
 			.forGetter(ShrineCatJournal::encodeEntries)
 	).apply(i, ShrineCatJournal::new));
-	private static final SavedDataType<ShrineCatJournal> TYPE = new SavedDataType<>("shrine_cat_companions",
+	private static final McSavedDataType<ShrineCatJournal> TYPE = new McSavedDataType<>("shrine_cat_companions",
 		ShrineCatJournal::new,
-		CODEC,
-		null
+		CODEC
 	);
 
 	private static final Map<UUID, EnumMap<ShrineCatRules.Variant, ShrineCat>> LIVE = new HashMap<>();
@@ -92,6 +95,12 @@ final class ShrineCatJournal extends SavedData {
 	private final Map<UUID, EnumMap<ShrineCatRules.Variant, Entry>> entries = new HashMap<>();
 
 	ShrineCatJournal() {}
+
+	@Override
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+		return (CompoundTag) CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+	}
 
 	private ShrineCatJournal(Map<UUID, Map<String, Entry>> raw) {
 		for (var e : raw.entrySet()) {
@@ -138,7 +147,7 @@ final class ShrineCatJournal extends SavedData {
 	}
 
 	static ShrineCatJournal of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	Entry get(UUID owner, ShrineCatRules.Variant variant) {
@@ -154,8 +163,7 @@ final class ShrineCatJournal extends SavedData {
 	}
 
 	static UUID ownerUuid(ShrineCat cat) {
-		EntityReference<LivingEntity> ref = cat.getOwnerReference();
-		return ref == null ? null : ref.getUUID();
+		return cat.getOwnerUUID();
 	}
 
 	static boolean canTame(MinecraftServer server, UUID owner, ShrineCatRules.Variant variant) {

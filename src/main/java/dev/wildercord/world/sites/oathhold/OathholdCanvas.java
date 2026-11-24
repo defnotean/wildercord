@@ -698,7 +698,7 @@ public final class OathholdCanvas {
 		OathholdCitizen citizen = OathholdContent.CITIZEN.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (citizen == null) return null;
 		citizen.configure(archetype, lx, ly, lz, pos, tetherRadius);
-		citizen.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);
+		citizen.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);
 		citizen.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 		level.addFreshEntityWithPassengers(citizen);
 		return citizen;
@@ -714,7 +714,7 @@ public final class OathholdCanvas {
 		T mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (mob == null) return null;
 		if (persistent) mob.setPersistenceRequired();
-		mob.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);
+		mob.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 		level.addFreshEntityWithPassengers(mob);
 		return mob;

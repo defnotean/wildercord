@@ -76,9 +76,10 @@ public class SirenVeilJelly extends Monster {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class SirenVeilJelly extends Monster {
 			if (!p.isAlive() || p.isSpectator()) continue;
 			float dmg = 8.0f * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(p));
 			p.hurtServer(server, server.damageSources().indirectMagic(this, this), dmg);
-			p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0));
+			p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
 		}
 	}
 

@@ -211,7 +211,7 @@ public final class Wards {
 			if (!STASIS.containsKey(t.getUUID())) {
 				TimeFx.stasisColumn(cast.level, t, capped);
 			}
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, capped, 4, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, capped, 4, false, true));
 			return;
 		}
 		// The column of frozen sand is drawn once and lasts the hold (a renewal by a repeating shape does not redraw it).
@@ -460,7 +460,7 @@ public final class Wards {
 		bad.forEach(entity::removeEffect);
 		entity.clearFire();
 		entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1, false, true));
-		entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 60, 1, false, true));
+		entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 1, false, true));
 		LifeOwnerEvents.transition(level,"reversal",entity,LifeOwnerEvents.Moment.TRIGGER,1,entity.getHealth()-reversalBefore,null);
 		if (entity instanceof ServerPlayer player) {
 			player.displayClientMessage(Component.translatable("message.wildercord.reversal").withColor(0x6EDC64), true);
@@ -587,7 +587,7 @@ public final class Wards {
 							}
 							slowTicks = BossRules.BOSS_HOLD_MIN_TICKS;
 						}
-						victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slowTicks, zenoLevel(d), false, false), ward.caster);
+						victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, slowTicks, zenoLevel(d), false, false), ward.caster);
 					}
 				}
 			}

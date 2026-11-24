@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -51,12 +50,12 @@ public class SacredPigMapItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
 		SacredPigMap coords = stack.get(WildercordComponents.SACRED_PIG_MAP);
 		if (coords != null) {
-			builder.accept(Component.translatable("tooltip.wildercord.sacred_pig_map.coords", coords.x(), coords.z()).withStyle(ChatFormatting.GOLD));
+			tooltip.add(Component.translatable("tooltip.wildercord.sacred_pig_map.coords", coords.x(), coords.z()).withStyle(ChatFormatting.GOLD));
 		} else {
-			builder.accept(Component.translatable("tooltip.wildercord.sacred_pig_map").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable("tooltip.wildercord.sacred_pig_map").withStyle(ChatFormatting.GRAY));
 		}
 	}
 }

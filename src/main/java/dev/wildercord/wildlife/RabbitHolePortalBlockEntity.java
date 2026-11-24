@@ -6,6 +6,7 @@ import dev.wildercord.compat.McValueOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -116,7 +117,7 @@ public class RabbitHolePortalBlockEntity extends BlockEntity {
 		player.teleportTo(level, dest.getX() + 0.5, dest.getY() + 0.1, dest.getZ() + 0.5,
 			Set.of(), 180.0F, 0.0F, false);
 		if (bossProtect) {
-			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 60, 1, false, true));
+			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 1, false, true));
 		}
 		Vec3 at = Vec3.atCenterOf(dest);
 		Vfx.emit(level, ParticleTypes.PORTAL, at, 36, 0.6, 0.15);

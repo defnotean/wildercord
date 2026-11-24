@@ -131,13 +131,13 @@ public final class OathboundCombat {
 			return;
 		}
 		switch (t.effect()) {
-			case SLOW -> foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, t.effectTicks(), 1, false, true), self);
+			case SLOW -> foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, t.effectTicks(), 1, false, true), self);
 			case WEAKNESS -> foe.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, t.effectTicks(), 0, false, true), self);
 			case BLIND -> foe.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, t.effectTicks(), 0, false, true), self);
 			case WITHER -> foe.addEffect(new MobEffectInstance(MobEffects.WITHER, t.effectTicks(), 0, false, true), self);
 			case FEAR -> {
 				foe.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, t.effectTicks(), 0, false, true), self);
-				foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, t.effectTicks(), 0, false, true), self);
+				foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, t.effectTicks(), 0, false, true), self);
 			}
 			case LAUNCH -> foe.setDeltaMovement(foe.getDeltaMovement().add(0.0, t.lift(), 0.0));
 			default -> {}
@@ -260,7 +260,7 @@ public final class OathboundCombat {
 		return switch (a) {
 			case OVERHEAD_SLAM, LEAP_SLAM, STOMP, KNEEL_STRIKE -> SoundEvents.MACE_SMASH_GROUND;
 			case SHIELD_PUSH -> SoundEvents.ANVIL_LAND;
-			case GUARD_BRACE -> SoundEvents.SHIELD_BLOCK.value();
+			case GUARD_BRACE -> SoundEvents.SHIELD_BLOCK;
 			case ROAR -> SoundEvents.WARDEN_ROAR;
 			case CAST_RAISE -> SoundEvents.BELL_RESONATE;
 			case OVERHAND_THROW -> SoundEvents.TRIDENT_THROW.value();

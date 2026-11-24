@@ -6,7 +6,11 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.BossRules;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -17,7 +21,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedData;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -67,11 +72,17 @@ public final class LairRespawns extends SavedData {
 	}
 
 	private static final Codec<LairRespawns> CODEC = Entry.CODEC.listOf().xmap(LairRespawns::new, LairRespawns::entries);
-	private static final SavedDataType<LairRespawns> TYPE = new SavedDataType<>("lair_respawns", LairRespawns::new, CODEC, null);
+	private static final McSavedDataType<LairRespawns> TYPE = new McSavedDataType<>("lair_respawns", LairRespawns::new, CODEC);
 
 	private final List<Entry> pending = new ArrayList<>();
 
 	public LairRespawns() {}
+
+	@Override
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+		return (CompoundTag) CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+	}
 
 	private LairRespawns(List<Entry> entries) {
 		pending.addAll(entries);
@@ -94,7 +105,7 @@ public final class LairRespawns extends SavedData {
 
 	/** Schedules a bound guardian to respawn in its lair after {@link BossRules#BOSS_RESPAWN_TICKS}. */
 	public static void schedule(ServerLevel level, Entry entry) {
-		LairRespawns data = level.getDataStorage().computeIfAbsent(TYPE);
+		LairRespawns data = McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);
 		data.pending.removeIf(existing -> existing.bossId().equals(entry.bossId()) && existing.home().equals(entry.home()));
 		data.pending.add(entry);
 		data.setDirty();
@@ -102,7 +113,7 @@ public final class LairRespawns extends SavedData {
 
 	/** Number of pending lair respawns in {@code level} (for tests). */
 	public static int pendingCount(ServerLevel level) {
-		LairRespawns data = level.getDataStorage().get(TYPE);
+		LairRespawns data = McSavedData.get(level.getDataStorage(), TYPE);
 		return data == null ? 0 : data.pending.size();
 	}
 
@@ -111,7 +122,7 @@ public final class LairRespawns extends SavedData {
 		if (!Guardians.enabled() || level.getDifficulty() == Difficulty.PEACEFUL) {
 			return;
 		}
-		LairRespawns data = level.getDataStorage().get(TYPE);
+		LairRespawns data = McSavedData.get(level.getDataStorage(), TYPE);
 		if (data == null || data.pending.isEmpty()) {
 			return;
 		}
@@ -173,7 +184,7 @@ public final class LairRespawns extends SavedData {
 			return false;
 		}
 		BlockPos home = entry.home();
-		boss.snapTo(home.getX() + 0.5, home.getY(), home.getZ() + 0.5, entry.yaw(), 0.0F);
+		boss.moveTo(home.getX() + 0.5, home.getY(), home.getZ() + 0.5, entry.yaw(), 0.0F);
 		boss.finalizeSpawn(level, level.getCurrentDifficultyAt(home), EntitySpawnReason.TRIGGERED, null);
 		BoundingBox box = new BoundingBox(
 			entry.boundsMin().getX(), entry.boundsMin().getY(), entry.boundsMin().getZ(),

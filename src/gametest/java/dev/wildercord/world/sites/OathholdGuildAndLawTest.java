@@ -77,7 +77,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -120,7 +120,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 		check(npc != null, "Failed to create OathholdCitizen for " + role);
 		BlockPos pos = new BlockPos(x, y, z);
 		npc.configure(role, x, y, z, pos, 3);
-		npc.snapTo(x + 0.5, y, z + 0.5, yaw, 0.0F);
+		npc.moveTo(x + 0.5, y, z + 0.5, yaw, 0.0F);
 		npc.finalizeSpawn(l, l.getCurrentDifficultyAt(pos), EntitySpawnReason.COMMAND, null);
 		l.addFreshEntity(npc);
 		return npc.getUUID();
@@ -301,8 +301,8 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				OathboundBastion bastion = AuraWorld.OATHBOUND_BASTION.create(l, EntitySpawnReason.COMMAND);
 				OathboundHalberdier halberdier = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
 				check(bastion != null && halberdier != null, "Failed to spawn Oathbound Knight patrol");
-				bastion.snapTo(3.5, 120.0, 7.5, 155.0F, 0.0F);
-				halberdier.snapTo(-2.5, 120.0, 7.5, -155.0F, 0.0F);
+				bastion.moveTo(3.5, 120.0, 7.5, 155.0F, 0.0F);
+				halberdier.moveTo(-2.5, 120.0, 7.5, -155.0F, 0.0F);
 				bastion.finalizeSpawn(l, l.getCurrentDifficultyAt(bastion.blockPosition()), EntitySpawnReason.COMMAND, null);
 				halberdier.finalizeSpawn(l, l.getCurrentDifficultyAt(halberdier.blockPosition()), EntitySpawnReason.COMMAND, null);
 				l.addFreshEntity(bastion);
@@ -433,7 +433,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 
 				OathboundHalberdier watcher = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
 				check(watcher != null, "Failed to spawn arena watcher knight");
-				watcher.snapTo(ARENA_CENTER.getX() + 3.5, 120.0, ARENA_CENTER.getZ() - 5.5, 25.0F, 0.0F);
+				watcher.moveTo(ARENA_CENTER.getX() + 3.5, 120.0, ARENA_CENTER.getZ() - 5.5, 25.0F, 0.0F);
 				watcher.finalizeSpawn(l, l.getCurrentDifficultyAt(watcher.blockPosition()), EntitySpawnReason.COMMAND, null);
 				l.addFreshEntity(watcher);
 
