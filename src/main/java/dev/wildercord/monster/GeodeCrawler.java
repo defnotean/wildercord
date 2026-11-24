@@ -128,9 +128,9 @@ public class GeodeCrawler extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level.getGameTime();
+		long now = level().getGameTime();
 		LivingEntity target = getTarget();
 		switch (phase) {
 			case CURLED -> {
@@ -138,7 +138,7 @@ public class GeodeCrawler extends WildMonster {
 				if (now >= phaseUntil) {
 					if (target != null && target.isAlive() && Targets.canHarm(this, target) && distanceTo(target) < 14 && hasLineOfSight(target)) {
 						enter(Phase.RATTLE, now, RATTLE);
-						MonsterMagic.sound(level, position(), "monster_geode_rattle", 1.0F, 1.0F);
+						MonsterMagic.sound(level(), position(), "monster_geode_rattle", 1.0F, 1.0F);
 					} else {
 						uncurl(now);
 					}
@@ -156,7 +156,7 @@ public class GeodeCrawler extends WildMonster {
 						Vec3 d = target.position().subtract(position()).multiply(1, 0, 1);
 						rollDir = d.lengthSqr() < 1.0E-4 ? getLookAngle().multiply(1, 0, 1).normalize() : d.normalize();
 						enter(Phase.ROLL, now, ROLL);
-						MonsterMagic.sound(level, position(), "monster_geode_roll", 1.0F, 1.0F);
+						MonsterMagic.sound(level(), position(), "monster_geode_roll", 1.0F, 1.0F);
 					}
 				}
 			}
@@ -167,20 +167,20 @@ public class GeodeCrawler extends WildMonster {
 				setYRot(yaw);
 				setYBodyRot(yaw);
 				if (now % 2 == 0) {
-					BlockState under = level.getBlockState(blockPosition().below());
+					BlockState under = level().getBlockState(blockPosition().below());
 					if (!under.isAir()) {
-						level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, under), getX(), getY() + 0.1, getZ(), 3, 0.3, 0.05, 0.3, 0.05);
+						level().sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, under), getX(), getY() + 0.1, getZ(), 3, 0.3, 0.05, 0.3, 0.05);
 					}
 				}
 				if (target != null && target.isAlive() && getBoundingBox().inflate(0.2).intersects(target.getBoundingBox())) {
 					if (target.hurt(damageSources().mobAttack(this), ROLL_DAMAGE)) {
 						MonsterMagic.knock(target, position(), 0.9);
 					}
-					MonsterMagic.sound(level, position(), "monster_geode_curl", 1.0F, 0.8F);
+					MonsterMagic.sound(level(), position(), "monster_geode_curl", 1.0F, 0.8F);
 					uncurl(now);
 				} else if (horizontalCollision) {
 					// It rolled into the wall: dazed.
-					daze(level, now);
+					daze(level(), now);
 				} else if (now >= phaseUntil) {
 					uncurl(now);
 				}
@@ -188,7 +188,7 @@ public class GeodeCrawler extends WildMonster {
 			case DAZED -> {
 				getNavigation().stop();
 				if (now % 5 == 0) {
-					ElementFx.shimmer(level, position().add(0, getBbHeight() + 0.2, 0), 0.3, 2);
+					ElementFx.shimmer(level(), position().add(0, getBbHeight() + 0.2, 0), 0.3, 2);
 				}
 				if (now >= phaseUntil) {
 					enter(Phase.CRAWL, now, 0);

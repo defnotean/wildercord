@@ -140,26 +140,26 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level.getGameTime();
+		long now = level().getGameTime();
 		int left = hideLeft();
 		if (left > 0) {
 			entityData.set(HIDE, left - 1);
 			if (left == 1) {
 				playSound(SoundEvents.SLIME_SQUISH_SMALL, 0.5F, 1.4F);
 			}
-		} else if (tickCount % 5 == 0 && startled(level)) {
-			hideAway(level, SnailRules.HIDE_TICKS);
+		} else if (tickCount % 5 == 0 && startled(level())) {
+			hideAway(level(), SnailRules.HIDE_TICKS);
 		}
 		if (!capped() && regrowAt >= 0 && now >= regrowAt) {
 			regrowAt = -1;
 			entityData.set(CAPPED, true);
-			level.sendParticles(ParticleTypes.MYCELIUM, getX(), getY() + 0.8, getZ(), 14, 0.3, 0.15, 0.3, 0.02);
+			level().sendParticles(ParticleTypes.MYCELIUM, getX(), getY() + 0.8, getZ(), 14, 0.3, 0.15, 0.3, 0.02);
 			playSound(SoundEvents.FUNGUS_PLACE, 0.6F, 1.3F);
 		}
 		if (tickCount % 20 == 0) {
-			getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(level.isRainingAt(blockPosition()) ? SPEED * SnailRules.RAIN_SPEED : SPEED);
+			getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(level().isRainingAt(blockPosition()) ? SPEED * SnailRules.RAIN_SPEED : SPEED);
 		}
 	}
 

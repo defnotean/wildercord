@@ -108,9 +108,9 @@ public class Skyray extends AmbientCreature {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();
-		if (steered(level)) {
+		if (steered(level())) {
 			return;
 		}
 		if (anchor == null) {
@@ -133,8 +133,8 @@ public class Skyray extends AmbientCreature {
 
 		double tx = anchor.x + Math.cos(angle) * radius;
 		double tz = anchor.z + Math.sin(angle) * radius;
-		int ground = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, Mth.floor(tx), Mth.floor(tz)),
-			level.getHeight(Heightmap.Types.MOTION_BLOCKING, blockPosition().getX(), blockPosition().getZ()));
+		int ground = Math.max(level().getHeight(Heightmap.Types.MOTION_BLOCKING, Mth.floor(tx), Mth.floor(tz)),
+			level().getHeight(Heightmap.Types.MOTION_BLOCKING, blockPosition().getX(), blockPosition().getZ()));
 		double ty = WildlifeRules.cruise(ground, altitude);
 		Vec3 to = new Vec3(tx - getX(), ty - getY(), tz - getZ());
 		Vec3 v = getDeltaMovement();
@@ -157,8 +157,8 @@ public class Skyray extends AmbientCreature {
 
 		if (--membraneTime <= 0) {
 			membraneTime = WildlifeRules.membraneInterval(random.nextDouble());
-			if (level.getNearestPlayer(this, 64) != null) {
-				shedMembrane(level);
+			if (level().getNearestPlayer(this, 64) != null) {
+				shedMembrane(level());
 			}
 		}
 	}

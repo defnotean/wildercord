@@ -302,7 +302,7 @@ public class ShrineCat extends TamableAnimal {
 		super.customServerAiStep();
 		int role = getRole();
 		if (role == ShrineCatRules.ROLE_GUARDIAN) {
-			tickGuardianTrial(level);
+			tickGuardianTrial(level());
 		} else {
 			bossBar.removeAllPlayers();
 		}
@@ -319,14 +319,14 @@ public class ShrineCat extends TamableAnimal {
 			}
 		}
 		if (ShrineCatRules.grantsDungeonPerk(role) && !sanctuaryFinished && sanctuaryHeart != null) {
-			checkHeartFinished(level);
+			checkHeartFinished(level());
 		}
 		if (role == ShrineCatRules.ROLE_CLEARED && sanctuaryHeart != null && --perkCooldown <= 0) {
 			perkCooldown = 40;
-			grantSanctuaryPerks(level);
+			grantSanctuaryPerks(level());
 		}
 		if (role == ShrineCatRules.ROLE_TAMED && isTame() && getOwner() instanceof LivingEntity owner) {
-			tickTamedPower(level, owner);
+			tickTamedPower(level(), owner);
 		}
 	}
 

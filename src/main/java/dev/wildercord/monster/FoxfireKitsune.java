@@ -117,20 +117,20 @@ public class FoxfireKitsune extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level.getGameTime();
-		if (decoy() && fades(level)) {
-			poof(level);
+		long now = level().getGameTime();
+		if (decoy() && fades(level())) {
+			poof(level());
 			discard();
 			return;
 		}
-		flyFoxfire(level);
+		flyFoxfire(level());
 		setState(ALT, now < spinUntil);
 		setState(ACTING, now < actingUntil);
 		// Only the real one sheds petals as it runs.
 		if (!decoy() && getDeltaMovement().horizontalDistanceSqr() > 0.002 && tickCount % 5 == 0) {
-			level.sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.6, getZ(), 1, 0.25, 0.2, 0.25, 0);
+			level().sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.6, getZ(), 1, 0.25, 0.2, 0.25, 0);
 		}
 
 		LivingEntity target = getTarget();
@@ -148,12 +148,12 @@ public class FoxfireKitsune extends WildMonster {
 			getNavigation().stop();
 			face(target);
 			if (tickCount % 3 == 0) {
-				tailFire(level, 2);
+				tailFire(level(), 2);
 			}
 			if (now >= foxfireAt) {
 				foxfireAt = -1;
 				setState(WINDUP, false);
-				throwFoxfire(level, target, now);
+				throwFoxfire(level(), target, now);
 			}
 			return;
 		}

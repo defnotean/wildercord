@@ -258,9 +258,9 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 
 		if (!empowered() && OathboundBannerMarshalRules.empowered(getHealth(), getMaxHealth())) {
 			entityData.set(EMPOWERED, true);
-			Feels.sound(level, chestPos(), "duelist_clash", 1.3F, 0.95F);
-			Light.groundRing(level, position(), HEX_SOLAR, 0.5, 4.8, 0.14, 18);
-			Sigils.flash(level, chestPos(), 0xFFFFE066, 2.2F);
+			Feels.sound(level(), chestPos(), "duelist_clash", 1.3F, 0.95F);
+			Light.groundRing(level(), position(), HEX_SOLAR, 0.5, 4.8, 0.14, 18);
+			Sigils.flash(level(), chestPos(), 0xFFFFE066, 2.2F);
 		}
 
 		LivingEntity target = getTarget();
@@ -271,7 +271,7 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 
 		int move = move();
 		if (move != OathboundBannerMarshalRules.SOVEREIGN_MARCH) {
-			tickActiveMove(level, move, target);
+			tickActiveMove(level(), move, target);
 			return;
 		}
 
@@ -286,7 +286,7 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 		if (dist > 3.2) {
 			getNavigation().moveTo(target, 1.04);
 			if (tickCount % 12 == 0 && onGround()) {
-				Feels.sound(level, position(), "duelist_knight_step", 0.80F, 0.86F + random.nextFloat() * 0.1F);
+				Feels.sound(level(), position(), "duelist_knight_step", 0.80F, 0.86F + random.nextFloat() * 0.1F);
 			}
 		} else {
 			getNavigation().stop();
@@ -294,9 +294,9 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 		turnToward(yawTo(target.position()), 12.0F);
 
 		if (gapTicks <= 0 && dist <= 9.0) {
-			int next = chooseMove(level, dist);
+			int next = chooseMove(level(), dist);
 			if (next > 0) {
-				startMove(level, next, target);
+				startMove(level(), next, target);
 			}
 		}
 	}

@@ -198,21 +198,21 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,b.getY(),b.getY()+5,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+18,b.getZ()+20));}
 		// Left alone long enough (her prey died and went home, say) and she has climbed back up in the meantime.
-		long now=level.getGameTime();
+		long now=level().getGameTime();
 		if(lastTick>=0 && move()!=HollowMatronRules.DORMANT && HollowMatronRules.forgets(now-lastTick))climbed();
 		lastTick=now;
-		if(tickCount%HollowMatronRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
+		if(tickCount%HollowMatronRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
 		switch(move()){
-			case HollowMatronRules.DORMANT->dormant(level);
-			case HollowMatronRules.DROP->{hold();dropping(level);if(--left<=0)stand(level);}
-			case HollowMatronRules.CLIMB->{hold();if(wakeful(level)!=null)wake(level,HollowMatronRules.DROP_TICKS-left);else if(--left<=0)climbed();else if(left%8==0)creak(level,.8F);}
-			default->{setNoGravity(HollowMatronRules.aloft(move()) || move()==HollowMatronRules.POUNCE && since()>tell());awake(level);}
+			case HollowMatronRules.DORMANT->dormant(level());
+			case HollowMatronRules.DROP->{hold();dropping(level());if(--left<=0)stand(level());}
+			case HollowMatronRules.CLIMB->{hold();if(wakeful(level())!=null)wake(level(),HollowMatronRules.DROP_TICKS-left);else if(--left<=0)climbed();else if(left%8==0)creak(level(),.8F);}
+			default->{setNoGravity(HollowMatronRules.aloft(move()) || move()==HollowMatronRules.POUNCE && since()>tell());awake(level());}
 		}
-		flight(level);waves(level);snares(level);patches(level);
+		flight(level());waves(level());snares(level());patches(level());
 	}
 
 	/** Her head, more or less: low and forward on her feet, at the bottom of her while she hangs. */

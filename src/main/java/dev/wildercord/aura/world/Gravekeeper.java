@@ -82,7 +82,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		bar.setColor(BossEvent.BossBarColor.WHITE);
 	}
 	@Override protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 
 		super.customServerAiStep();if(!isAlive())return;
 		if(home==null)home=blockPosition();
@@ -92,25 +92,25 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		if(tickCount%10==0){
 			var center=Vec3.atCenterOf(home);
 			bar.setProgress(getHealth()/getMaxHealth());bar.setName(Component.translatable("boss.wildercord.gravekeeper.status",getType().getDescription(),Component.translatable("boss.wildercord.gravekeeper.move."+move())));
-			for(var p:new ArrayList<>(bar.getPlayers()))if(p.level()!=level || !p.isAlive() || p.distanceToSqr(center)>28*28)bar.removePlayer(p);
-			for(var p:level.players())if(p.isAlive() && !p.isSpectator() && p.distanceToSqr(center)<24*24)bar.addPlayer(p);
-			var target=level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(center)<20*20 && hasLineOfSight(p)).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+			for(var p:new ArrayList<>(bar.getPlayers()))if(p.level()!=level() || !p.isAlive() || p.distanceToSqr(center)>28*28)bar.removePlayer(p);
+			for(var p:level().players())if(p.isAlive() && !p.isSpectator() && p.distanceToSqr(center)<24*24)bar.addPlayer(p);
+			var target=level().players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(center)<20*20 && hasLineOfSight(p)).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			setTarget(target);
-			if(fought){var t=tomb(level);if(t!=null)for(var p:level.players())t.participant(p);}
+			if(fought){var t=tomb(level());if(t!=null)for(var p:level().players())t.participant(p);}
 		}
-		grasp(level);
+		grasp(level());
 		var target=getTarget();
 		if(target==null){quiet++;if(quiet==201)reset();}else quiet=0;
 		if(left>0)left--;
 		switch(move()){
-			case SwordTombRules.SWEEP,SwordTombRules.THRUST->blade(level,target);
-			case SwordTombRules.HEEL->heel(level);
-			case SwordTombRules.LISTEN->listen(level,target);
-			case SwordTombRules.VERDICT->verdict(level);
-			case SwordTombRules.HANDS->hands(level);
-			case SwordTombRules.RAMPART->rampart(level,target);
-			case SwordTombRules.RITE->rite(level);
-			case SwordTombRules.IDLE->idle(level,target);
+			case SwordTombRules.SWEEP,SwordTombRules.THRUST->blade(level(),target);
+			case SwordTombRules.HEEL->heel(level());
+			case SwordTombRules.LISTEN->listen(level(),target);
+			case SwordTombRules.VERDICT->verdict(level());
+			case SwordTombRules.HANDS->hands(level());
+			case SwordTombRules.RAMPART->rampart(level(),target);
+			case SwordTombRules.RITE->rite(level());
+			case SwordTombRules.IDLE->idle(level(),target);
 			default->{getNavigation().stop();face(direction);if(left==0)settle();}
 		}
 	}

@@ -153,23 +153,23 @@ public abstract class AuraBeast extends PathfinderMob {
 	}
 	protected void beginAttack() { struck.clear();attackEpoch++; }
 	@Override protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 
 		super.customServerAiStep();
 		if(home==null) home=blockPosition();
 		if(calm>0) calm--; if(aggression>0) aggression--;
-		if(!Config.get().auraWorld().auraBeasts() || level.getDifficulty()==Difficulty.PEACEFUL) {
+		if(!Config.get().auraWorld().auraBeasts() || level().getDifficulty()==Difficulty.PEACEFUL) {
 			setTarget(null); if(pose()!=BeastRules.IDLE) { setDeltaMovement(Vec3.ZERO); pose(BeastRules.IDLE,0); } return;
 		}
 		if(!valid(getTarget()) || getTarget()!=null && (getTarget().distanceToSqr(Vec3.atBottomCenterOf(home))>32*32 || distanceToSqr(getTarget())>28*28)) setTarget(null);
 		if(getTarget()==null && shelter.running())return;
 		if(getTarget()==null && reedForage!=null && reedForage.running()) {
-			if(this instanceof Stonehorn grazer)grazer.noticeThreat(level);
+			if(this instanceof Stonehorn grazer)grazer.noticeThreat(level());
 			if(getTarget()==null)return;
 		}
 		if(getTarget()==null && pose()==BeastRules.IDLE && distanceToSqr(Vec3.atBottomCenterOf(home))>16*16 && tickCount%40==0)
 			getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.8);
-		act(level);
+		act(level());
 	}
 	protected abstract void act(ServerLevel level);
 	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.addAdditionalSaveData(outTag); if(home!=null) out.store("beast_home",BlockPos.CODEC,home); out.putLong("next_shed",nextShed); out.putInt("calm",calm); }

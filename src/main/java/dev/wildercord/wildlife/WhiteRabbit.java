@@ -126,12 +126,12 @@ public class WhiteRabbit extends Animal {
 		if (dived || !isAlive()) {
 			return;
 		}
-		long now = level.getGameTime();
+		long now = level().getGameTime();
 
 		if (leadPlayerId == null || portalPos == null) {
-			ServerPlayer watcher = nearestActivePlayer(level, WhiteRabbitRules.NOTICE_RANGE);
+			ServerPlayer watcher = nearestActivePlayer(level(), WhiteRabbitRules.NOTICE_RANGE);
 			if (watcher != null && getLastHurtByMob() == null) {
-				BlockPos site = HollowTreeBuilder.findTreeSite(level, blockPosition(), level.getRandom());
+				BlockPos site = HollowTreeBuilder.findTreeSite(level(), blockPosition(), level().getRandom());
 				if (site != null) {
 					leadToHollowTree(watcher, site, null);
 				}
@@ -139,7 +139,7 @@ public class WhiteRabbit extends Animal {
 			return;
 		}
 
-		ServerPlayer follower = resolveFollower(level);
+		ServerPlayer follower = resolveFollower(level());
 		if (follower == null) {
 			// Idle by the hole looking at its watch until someone returns.
 			getNavigation().stop();
@@ -154,7 +154,7 @@ public class WhiteRabbit extends Animal {
 
 		if (now - lastTrailTick >= 6L) {
 			lastTrailTick = now;
-			Vfx.emit(level, ParticleTypes.END_ROD, position().add(0, 0.35, 0), 1, 0.15, 0.01);
+			Vfx.emit(level(), ParticleTypes.END_ROD, position().add(0, 0.35, 0), 1, 0.15, 0.01);
 		}
 
 		if (WhiteRabbitRules.shouldDiveIn(playerDist, treeDist)) {
@@ -164,7 +164,7 @@ public class WhiteRabbit extends Animal {
 			getLookControl().setLookAt(follower, 40.0F, 40.0F);
 			divePauseTicks++;
 			if (divePauseTicks >= 18) {
-				performDiveIntoHole(level, targetCenter);
+				performDiveIntoHole(level(), targetCenter);
 			}
 			return;
 		}
@@ -178,7 +178,7 @@ public class WhiteRabbit extends Animal {
 			if (now - lastWaitCueTick >= 50L) {
 				lastWaitCueTick = now;
 				playSound(SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 1.35F);
-				Vfx.emit(level, ParticleTypes.ENCHANT, position().add(0, 0.5, 0), 6, 0.3, 0.04);
+				Vfx.emit(level(), ParticleTypes.ENCHANT, position().add(0, 0.5, 0), 6, 0.3, 0.04);
 			}
 			return;
 		}

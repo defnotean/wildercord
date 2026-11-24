@@ -96,13 +96,13 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 		bar.removeAllPlayers(); setHealth(getMaxHealth());
 	}
 	@Override protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 
 		super.customServerAiStep(); if (!isAlive()) return; hold();
-		if (bell != null && level.getBlockEntity(bell) instanceof CrossingBellEntity crossing && crossing.slain()) { discard(); return; }
+		if (bell != null && level().getBlockEntity(bell) instanceof CrossingBellEntity crossing && crossing.slain()) { discard(); return; }
 		if (!active) return;
-		if (level.getDifficulty() == Difficulty.PEACEFUL || !dev.wildercord.aura.world.Guardians.enabled()) { rest(); return; }
-		var players = level.players().stream().filter(this::eligible).limit(MAX_CHALLENGERS).toList();
+		if (level().getDifficulty() == Difficulty.PEACEFUL || !dev.wildercord.aura.world.Guardians.enabled()) { rest(); return; }
+		var players = level().players().stream().filter(this::eligible).limit(MAX_CHALLENGERS).toList();
 		for (var old : List.copyOf(bar.getPlayers())) if (!players.contains(old)) bar.removePlayer(old);
 		for (var player : players) bar.addPlayer(player);
 		bar.setProgress(getHealth() / getMaxHealth());
@@ -110,7 +110,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 			retire(); if (++quiet >= QUIET_RESET) rest(); return;
 		}
 		quiet = 0;
-		long now = level.getGameTime();
+		long now = level().getGameTime();
 		if (move() != IDLE) {
 			if (impacted) {
 				if (elapsed(0) >= tell(move()) + recovery(move())) { retire(); readyAt = now; }
@@ -121,8 +121,8 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 			var target = nearestAnnounced(players);
 			if (target == null) { retire(); readyAt = now + RETIRE; return; }
 			lockedTarget = target.getUUID();
-			if (elapsed(0) >= tell(move())) { impact(level, players); return; }
-		} else if (now >= readyAt) begin(level, players);
+			if (elapsed(0) >= tell(move())) { impact(level(), players); return; }
+		} else if (now >= readyAt) begin(level(), players);
 	}
 	/** The nearest still-eligible player among those the current tell was announced against. */
 	private ServerPlayer nearestAnnounced(List<ServerPlayer> players) {

@@ -94,26 +94,26 @@ public class CragcleaverRam extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level.getGameTime();
+		long now = level().getGameTime();
 		LivingEntity target = getTarget();
 		boolean hunting = target != null && target.isAlive() && Targets.canHarm(this, target);
 
 		switch (phase) {
-			case PAW -> paw(level, target, hunting, now);
-			case CHARGE -> charge(level, now);
+			case PAW -> paw(level(), target, hunting, now);
+			case CHARGE -> charge(level(), now);
 			case DAZED -> {
 				getNavigation().stop();
 				if (now % 6 == 0) {
-					level.sendParticles(ParticleTypes.CRIT, getX(), getY() + getBbHeight() + 0.3, getZ(), 3, 0.35, 0.1, 0.35, 0.02);
+					level().sendParticles(ParticleTypes.CRIT, getX(), getY() + getBbHeight() + 0.3, getZ(), 3, 0.35, 0.1, 0.35, 0.02);
 				}
 				if (now >= phaseUntil) {
 					phase = Phase.ROAM;
 					playSound(SoundEvents.GOAT_AMBIENT, 1.0F, 0.6F);
 				}
 			}
-			default -> roam(level, target, hunting, now);
+			default -> roam(level(), target, hunting, now);
 		}
 		setState(WINDUP, phase == Phase.PAW);
 		setState(ACTING, phase == Phase.CHARGE || now < buttingUntil);

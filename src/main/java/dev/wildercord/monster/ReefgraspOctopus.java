@@ -131,13 +131,13 @@ public class ReefgraspOctopus extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level = (ServerLevel) level();
+		ServerLevel level() = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level.getGameTime();
+		long now = level().getGameTime();
 		setState(ACTING, now < actingUntil);
 
 		if (!isInWater()) {
-			dryOut(level, now);
+			dryOut(level(), now);
 		}
 
 		if (jetUntil >= 0) {
@@ -155,7 +155,7 @@ public class ReefgraspOctopus extends WildMonster {
 		}
 
 		if (held != null) {
-			hold(level, now);
+			hold(level(), now);
 			return;
 		}
 		setState(ALT, false);
@@ -175,7 +175,7 @@ public class ReefgraspOctopus extends WildMonster {
 			face(target);
 			getNavigation().stop();
 			if (now >= grabAt) {
-				reach(level, target, now);
+				reach(level(), target, now);
 			}
 			return;
 		}
