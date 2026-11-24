@@ -185,13 +185,13 @@ public class OathholdCitizen extends WanderingTrader {
 		OathholdCitizenRules.Archetype role = archetype();
 		if (role.essential && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			float allowed = Math.max(0.0F, getHealth() - 4.0F);
-			boolean damaged = allowed > 0.0F && super.hurtServer(level, source, Math.min(amount, allowed));
+			boolean damaged = allowed > 0.0F && super.hurt( source,  Math.min(amount, allowed));
 			if (!damaged) {
 				OathholdLaw.onEntityAttacked(level, this, source);
 			}
 			return damaged;
 		}
-		return super.hurtServer(level, source, amount);
+		return super.hurt( source,  amount);
 	}
 
 	@Override

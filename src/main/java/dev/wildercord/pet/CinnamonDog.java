@@ -990,7 +990,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 		// Operators can deliberately remove her. Ordinary hazards never enter the health-loss path.
-		if (source.is(DamageTypes.GENERIC_KILL)) return super.hurtServer(level, source, amount);
+		if (source.is(DamageTypes.GENERIC_KILL)) return super.hurt( source,  amount);
 		if (countingDamage) return false;
 		countingDamage = true;
 		try { return countDamage(level, source, amount); }

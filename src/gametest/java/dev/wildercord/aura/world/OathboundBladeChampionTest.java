@@ -303,7 +303,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				c.setTarget(p);
 				McEntities.clearHurtCooldown(c);
 				float hpBefore = c.getHealth();
-				c.hurtServer(level(s), level(s).damageSources().playerAttack(p), 10.0F);
+				c.hurt( level(s).damageSources().playerAttack(p),  10.0F);
 				float dealt = hpBefore - c.getHealth();
 				check(dealt <= 2.5F, "Expected Wrathful Riposte frontal parry <= 2.5 damage, got " + dealt);
 				check(c.riposteTriggered(), "Expected Wrathful Riposte counter cleave to trigger on frontal strike");
@@ -326,13 +326,13 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				OathboundBladeChampion c = (OathboundBladeChampion) l.getEntity(champId);
 				McEntities.clearHurtCooldown(c);
-				c.hurtServer(l, l.damageSources().playerAttack(p), 12.0F);
+				c.hurt( l.damageSources().playerAttack(p),  12.0F);
 				check(c.move() == OathboundBladeChampionRules.STAGGERED,
 					"Diamond Axe hitting active Wrathful Riposte must shatter guard into STAGGERED, was " + c.move());
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 				McEntities.clearHurtCooldown(c);
 				float hpBefore = c.getHealth();
-				c.hurtServer(l, l.damageSources().playerAttack(p), 10.0F);
+				c.hurt( l.damageSources().playerAttack(p),  10.0F);
 				float amplified = hpBefore - c.getHealth();
 				check(amplified >= 7.0F, "Staggered follow-up should deal amplified damage, dealt " + amplified);
 				c.setNoAi(false);
@@ -415,7 +415,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 
 				p.setGameMode(GameType.CREATIVE);
 				McEntities.clearHurtCooldown(c);
-				c.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
+				c.hurt( l.damageSources().playerAttack(p),  5000.0F);
 			});
 			context.waitTicks(4);
 			server.runOnServer(s -> {

@@ -221,7 +221,7 @@ public class ThalassorBoss extends Monster {
 		}
 		if (from.distanceToSqr(to) <= 24.0 * 24.0) {
 			float dmg = OceanRules.THALASSOR_BEAM_DAMAGE * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(target));
-			target.hurtServer(server, server.damageSources().indirectMagic(this, this), dmg);
+			target.hurt( server.damageSources().indirectMagic(this, this),  dmg);
 		}
 	}
 
@@ -231,7 +231,7 @@ public class ThalassorBoss extends Monster {
 			double[] pull = OceanRules.computePullVector(p.getX(), p.getY(), p.getZ(), getX(), getY(), getZ(), 0.7);
 			p.push(pull[0], 0.08, pull[2]);
 			float dmg = 6.0f * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(p));
-			p.hurtServer(server, server.damageSources().magic(), dmg);
+			p.hurt( server.damageSources().magic(),  dmg);
 		}
 		server.sendParticles(ParticleTypes.BUBBLE_POP, getX(), getY() + 1.0, getZ(), 20, 3.5, 1.0, 3.5, 0.12);
 	}

@@ -21,7 +21,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 		p.setHealth(p.getMaxHealth());
 		dev.wildercord.compat.McEntities.clearHurtCooldown(p);
 		float before = p.getHealth();
-		p.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(mob(s, id)), 10);
+		p.hurt( s.overworld().damageSources().mobAttack(mob(s, id)),  10);
 		return before - p.getHealth();
 	}
 	/** What the player's own {@code method} defence leaves of a 10-damage blow. */
@@ -249,7 +249,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				bastion.setPersistenceRequired();
 				level.addFreshEntity(bastion);
 				liveBossId[0] = bastion.getUUID();
-				bastion.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+				bastion.hurt( level.damageSources().playerAttack(player),  1.0F);
 				bastion.setTarget(player);
 
 				holdBlockPos[0] = bastion.blockPosition().south();
@@ -367,7 +367,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				boundSerpent.bind(altarPos, 0.0F);
 				level.addFreshEntity(boundSerpent);
 				boundSerpent.setHealth(1.0F);
-				boundSerpent.hurtServer(level, level.damageSources().genericKill(), 50.0F);
+				boundSerpent.hurt( level.damageSources().genericKill(),  50.0F);
 				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) >= 1, "bound lair guardian schedules respawn on death");
 				long afterLairRespawn = level.getGameTime() + dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS + 1L;
 				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(afterLairRespawn);

@@ -583,7 +583,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 			return false;
 		}
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-			return super.hurtServer(level, source, amount);
+			return super.hurt( source,  amount);
 		}
 
 		boolean unblockable = source.is(DamageTypeTags.BYPASSES_SHIELD) || source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC);
@@ -599,14 +599,14 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 				&& OathboundBladeChampionRules.axeBreaksParry(m, el, t, triggered, true, getYRot(), dx, dz)) {
 			Sigils.flash(level, chestPos(), 0xFFFF6030, 1.8F);
 			startMove(level, OathboundBladeChampionRules.STAGGERED, null);
-			return super.hurtServer(level, source, amount * 1.15F);
+			return super.hurt( source,  amount * 1.15F);
 		}
 
 		boolean parried = OathboundBladeChampionRules.parriesAttack(m, el, t, triggered, unblockable, getYRot(), dx, dz);
 		double mult = OathboundBladeChampionRules.damageMultiplier(m, el, t, triggered, unblockable, getYRot(), dx, dz);
 		float scaled = (float) Math.max(parried ? 1.0 : 0.0, amount * mult);
 
-		boolean applied = super.hurtServer(level, source, scaled);
+		boolean applied = super.hurt( source,  scaled);
 		if (applied && parried) {
 			Fx.sound(level, chestPos(), WildercordSounds.SHIELD_PARRY, 1.25F, 1.05F);
 			Sigils.flash(level, chestPos().add(ahead(getYRot()).scale(0.85)), 0xFFFFD048, 1.6F);

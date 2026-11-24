@@ -931,7 +931,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					"Duplicate ShrineCat body discarded cleanly on ENTITY_LOAD");
 
 				// Kill canonical Freya (/kill) -> Cat-Bell Charm recovers exactly ONE replacement, never two.
-				canonicalFreya.hurtServer(l, l.damageSources().genericKill(), 1000.0F);
+				canonicalFreya.hurt( l.damageSources().genericKill(),  1000.0F);
 				check(!canonicalFreya.isAlive(), "Canonical Freya died to GENERIC_KILL");
 				hold(s, new ItemStack(ShrineCatContent.CAT_BELL_CHARM, 1));
 				player.getMainHandItem().use(l, player, InteractionHand.MAIN_HAND);

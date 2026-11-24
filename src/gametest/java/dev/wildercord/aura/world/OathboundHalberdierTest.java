@@ -322,13 +322,13 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				McEntities.clearHurtCooldown(h);
-				h.hurtServer(l, l.damageSources().playerAttack(p), 12.0F);
+				h.hurt( l.damageSources().playerAttack(p),  12.0F);
 				check(h.move() == OathboundHalberdierRules.STAGGERED,
 					"Axe during Sky-Vault windup must stagger Halberdier, got " + h.move());
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 				McEntities.clearHurtCooldown(h);
 				float hpBefore = h.getHealth();
-				h.hurtServer(l, l.damageSources().playerAttack(p), 10.0F);
+				h.hurt( l.damageSources().playerAttack(p),  10.0F);
 				float amplified = hpBefore - h.getHealth();
 				check(amplified >= 7.5F, "Staggered follow-up must deal amplified damage, dealt " + amplified);
 				h.setNoAi(false);
@@ -378,7 +378,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 
 				p.setGameMode(GameType.CREATIVE);
 				McEntities.clearHurtCooldown(h);
-				h.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
+				h.hurt( l.damageSources().playerAttack(p),  5000.0F);
 			});
 			context.waitTicks(4);
 			server.runOnServer(s -> {

@@ -334,7 +334,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					z.setNoAi(true);
 					level.addFreshEntity(z);
 					attacker[0] = z;
-					dog.hurtServer(level, level.damageSources().mobAttack(z), 4.0F);
+					dog.hurt( level.damageSources().mobAttack(z),  4.0F);
 					long pauseTicks = dog.hitPauseUntil() - server.overworld().getGameTime();
 					check(dog.isHitPaused() && pauseTicks >= 40 && pauseTicks <= 60,
 						"Non-ally hit pauses Cinnamon for 2-3 seconds (" + pauseTicks + " ticks)");

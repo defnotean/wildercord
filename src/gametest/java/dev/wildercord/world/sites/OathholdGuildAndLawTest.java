@@ -334,7 +334,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				Entity victim = l.getEntity(targetCitizenId);
 				check(victim instanceof OathholdCitizen, "Target citizen missing for crime check");
-				victim.hurtServer(l, l.damageSources().playerAttack(p), 2.0F);
+				victim.hurt( l.damageSources().playerAttack(p),  2.0F);
 				check(OathholdLaw.isWanted(p), "Striking an Oathhold citizen in Survival must mark player Wanted");
 				check(OathholdLaw.bountyOf(p) >= OathholdLawRules.CrimeKind.ASSAULT.bountyEmeralds,
 					"Assault must assign >= 20 Emerald bounty, got " + OathholdLaw.bountyOf(p));
@@ -457,7 +457,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 					m -> m.getTags().contains(OathholdLaw.ARENA_DUELIST_TAG) && m.getTags().contains(cTag));
 				check(duelists.size() == 1, "Expected 1 active Arena Duelist, found " + duelists.size());
 				Mob duelist = duelists.getFirst();
-				duelist.hurtServer(l, l.damageSources().playerAttack(p), 500.0F);
+				duelist.hurt( l.damageSources().playerAttack(p),  500.0F);
 			});
 			context.waitTicks(4);
 

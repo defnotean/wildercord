@@ -145,7 +145,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 		if (level() instanceof ServerLevel server) {
 			boolean wet = target.isInWaterOrRain() || target.isInWater();
 			float dmg = wet ? OceanRules.HARPOON_SUBMERGED_BONUS_DAMAGE : OceanRules.HARPOON_RANGED_DAMAGE;
-			target.hurtServer(server, damageSources().thrown(this, owner), dmg);
+			target.hurt( damageSources().thrown(this, owner),  dmg);
 			dealtDamage = true;
 
 			if (target instanceof LivingEntity victim && owner != null && !BossDamage.boss(victim)) {

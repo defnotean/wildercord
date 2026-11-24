@@ -199,7 +199,7 @@ public class Cinderfox extends TamableAnimal {
 	public boolean doHurtTarget(ServerLevel level, Entity target) {
 		boolean weak = weakToFire(target);
 		float bite = WildlifeRules.sparkBite((float) getAttributeValue(Attributes.ATTACK_DAMAGE), weak);
-		boolean hit = target.hurtServer(level, damageSources().mobAttack(this), bite);
+		boolean hit = target.hurt( damageSources().mobAttack(this),  bite);
 		if (hit) {
 			setLastHurtMob(target);
 			// A shower of sparks off its tail, and on a creature weak to fire, the embers catch.

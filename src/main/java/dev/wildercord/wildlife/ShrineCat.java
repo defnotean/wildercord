@@ -391,7 +391,7 @@ public class ShrineCat extends TamableAnimal {
 					setDeltaMovement(leap.normalize().scale(0.75).add(0, 0.28, 0));
 				}
 				if (distanceToSqr(challenger) <= 25.0) {
-					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
+					challenger.hurt( damageSources().mobAttack(this),  dmg);
 					challenger.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1, false, true));
 				}
 			}
@@ -400,7 +400,7 @@ public class ShrineCat extends TamableAnimal {
 				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.4, getZ(), 20, 1.8, 0.3, 1.8, 0.04);
 				level.sendParticles(ParticleTypes.LAVA, getX(), getY() + 0.5, getZ(), 8, 1.2, 0.2, 1.2, 0.02);
 				if (distanceToSqr(challenger) <= 25.0) {
-					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
+					challenger.hurt( damageSources().mobAttack(this),  dmg);
 					challenger.setRemainingFireTicks(60);
 					Vec3 push = challenger.position().subtract(position()).multiply(1, 0, 1);
 					if (push.lengthSqr() > 0.01) {
@@ -417,7 +417,7 @@ public class ShrineCat extends TamableAnimal {
 				addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 60, 0, true, false));
 				addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 60, 0, true, false));
 				if (distanceToSqr(challenger) <= 28.0) {
-					challenger.hurtServer(level, damageSources().indirectMagic(this, this), dmg);
+					challenger.hurt( damageSources().indirectMagic(this, this),  dmg);
 					challenger.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0, false, true));
 					Vec3 away = challenger.position().subtract(position()).multiply(1, 0, 1);
 					if (away.lengthSqr() > 0.01) {
@@ -439,7 +439,7 @@ public class ShrineCat extends TamableAnimal {
 					teleportTo(behind.x, dst.getY(), behind.z);
 				}
 				if (distanceToSqr(challenger) <= 20.0) {
-					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
+					challenger.hurt( damageSources().mobAttack(this),  dmg);
 					challenger.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, true));
 				}
 			}
@@ -495,7 +495,7 @@ public class ShrineCat extends TamableAnimal {
 	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 		if (source.is(DamageTypes.GENERIC_KILL)) {
 			bossBar.removeAllPlayers();
-			return super.hurtServer(level, source, amount);
+			return super.hurt( source,  amount);
 		}
 		if (source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN)) {
 			return false;
@@ -552,11 +552,11 @@ public class ShrineCat extends TamableAnimal {
 					summonReinforcements(level);
 				}
 			}
-			boolean hit = super.hurtServer(level, source, amount);
+			boolean hit = super.hurt( source,  amount);
 			bossBar.setProgress(Math.max(0.0F, Math.min(1.0F, getHealth() / getMaxHealth())));
 			return hit;
 		}
-		return super.hurtServer(level, source, amount);
+		return super.hurt( source,  amount);
 	}
 
 	private void yieldInTrial(ServerLevel level) {
@@ -652,7 +652,7 @@ public class ShrineCat extends TamableAnimal {
 				if (foe != null && foe.isAlive() && foe.distanceToSqr(this) <= 36.0 && Targets.canHarm(owner, foe)) {
 					triggerAction();
 					foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 1, false, true));
-					foe.hurtServer(level, damageSources().mobAttack(this), 3.0F);
+					foe.hurt( damageSources().mobAttack(this),  3.0F);
 					level.sendParticles(ParticleTypes.SNOWFLAKE, foe.getX(), foe.getEyeY(), foe.getZ(), 8, 0.3, 0.3, 0.3, 0.02);
 				}
 			}
@@ -669,7 +669,7 @@ public class ShrineCat extends TamableAnimal {
 						|| mob.getTarget() == owner || mob.getTarget() == this;
 					if (hostile && Targets.canHarm(owner, mob)) {
 						mob.setRemainingFireTicks(60);
-						mob.hurtServer(level, damageSources().indirectMagic(this, owner), 4.0F);
+						mob.hurt( damageSources().indirectMagic(this, owner),  4.0F);
 						level.sendParticles(ParticleTypes.FLAME, mob.getX(), mob.getY() + 0.9, mob.getZ(), 10, 0.3, 0.3, 0.3, 0.03);
 						break;
 					}
@@ -694,7 +694,7 @@ public class ShrineCat extends TamableAnimal {
 						Vec3 push = away.normalize().scale(0.55);
 						mob.push(push.x, 0.22, push.z);
 					}
-					mob.hurtServer(level, owner instanceof Player pl ? damageSources().playerAttack(pl) : damageSources().mobAttack(this), 3.5F);
+					mob.hurt( owner instanceof Player pl ? damageSources().playerAttack(pl) : damageSources().mobAttack(this),  3.5F);
 				}
 			}
 			case KURO -> {
@@ -706,7 +706,7 @@ public class ShrineCat extends TamableAnimal {
 				LivingEntity prey = owner.getLastHurtMob();
 				if (prey != null && prey.isAlive() && prey.distanceToSqr(this) <= 64.0 && Targets.canHarm(owner, prey)) {
 					triggerAction();
-					prey.hurtServer(level, damageSources().mobAttack(this), 4.0F);
+					prey.hurt( damageSources().mobAttack(this),  4.0F);
 					level.sendParticles(ParticleTypes.SMOKE, prey.getX(), prey.getY() + 0.8, prey.getZ(), 8, 0.3, 0.3, 0.3, 0.03);
 				}
 			}

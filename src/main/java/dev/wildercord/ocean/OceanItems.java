@@ -170,7 +170,7 @@ public final class OceanItems {
 
 	private static Item register(String id, Function<Item.Properties, Item> factory) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id));
-		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().setId(key)));
+		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties()));
 	}
 
 	public static int wornSuitPieces(LivingEntity entity) {
@@ -401,7 +401,7 @@ public final class OceanItems {
 					float dmg = (wetCaster || target.isInWaterOrRain())
 						? OceanRules.GLAIVE_SLASH_WET_DAMAGE
 						: OceanRules.GLAIVE_SLASH_DAMAGE;
-					target.hurtServer(server, server.damageSources().playerAttack(player), dmg);
+					target.hurt( server.damageSources().playerAttack(player),  dmg);
 					Vec3 push = target.position().subtract(player.position()).normalize().scale(0.85);
 					target.push(push.x, 0.25, push.z);
 					hits++;

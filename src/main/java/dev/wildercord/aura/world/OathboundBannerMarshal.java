@@ -557,7 +557,7 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 			return false;
 		}
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-			return super.hurtServer(level, source, amount);
+			return super.hurt( source,  amount);
 		}
 
 		boolean unblockable = source.is(DamageTypeTags.BYPASSES_SHIELD) || source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC);
@@ -573,14 +573,14 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 				&& OathboundBannerMarshalRules.axeBreaksGuard(m, el, t, countered, true, getYRot(), dx, dz)) {
 			Sigils.flash(level, chestPos(), 0xFFFFD048, 1.8F);
 			startMove(level, OathboundBannerMarshalRules.STAGGERED, null);
-			return super.hurtServer(level, source, amount * 1.15F);
+			return super.hurt( source,  amount * 1.15F);
 		}
 
 		boolean guarded = !unblockable && OathboundBannerMarshalRules.guardActive(m, el, t, countered)
 			&& OathboundBannerMarshalRules.blocksFrontal(getYRot(), dx, dz);
 		double mult = OathboundBannerMarshalRules.damageMultiplier(m, el, t, countered, unblockable, getYRot(), dx, dz);
 		float scaled = (float) Math.max(guarded ? 1.0 : 0.0, amount * mult);
-		boolean applied = super.hurtServer(level, source, scaled);
+		boolean applied = super.hurt( source,  scaled);
 
 		if (applied && guarded) {
 			Fx.sound(level, chestPos(), WildercordSounds.SHIELD_PARRY, 1.2F, 1.0F);

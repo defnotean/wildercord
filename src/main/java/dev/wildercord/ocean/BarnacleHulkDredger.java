@@ -133,7 +133,7 @@ public class BarnacleHulkDredger extends Monster {
 		for (Player p : server.getEntitiesOfClass(Player.class, getBoundingBox().inflate(OceanRules.BARNACLE_HULK_SLAM_RADIUS))) {
 			if (!p.isAlive() || p.isSpectator()) continue;
 			float dmg = 15.0f * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(p));
-			p.hurtServer(server, server.damageSources().mobAttack(this), dmg);
+			p.hurt( server.damageSources().mobAttack(this),  dmg);
 			double[] pull = OceanRules.computePullVector(p.getX(), p.getY(), p.getZ(), getX(), getY(), getZ(), 0.75);
 			p.push(pull[0], 0.22, pull[2]);
 		}

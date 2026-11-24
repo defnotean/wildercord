@@ -115,7 +115,7 @@ public class DreadNautilusSentinel extends Monster {
 				playSound(SoundEvents.SHIELD_BLOCK, 0.9f, 0.8f);
 			}
 		}
-		return super.hurtServer(server, source, amount);
+		return super.hurt( source,  amount);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class DreadNautilusSentinel extends Monster {
 			}
 			if (laser % 10 == 0) {
 				float dmg = OceanRules.DREAD_NAUTILUS_LASER_DAMAGE * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(target));
-				target.hurtServer(server, server.damageSources().indirectMagic(this, this), dmg);
+				target.hurt( server.damageSources().indirectMagic(this, this),  dmg);
 			}
 		}
 

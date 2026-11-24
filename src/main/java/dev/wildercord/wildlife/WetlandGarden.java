@@ -36,10 +36,10 @@ import dev.wildercord.compat.McAttachments;
 /** Plants, pollinators and a field instrument. No ticking blocks, resource cache or forced chunk loads. */
 public final class WetlandGarden {
  private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("moonreed"));
- public static final MoonreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new MoonreedBlock(BlockBehaviour.Properties.of().setId(KEY).noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS).lightLevel(s -> s.getValue(MoonreedBlock.AGE)==2?6:0)));
+ public static final MoonreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new MoonreedBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS).lightLevel(s -> s.getValue(MoonreedBlock.AGE)==2?6:0)));
  private static ResourceKey<Item> key(String id) {return ResourceKey.create(Registries.ITEM,Wildercord.id(id));}
- public static final Item CUTTING=Registry.register(BuiltInRegistries.ITEM,key("moonreed"),new BlockItem(REED,new Item.Properties().setId(key("moonreed")).useBlockDescriptionPrefix()));
- public static final Item FLOSS=Registry.register(BuiltInRegistries.ITEM,key("moonreed_floss"),new AuraWorld.Lore("moonreed_floss",new Item.Properties().setId(key("moonreed_floss"))));
+ public static final Item CUTTING=Registry.register(BuiltInRegistries.ITEM,key("moonreed"),new BlockItem(REED,new Item.Properties().useBlockDescriptionPrefix()));
+ public static final Item FLOSS=Registry.register(BuiltInRegistries.ITEM,key("moonreed_floss"),new AuraWorld.Lore("moonreed_floss",new Item.Properties()));
  public static final AttachmentType<Long> LENS_READY=McAttachments.create(Wildercord.id("dewglass_lens_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
  private static boolean begin(ServerPlayer p,InteractionHand hand) {
@@ -47,7 +47,7 @@ public final class WetlandGarden {
   var stack=p.getItemInHand(hand);long now=clock(p);if(now<p.getAttachedOrElse(LENS_READY,0L))return false;
   p.setAttached(LENS_READY,now+100);p.getCooldowns().addCooldown(stack,100);stack.hurtAndBreak(1,p,dev.wildercord.compat.McHands.slot(hand));Feels.sound(((ServerLevel) p.level()),p.position(),"wetland_lens_focus",.4F,1);return true;
  }
- public static final Item LENS=Registry.register(BuiltInRegistries.ITEM,key("dewglass_lens"),new AuraWorld.Lore("dewglass_lens",new Item.Properties().setId(key("dewglass_lens")).durability(96)) {
+ public static final Item LENS=Registry.register(BuiltInRegistries.ITEM,key("dewglass_lens"),new AuraWorld.Lore("dewglass_lens",new Item.Properties().durability(96)) {
   @Override public InteractionResult useOn(UseOnContext c) {
    if(!c.getLevel().getBlockState(c.getClickedPos()).is(REED))return super.useOn(c);
    if(c.getPlayer() instanceof ServerPlayer p && begin(p,c.getHand()))inspect(p,c.getClickedPos());

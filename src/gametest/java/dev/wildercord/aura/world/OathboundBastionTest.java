@@ -292,14 +292,14 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.setNoAi(true);
 				b.startMove(l, OathboundBastionRules.PHALANX_BRACE, p);
-				b.hurtServer(l, l.damageSources().playerAttack(p), 20.0F);
+				b.hurt( l.damageSources().playerAttack(p),  20.0F);
 				float nonAxeLost = b.getMaxHealth() - b.getHealth();
 				check(nonAxeLost < 6.0F, "Frontal non-axe strike heavily blocked by Phalanx Brace (lost " + nonAxeLost + ")");
 
 				b.setHealth(b.getMaxHealth());
 				McEntities.clearHurtCooldown(b);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
-				b.hurtServer(l, l.damageSources().playerAttack(p), 12.0F);
+				b.hurt( l.damageSources().playerAttack(p),  12.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 				check(b.move() == OathboundBastionRules.STAGGERED, "Frontal axe blow must shatter Phalanx Brace into STAGGERED");
 			});
@@ -377,7 +377,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 
 				p.setGameMode(GameType.CREATIVE);
 				McEntities.clearHurtCooldown(b);
-				b.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
+				b.hurt( l.damageSources().playerAttack(p),  5000.0F);
 			});
 			context.waitTicks(4);
 			server.runOnServer(s -> {

@@ -41,7 +41,7 @@ public final class OathholdContent {
 	public static final Item CITIZEN_SPAWN_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		CITIZEN_EGG_KEY,
-		new SpawnEggItem(CITIZEN, new Item.Properties().setId(CITIZEN_EGG_KEY))
+		new SpawnEggItem(CITIZEN, new Item.Properties())
 	);
 
 	private static final ResourceKey<net.minecraft.world.level.block.Block> BOARD_KEY =
@@ -55,7 +55,7 @@ public final class OathholdContent {
 			.strength(-1.0F, 3600000.0F)
 			.noOcclusion()
 			.noLootTable()
-			.setId(BOARD_KEY))
+			)
 	);
 
 	private static final ResourceKey<Item> BOARD_ITEM_KEY =
@@ -63,7 +63,7 @@ public final class OathholdContent {
 	public static final Item GUILD_REQUEST_BOARD_ITEM = Registry.register(
 		BuiltInRegistries.ITEM,
 		BOARD_ITEM_KEY,
-		new BlockItem(GUILD_REQUEST_BOARD, new Item.Properties().setId(BOARD_ITEM_KEY).useBlockDescriptionPrefix())
+		new BlockItem(GUILD_REQUEST_BOARD, new Item.Properties().useBlockDescriptionPrefix())
 	);
 
 	public static void init() {

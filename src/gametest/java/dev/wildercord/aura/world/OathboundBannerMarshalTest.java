@@ -326,7 +326,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				m.setTarget(p);
 				McEntities.clearHurtCooldown(m);
 				float hpBefore = m.getHealth();
-				m.hurtServer(level(s), level(s).damageSources().playerAttack(p), 10.0F);
+				m.hurt( level(s).damageSources().playerAttack(p),  10.0F);
 				float dealt = hpBefore - m.getHealth();
 				check(dealt <= 2.5F, "Expected Solar Aegis Guard frontal block <= 2.5, got " + dealt);
 				check(m.guardCountered(), "Expected Solar Aegis Guard counter-thrust to trigger");
@@ -349,13 +349,13 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
 				McEntities.clearHurtCooldown(m);
-				m.hurtServer(l, l.damageSources().playerAttack(p), 12.0F);
+				m.hurt( l.damageSources().playerAttack(p),  12.0F);
 				check(m.move() == OathboundBannerMarshalRules.STAGGERED,
 					"Diamond Axe hitting Solar Aegis Guard must shatter guard into STAGGERED");
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 				McEntities.clearHurtCooldown(m);
 				float hpBefore = m.getHealth();
-				m.hurtServer(l, l.damageSources().playerAttack(p), 10.0F);
+				m.hurt( l.damageSources().playerAttack(p),  10.0F);
 				float amplified = hpBefore - m.getHealth();
 				check(amplified >= 5.0F, "Staggered follow-up should deal amplified damage, dealt " + amplified);
 				m.setNoAi(false);
@@ -403,7 +403,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 
 				p.setGameMode(GameType.CREATIVE);
 				McEntities.clearHurtCooldown(m);
-				m.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
+				m.hurt( l.damageSources().playerAttack(p),  5000.0F);
 			});
 			context.waitTicks(4);
 			server.runOnServer(s -> {

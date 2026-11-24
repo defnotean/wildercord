@@ -26,7 +26,7 @@ public final class OceanBlocks {
 		BuiltInRegistries.BLOCK,
 		key("siren_pearl_lantern"),
 		new SirenPearlLanternBlock(BlockBehaviour.Properties.of()
-			.setId(key("siren_pearl_lantern"))
+			
 			.mapColor(MapColor.COLOR_MAGENTA)
 			.strength(2.0f, 6.0f)
 			.sound(SoundType.LANTERN)
@@ -38,7 +38,7 @@ public final class OceanBlocks {
 		BuiltInRegistries.BLOCK,
 		key("trench_anvil"),
 		new TrenchAnvilBlock(BlockBehaviour.Properties.of()
-			.setId(key("trench_anvil"))
+			
 			.mapColor(MapColor.COLOR_BLACK)
 			.strength(5.0f, 1200.0f)
 			.requiresCorrectToolForDrops()
@@ -51,7 +51,7 @@ public final class OceanBlocks {
 		BuiltInRegistries.BLOCK,
 		key("sovereign_altar"),
 		new SovereignAltarBlock(BlockBehaviour.Properties.of()
-			.setId(key("sovereign_altar"))
+			
 			.mapColor(MapColor.COLOR_CYAN)
 			.strength(50.0f, 1200.0f)
 			.requiresCorrectToolForDrops()

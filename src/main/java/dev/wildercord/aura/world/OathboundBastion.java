@@ -685,7 +685,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		if (damage <= 0 || source.is(DamageTypes.GENERIC_KILL)) {
-			return super.hurtServer(level, source, damage);
+			return super.hurt( source,  damage);
 		}
 		if (source.is(DamageTypes.IN_WALL)) {
 			return false;
@@ -713,7 +713,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 				MonsterMagic.tell(player, Component.translatable("message.wildercord.aura_world.guard_broken", getDisplayName()).withColor(0xFFD54A));
 			}
 			enterStagger(level, OathboundBastionRules.STAGGER_AXE_TICKS);
-			boolean brokenHit = super.hurtServer(level, source, damage);
+			boolean brokenHit = super.hurt( source,  damage);
 			if (brokenHit) {
 				level.sendParticles(ParticleTypes.CRIT, chestPos().x, chestPos().y, chestPos().z, 14, 0.5, 0.5, 0.5, 0.25);
 			}
@@ -726,7 +726,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 			sound(level, chestPos(), SoundEvents.SHIELD_BLOCK, 1.0F, 0.9F);
 			level.sendParticles(ParticleTypes.WAX_ON, chestPos().x, chestPos().y, chestPos().z, 6, 0.3, 0.4, 0.3, 0.05);
 		}
-		boolean hurt = super.hurtServer(level, source, scaled);
+		boolean hurt = super.hurt( source,  scaled);
 		if (hurt) {
 			long now = level.getGameTime();
 			recentDamage = (now <= recentDamageWindowEnd ? recentDamage : 0.0F) + scaled;

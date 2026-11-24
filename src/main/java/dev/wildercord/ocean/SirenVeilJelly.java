@@ -131,7 +131,7 @@ public class SirenVeilJelly extends Monster {
 		for (Player p : server.getEntitiesOfClass(Player.class, getBoundingBox().inflate(OceanRules.SIREN_JELLY_PULSE_RADIUS))) {
 			if (!p.isAlive() || p.isSpectator()) continue;
 			float dmg = 8.0f * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(p));
-			p.hurtServer(server, server.damageSources().indirectMagic(this, this), dmg);
+			p.hurt( server.damageSources().indirectMagic(this, this),  dmg);
 			p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
 		}
 	}
