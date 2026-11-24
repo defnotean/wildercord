@@ -647,7 +647,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	/** Final bite sink: a target admitted by an earlier AI tick can become protected in the meantime. */
 	@Override public boolean doHurtTarget(Entity target) {
 		return target instanceof LivingEntity living && target.level() == level && canAttack(living)
-			&& attackReady(getOwner()) && super.doHurtTarget(level, target);
+			&& attackReady(getOwner()) && super.doHurtTarget(target);
 	}
 
 	private boolean samePartyPlayer(Entity entity) {
