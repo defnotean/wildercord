@@ -214,6 +214,11 @@ def _mojang_named(path: Path) -> bool:
         return False
 
 
+def _version_dir(name: str, mc_version: str) -> bool:
+    """Exact loom version directory match: 1.21.1 must not pick up 1.21.10 or 1.21.11."""
+    return name == mc_version or name.startswith(mc_version + "-")
+
+
 def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
     if explicit_jars:
         return [Path(j) for j in explicit_jars if Path(j).exists()]
@@ -231,8 +236,8 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
         merged_dirs = sorted(mc_root.glob("minecraft-merged*"))
         merged_jars = []
         for mdir in merged_dirs:
-            for ver_dir in sorted(mdir.glob(f"{mc_version}*")):
-                if not ver_dir.is_dir():
+            for ver_dir in sorted(mdir.iterdir()):
+                if not ver_dir.is_dir() or not _version_dir(ver_dir.name, mc_version):
                     continue
                 for jar in sorted(ver_dir.glob("*.jar")):
                     if _valid_mc_jar(jar) and _mojang_named(jar):
@@ -248,7 +253,7 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
             if not _valid_mc_jar(jar) or not _mojang_named(jar):
                 continue
             if jar.name.startswith("minecraft-") and (
-                f"-{mc_version}" in jar.name or jar.parent.name.startswith(mc_version)
+                f"-{mc_version}-" in jar.name or _version_dir(jar.parent.name, mc_version)
             ):
                 project_jars.append(jar)
         if project_jars:
@@ -265,8 +270,8 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
             continue
         for prefix in ("minecraft-common*", "minecraft-clientonly*"):
             for pdir in sorted(mc_root.glob(prefix)):
-                for ver_dir in sorted(pdir.glob(f"{mc_version}*")):
-                    if not ver_dir.is_dir():
+                for ver_dir in sorted(pdir.iterdir()):
+                    if not ver_dir.is_dir() or not _version_dir(ver_dir.name, mc_version):
                         continue
                     for jar in sorted(ver_dir.glob("*.jar")):
                         if _valid_mc_jar(jar) and _mojang_named(jar) and jar not in candidates:
