@@ -120,7 +120,7 @@ public final class OathholdQuests {
 		}
 	}
 
-	public static final AttachmentType<AdventurerProfile> PROFILE = AttachmentRegistry.create(
+	public static final AttachmentType<AdventurerProfile> PROFILE = dev.wildercord.compat.McAttachments.create(
 		Wildercord.id("adventurer_profile"),
 		builder -> builder.initializer(() -> AdventurerProfile.EMPTY).persistent(AdventurerProfile.CODEC).copyOnDeath()
 	);

@@ -32,7 +32,7 @@ public final class CairnKeeperResident {
 	public static final int TALK_COOLDOWN = 100;
 	public static final List<String> LINES = List.of("greet", "windreed", "cairns", "cartographer");
 	public static final List<String> PROGRESS_LINES = List.of("four_lights", "watch_orders", "cairn_light", "light_return", "cartographer_return");
-	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("cairn_keeper_last_talk"));
+	private static final AttachmentType<Integer> LAST_TALK = dev.wildercord.compat.McAttachments.create(Wildercord.id("cairn_keeper_last_talk"));
 	private static final int SPEECH = 0xEDE3C8;
 
 	public static void init() {

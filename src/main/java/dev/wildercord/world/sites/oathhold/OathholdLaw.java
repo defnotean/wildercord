@@ -89,7 +89,7 @@ public final class OathholdLaw {
 		).apply(i, CrimeRecord::new));
 	}
 
-	public static final AttachmentType<CrimeRecord> CRIME = AttachmentRegistry.create(Wildercord.id("oathhold_crime"),
+	public static final AttachmentType<CrimeRecord> CRIME = dev.wildercord.compat.McAttachments.create(Wildercord.id("oathhold_crime"),
 		builder -> builder.initializer(() -> CrimeRecord.CLEAN).persistent(CrimeRecord.CODEC));
 
 	private static final Codec<OathholdOrigin.Origin> ORIGIN_CODEC = RecordCodecBuilder.create(i -> i.group(
