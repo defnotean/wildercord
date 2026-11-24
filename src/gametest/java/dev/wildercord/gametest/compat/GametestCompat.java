@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.VecDeltaCodec;
@@ -167,16 +166,7 @@ public final class GametestCompat {
 	}
 
 	/** 1.21.4 carries no extents on the item render state: the display transform over the unit cube stands in. */
-	public static void visitItemExtents(dev.wildercord.client.compat.vanilla.ItemStackRenderState item,
-			java.util.function.Consumer<org.joml.Vector3f> point) {
-		var pose = new com.mojang.blaze3d.vertex.PoseStack();
-		item.transform().apply(false, pose);
-		var m = pose.last().pose();
-		for (int corner = 0; corner < 8; corner++) {
-			point.accept(m.transformPosition(new org.joml.Vector3f((corner & 1) != 0 ? 1F : 0F,
-				(corner & 2) != 0 ? 1F : 0F, (corner & 4) != 0 ? 1F : 0F)));
-		}
-	}
+	
 
 	public static boolean biomeHasMob(Biome biome, MobCategory category, EntityType<?> type) {
 		return biome.getMobSettings().getMobs(category).unwrap().stream().anyMatch(entry -> entry.type == type);
@@ -205,8 +195,11 @@ public final class GametestCompat {
 			cs.randomState(), level.getStructureManager(), level.getSeed(), chunk, level, biome -> true);
 	}
 
-	public static Vec3 entityPositionSyncTarget(ClientboundEntityPositionSyncPacket sync) {
-		return sync.values().position();
+	public static Vec3 entityPositionSyncTarget(Object sync) {
+		if (sync instanceof net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket teleport) {
+			return new Vec3(teleport.getX(), teleport.getY(), teleport.getZ());
+		}
+		return Vec3.ZERO;
 	}
 
 	public static Vec3 moveEntityDeltaTarget(ClientboundMoveEntityPacket move, Vec3 base) {

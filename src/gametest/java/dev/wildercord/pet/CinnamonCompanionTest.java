@@ -18,7 +18,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.inventory.ChestMenu;
