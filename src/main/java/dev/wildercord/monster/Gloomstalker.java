@@ -151,7 +151,7 @@ public class Gloomstalker extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (giant()) {
 			// A giant's fight runs it, veil and all.

@@ -56,7 +56,7 @@ public final class ReedbackCrab extends PathfinderMob {
   getNavigation().stop();setTarget(null);pose(CALM,0);sound("calm");return true;
  }
  @Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
   super.customServerAiStep();if(home==null)home=blockPosition();
   if(level().getDifficulty()==Difficulty.PEACEFUL || !dev.wildercord.config.Config.get().wildlife().enabled()) {setTarget(null);pose(IDLE,0);return;}

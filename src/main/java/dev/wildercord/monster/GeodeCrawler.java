@@ -128,7 +128,7 @@ public class GeodeCrawler extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level().getGameTime();
 		LivingEntity target = getTarget();

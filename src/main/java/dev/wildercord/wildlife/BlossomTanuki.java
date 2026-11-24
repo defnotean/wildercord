@@ -138,7 +138,7 @@ public class BlossomTanuki extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level().getGameTime();
 		switch (form()) {

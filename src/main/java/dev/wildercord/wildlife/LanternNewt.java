@@ -92,7 +92,7 @@ public final class LanternNewt extends PathfinderMob {
 		responseReady=l.getGameTime()+WetlandRules.RESPONSE_REST;entityData.set(RESPONSE,l.getGameTime()+80);Feels.sound(l,position(),"wetland_newt_answer",.65F,1);return true;
 	}
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level()))) && tickCount%20==0)
 			level().sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,getX(),getY()+.3,getZ(),2,.16,.05,.16,0);

@@ -57,7 +57,7 @@ public final class RootmoltStrider extends Monster {
  @Override public void remove(RemovalReason reason) {release();super.remove(reason);}
  @Override public void tick() {super.tick();if(level().isClientSide()) {warnO=warn;rakeO=rake;feedO=feed;warn=WildlifeRules.approach(warn,pose()==WARNING?1:0,.09F);rake=WildlifeRules.approach(rake,pose()==RAKING || pose()==HOLDING?1:0,.2F);feed=WildlifeRules.approach(feed,pose()==BROWSING?1:0,.08F);}}
  @Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
   super.customServerAiStep();if(committed())holdStill();
   if(level().getDifficulty()==Difficulty.PEACEFUL) {release();setTarget(null);pose(IDLE,0);return;}

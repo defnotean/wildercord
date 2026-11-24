@@ -140,7 +140,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level().getGameTime();
 		int left = hideLeft();

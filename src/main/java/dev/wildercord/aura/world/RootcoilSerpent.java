@@ -170,7 +170,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!clods.isEmpty())fly(level());
 		if(!roots.isEmpty())grow(level());

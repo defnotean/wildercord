@@ -67,7 +67,7 @@ public class KarakuriSentinel extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		LivingEntity target = getTarget();
 		if (target == null || !target.isAlive()) {

@@ -64,7 +64,7 @@ public class PaperLanternSpirit extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (!onGround() && getDeltaMovement().y < -0.06) {
 			setDeltaMovement(getDeltaMovement().multiply(1.0, 0.65, 1.0));

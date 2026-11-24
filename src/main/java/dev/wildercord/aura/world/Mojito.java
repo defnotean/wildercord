@@ -216,7 +216,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+16,b.getZ()+20));}
 		// Left alone long enough (his prey died and went home, say) and he has curled up again in the meantime.

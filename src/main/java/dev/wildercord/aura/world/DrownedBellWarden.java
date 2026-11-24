@@ -149,7 +149,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-11,b.getY()-1,b.getZ()-33,b.getX()+11,b.getY()+13,b.getZ()+13));}
 		// Left alone long enough (its prey died and went home, say) and it has knelt again in the meantime.

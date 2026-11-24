@@ -30,7 +30,7 @@ public abstract class EliteMonster extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
 		super.customServerAiStep();
 		if (getTarget() == null || !getTarget().isAlive()) {

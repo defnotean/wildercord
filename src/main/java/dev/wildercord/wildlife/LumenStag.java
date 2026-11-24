@@ -169,7 +169,7 @@ public class LumenStag extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (fright > 0) {
 			fright--;

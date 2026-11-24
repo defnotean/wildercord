@@ -96,7 +96,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 		bar.removeAllPlayers(); setHealth(getMaxHealth());
 	}
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
 		super.customServerAiStep(); if (!isAlive()) return; hold();
 		if (bell != null && level().getBlockEntity(bell) instanceof CrossingBellEntity crossing && crossing.slain()) { discard(); return; }

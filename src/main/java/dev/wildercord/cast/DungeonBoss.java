@@ -328,7 +328,7 @@ public abstract class DungeonBoss extends Monster {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level().getGameTime();
 		bossEvent.setProgress(getHealth() / getMaxHealth());

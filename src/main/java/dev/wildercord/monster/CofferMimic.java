@@ -297,7 +297,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level().getGameTime();
 		if (home == null) {

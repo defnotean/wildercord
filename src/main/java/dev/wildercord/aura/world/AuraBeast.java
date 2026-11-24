@@ -153,7 +153,7 @@ public abstract class AuraBeast extends PathfinderMob {
 	}
 	protected void beginAttack() { struck.clear();attackEpoch++; }
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
 		super.customServerAiStep();
 		if(home==null) home=blockPosition();

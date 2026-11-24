@@ -139,7 +139,7 @@ public class SunwatchMeerkat extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		int pose = pose(), left = poseLeft();
 		if (pose == MeerkatRules.HIDE) {

@@ -212,7 +212,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		}
 	}
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-16,b.getY()-2,b.getZ()-16,b.getX()+16,b.getY()+14,b.getZ()+16),b.above(5),List.of());}
 		// Left alone long enough (its prey died and went home, say) and it has gone back down in the meantime.

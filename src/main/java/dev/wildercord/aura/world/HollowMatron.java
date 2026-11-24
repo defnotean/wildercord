@@ -198,7 +198,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,b.getY(),b.getY()+5,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+18,b.getZ()+20));}
 		// Left alone long enough (her prey died and went home, say) and she has climbed back up in the meantime.

@@ -82,7 +82,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		bar.setColor(BossEvent.BossBarColor.WHITE);
 	}
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
 		super.customServerAiStep();if(!isAlive())return;
 		if(home==null)home=blockPosition();

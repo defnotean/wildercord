@@ -118,7 +118,7 @@ public class ThistleHedgehog extends TamableAnimal {
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level().getGameTime();
 		int left = curlLeft();

@@ -130,7 +130,7 @@ public final class KilnWidow extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
-		ServerLevel level() = (ServerLevel) level();
+		ServerLevel level = (ServerLevel) level();
 
 		super.customServerAiStep();
 		if (!isAlive()) return;
