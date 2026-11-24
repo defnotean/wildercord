@@ -92,11 +92,11 @@ public final class SovereignAltarBlock extends Block implements EntityBlock, Sim
 		if (level.getBlockEntity(pos) instanceof SovereignAltarBlockEntity altar) {
 			return altar.interact(player, ItemStack.EMPTY);
 		}
-		return InteractionResult.SUCCESS;
+		return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
-	protected InteractionResult useItemOn(
+	protected net.minecraft.world.item.ItemInteractionResult useItemOn(
 		ItemStack stack,
 		BlockState state,
 		Level level,
@@ -108,6 +108,6 @@ public final class SovereignAltarBlock extends Block implements EntityBlock, Sim
 		if (level.getBlockEntity(pos) instanceof SovereignAltarBlockEntity altar) {
 			return altar.interact(player, stack);
 		}
-		return InteractionResult.SUCCESS;
+		return net.minecraft.world.item.ItemInteractionResult.SUCCESS;
 	}
 }

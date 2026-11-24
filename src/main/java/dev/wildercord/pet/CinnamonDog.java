@@ -565,7 +565,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		if (target == null && getOwner() instanceof ServerPlayer owner && CinnamonCompanion.mayActWith(owner, this)) {
 			target = owner;
 		}
-		if (target != null && target.level() == level && distanceToSqr(target) <= 64.0D * 64.0D
+		if (target != null && target.level() == level() && distanceToSqr(target) <= 64.0D * 64.0D
 			&& ((target.getY() - getY() > 2.2D) || (!target.onGround() && target.getY() > getY() + 1.8D) || (flying && !onGround()))) {
 			flying = true;
 			setNoGravity(true);
@@ -646,7 +646,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	/** Final bite sink: a target admitted by an earlier AI tick can become protected in the meantime. */
 	@Override public boolean doHurtTarget(Entity target) {
-		return target instanceof LivingEntity living && target.level() == level && canAttack(living)
+		return target instanceof LivingEntity living && target.level() == level() && canAttack(living)
 			&& attackReady(getOwner()) && super.doHurtTarget(target);
 	}
 
@@ -732,7 +732,8 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	}
 
 	private boolean isClimbInput(Player driver) {
-		return ((dev.wildercord.mixin.LivingEntityJumpingAccessor) driver).wildercord$isJumping() || (driver instanceof ServerPlayer sp && sp.getLastClientInput().jump());
+		return ((dev.wildercord.mixin.LivingEntityJumpingAccessor) driver).wildercord$isJumping()
+			|| dev.wildercord.compat.McPlayerInput.of(driver).jump();
 	}
 
 	@Override
@@ -741,7 +742,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		float strafe = driver.xxa;
 		float rawForward = driver.zza;
 		if (strafe == 0.0F && rawForward == 0.0F && driver instanceof ServerPlayer sp) {
-			var input = sp.getLastClientInput();
+			var input = dev.wildercord.compat.McPlayerInput.of(sp);
 			rawForward = (input.forward() ? 1.0F : 0.0F) - (input.backward() ? 1.0F : 0.0F);
 			strafe = (input.left() ? 1.0F : 0.0F) - (input.right() ? 1.0F : 0.0F);
 		}
@@ -822,7 +823,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 			bow = false;
 			player.setAttached(CinnamonState.BOW, false);
 			ItemStack oldBow = new ItemStack(CinnamonContent.BOW);
-			if (!player.getInventory().add(oldBow) && level() instanceof ServerLevel sl) spawnAtLocation(sl, oldBow);
+			if (!player.getInventory().add(oldBow) && level() instanceof ServerLevel sl) spawnAtLocation(oldBow.getItem(), 1);
 		}
 		grandBow = true;
 		settled = 0;
@@ -888,7 +889,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 					grandBow = false;
 					applyGrowth(growthScale);
 					ItemStack ribbon = new ItemStack(CinnamonContent.GRAND_BOW);
-					if (!player.getInventory().add(ribbon)) spawnAtLocation((ServerLevel) level(), ribbon);
+					if (!player.getInventory().add(ribbon)) spawnAtLocation(ribbon.getItem(), 1);
 					changed();
 					level().playSound(null, getX(), getY(), getZ(), SoundEvents.SHEEP_SHEAR, SoundSource.NEUTRAL, 0.8F, 1.1F);
 					player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.grand_bow_off"), true);
@@ -897,7 +898,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 				if (bow) {
 					wearBow(player, false);
 					ItemStack ribbon = new ItemStack(CinnamonContent.BOW);
-					if (!player.getInventory().add(ribbon)) spawnAtLocation((ServerLevel) level(), ribbon);
+					if (!player.getInventory().add(ribbon)) spawnAtLocation(ribbon.getItem(), 1);
 					player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.bow_off"), true);
 					return InteractionResult.SUCCESS;
 				}
@@ -908,7 +909,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 						saddlebags.clearContent();
 					}
 					ItemStack gear = new ItemStack(CinnamonContent.HARNESS);
-					if (!player.getInventory().add(gear)) spawnAtLocation((ServerLevel) level(), gear);
+					if (!player.getInventory().add(gear)) spawnAtLocation(gear.getItem(), 1);
 					changed();
 					level().playSound(null, getX(), getY(), getZ(), SoundEvents.SHEEP_SHEAR, SoundSource.NEUTRAL, 0.8F, 1.0F);
 					player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.harness_off"), true);
