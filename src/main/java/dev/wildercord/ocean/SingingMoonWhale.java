@@ -120,8 +120,8 @@ public class SingingMoonWhale extends PathfinderMob {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (ambergrisCooldown > 0) ambergrisCooldown--;
 
 		if (songActiveTicks > 0) {

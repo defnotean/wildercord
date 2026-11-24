@@ -119,8 +119,8 @@ public class DreadNautilusSentinel extends Monster {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (cooldown > 0) cooldown--;
 
 		LivingEntity target = getTarget();

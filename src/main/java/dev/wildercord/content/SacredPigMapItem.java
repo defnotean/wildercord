@@ -31,22 +31,22 @@ public class SacredPigMapItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!(player instanceof ServerPlayer sp)) return InteractionResult.SUCCESS;
+		if (!(player instanceof ServerPlayer sp)) return net.minecraft.world.InteractionResultHolder.success(stack);
 		ServerLevel sl = (ServerLevel) sp.level();
 		BlockPos here = sp.blockPosition();
 		BlockPos found = sl.findNearestMapStructure(SACRED_PIG_VILLAGE, here, 100, false);
 		if (found == null) {
 			sp.sendSystemMessage(Component.translatable("message.wildercord.sacred_pig_map.lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-			return InteractionResult.FAIL;
+			return net.minecraft.world.InteractionResultHolder.fail(stack);
 		}
 		SacredPigMap coords = new SacredPigMap(found.getX(), found.getZ());
 		stack.set(WildercordComponents.SACRED_PIG_MAP, coords);
 		sl.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 0.9F);
 		sp.sendSystemMessage(Component.translatable("message.wildercord.sacred_pig_map.found", coords.x(), coords.z()).withColor(0xD8C08A).withStyle(ChatFormatting.ITALIC));
 		sp.sendSystemMessage(Component.translatable("message.wildercord.sacred_pig_map.lore").withColor(0xA8C49A).withStyle(ChatFormatting.ITALIC));
-		return InteractionResult.SUCCESS;
+		return net.minecraft.world.InteractionResultHolder.success(stack);
 	}
 
 	@Override

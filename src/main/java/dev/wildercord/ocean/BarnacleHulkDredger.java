@@ -105,8 +105,8 @@ public class BarnacleHulkDredger extends Monster {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (slamCooldown > 0) slamCooldown--;
 
 		int slam = getSlamTicks();

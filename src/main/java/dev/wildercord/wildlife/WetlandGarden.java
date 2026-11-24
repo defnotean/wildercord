@@ -74,7 +74,7 @@ public final class WetlandGarden {
  public static void init() {
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server) -> {
    var p=handler.player;long left=p.getAttachedOrElse(LENS_READY,0L)-clock(p);
-   if(left>0)p.getCooldowns().addCooldown(new ItemStack(LENS),(int)Math.min(left,100));
+   if(left>0)p.getCooldowns().addCooldown(LENS,(int)Math.min(left,100));
   });
   dev.wildercord.compat.McWorldgen.registerFeature("moonreed_patch", new MoonreedFeature());
   BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("moonreed_patch")));

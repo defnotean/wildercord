@@ -167,8 +167,8 @@ public class LumiSeahorse extends AbstractHorse {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (dashCooldown > 0) dashCooldown--;
 		int dt = getDashTicks();
 		if (dt > 0) entityData.set(DASH_TICKS, dt - 1);

@@ -212,8 +212,8 @@ public class PearlPup extends TamableAnimal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (!isTame() || isOrderedToSit()) {
 			entityData.set(SNIFFING, false);
 			return;

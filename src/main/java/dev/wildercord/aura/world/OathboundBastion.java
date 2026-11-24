@@ -267,8 +267,8 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (!isAlive()) {
 			return;
 		}

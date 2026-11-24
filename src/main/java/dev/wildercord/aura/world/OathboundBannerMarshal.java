@@ -253,8 +253,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 
 		if (!empowered() && OathboundBannerMarshalRules.empowered(getHealth(), getMaxHealth())) {
 			entityData.set(EMPOWERED, true);

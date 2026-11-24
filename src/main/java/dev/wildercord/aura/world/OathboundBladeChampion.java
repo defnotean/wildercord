@@ -255,8 +255,8 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 
 		if (!empowered() && OathboundBladeChampionRules.empowered(getHealth(), getMaxHealth())) {
 			entityData.set(EMPOWERED, true);
@@ -543,7 +543,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		if (player.isUsingItem()) {
 			player.stopUsingItem();
 		}
-		player.getCooldowns().addCooldown(new ItemStack(Items.SHIELD), OathboundBladeChampionRules.POMMEL_SHIELD_DISABLE_TICKS);
+		player.getCooldowns().addCooldown(Items.SHIELD, OathboundBladeChampionRules.POMMEL_SHIELD_DISABLE_TICKS);
 		if (blocking) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(),
 				SoundEvents.SHIELD_BREAK, SoundSource.PLAYERS, 1.2F, 0.9F);

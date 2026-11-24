@@ -147,8 +147,8 @@ public class ThalassorBoss extends Monster {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		bossEvent.setProgress(getHealth() / getMaxHealth());
 
 		if (arenaCenter != null && position().distanceToSqr(Vec3.atCenterOf(arenaCenter)) > 64.0 * 64.0) {

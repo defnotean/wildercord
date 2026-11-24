@@ -121,8 +121,8 @@ public class WhiteRabbit extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (dived || !isAlive()) {
 			return;
 		}

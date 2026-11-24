@@ -99,8 +99,8 @@ public class SirenVeilJelly extends Monster {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (pulseCooldown > 0) pulseCooldown--;
 
 		int pulse = getPulseTicks();
