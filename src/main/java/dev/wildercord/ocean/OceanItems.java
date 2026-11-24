@@ -5,6 +5,7 @@ import dev.wildercord.ServerState;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.aura.world.BossDamage;
+import dev.wildercord.compat.McArmor;
 import dev.wildercord.compat.McHands;
 import dev.wildercord.net.ServerDisconnects;
 import java.util.List;
@@ -18,6 +19,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -44,17 +46,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -66,34 +65,29 @@ import net.minecraft.world.phys.Vec3;
 public final class OceanItems {
 	private OceanItems() {}
 
-	public static final ArmorMaterial ABYSSAL_SUIT_MATERIAL = new ArmorMaterial(
-		OceanRules.SUIT_DURABILITY_MULT,
+	public static final Holder<ArmorMaterial> ABYSSAL_SUIT_MATERIAL = McArmor.material(
 		Map.of(
-			ArmorType.HELMET, OceanRules.HELM_DEFENSE,
-			ArmorType.CHESTPLATE, OceanRules.CHEST_DEFENSE,
-			ArmorType.LEGGINGS, OceanRules.LEGS_DEFENSE,
-			ArmorType.BOOTS, OceanRules.FEET_DEFENSE
+			ArmorItem.Type.HELMET, OceanRules.HELM_DEFENSE,
+			ArmorItem.Type.CHESTPLATE, OceanRules.CHEST_DEFENSE,
+			ArmorItem.Type.LEGGINGS, OceanRules.LEGS_DEFENSE,
+			ArmorItem.Type.BOOTS, OceanRules.FEET_DEFENSE
 		),
-		OceanRules.SUIT_ENCHANTABILITY,
-		SoundEvents.ARMOR_EQUIP_TURTLE,
-		OceanRules.SUIT_TOUGHNESS,
-		OceanRules.SUIT_KNOCKBACK_RES,
-		ItemTags.REPAIRS_DIAMOND_ARMOR,
-		dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:abyssal_diving")
+		OceanRules.SUIT_ENCHANTABILITY, OceanRules.SUIT_TOUGHNESS, OceanRules.SUIT_KNOCKBACK_RES,
+		null, dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:abyssal_diving")
 	);
 
 	// ---- Armor Set ----
-	public static final Item ABYSSAL_DIVING_HELM = armor("abyssal_diving_helm", ArmorType.HELMET);
-	public static final Item BATHYSPHERE_CHESTPLATE = armor("bathysphere_chestplate", ArmorType.CHESTPLATE);
-	public static final Item KELP_WEAVE_GREAVES = armor("kelp_weave_greaves", ArmorType.LEGGINGS);
-	public static final Item TRENCH_BOOTS = armor("trench_boots", ArmorType.BOOTS);
+	public static final Item ABYSSAL_DIVING_HELM = armor("abyssal_diving_helm", ArmorItem.Type.HELMET);
+	public static final Item BATHYSPHERE_CHESTPLATE = armor("bathysphere_chestplate", ArmorItem.Type.CHESTPLATE);
+	public static final Item KELP_WEAVE_GREAVES = armor("kelp_weave_greaves", ArmorItem.Type.LEGGINGS);
+	public static final Item TRENCH_BOOTS = armor("trench_boots", ArmorItem.Type.BOOTS);
 
 	// ---- Weapons & Relics ----
 	public static final Item TIDE_CLEAVER_HARPOON = register("tide_cleaver_harpoon",
-		p -> new HarpoonItem(ToolMaterial.NETHERITE.applySwordProperties(p, 4.0f, OceanRules.HARPOON_ATTACK_SPEED)
+		p -> new HarpoonItem(p.attributes(net.minecraft.world.item.SwordItem.createAttributes(net.minecraft.world.item.Tiers.NETHERITE, 4, OceanRules.HARPOON_ATTACK_SPEED))
 			.durability(1600).rarity(Rarity.EPIC)));
 	public static final Item LEVIATHAN_GLAIVE = register("leviathan_glaive",
-		p -> new GlaiveItem(ToolMaterial.NETHERITE.applySwordProperties(p, 6.0f, OceanRules.GLAIVE_ATTACK_SPEED)
+		p -> new GlaiveItem(p.attributes(net.minecraft.world.item.SwordItem.createAttributes(net.minecraft.world.item.Tiers.NETHERITE, 6, OceanRules.GLAIVE_ATTACK_SPEED))
 			.durability(2048).rarity(Rarity.EPIC)));
 	public static final Item SIREN_PEARL_LANTERN = register("siren_pearl_lantern",
 		p -> new SirenLanternBlockItem(p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
@@ -120,12 +114,9 @@ public final class OceanItems {
 				.nutrition(OceanRules.SASHIMI_NUTRITION)
 				.saturationModifier(OceanRules.SASHIMI_SATURATION)
 				.alwaysEdible()
+				.effect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 180, 0), 1.0F)
+				.effect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 200, 0), 1.0F)
 				.build())
-			.component(DataComponents.CONSUMABLE, Consumables.defaultFood()
-				.onConsume(new ApplyStatusEffectsConsumeEffect(List.of(
-					new MobEffectInstance(MobEffects.CONDUIT_POWER, 180, 0),
-					new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 200, 0)
-				))).build())
 			.rarity(Rarity.UNCOMMON)));
 
 	public static final Item SEA_SALT_RAMEN = register("sea_salt_ramen",
@@ -136,13 +127,10 @@ public final class OceanItems {
 				.nutrition(OceanRules.RAMEN_NUTRITION)
 				.saturationModifier(OceanRules.RAMEN_SATURATION)
 				.alwaysEdible()
+				.effect(new MobEffectInstance(MobEffects.WATER_BREATHING, 400, 0), 1.0F)
+				.effect(new MobEffectInstance(MobEffects.REGENERATION, 300, 1), 1.0F)
+				.effect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0), 1.0F)
 				.build())
-			.component(DataComponents.CONSUMABLE, Consumables.defaultFood()
-				.onConsume(new ApplyStatusEffectsConsumeEffect(List.of(
-					new MobEffectInstance(MobEffects.WATER_BREATHING, 400, 0),
-					new MobEffectInstance(MobEffects.REGENERATION, 300, 1),
-					new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0)
-				))).build())
 			.rarity(Rarity.RARE)));
 
 	// ---- Player Oxygen Reserve & Active Conch Domes ----
@@ -160,8 +148,8 @@ public final class OceanItems {
 	private static final ResourceLocation BOOTS_MOD = Wildercord.id("trench_boots_mining");
 	private static final ResourceLocation BOOTS_STEP_MOD = Wildercord.id("trench_boots_step");
 
-	private static Item armor(String id, ArmorType type) {
-		return register(id, p -> new AuraWorld.Lore(id, ABYSSAL_SUIT_MATERIAL.humanoidProperties(p, type).rarity(Rarity.RARE)));
+	private static Item armor(String id, ArmorItem.Type type) {
+		return register(id, p -> McArmor.loreArmor(id, ABYSSAL_SUIT_MATERIAL, (ArmorItem.Type) type, p.rarity(Rarity.RARE)));
 	}
 
 	private static Item lore(String id, Rarity rarity) {

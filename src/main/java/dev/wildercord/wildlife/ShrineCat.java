@@ -109,7 +109,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes()
+		return createLivingAttributes()
 			.add(Attributes.MAX_HEALTH, 80.0)
 			.add(Attributes.ARMOR, 10.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.30)

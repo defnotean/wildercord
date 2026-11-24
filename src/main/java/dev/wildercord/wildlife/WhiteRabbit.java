@@ -71,7 +71,7 @@ public class WhiteRabbit extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes()
+		return createLivingAttributes()
 			.add(Attributes.MAX_HEALTH, 12.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.34)
 			.add(Attributes.FOLLOW_RANGE, 24.0)

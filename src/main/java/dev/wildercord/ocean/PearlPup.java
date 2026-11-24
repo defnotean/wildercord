@@ -56,7 +56,7 @@ public class PearlPup extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes()
+		return createLivingAttributes()
 			.add(Attributes.MAX_HEALTH, OceanRules.PEARL_PUP_WILD_HP)
 			.add(Attributes.MOVEMENT_SPEED, 0.28);
 	}
