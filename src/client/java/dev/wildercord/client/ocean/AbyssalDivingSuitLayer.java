@@ -164,18 +164,27 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<PlayerRenderState,
 	public void render(PoseStack pose, MultiBufferSource collector, int light, PlayerRenderState state, float yaw, float pitch) {
 		if (state.isInvisible) return;
 
-		if (state.headEquipment.is(OceanItems.ABYSSAL_DIVING_HELM)) {
+		// 1.21.2 render states carry no equipment: read the worn pieces off the local
+		// player, the same path the rest of this branch's client code uses.
+		var player = net.minecraft.client.Minecraft.getInstance().player;
+		if (player == null) return;
+		var head = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD);
+		var chest = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+		var legs = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS);
+		var feet = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET);
+
+		if (head.is(OceanItems.ABYSSAL_DIVING_HELM)) {
 			submitLimb(pose, collector, light, state, getParentModel().head, helmModel, TRANSLUCENT);
 		}
 
-		if (state.chestEquipment.is(OceanItems.BATHYSPHERE_CHESTPLATE)) {
+		if (chest.is(OceanItems.BATHYSPHERE_CHESTPLATE)) {
 			submitLimb(pose, collector, light, state, getParentModel().body, tanksModel, CUTOUT);
 			submitLimb(pose, collector, light, state, getParentModel().rightArm, rightArmModel, CUTOUT);
 			submitLimb(pose, collector, light, state, getParentModel().leftArm, leftArmModel, CUTOUT);
 		}
 
-		boolean hasGreaves = state.legsEquipment.is(OceanItems.KELP_WEAVE_GREAVES);
-		boolean hasBoots = state.feetEquipment.is(OceanItems.TRENCH_BOOTS);
+		boolean hasGreaves = legs.is(OceanItems.KELP_WEAVE_GREAVES);
+		boolean hasBoots = feet.is(OceanItems.TRENCH_BOOTS);
 		if (hasGreaves || hasBoots) {
 			rightLegModel.setPartsVisible(hasGreaves, hasBoots);
 			leftLegModel.setPartsVisible(hasGreaves, hasBoots);
