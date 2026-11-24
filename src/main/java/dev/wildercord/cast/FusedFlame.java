@@ -997,7 +997,7 @@ final class FusedFlame {
 			}
 			ticks = BossRules.bossHoldTicks(ticks);
 		}
-		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, true), cast.caster);
+		t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 3, false, true), cast.caster);
 		AttributeInstance jump = t.getAttribute(Attributes.JUMP_STRENGTH);
 		if (jump != null) {
 			jump.addOrUpdateTransientModifier(new AttributeModifier(SINKHOLE_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));

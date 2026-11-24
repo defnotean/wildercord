@@ -10,10 +10,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
@@ -26,8 +26,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -52,7 +50,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return (ServerLevel) player(server).level();
 	}
 
 	private static float yaw(Vec3 from, Vec3 to) {
@@ -71,7 +69,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.halberdier_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.halberdier_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -117,7 +115,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 
 	private static OathboundHalberdier spawnHalberdier(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundHalberdier h = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
-		h.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		h.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		h.setYHeadRot(yaw);
 		h.setYBodyRot(yaw);
 		h.setPersistenceRequired();
@@ -232,7 +230,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundHalberdier h = (OathboundHalberdier) level(s).getEntity(studioId);
-						h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						h.setYBodyRot(180.0F);
 						h.setYHeadRot(180.0F);
 						h.poseForPreview(sShot.move(), ft, fe);
@@ -275,7 +273,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, 3.8, Set.<Relative>of(), 180.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.setTarget(p);
 				h.startMove(l, OathboundHalberdierRules.TEMPEST_WHIRL, null);
 			});
@@ -291,12 +289,12 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.HOOK_AND_REAP, p);
 			});
 			check(await(context, world, 20, s -> {
 				ServerPlayer p = player(s);
-				return p.hasEffect(MobEffects.SLOWNESS) && p.getHealth() < 20.0F;
+				return p.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && p.getHealth() < 20.0F;
 			}), "Hook-and-Reap did not damage and slow frontal target");
 
 			// 2c. Thunderbolt Crash 4-way cross hits side arm target
@@ -307,7 +305,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 5.2, 121.0, 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
 			});
 			check(await(context, world, 30, s -> player(s).getHealth() < 20.0F),
@@ -319,7 +317,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.setNoAi(true);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
 				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
@@ -344,7 +342,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SHADOWSTEP_THRUST, p);
 			});
 			check(await(context, world, 24, s -> {
@@ -367,11 +365,11 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, l.registryAccess());
+				CompoundTag out = new CompoundTag();
 				h.saveWithoutId(out);
 
 				OathboundHalberdier reloaded = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.LOAD);
-				reloaded.load(TagValueInput.create(ProblemReporter.DISCARDING, l.registryAccess(), out.buildResult()));
+				reloaded.load(out);
 				check(reloaded.empowered() && reloaded.getHealth() == h.getHealth(),
 					"halberdier_empowered failed to persist across NBT reload");
 				check(reloaded.move() == OathboundHalberdierRules.LOW_GLAIVE_STALK,

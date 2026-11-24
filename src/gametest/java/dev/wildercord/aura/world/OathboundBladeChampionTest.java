@@ -10,10 +10,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
@@ -26,8 +26,6 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -52,7 +50,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return (ServerLevel) player(server).level();
 	}
 
 	private static float yaw(Vec3 from, Vec3 to) {
@@ -71,7 +69,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.blade_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.blade_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -117,7 +115,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 
 	private static OathboundBladeChampion spawnChampion(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundBladeChampion c = AuraWorld.OATHBOUND_BLADE_CHAMPION.create(l, EntitySpawnReason.COMMAND);
-		c.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		c.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		c.setYHeadRot(yaw);
 		c.setYBodyRot(yaw);
 		c.setPersistenceRequired();
@@ -233,7 +231,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(studioId);
-						c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						c.poseForPreview(sShot.move(), ft, fe, sShot.counter());
 					});
 					context.waitTicks(4);
@@ -269,7 +267,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			// 2a. Projectile Deflection during Wrathful Riposte
 			server.runOnServer(s -> {
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.setTarget(null);
 				c.startMove(level(s), OathboundBladeChampionRules.WRATHFUL_RIPOSTE, null);
 			});
@@ -317,7 +315,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
 				c.setNoAi(true);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.startMove(level(s), OathboundBladeChampionRules.WRATHFUL_RIPOSTE, null);
 			});
 			context.waitTicks(OathboundBladeChampionRules.RIPOSTE_TELL + 2);
@@ -362,7 +360,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 					ServerPlayer p = player(s);
 					check(p.isBlocking(), "Player shield must be active before Pommel-Break test");
 					OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-					c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+					c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 					c.startMove(level(s), OathboundBladeChampionRules.POMMEL_BREAK, p);
 				});
 				boolean shieldShattered = await(context, world, 30, s -> {
@@ -382,7 +380,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.stopUsingItem();
 				p.teleportTo(level(s), 0.5, 121.0, -4.2, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.startMove(level(s), OathboundBladeChampionRules.GUILLOTINE_SLAM, p);
 			});
 			boolean guillotineLanded = await(context, world, 36, s -> player(s).getHealth() < 20.0F);
@@ -404,11 +402,11 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				OathboundBladeChampion c = (OathboundBladeChampion) l.getEntity(champId);
-				TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, l.registryAccess());
+				CompoundTag out = new CompoundTag();
 				c.saveWithoutId(out);
 
 				OathboundBladeChampion reloaded = AuraWorld.OATHBOUND_BLADE_CHAMPION.create(l, EntitySpawnReason.LOAD);
-				reloaded.load(TagValueInput.create(ProblemReporter.DISCARDING, l.registryAccess(), out.buildResult()));
+				reloaded.load(out);
 				check(reloaded.empowered() && reloaded.getHealth() == c.getHealth(),
 					"blade_champion_empowered & health failed to persist across NBT reload");
 				check(reloaded.move() == OathboundBladeChampionRules.IDLE_STALK,

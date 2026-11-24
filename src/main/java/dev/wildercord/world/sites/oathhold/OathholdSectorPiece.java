@@ -32,9 +32,9 @@ public final class OathholdSectorPiece extends StructurePiece {
 
 	public OathholdSectorPiece(CompoundTag tag) {
 		super(OathholdSites.SECTOR_PIECE, tag);
-		this.originX = tag.getIntOr("OX", 0);
-		this.baseY = tag.getIntOr("OY", 64);
-		this.originZ = tag.getIntOr("OZ", 0);
+		this.originX = tag.contains("OX") ? tag.getInt("OX") : 0;
+		this.baseY = tag.contains("OY") ? tag.getInt("OY") : 64;
+		this.originZ = tag.contains("OZ") ? tag.getInt("OZ") : 0;
 	}
 
 	@Override

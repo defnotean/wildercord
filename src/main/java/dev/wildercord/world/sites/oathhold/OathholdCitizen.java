@@ -360,7 +360,7 @@ public class OathholdCitizen extends WanderingTrader {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putString("Archetype", archetype().id);
 		output.putInt("SkinTone", skinTone());
@@ -374,7 +374,7 @@ public class OathholdCitizen extends WanderingTrader {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		OathholdCitizenRules.Archetype role = OathholdCitizenRules.Archetype.ofId(input.getStringOr("Archetype", "townsfolk"));
 		entityData.set(DATA_ARCHETYPE, role.ordinal());

@@ -282,7 +282,7 @@ public class WhiteRabbit extends Animal {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		targetTreePos = input.read("TargetTree", BlockPos.CODEC).orElse(null);
 		portalPos = input.read("PortalPos", BlockPos.CODEC).orElse(null);

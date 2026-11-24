@@ -207,7 +207,7 @@ public final class KnightSpawner {
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
 		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
@@ -222,7 +222,7 @@ public final class KnightSpawner {
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
 		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
@@ -237,7 +237,7 @@ public final class KnightSpawner {
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
 		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;
@@ -252,7 +252,7 @@ public final class KnightSpawner {
 		if (champion == null) {
 			return null;
 		}
-		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
 		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
 		level.addFreshEntityWithPassengers(champion);
 		return champion;

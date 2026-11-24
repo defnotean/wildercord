@@ -161,7 +161,7 @@ public abstract class OceanPiece extends StructurePiece {
 		if (!clip.isInside(p)) return;
 		T mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (mob == null) return;
-		mob.snapTo(p.getX() + 0.5, p.getY(), p.getZ() + 0.5, 0.0f, 0.0f);
+		mob.moveTo(p.getX() + 0.5, p.getY(), p.getZ() + 0.5, 0.0f, 0.0f);
 		mob.setPersistenceRequired();
 		configure.accept(mob);
 		level.addFreshEntityWithPassengers(mob);

@@ -34,7 +34,7 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 
 	public KelpSpireWatchtowerPiece(CompoundTag tag) {
 		super(OceanSites.KELP_SPIRE_WATCHTOWER, tag);
-		this.totalHeight = Math.clamp(tag.getIntOr("H", 48), OceanRules.WATCHTOWER_MIN_HEIGHT, 64);
+		this.totalHeight = Math.clamp(tag.contains("H") ? tag.getInt("H") : 48, OceanRules.WATCHTOWER_MIN_HEIGHT, 64);
 	}
 
 	@Override

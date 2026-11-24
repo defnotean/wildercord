@@ -49,7 +49,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 	}
 
 	private static void poseMob(net.minecraft.world.entity.Mob m, double x, double y, double z, float yaw) {
-		m.snapTo(x, y, z, yaw, 0f);
+		m.moveTo(x, y, z, yaw, 0f);
 		m.setYRot(yaw);
 		m.yRotO = yaw;
 		m.setYBodyRot(yaw);
@@ -75,7 +75,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -315,7 +315,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				poseMob(seahorse, 2.5, 91.6, 2.0, 80f);
 				l.addFreshEntity(seahorse);
 				seahorse.tameWithName(p);
-				seahorse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+				seahorse.equipSaddle(new ItemStack(Items.SADDLE), net.minecraft.sounds.SoundSource.NEUTRAL);
 				friendlyIds[3] = seahorse.getUUID();
 
 				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
@@ -400,18 +400,18 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(p.getAirSupply() == p.getMaxAirSupply(), "Pressurized tank preserves air underwater");
 
 				CoralSpineMako target = OceanEntities.CORAL_SPINE_MAKO.create(l, EntitySpawnReason.COMMAND);
-				target.snapTo(0.5, 92.0, -1.0, 0f, 0f);
+				target.moveTo(0.5, 92.0, -1.0, 0f, 0f);
 				target.setNoAi(true);
 				l.addFreshEntity(target);
 				float beforeHp = target.getHealth();
 				OceanItems.LEVIATHAN_GLAIVE.use(l, p, InteractionHand.MAIN_HAND);
 				check(target.getHealth() < beforeHp, "Leviathan Glaive Hydro-Slash damages target in 75-deg cone");
 
-				p.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 200, 1));
+				p.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 200, 1));
 				p.setAirSupply(40);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDECALLER_CONCH));
 				OceanItems.TIDECALLER_CONCH.use(l, p, InteractionHand.MAIN_HAND);
-				check(!p.hasEffect(MobEffects.MINING_FATIGUE), "Conch removes Mining Fatigue");
+				check(!p.hasEffect(MobEffects.DIG_SLOWDOWN), "Conch removes Mining Fatigue");
 				check(p.hasEffect(MobEffects.WATER_BREATHING), "Conch grants Water Breathing");
 
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDE_CLEAVER_HARPOON));

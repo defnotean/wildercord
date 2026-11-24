@@ -10,10 +10,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
@@ -27,8 +27,6 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -53,7 +51,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return (ServerLevel) player(server).level();
 	}
 
 	private static float yaw(Vec3 from, Vec3 to) {
@@ -72,7 +70,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.bastion_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.bastion_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -118,7 +116,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 
 	private static OathboundBastion spawnBastion(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundBastion b = AuraWorld.OATHBOUND_BASTION.create(l, EntitySpawnReason.COMMAND);
-		b.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		b.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		b.setYHeadRot(yaw);
 		b.setYBodyRot(yaw);
 		b.setPersistenceRequired();
@@ -227,7 +225,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundBastion b = (OathboundBastion) level(s).getEntity(studioId);
-						b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						b.poseForPreview(sShot.move(), ft, fe, sShot.barrier());
 					});
 					context.waitTicks(4);
@@ -314,7 +312,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				p.setGameMode(GameType.CREATIVE);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.setNoAi(false);
-				b.snapTo(0.5, 121.0, 1.5, 0.0F, 0.0F);
+				b.moveTo(0.5, 121.0, 1.5, 0.0F, 0.0F);
 				b.setTarget(null);
 				b.startMove(l, OathboundBastionRules.SHIELD_RAM, null);
 			});
@@ -330,7 +328,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				p.setHealth(p.getMaxHealth());
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
-				b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				b.setTarget(p);
 				b.startMove(l, OathboundBastionRules.ANVIL_SLAM, p);
 			});
@@ -346,11 +344,11 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
-				b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				b.setTarget(p);
 				b.startMove(l, OathboundBastionRules.SHIELD_BASH, p);
 			});
-			check(await(context, world, 25, s -> player(s).hasEffect(MobEffects.SLOWNESS) && player(s).getHealth() < player(s).getMaxHealth()),
+			check(await(context, world, 25, s -> player(s).hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && player(s).getHealth() < player(s).getMaxHealth()),
 				"Shield-Bash sweep must damage and slow a frontal target");
 
 			// E) Empowered phase below half health, NBT save/load round-trip, and entity loot table drops
@@ -369,10 +367,10 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 
-				var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag saved = new CompoundTag();
 				b.saveWithoutId(saved);
 				OathboundBastion restored = AuraWorld.OATHBOUND_BASTION.create(l, EntitySpawnReason.LOAD);
-				restored.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), saved.buildResult()));
+				restored.load(saved);
 				check(restored.empowered() && restored.getHealth() == b.getHealth(), "Empowered state & health survive save/load");
 				check(restored.move() == OathboundBastionRules.IDLE_MARCH, "Reload resets active swing cleanly to IDLE_MARCH");
 				restored.discard();
