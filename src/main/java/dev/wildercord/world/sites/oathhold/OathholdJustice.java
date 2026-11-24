@@ -32,7 +32,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
@@ -189,7 +189,7 @@ public final class OathholdJustice {
 		}
 	}
 
-	public static ServerPlayer findExplosionCulprit(ServerLevel level, ServerExplosion explosion, Vec3 center) {
+	public static ServerPlayer findExplosionCulprit(ServerLevel level, Explosion explosion, Vec3 center) {
 		LivingEntity indirect = explosion.getIndirectSourceEntity();
 		if (indirect instanceof ServerPlayer sp) return sp;
 		Entity direct = explosion.getDirectSourceEntity();

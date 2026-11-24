@@ -22,7 +22,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -81,18 +80,16 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 	@Override
 	protected BlockState updateShape(
 		BlockState state,
-		LevelReader level,
-		ScheduledTickAccess ticks,
-		BlockPos pos,
 		Direction dir,
-		BlockPos neighborPos,
 		BlockState neighborState,
-		RandomSource random
+		net.minecraft.world.level.LevelAccessor level,
+		BlockPos pos,
+		BlockPos neighborPos
 	) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-			ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+			level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		return super.updateShape(state, level, ticks, pos, dir, neighborPos, neighborState, random);
+		return super.updateShape(state, dir, neighborState, level, pos, neighborPos);
 	}
 
 	@Override

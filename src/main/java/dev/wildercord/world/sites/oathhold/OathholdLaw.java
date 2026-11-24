@@ -45,7 +45,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
@@ -373,7 +373,7 @@ public final class OathholdLaw {
 		}
 	}
 
-	public static void onExplosionBlocks(ServerLevel level, ServerExplosion explosion, Vec3 center, List<BlockPos> blown) {
+	public static void onExplosionBlocks(ServerLevel level, Explosion explosion, Vec3 center, List<BlockPos> blown) {
 		if (blown.isEmpty() || findContainingCity(level, BlockPos.containing(center)).isEmpty()) {
 			return;
 		}

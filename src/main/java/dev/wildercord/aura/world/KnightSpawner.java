@@ -109,7 +109,7 @@ public final class KnightSpawner {
 	public static  Haunt haunt(ServerLevel level, BlockPos pos) {
 		StructureStart start = level.structureManager().getStructureWithPieceAt(pos, HAUNTS);
 		if (start.isValid()) {
-			ResourceLocation id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
+			ResourceLocation id = level.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
 			String path = id == null ? "" : id.getPath();
 			boolean stronghold = path.equals("stronghold");
 			// A structure's own chests' source when it has one (the ancient city's, each expedition's), else any method.

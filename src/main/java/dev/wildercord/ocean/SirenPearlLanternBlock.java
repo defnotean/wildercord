@@ -6,7 +6,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,18 +46,16 @@ public final class SirenPearlLanternBlock extends Block implements SimpleWaterlo
 	@Override
 	protected BlockState updateShape(
 		BlockState state,
-		LevelReader level,
-		ScheduledTickAccess ticks,
-		BlockPos pos,
 		Direction dir,
-		BlockPos neighborPos,
 		BlockState neighborState,
-		RandomSource random
+		net.minecraft.world.level.LevelAccessor level,
+		BlockPos pos,
+		BlockPos neighborPos
 	) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-			ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+			level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		return super.updateShape(state, level, ticks, pos, dir, neighborPos, neighborState, random);
+		return super.updateShape(state, dir, neighborState, level, pos, neighborPos);
 	}
 
 	@Override
