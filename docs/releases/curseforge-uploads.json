@@ -34,5 +34,137 @@
     "fileID": 9757933,
     "file": "wildercord-0.16.0-alpha+mc26.3-sources.jar",
     "sha256": "53f14c75de6513156326ce1d5fa6cf2e0c34346c7c4afd7dc4d5f15bbea75980"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783238,
+    "file": "wildercord-0.16.0-alpha+mc26.1.jar",
+    "sha256": "3621d9641e5c6bb469ef78b794bbbf838e5c2524bd2de5fb7593a98cc398e030"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783255,
+    "file": "wildercord-0.16.0-alpha+mc26.1.2.jar",
+    "sha256": "ed9fd4b7d47da79c16c03f513f7b57eefb61896b6455e7b5470a5a6057988c4c"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783271,
+    "file": "wildercord-0.16.0-alpha+mc26.2.jar",
+    "sha256": "3935878fc61ccb0d51bad192d5e15ea4cc58a46a2cc9db167123f50e3835c89f"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783277,
+    "file": "wildercord-0.16.0-alpha+mc26.1-sources.jar",
+    "sha256": "29efd9eee5eebf28e8b249c7cb0603becb26a750da2ac245b3be28713ce7715c"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783280,
+    "file": "wildercord-0.16.0-alpha+mc26.1.2-sources.jar",
+    "sha256": "718f0d95cca24f6ed04a3b9bf5d980a2ba2703b47f442991cf2524c396f96c5f"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783282,
+    "file": "wildercord-0.16.0-alpha+mc26.2-sources.jar",
+    "sha256": "b78a7402df44504e988e6a941b9fa9b9e42af0af8fa7bb7ccfbdd9522d9fb157"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783288,
+    "file": "wildercord-0.16.0-alpha+mc1.21.4.jar",
+    "sha256": "c629b89bf0e39b1bac70f57744ca2e763d5297ad19768e99b67ff3030a55474c"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783314,
+    "file": "wildercord-0.16.0-alpha+mc1.21.5.jar",
+    "sha256": "cc5b5f51d99a0752231a34c2e3ce53741dd49dde7ad453885a62e0d744ac3cc0"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783324,
+    "file": "wildercord-0.16.0-alpha+mc1.21.5-sources.jar",
+    "sha256": "72126ca1e0edced5f8c8e516d3766b18481da7b7b98b2f3135b6de2f64dde04b"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783328,
+    "file": "wildercord-0.16.0-alpha+mc1.21.6.jar",
+    "sha256": "61439215462d622896f4dd8b81fc4a5b8b4145caa0e262c8fe92daba4ed13b00"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783344,
+    "file": "wildercord-0.16.0-alpha+mc1.21.7.jar",
+    "sha256": "ef71e3c31dcac5690123efde0cdb688d98b1d4e0cb2a54ae2731ccef8978d547"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783348,
+    "file": "wildercord-0.16.0-alpha+mc1.21.7-sources.jar",
+    "sha256": "c0372bf8db4674ac59a7bbd6f1d265b278f7f9b08cb9dfa4cbcb97d594ef30a5"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783354,
+    "file": "wildercord-0.16.0-alpha+mc1.21.8.jar",
+    "sha256": "80915770fde24cf465530be2da0a195f16297e159f690af5a9347d39adf660f7"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783359,
+    "file": "wildercord-0.16.0-alpha+mc1.21.8-sources.jar",
+    "sha256": "6fb1116b4ab1f8525e66661159af41e2fe3d02fd2ffa471cdddcd5e01e412659"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783361,
+    "file": "wildercord-0.16.0-alpha+mc1.21.9.jar",
+    "sha256": "086b8ff43c582c4d17cd4761242e6518e8584063f23702531ba79d97c62baa73"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783378,
+    "file": "wildercord-0.16.0-alpha+mc1.21.10.jar",
+    "sha256": "c0d36d21c7fc079120ca46421fb04944c2f65ec8b444206c898dccecfe4a9afe"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783388,
+    "file": "wildercord-0.16.0-alpha+mc1.21.11.jar",
+    "sha256": "8744ae96542f93417e72d2606adfd8e3c6f7ae6ad402347ee0fbf7e161a38985"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783427,
+    "file": "wildercord-0.16.0-alpha+mc1.21.4-sources.jar",
+    "sha256": "7f95a7f2a742766e30e908a45ab43c4b445006bc2f48c0f838fcba0a45fbbb43"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783428,
+    "file": "wildercord-0.16.0-alpha+mc1.21.6-sources.jar",
+    "sha256": "cc23d6df761cec9e42ed08d9f7f9094d06c703e94fadf003c5e92449b4f5f4a9"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783432,
+    "file": "wildercord-0.16.0-alpha+mc1.21.9-sources.jar",
+    "sha256": "73d1f5a5952a27c34333dfa54b1ad1e45cb4b77ee50eefdf1d19a4fbc4600554"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783433,
+    "file": "wildercord-0.16.0-alpha+mc1.21.10-sources.jar",
+    "sha256": "805db040cc235644c47e76cc79776597f70c87682bc2a3a034369f5e522e8a32"
+  },
+  {
+    "project": 1716203,
+    "fileID": 9783437,
+    "file": "wildercord-0.16.0-alpha+mc1.21.11-sources.jar",
+    "sha256": "7ad8459a6db99da8a775bf75c7d8aa90092529e04a87a2fc3b0896d593d8ffe0"
   }
 ]
