@@ -191,7 +191,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				p.setGameMode(GameType.SPECTATOR);
 				p.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 600, 0, false, false, false));
 				p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 600, 0, false, false, false));
-				p.teleportTo(l, c.getX() + 34.0, c.getY() + 20.0, c.getZ() + 34.0, Set.<Relative>of(), -135f, 32f, false);
+				p.teleportTo(l, c.getX() + 34.0, c.getY() + 20.0, c.getZ() + 34.0, Set.<RelativeMovement>of(), -135f, 32f);
 			});
 			context.waitTicks(60);
 			world.getServer().runOnServer(server -> {
@@ -218,7 +218,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				Vec3 eye = new Vec3(c.getX() + 34.0, c.getY() + 20.0, c.getZ() + 34.0);
 				Vec3 target = new Vec3(c.getX(), c.getY() + 6.0, c.getZ());
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
+				p.teleportTo(l, eye.x, eye.y, eye.z, Set.<RelativeMovement>of(), yaw(eye, target), pitch(eye, target));
 			});
 			context.waitTicks(20);
 			context.runOnClient(mc -> {

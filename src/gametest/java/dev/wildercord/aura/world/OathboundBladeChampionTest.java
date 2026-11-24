@@ -160,7 +160,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			int studioId = server.computeOnServer(s -> {
 				ServerPlayer p = player(s);
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				return spawnChampion(level(s), STAGE, 180.0F, false).getId();
 			});
 
@@ -254,7 +254,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.setGameMode(GameType.SURVIVAL);
 				p.setHealth(p.getMaxHealth());
 				p.getInventory().clearContent();
-				p.teleportTo(l, 0.5, 121.0, -2.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -2.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 
 			int champId = server.computeOnServer(s -> {
@@ -322,7 +322,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
-				p.teleportTo(l, 0.5, 121.0, -2.2, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -2.2, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				OathboundBladeChampion c = (OathboundBladeChampion) l.getEntity(champId);
 				McEntities.clearHurtCooldown(c);
@@ -344,7 +344,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SHIELD));
 			});
 			context.runOnClient(mc -> {
@@ -365,7 +365,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				});
 				boolean shieldShattered = await(context, world, 30, s -> {
 					ServerPlayer p = player(s);
-					return p.getCooldowns().isOnCooldown(new ItemStack(Items.SHIELD)) && p.getHealth() < 20.0F;
+					return p.getCooldowns().isOnCooldown(Items.SHIELD) && p.getHealth() < 20.0F;
 				});
 				check(shieldShattered, "Pommel-Break Lunge did not shatter player shield and deal impact damage");
 			} finally {
@@ -378,7 +378,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
 				p.stopUsingItem();
-				p.teleportTo(level(s), 0.5, 121.0, -4.2, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(level(s), 0.5, 121.0, -4.2, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
 				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.startMove(level(s), OathboundBladeChampionRules.GUILLOTINE_SLAM, p);

@@ -163,7 +163,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 				p.setGameMode(GameType.SURVIVAL);
 				p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 12000, 0, false, false));
 				p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 12000, 4, false, false));
-				p.teleportTo(l, 0.5, 101.0, 0.5, Set.<Relative>of(), -90.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 101.0, 0.5, Set.<RelativeMovement>of(), -90.0F, 0.0F);
 
 				WhiteRabbit rabbit = dev.wildercord.compat.McEntities.create(WhiteRabbitContent.WHITE_RABBIT, l, MobSpawnType.COMMAND);
 				check(rabbit != null, "Create WhiteRabbit");
@@ -183,7 +183,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 					if (l.getEntity(rabbitUuid) instanceof WhiteRabbit r && r.isAlive()) {
 						ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 						if (r.getX() - p.getX() > 5.0) {
-							p.teleportTo(l, r.getX() - 4.0, 101.0, r.getZ(), Set.<Relative>of(), -90.0F, 0.0F, false);
+							p.teleportTo(l, r.getX() - 4.0, 101.0, r.getZ(), Set.<RelativeMovement>of(), -90.0F, 0.0F);
 						}
 					}
 				});
@@ -204,7 +204,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 14.5, 101.0, 0.5, Set.<Relative>of(), -90.0F, 0.0F, false);
+				p.teleportTo(l, 14.5, 101.0, 0.5, Set.<RelativeMovement>of(), -90.0F, 0.0F);
 				if (l.getEntity(rabbitUuid) instanceof WhiteRabbit r && r.isAlive()) {
 					r.teleportTo(16.2, 101.0, 0.5);
 				}

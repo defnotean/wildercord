@@ -75,7 +75,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 	}
 
 	private static void aimAtCinnamon(MinecraftServer server, ServerPlayer player, CinnamonDog dog, double px, double py, double pz) {
-		player.teleportTo(server.overworld(), px, py, pz, Set.<Relative>of(), 0, 0, false);
+		player.teleportTo(server.overworld(), px, py, pz, Set.<RelativeMovement>of(), 0, 0);
 		player.setDeltaMovement(0, 0, 0);
 		double dx = dog.getX() - player.getX();
 		double dy = (dog.getY() + dog.getBbHeight() * 0.35D) - player.getEyeY();
@@ -83,7 +83,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 		double horiz = Math.sqrt(dx * dx + dz * dz);
 		float yaw = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
 		float pitch = (float) (Math.toDegrees(-Math.atan2(dy, horiz)));
-		player.teleportTo(server.overworld(), px, py, pz, Set.<Relative>of(), yaw, pitch, false);
+		player.teleportTo(server.overworld(), px, py, pz, Set.<RelativeMovement>of(), yaw, pitch);
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					}
 					ServerPlayer p = owner(server);
 					p.setGameMode(GameType.SURVIVAL);
-					p.teleportTo(level, 0.5, 101, 0.5, Set.<Relative>of(), 0, 0, false);
+					p.teleportTo(level, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 0);
 				});
 				context.waitTicks(20);
 

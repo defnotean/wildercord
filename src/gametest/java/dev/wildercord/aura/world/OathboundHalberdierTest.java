@@ -159,7 +159,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 			int studioId = server.computeOnServer(s -> {
 				ServerPlayer p = player(s);
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				return spawnHalberdier(level(s), STAGE, 180.0F, false).getId();
 			});
 
@@ -255,7 +255,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				p.setGameMode(GameType.SURVIVAL);
 				p.setHealth(p.getMaxHealth());
 				p.getInventory().clearContent();
-				p.teleportTo(l, 0.5, 121.0, -3.2, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -3.2, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 
 			int halberdierId = server.computeOnServer(s -> {
@@ -271,7 +271,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 0.5, 121.0, 3.8, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, 3.8, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.setTarget(p);
@@ -287,7 +287,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				p.removeAllEffects();
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.HOOK_AND_REAP, p);
@@ -303,7 +303,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 5.2, 121.0, 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
+				p.teleportTo(l, 5.2, 121.0, 0.5, Set.<RelativeMovement>of(), 90.0F, 0.0F);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
@@ -319,7 +319,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				h.setNoAi(true);
 				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
-				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				McEntities.clearHurtCooldown(h);
 				h.hurt( l.damageSources().playerAttack(p),  12.0F);
@@ -340,7 +340,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SHADOWSTEP_THRUST, p);

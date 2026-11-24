@@ -96,7 +96,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 			p.setGameMode(GameType.SPECTATOR);
 			p.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 400, 0, false, false, false));
 			p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false, false));
-			p.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
+			p.teleportTo(l, eye.x, eye.y, eye.z, Set.<RelativeMovement>of(), yaw(eye, target), pitch(eye, target));
 		});
 		context.waitTicks(4);
 		context.runOnClient(mc -> {
@@ -209,7 +209,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(l, ox1 + 24.5, 96.0, oz1 + 24.5, Set.<Relative>of(), 0f, 35f, false);
+				p.teleportTo(l, ox1 + 24.5, 96.0, oz1 + 24.5, Set.<RelativeMovement>of(), 0f, 35f);
 
 				prepareOceanBasin(l, ox1 - 32, oz1 - 32, ox1 + 80, oz1 + 80, 64, 82);
 				placePiece(l, new CoralDomeSanctuaryPiece(ox1, 62, oz1, Direction.NORTH));
@@ -231,7 +231,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, ox2 + 23.0, 86.0, oz2 + 32.0, Set.<Relative>of(), 180f, 35f, false);
+				p.teleportTo(l, ox2 + 23.0, 86.0, oz2 + 32.0, Set.<RelativeMovement>of(), 180f, 35f);
 
 				prepareOceanBasin(l, ox2 - 28, oz2 - 28, ox2 + 76, oz2 + 44, 64, 92);
 				placePiece(l, new SunkenGalleonPiece(ox2, 62, oz2, Direction.SOUTH));
@@ -252,7 +252,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, ox3 + 22.0, 88.0, oz3 + 34.0, Set.<Relative>of(), 180f, 35f, false);
+				p.teleportTo(l, ox3 + 22.0, 88.0, oz3 + 34.0, Set.<RelativeMovement>of(), 180f, 35f);
 
 				prepareOceanBasin(l, ox3 - 26, oz3 - 26, ox3 + 78, oz3 + 58, 64, 82);
 				// Height 30 reaches y=91 cleanly above waterTopY=82
@@ -276,7 +276,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, ox4 + 32.0, 92.0, oz4 + 68.0, Set.<Relative>of(), 180f, 35f, false);
+				p.teleportTo(l, ox4 + 32.0, 92.0, oz4 + 68.0, Set.<RelativeMovement>of(), 180f, 35f);
 
 				prepareOceanBasin(l, ox4 - 28, oz4 - 28, ox4 + 96, oz4 + 90, 64, 92);
 				placePiece(l, new AbyssalCitadelPiece(ox4, 62, oz4, Direction.SOUTH));

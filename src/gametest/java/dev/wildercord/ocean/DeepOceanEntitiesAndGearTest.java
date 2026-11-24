@@ -103,7 +103,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			p.setGameMode(GameType.SPECTATOR);
 			p.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 400, 0, false, false, false));
 			p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false, false));
-			p.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
+			p.teleportTo(l, eye.x, eye.y, eye.z, Set.<RelativeMovement>of(), yaw(eye, target), pitch(eye, target));
 		});
 		context.waitTicks(4);
 		context.runOnClient(mc -> {
@@ -204,7 +204,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				buildAquariumStage(l);
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(l, 0.5, 90.0, 14.0, Set.<Relative>of(), 180f, 0f, false);
+				p.teleportTo(l, 0.5, 90.0, 14.0, Set.<RelativeMovement>of(), 180f, 0f);
 			});
 			context.waitTicks(35);
 
@@ -292,7 +292,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
-				p.teleportTo(l, 0.5, 90.0, 14.0, Set.<Relative>of(), 180f, 0f, false);
+				p.teleportTo(l, 0.5, 90.0, 14.0, Set.<RelativeMovement>of(), 180f, 0f);
 
 				OceanRules.MerchantProfession[] profs = OceanRules.MerchantProfession.values();
 				for (int i = 0; i < 3; i++) {
@@ -337,7 +337,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
-				p.teleportTo(l, 2.0, 91.0, 3.0, Set.<Relative>of(), 180f, 0f, false);
+				p.teleportTo(l, 2.0, 91.0, 3.0, Set.<RelativeMovement>of(), 180f, 0f);
 				PearlPup pup = (PearlPup) l.getEntity(friendlyIds[4]);
 				if (pup != null) pup.setNoAi(false);
 				LumiSeahorse seahorse = (LumiSeahorse) l.getEntity(friendlyIds[3]);
@@ -356,7 +356,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				p.stopRiding();
 
 				SingingMoonWhale whale = (SingingMoonWhale) l.getEntity(friendlyIds[5]);
-				p.teleportTo(l, whale.getX(), whale.getY(), whale.getZ() + 2.5, Set.<Relative>of(), 180f, 0f, false);
+				p.teleportTo(l, whale.getX(), whale.getY(), whale.getZ() + 2.5, Set.<RelativeMovement>of(), 180f, 0f);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.COD));
 				whale.mobInteract(p, InteractionHand.MAIN_HAND);
 				check(whale.isSinging(), "Moon-Whale sings when fed fish");
@@ -385,7 +385,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				p.setItemSlot(EquipmentSlot.LEGS, new ItemStack(OceanItems.KELP_WEAVE_GREAVES));
 				p.setItemSlot(EquipmentSlot.FEET, new ItemStack(OceanItems.TRENCH_BOOTS));
 				p.setAttached(OceanItems.TANK_OXYGEN, OceanRules.CHEST_OXYGEN_MAX);
-				p.teleportTo(l, 0.5, 92.0, 2.0, Set.<Relative>of(), 180f, -5f, false);
+				p.teleportTo(l, 0.5, 92.0, 2.0, Set.<RelativeMovement>of(), 180f, -5f);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.LEVIATHAN_GLAIVE));
 				p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(OceanItems.SIREN_PEARL_LANTERN));
 
@@ -420,7 +420,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 					"Harpoon right-click launches ThrownHarpoon projectile");
 
 				// Step onto sunlit dry prismarine promenade beside tank for crystal-clear 3D Suit + Glaive + Lantern photo
-				p.teleportTo(l, 0.5, 90.0, 12.5, Set.<Relative>of(), 0f, 0f, false);
+				p.teleportTo(l, 0.5, 90.0, 12.5, Set.<RelativeMovement>of(), 0f, 0f);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.LEVIATHAN_GLAIVE));
 				p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(OceanItems.SIREN_PEARL_LANTERN));
 				target.discard();
@@ -456,7 +456,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(l.getBlockState(lanternPos).getLightEmission() == 15, "Siren-Pearl Lantern emits light 15");
 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, -3.5, 90.0, 13.8, Set.<Relative>of(), -142f, 6f, false);
+				p.teleportTo(l, -3.5, 90.0, 13.8, Set.<RelativeMovement>of(), -142f, 6f);
 				p.getInventory().clearContent();
 				p.setItemSlot(EquipmentSlot.HEAD, new ItemStack(OceanItems.ABYSSAL_DIVING_HELM));
 				p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(OceanItems.BATHYSPHERE_CHESTPLATE));

@@ -870,7 +870,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				yuki.setOrderedToSit(false);
 				yuki.setInSittingPose(false);
 				yuki.teleportTo(619.5, 111.0, 0.5);
-				player.teleportTo(l, 620.5, 111.0, 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, 620.5, 111.0, 0.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 			c.waitTicks(25);
 			w.getServer().runOnServer(s -> {
@@ -887,7 +887,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					"Distant/unloaded sitting cats were NEVER cloned at |x|>500 (found " + nearDistant.size() + ")");
 
 				// Return within active entity range of (180.5, 111.0, 4.0) so resting Freya's section loads cleanly.
-				player.teleportTo(l, 220.5, 111.0, 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, 220.5, 111.0, 0.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 			c.waitTicks(15);
 			w.getServer().runOnServer(s -> {

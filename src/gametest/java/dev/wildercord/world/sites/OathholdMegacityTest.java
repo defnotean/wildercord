@@ -74,7 +74,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			warmArea(level, (int) Math.floor(x), (int) Math.floor(z), chunkR);
 			warmArea(level, (int) Math.floor(tx), (int) Math.floor(tz), chunkR);
 			ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
-			p.teleportTo(level, x, y, z, Set.<Relative>of(), yaw, pitch, false);
+			p.teleportTo(level, x, y, z, Set.<RelativeMovement>of(), yaw, pitch);
 		});
 		ctx.waitTicks(40);
 		try {

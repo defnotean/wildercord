@@ -250,7 +250,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
 				OathholdLaw.clearCrime(p, true);
-				p.teleportTo(l, 0.5, 120.0, -3.2, Set.<Relative>of(), 180.0F, -10.0F, false);
+				p.teleportTo(l, 0.5, 120.0, -3.2, Set.<RelativeMovement>of(), 180.0F, -10.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 				return new UUID[]{clericId, targetCitizenId};
 			});
@@ -285,7 +285,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 0.5, 120.0, -2.6, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 120.0, -2.6, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 			});
 			director(context, world, new Vec3(4.8, 122.7, 5.4), new Vec3(-0.2, 121.3, -4.0));
 			shot(context, "oathhold_guild_02_guildhall_receptionists");
@@ -295,7 +295,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			UUID[] knightIds = world.getServer().computeOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 0.5, 120.0, 4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 120.0, 4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				p.setHealth(p.getMaxHealth());
 
 				OathboundBastion bastion = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_BASTION, l, MobSpawnType.COMMAND);
@@ -353,7 +353,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				p.getInventory().add(new ItemStack(Items.EMERALD, 64));
 				OathholdCitizen cleric = (OathholdCitizen) l.getEntity(clericId);
 				check(cleric != null, "Priest Cleric missing for restitution");
-				p.teleportTo(l, cleric.getX() - 1.5, cleric.getY(), cleric.getZ(), Set.<Relative>of(), -90.0F, 0.0F, false);
+				p.teleportTo(l, cleric.getX() - 1.5, cleric.getY(), cleric.getZ(), Set.<RelativeMovement>of(), -90.0F, 0.0F);
 				p.setShiftKeyDown(true);
 				InteractionResult res = cleric.mobInteract(p, InteractionHand.MAIN_HAND);
 				p.setShiftKeyDown(false);
@@ -369,7 +369,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 0.5, 120.0, -2.5, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 120.0, -2.5, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 
 				// Job 1: Cleaning
 				var cleanSpec = OathholdQuestRules.byId("clean_canal_cobwebs");
@@ -429,7 +429,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				// Job 4: Sanctioned Colosseum Arena Bout + peaceful patrol Knight standing nearby
 				p.setHealth(p.getMaxHealth());
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-				p.teleportTo(l, ARENA_CENTER.getX() + 2.5, 120.0, ARENA_CENTER.getZ() + 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
+				p.teleportTo(l, ARENA_CENTER.getX() + 2.5, 120.0, ARENA_CENTER.getZ() + 0.5, Set.<RelativeMovement>of(), 90.0F, 0.0F);
 
 				OathboundHalberdier watcher = dev.wildercord.compat.McEntities.create(AuraWorld.OATHBOUND_HALBERDIER, l, MobSpawnType.COMMAND);
 				check(watcher != null, "Failed to spawn arena watcher knight");

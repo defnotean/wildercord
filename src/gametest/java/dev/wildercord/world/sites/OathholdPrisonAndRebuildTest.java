@@ -220,7 +220,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
 				OathholdLaw.clearCrime(p, true);
-				p.teleportTo(l, 2.5, 120.0, -5.0, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, 2.5, 120.0, -5.0, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 			});
 			context.waitTicks(6);
 
@@ -262,7 +262,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				watchman.finalizeSpawn(l, l.getCurrentDifficultyAt(watchman.blockPosition()), MobSpawnType.COMMAND, null);
 				l.addFreshEntity(watchman);
 
-				p.teleportTo(l, 1.5, 120.0, -5.5, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, 1.5, 120.0, -5.5, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 				p.gameMode.destroyBlock(new BlockPos(1, 121, -7));
 				check(OathholdLaw.isWanted(p) && OathholdLaw.bountyOf(p) >= OathholdLawRules.CrimeKind.VANDALISM.bountyEmeralds,
 					"Guard-witnessed house break marks player Wanted");
@@ -291,7 +291,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				check(l.getBlockState(barPos).is(Blocks.IRON_BARS), "Watch Stockade encloses player with iron bars");
 				p.gameMode.destroyBlock(barPos);
 				check(l.getBlockState(barPos).is(Blocks.IRON_BARS), "Prisoner cannot break Watch Stockade iron bars");
-				p.teleportTo(l, 18.0, 120.0, 18.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 18.0, 120.0, 18.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 			context.waitTicks(3);
 			world.getServer().runOnServer(server -> {
@@ -315,7 +315,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 					watchman.getNavigation().stop();
 				}
 				p.setHealth(p.getMaxHealth());
-				p.teleportTo(l, -1.5, 120.0, -4.8, Set.<Relative>of(), 170.0F, 15.0F, false);
+				p.teleportTo(l, -1.5, 120.0, -4.8, Set.<RelativeMovement>of(), 170.0F, 15.0F);
 				BlockPos tntPlaceFloor = new BlockPos(-1, 119, -6);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.TNT, 2));
 				p.gameMode.useItemOn(p, l, p.getMainHandItem(), InteractionHand.MAIN_HAND,
@@ -325,7 +325,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.FLINT_AND_STEEL));
 				p.gameMode.useItemOn(p, l, p.getMainHandItem(), InteractionHand.MAIN_HAND,
 					new BlockHitResult(Vec3.atCenterOf(tntPos), Direction.SOUTH, tntPos, false));
-				p.teleportTo(l, -1.5, 120.0, 4.5, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, -1.5, 120.0, 4.5, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 			});
 
 			// Wait for 80-tick TNT detonation + crater creation
@@ -372,7 +372,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				// Orient prisoner directly toward the repair site for clean first-person view through bars.
 				Vec3 eye = new Vec3(p.getX(), p.getEyeY(), p.getZ());
 				Vec3 target = new Vec3(0.5, 122.5, -8.5);
-				p.teleportTo(l, p.getX(), p.getY(), p.getZ(), Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
+				p.teleportTo(l, p.getX(), p.getY(), p.getZ(), Set.<RelativeMovement>of(), yaw(eye, target), pitch(eye, target));
 			});
 			context.waitTicks(4);
 			context.runOnClient(mc -> {

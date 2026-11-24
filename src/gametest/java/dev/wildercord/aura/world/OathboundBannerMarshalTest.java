@@ -160,7 +160,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			int studioId = server.computeOnServer(s -> {
 				ServerPlayer p = player(s);
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				return spawnMarshal(level(s), STAGE, 180.0F, false).getId();
 			});
 
@@ -256,7 +256,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				p.setGameMode(GameType.SURVIVAL);
 				p.setHealth(p.getMaxHealth());
 				p.getInventory().clearContent();
-				p.teleportTo(l, 0.5, 121.0, -3.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -3.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 
 			int marshalId = server.computeOnServer(s -> {
@@ -345,7 +345,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
-				p.teleportTo(l, 0.5, 121.0, -2.2, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -2.2, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
 				McEntities.clearHurtCooldown(m);
@@ -367,7 +367,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
 				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.startMove(l, OathboundBannerMarshalRules.SOVEREIGN_JUDGMENT, p);

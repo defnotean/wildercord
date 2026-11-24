@@ -159,7 +159,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			int studioId = server.computeOnServer(s -> {
 				ServerPlayer p = player(s);
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(level(s), 0.5, 121.0, -9.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				return spawnBastion(level(s), STAGE, 180.0F, false).getId();
 			});
 
@@ -258,7 +258,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setGameMode(GameType.SURVIVAL);
 				p.setHealth(p.getMaxHealth());
-				p.teleportTo(l, 0.5, 121.0, -4.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -4.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundBastion b = spawnBastion(l, STAGE, 180.0F, true);
 				b.startMove(l, OathboundBastionRules.PHALANX_BRACE, p);
 				return b.getId();
@@ -326,7 +326,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.setGameMode(GameType.SURVIVAL);
 				p.setHealth(p.getMaxHealth());
-				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				b.setTarget(p);
@@ -342,7 +342,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				p.removeAllEffects();
 				p.setHealth(p.getMaxHealth());
 				McEntities.clearHurtCooldown(p);
-				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				b.setTarget(p);
