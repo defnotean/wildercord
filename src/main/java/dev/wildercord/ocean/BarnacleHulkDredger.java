@@ -142,7 +142,7 @@ public class BarnacleHulkDredger extends Monster {
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		boolean hit = super.doHurtTarget(server, target);
+		boolean hit = super.doHurtTarget(target);
 		if (hit && target instanceof LivingEntity living && OceanItems.wornSuitPieces(living) >= 4) {
 			living.heal((float) (OceanRules.BARNACLE_HULK_DAMAGE * OceanRules.FULL_SUIT_ABYSSAL_DAMAGE_REDUCTION * 0.5f));
 		}
