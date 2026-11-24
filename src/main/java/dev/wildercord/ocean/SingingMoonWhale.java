@@ -153,7 +153,7 @@ public class SingingMoonWhale extends PathfinderMob {
 	}
 
 	private void shedAmbergris(ServerLevel server) {
-		spawnAtLocation(server, new ItemStack(OceanItems.STAR_BARNACLE_AMBERGRIS));
+		spawnAtLocation(OceanItems.STAR_BARNACLE_AMBERGRIS, 1);
 		server.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.5, getZ(), 8, 0.8, 0.4, 0.8, 0.02);
 	}
 

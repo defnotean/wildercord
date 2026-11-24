@@ -25,7 +25,7 @@ public final class OceanEntities {
 
 	private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
 		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id(id));
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key.location().toString()));
 	}
 
 	public static final EntityType<BarnacleHulkDredger> BARNACLE_HULK_DREDGER = register(

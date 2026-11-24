@@ -98,7 +98,7 @@ public class BrineMerchant extends WanderingTrader {
 		if (getDespawnDelay() > 0) {
 			setDespawnDelay(0);
 		}
-		super.customServerAiStep(server);
+		super.customServerAiStep();
 	}
 
 	@Override

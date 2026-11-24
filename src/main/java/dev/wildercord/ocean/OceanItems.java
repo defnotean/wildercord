@@ -90,15 +90,15 @@ public final class OceanItems {
 		p -> new GlaiveItem(p.attributes(net.minecraft.world.item.SwordItem.createAttributes(net.minecraft.world.item.Tiers.NETHERITE, 6, OceanRules.GLAIVE_ATTACK_SPEED))
 			.durability(2048).rarity(Rarity.EPIC)));
 	public static final Item SIREN_PEARL_LANTERN = register("siren_pearl_lantern",
-		p -> new SirenLanternBlockItem(p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
+		p -> new SirenLanternBlockItem(p.rarity(Rarity.RARE)));
 	public static final Item TIDECALLER_CONCH = register("tidecaller_conch",
 		p -> new ConchItem(p.stacksTo(1).durability(128).rarity(Rarity.RARE)));
 
 	// ---- Block Items ----
 	public static final Item TRENCH_ANVIL = register("trench_anvil",
-		p -> new LoreBlockItem("trench_anvil", OceanBlocks.TRENCH_ANVIL, p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
+		p -> new LoreBlockItem("trench_anvil", OceanBlocks.TRENCH_ANVIL, p.rarity(Rarity.RARE)));
 	public static final Item SOVEREIGN_ALTAR = register("sovereign_altar",
-		p -> new LoreBlockItem("sovereign_altar", OceanBlocks.SOVEREIGN_ALTAR, p.useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
+		p -> new LoreBlockItem("sovereign_altar", OceanBlocks.SOVEREIGN_ALTAR, p.rarity(Rarity.EPIC)));
 
 	// ---- Materials & Sea Cuisine ----
 	public static final Item ABYSSAL_PEARL = lore("abyssal_pearl", Rarity.UNCOMMON);
@@ -122,7 +122,6 @@ public final class OceanItems {
 	public static final Item SEA_SALT_RAMEN = register("sea_salt_ramen",
 		p -> new AuraWorld.Lore("sea_salt_ramen", p
 			.stacksTo(16)
-			.usingConvertsTo(Items.BOWL)
 			.food(new FoodProperties.Builder()
 				.nutrition(OceanRules.RAMEN_NUTRITION)
 				.saturationModifier(OceanRules.RAMEN_SATURATION)
@@ -344,7 +343,7 @@ public final class OceanItems {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 			ItemStack held = player.getItemInHand(hand);
 			if (level instanceof ServerLevel server) {
 				if (!player.getAbilities().instabuild) {
@@ -357,10 +356,10 @@ public final class OceanItems {
 				if (!player.getAbilities().instabuild) {
 					held.shrink(1);
 				} else {
-					player.getCooldowns().addCooldown(held, 12);
+					player.getCooldowns().addCooldown(held.getItem(), 12);
 				}
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(held);
 		}
 	}
 
@@ -370,10 +369,10 @@ public final class OceanItems {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 			ItemStack held = player.getItemInHand(hand);
-			if (player.getCooldowns().isOnCooldown(held)) {
-				return InteractionResult.FAIL;
+			if (player.getCooldowns().isOnCooldown(held.getItem())) {
+				return InteractionResultHolder.fail(held);
 			}
 			if (level instanceof ServerLevel server) {
 				Vec3 origin = player.getEyePosition();
@@ -409,9 +408,9 @@ public final class OceanItems {
 				if (!player.getAbilities().instabuild && hits > 0) {
 					held.hurtAndBreak(1, player, McHands.slot(hand));
 				}
-				player.getCooldowns().addCooldown(held, OceanRules.GLAIVE_COOLDOWN_TICKS);
+				player.getCooldowns().addCooldown(held.getItem(), OceanRules.GLAIVE_COOLDOWN_TICKS);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(held);
 		}
 	}
 
@@ -421,10 +420,10 @@ public final class OceanItems {
 		}
 
 		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 			ItemStack held = player.getItemInHand(hand);
-			if (player.getCooldowns().isOnCooldown(held)) {
-				return InteractionResult.FAIL;
+			if (player.getCooldowns().isOnCooldown(held.getItem())) {
+				return InteractionResultHolder.fail(held);
 			}
 			if (level instanceof ServerLevel server) {
 				int expires = server.getServer().getTickCount() + OceanRules.CONCH_DOME_DURATION_TICKS;
@@ -439,9 +438,9 @@ public final class OceanItems {
 				if (!player.getAbilities().instabuild) {
 					held.hurtAndBreak(1, player, McHands.slot(hand));
 				}
-				player.getCooldowns().addCooldown(held, OceanRules.CONCH_COOLDOWN_TICKS);
+				player.getCooldowns().addCooldown(held.getItem(), OceanRules.CONCH_COOLDOWN_TICKS);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResultHolder.success(held);
 		}
 	}
 

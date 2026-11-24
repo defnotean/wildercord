@@ -170,7 +170,7 @@ public class Cinderfox extends TamableAnimal {
 			return false;
 		}
 		entityData.set(DATA_BRUSHED, today);
-		spawnAtLocation(level, new ItemStack(Wildlife.EMBER_TUFT));
+		spawnAtLocation(Wildlife.EMBER_TUFT, 1);
 		SoundEvent purr = Wildlife.sound("cinderfox_yip");
 		if (purr != null) {
 			level.playSound(null, getX(), getY(), getZ(), purr, SoundSource.NEUTRAL, 0.8F, 1.25F);

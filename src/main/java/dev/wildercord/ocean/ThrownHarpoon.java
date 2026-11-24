@@ -43,7 +43,8 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 	}
 
 	public ThrownHarpoon(Level level, LivingEntity thrower, ItemStack stack) {
-		super(OceanEntities.THROWN_HARPOON, thrower, level, stack.copy());
+		super(OceanEntities.THROWN_HARPOON, thrower, level);
+		setItem(stack.copy());
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 					if (owner instanceof Player p && !p.getAbilities().instabuild) {
 						ItemStack drop = getItem().isEmpty() ? new ItemStack(OceanItems.TIDE_CLEAVER_HARPOON) : getItem().copy();
 						if (!p.getInventory().add(drop)) {
-							p.spawnAtLocation((ServerLevel) level(), drop);
+							p.spawnAtLocation(drop.getItem(), 1);
 						}
 					}
 					level().playSound(null, owner.blockPosition(), SoundEvents.TRIDENT_RETURN, SoundSource.PLAYERS, 0.7f, 1.1f);
