@@ -134,7 +134,7 @@ public class Cinderfox extends TamableAnimal {
 				} else {
 					level().broadcastEntityEvent(this, (byte) 6);
 				}
-				return InteractionResult.SUCCESS_SERVER;
+				return InteractionResult.SUCCESS;
 			}
 			return super.mobInteract(player, hand);
 		}
@@ -158,7 +158,7 @@ public class Cinderfox extends TamableAnimal {
 			jumping = false;
 			getNavigation().stop();
 			setTarget(null);
-			return InteractionResult.SUCCESS.withoutItem();
+			return InteractionResult.SUCCESS_NO_ITEM_USED;
 		}
 		return result;
 	}
@@ -175,7 +175,7 @@ public class Cinderfox extends TamableAnimal {
 		if (purr != null) {
 			level.playSound(null, getX(), getY(), getZ(), purr, SoundSource.NEUTRAL, 0.8F, 1.25F);
 		}
-		level.sendParticles(ParticleTypes.SMALL_FLAME, getX(), getY() + 0.4, getZ(), 6, 0.25, 0.15, 0.25, 0.01);
+		((net.minecraft.server.level.ServerLevel) level()).sendParticles(ParticleTypes.SMALL_FLAME, getX(), getY() + 0.4, getZ(), 6, 0.25, 0.15, 0.25, 0.01);
 		return true;
 	}
 
@@ -203,12 +203,12 @@ public class Cinderfox extends TamableAnimal {
 		if (hit) {
 			setLastHurtMob(target);
 			// A shower of sparks off its tail, and on a creature weak to fire, the embers catch.
-			level.sendParticles(ParticleTypes.SMALL_FLAME, target.getX(), target.getY(0.6), target.getZ(), weak ? 10 : 3, 0.2, 0.25, 0.2, 0.02);
+			((net.minecraft.server.level.ServerLevel) level()).sendParticles(ParticleTypes.SMALL_FLAME, target.getX(), target.getY(0.6), target.getZ(), weak ? 10 : 3, 0.2, 0.25, 0.2, 0.02);
 			if (weak) {
 				target.igniteForSeconds(WildlifeRules.SPARK_BURN_SECONDS);
 				SoundEvent spark = Wildlife.sound("cinderfox_spark");
 				if (spark != null) {
-					level.playSound(null, target.getX(), target.getY(), target.getZ(), spark, SoundSource.NEUTRAL, 0.9F, 1.0F);
+					((net.minecraft.server.level.ServerLevel) level()).playSound(null, target.getX(), target.getY(), target.getZ(), spark, SoundSource.NEUTRAL, 0.9F, 1.0F);
 				}
 			}
 		}

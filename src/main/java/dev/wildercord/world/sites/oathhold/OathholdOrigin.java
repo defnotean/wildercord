@@ -145,7 +145,7 @@ public final class OathholdOrigin {
 		Arrays.sort(samples);
 		int baseY = sea > 0
 			? Mth.clamp(samples[2], sea + 5, sea + 22)
-			: Math.max(samples[2], ctx.heightAccessor().getMinY() + 24);
+			: Math.max(samples[2], ctx.heightAccessor().getMinBuildHeight() + 24);
 		return Optional.of(new Origin(originX, baseY, originZ));
 	}
 

@@ -632,7 +632,7 @@ public final class OathholdLaw {
 			double bestDist = Double.MAX_VALUE;
 			for (Mob candidate : level.getEntitiesOfClass(Mob.class, box,
 					m -> m != mob && m.isAlive() && m instanceof Enemy && !isKnightEntity(m))) {
-				if (cond.test(level, mob, candidate)) {
+				if (cond.test(mob, candidate)) {
 					double d2 = candidate.distanceToSqr(mob);
 					if (d2 < bestDist) {
 						best = candidate;

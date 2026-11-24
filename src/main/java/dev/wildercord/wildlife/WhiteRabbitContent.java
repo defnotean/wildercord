@@ -45,7 +45,7 @@ public final class WhiteRabbitContent {
 			.sized(0.5F, 0.65F)
 			.eyeHeight(0.48F)
 			.clientTrackingRange(8)
-			.build(RABBIT_KEY));
+			.build(RABBIT_KEY.location().toString()));
 
 	private static final ResourceKey<Block> PORTAL_KEY =
 		ResourceKey.create(Registries.BLOCK, Wildercord.id("rabbit_hole_portal"));
@@ -82,7 +82,7 @@ public final class WhiteRabbitContent {
 	public static final Item WHITE_RABBIT_SPAWN_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		EGG_KEY,
-		new SpawnEggItem(WHITE_RABBIT, new Item.Properties()));
+		dev.wildercord.compat.McSpawnEgg.create(WHITE_RABBIT, new Item.Properties()));
 
 	public static final TagKey<Block> GROUND =
 		TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/white_rabbit"));

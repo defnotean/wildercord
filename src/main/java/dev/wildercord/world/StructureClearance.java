@@ -250,7 +250,7 @@ public final class StructureClearance {
 		long seed = context.seed();
 		int sea = context.chunkGenerator().getSeaLevel();
 		int surfaceSampleY = Math.max(sea, 64);
-		int caveSampleY = Math.max(context.heightAccessor().getMinY() + 8, sea - 48);
+		int caveSampleY = Math.max(context.heightAccessor().getMinBuildHeight() + 8, sea - 48);
 
 		for (Entry other : BY_DOMAIN.get(self.domain)) {
 			if (other == self) continue;

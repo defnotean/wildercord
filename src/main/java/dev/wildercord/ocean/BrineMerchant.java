@@ -94,7 +94,7 @@ public class BrineMerchant extends WanderingTrader {
 	}
 
 	@Override
-	protected void customServerAiStep(net.minecraft.server.level.ServerLevel server) {
+	protected void customServerAiStep() {
 		if (getDespawnDelay() > 0) {
 			setDespawnDelay(0);
 		}

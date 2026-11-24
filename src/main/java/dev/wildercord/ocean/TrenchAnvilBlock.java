@@ -102,9 +102,9 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 		if (level instanceof ServerLevel && player instanceof ServerPlayer sp) {
 			sp.sendSystemMessage(Component.translatable("message.wildercord.trench_anvil.hint")
 				.withStyle(ChatFormatting.AQUA));
-			return net.minecraft.world.ItemInteractionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return net.minecraft.world.ItemInteractionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public final class TrenchAnvilBlock extends Block implements SimpleWaterloggedBl
 			return net.minecraft.world.ItemInteractionResult.SUCCESS;
 		}
 		if (stack.isEmpty()) {
-			return useWithoutItem(state, level, pos, player, hit);
+			return dev.wildercord.compat.McInteractions.itemResult(useWithoutItem(state, level, pos, player, hit));
 		}
 		if (OceanItems.isAbyssalRepairable(stack) && stack.isDamaged()) {
 			Item plate = OceanItems.ABYSSAL_IRON_PLATE;

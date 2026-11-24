@@ -159,7 +159,7 @@ public abstract class OceanPiece extends StructurePiece {
 	protected final <T extends Mob> void spawnMob(WorldGenLevel level, BoundingBox clip, EntityType<T> type, int x, int y, int z, Consumer<T> configure) {
 		BlockPos p = getWorldPos(x, y, z);
 		if (!clip.isInside(p)) return;
-		T mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		T mob = dev.wildercord.compat.McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) return;
 		mob.moveTo(p.getX() + 0.5, p.getY(), p.getZ() + 0.5, 0.0f, 0.0f);
 		mob.setPersistenceRequired();
@@ -202,7 +202,7 @@ public abstract class OceanPiece extends StructurePiece {
 				int surf = ctx.chunkGenerator().getFirstOccupiedHeight(
 					px, pz, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
 				int floor = oceanFloorY(ctx, px, pz);
-				Holder<Biome> biome = McWorldgen.getNoiseBiome(ctx, px, Math.max(ctx.heightAccessor().getMinY() + 1, Math.min(sea - 2, floor)), pz);
+				Holder<Biome> biome = McWorldgen.getNoiseBiome(ctx, px, Math.max(ctx.heightAccessor().getMinBuildHeight() + 1, Math.min(sea - 2, floor)), pz);
 				if (!biome.is(BiomeTags.IS_OCEAN)) {
 					return OptionalInt.empty();
 				}

@@ -695,7 +695,7 @@ public final class OathholdCanvas {
 		if (!inClip(lx, ly, lz)) return null;
 		BlockPos pos = findSafeStandPos(lx, ly, lz);
 		if (pos == null) return null;
-		OathholdCitizen citizen = OathholdContent.CITIZEN.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		OathholdCitizen citizen = dev.wildercord.compat.McEntities.create(OathholdContent.CITIZEN, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (citizen == null) return null;
 		citizen.configure(archetype, lx, ly, lz, pos, tetherRadius);
 		citizen.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);
@@ -711,7 +711,7 @@ public final class OathholdCanvas {
 		if (pos == null) {
 			pos = new BlockPos(wx(lx), wy(ly), wz(lz));
 		}
-		T mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		T mob = dev.wildercord.compat.McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) return null;
 		if (persistent) mob.setPersistenceRequired();
 		mob.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);

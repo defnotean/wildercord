@@ -45,7 +45,7 @@ public final class WetlandGarden {
  private static boolean begin(ServerPlayer p,InteractionHand hand) {
   if(p.isSpectator())return false;
   var stack=p.getItemInHand(hand);long now=clock(p);if(now<p.getAttachedOrElse(LENS_READY,0L))return false;
-  p.setAttached(LENS_READY,now+100);p.getCooldowns().addCooldown(stack,100);stack.hurtAndBreak(1,p,dev.wildercord.compat.McHands.slot(hand));Feels.sound(((ServerLevel) p.level()),p.position(),"wetland_lens_focus",.4F,1);return true;
+  p.setAttached(LENS_READY,now+100);p.getCooldowns().addCooldown(stack.getItem(),100);stack.hurtAndBreak(1,p,dev.wildercord.compat.McHands.slot(hand));Feels.sound(((ServerLevel) p.level()),p.position(),"wetland_lens_focus",.4F,1);return true;
  }
  public static final Item LENS=Registry.register(BuiltInRegistries.ITEM,key("dewglass_lens"),new AuraWorld.Lore("dewglass_lens",new Item.Properties().durability(96)) {
   @Override public InteractionResult useOn(UseOnContext c) {
@@ -53,7 +53,7 @@ public final class WetlandGarden {
    if(c.getPlayer() instanceof ServerPlayer p && begin(p,c.getHand()))inspect(p,c.getClickedPos());
    return InteractionResult.SUCCESS;
   }
-  @Override public InteractionResult use(Level l,Player p,InteractionHand hand) {
+  @Override public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level l,Player p,InteractionHand hand) {
    if(p instanceof ServerPlayer sp && begin(sp,hand)) {
     BlockPos best=null;double distance=Double.MAX_VALUE;var center=p.blockPosition();
     for(var at:BlockPos.betweenClosed(center.offset(-8,-2,-8),center.offset(8,2,8))) {
@@ -63,7 +63,7 @@ public final class WetlandGarden {
     if(best==null)p.displayClientMessage(Component.translatable("message.wildercord.dewglass.none"), true);
     else {var a=p.getEyePosition();var b=Vec3.atCenterOf(best).add(0,.5,0);for(int i=1;i<=8;i++) {var v=a.lerp(b,i/8.0);((ServerLevel) sp.level()).sendParticles(ParticleTypes.GLOW,v.x,v.y,v.z,1,0,0,0,0);}inspect(sp,best);}
    }
-   return InteractionResult.SUCCESS;
+   return net.minecraft.world.InteractionResultHolder.success(p.getItemInHand(hand));
   }
  });
  private static void inspect(ServerPlayer p,BlockPos at) {

@@ -115,7 +115,7 @@ public class RabbitHolePortalBlockEntity extends BlockEntity {
 		level.getChunk(dest);
 		player.resetFallDistance();
 		player.teleportTo(level, dest.getX() + 0.5, dest.getY() + 0.1, dest.getZ() + 0.5,
-			Set.of(), 180.0F, 0.0F, false);
+			Set.of(), 180.0F, 0.0F);
 		if (bossProtect) {
 			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 1, false, true));
 		}

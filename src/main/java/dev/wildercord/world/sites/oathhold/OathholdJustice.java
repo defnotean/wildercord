@@ -316,7 +316,7 @@ public final class OathholdJustice {
 			}
 		}
 		targetSite.totalOriginal += added;
-		sortRepairQueue(targetSite.remaining);
+		sortRepairQueue(server, targetSite.remaining);
 		data.setDirty();
 
 		if (culprit != null && !culprit.isCreative() && !culprit.isSpectator() && !isImprisoned(culprit)
@@ -374,7 +374,7 @@ public final class OathholdJustice {
 		float[] angles = lookAngles(new Vec3(cellCenter.getX() + 0.5, cellCenter.getY() + 1.62, cellCenter.getZ() + 0.5),
 			Vec3.atCenterOf(lookTarget));
 		player.teleportTo(level, cellCenter.getX() + 0.5, cellCenter.getY(), cellCenter.getZ() + 0.5,
-			java.util.Set.of(), angles[0], angles[1], false);
+			java.util.Set.of(), angles[0], angles[1]);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.setHealth(Math.max(player.getHealth(), Math.min(player.getMaxHealth(), 10.0F)));
 
@@ -424,7 +424,7 @@ public final class OathholdJustice {
 			}
 		}
 		if (fallback != null) return fallback;
-		return new BlockPos(targetPos.getX() + 8, Math.max(level.getMinY() + 4, baseY), targetPos.getZ() + 8);
+		return new BlockPos(targetPos.getX() + 8, Math.max(level.getMinBuildHeight() + 4, baseY), targetPos.getZ() + 8);
 	}
 
 	private static boolean overlapsRepairs(BlockPos center, JusticeLedger data) {
@@ -444,7 +444,7 @@ public final class OathholdJustice {
 		int solid = 0;
 		for (int dx = -2; dx <= 2; dx += 2) {
 			for (int dz = -2; dz <= 2; dz += 2) {
-				if (level.getBlockState(center.offset(dx, -1, dz)).isSolidRender()) solid++;
+				if (level.getBlockState(center.offset(dx, -1, dz)).isSolidRender(level, center.offset(dx, -1, dz))) solid++;
 			}
 		}
 		return solid >= 5;
@@ -552,7 +552,7 @@ public final class OathholdJustice {
 			OathholdLaw.clearCrime(player, true);
 			clearWatchmanPursuits(level, player.getUUID());
 			player.teleportTo(level, record.cellCenter.getX() + 0.5, record.cellCenter.getY(), record.cellCenter.getZ() + 0.5,
-				java.util.Set.of(), player.getYRot(), player.getXRot(), false);
+				java.util.Set.of(), player.getYRot(), player.getXRot());
 			level.playSound(null, record.cellCenter, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 0.9F, 1.0F);
 			level.playSound(null, record.cellCenter, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.9F, 1.15F);
 			player.sendSystemMessage(Component.literal(
@@ -628,7 +628,7 @@ public final class OathholdJustice {
 					float[] angles = lookAngles(new Vec3(rec.cellCenter.getX() + 0.5, rec.cellCenter.getY() + 1.62, rec.cellCenter.getZ() + 0.5),
 						Vec3.atCenterOf(rec.lookTarget));
 					player.teleportTo(overworld, rec.cellCenter.getX() + 0.5, rec.cellCenter.getY(), rec.cellCenter.getZ() + 0.5,
-						java.util.Set.of(), angles[0], angles[1], false);
+						java.util.Set.of(), angles[0], angles[1]);
 					player.setDeltaMovement(Vec3.ZERO);
 				}
 				if (now % 20L == 0L) {
@@ -765,7 +765,7 @@ public final class OathholdJustice {
 	private static BlockPos findCrewGround(ServerLevel level, BlockPos near) {
 		for (int dy = 2; dy >= -4; dy--) {
 			BlockPos candidate = near.offset(0, dy, 0);
-			if (level.getBlockState(candidate.below()).isSolidRender()
+			if (level.getBlockState(candidate.below()).isSolidRender(level, candidate.below())
 					&& level.getBlockState(candidate).isAir()
 					&& level.getBlockState(candidate.above()).isAir()) {
 				return candidate;
@@ -784,10 +784,10 @@ public final class OathholdJustice {
 		}
 	}
 
-	private static void sortRepairQueue(List<SavedBlock> list) {
+	private static void sortRepairQueue(net.minecraft.server.level.ServerLevel server, List<SavedBlock> list) {
 		list.sort((a, b) -> OathholdLawRules.compareForRebuild(
-			a.pos().getX(), a.pos().getY(), a.pos().getZ(), a.state().isSolidRender(),
-			b.pos().getX(), b.pos().getY(), b.pos().getZ(), b.state().isSolidRender()));
+			a.pos().getX(), a.pos().getY(), a.pos().getZ(), a.state().isSolidRender(server, a.pos()),
+			b.pos().getX(), b.pos().getY(), b.pos().getZ(), b.state().isSolidRender(server, b.pos())));
 	}
 
 	private static float[] lookAngles(Vec3 from, Vec3 to) {

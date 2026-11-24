@@ -67,7 +67,7 @@ public final class HollowTreeBuilder {
 				BlockPos candidate = new BlockPos(x, origin.getY(), z);
 				level.getChunk(candidate);
 				int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-				if (y <= level.getMinY() + 2 || y >= level.getMaxY() - 12) {
+				if (y <= level.getMinBuildHeight() + 2 || y >= level.getMaxBuildHeight() - 12) {
 					continue;
 				}
 				BlockPos base = new BlockPos(x, y, z);
@@ -211,7 +211,7 @@ public final class HollowTreeBuilder {
 		}
 		int cx = treePortalPos.getX() + 72;
 		int cz = treePortalPos.getZ() + 72;
-		int floorY = Math.max(level.getMinY() + 18, -28);
+		int floorY = Math.max(level.getMinBuildHeight() + 18, -28);
 		BlockPos center = new BlockPos(cx, floorY, cz);
 		carveNaturalCaveChamber(level, center, random);
 		BlockPos portal = center.offset(0, 1, 4);
@@ -236,7 +236,7 @@ public final class HollowTreeBuilder {
 	}
 
 	private static BlockPos tryFindNaturalCave(ServerLevel level, BlockPos origin, RandomSource random) {
-		int minY = Math.max(level.getMinY() + 14, -32);
+		int minY = Math.max(level.getMinBuildHeight() + 14, -32);
 		int maxY = Math.min(origin.getY() - 16, 28);
 		if (maxY <= minY) {
 			return null;
@@ -319,7 +319,7 @@ public final class HollowTreeBuilder {
 	public static BlockPos buildTreasureVault(ServerLevel level, BlockPos treePortalPos, RandomSource random) {
 		int cx = treePortalPos.getX() + 48;
 		int cz = treePortalPos.getZ() - 48;
-		int floorY = Math.max(level.getMinY() + 18, -34);
+		int floorY = Math.max(level.getMinBuildHeight() + 18, -34);
 		BlockPos center = new BlockPos(cx, floorY, cz);
 
 		for (int dx = -6; dx <= 6; dx++) {
@@ -413,7 +413,7 @@ public final class HollowTreeBuilder {
 			ServerPlayer triggerPlayer, RandomSource random) {
 		int cx = treePortalPos.getX() - 64;
 		int cz = treePortalPos.getZ() + 64;
-		int floorY = Math.max(level.getMinY() + 18, -42);
+		int floorY = Math.max(level.getMinBuildHeight() + 18, -42);
 		BlockPos center = new BlockPos(cx, floorY, cz);
 
 		int outerR = 22;

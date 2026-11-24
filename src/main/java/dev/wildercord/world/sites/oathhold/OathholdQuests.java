@@ -613,7 +613,7 @@ public final class OathholdQuests {
 
 	private static void giveOrDrop(ServerPlayer player, ItemStack stack) {
 		if (!player.getInventory().add(stack)) {
-			player.spawnAtLocation((ServerLevel) player.level(), stack);
+			player.spawnAtLocation(stack);
 		}
 	}
 

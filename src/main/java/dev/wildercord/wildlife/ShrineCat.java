@@ -171,7 +171,7 @@ public class ShrineCat extends TamableAnimal {
 					&& (r == ShrineCatRules.ROLE_GUARDIAN || r == ShrineCatRules.ROLE_TAMED) && super.canUse();
 			}
 		});
-		targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
+		targetSelector.addGoal(4, new NearestAttackableTargetGoal<net.minecraft.world.entity.monster.Monster>(this, Monster.class, 10, true, false,
 			(target, lvl) -> !isOrderedToSit() && !isLoafing() && getRole() == ShrineCatRules.ROLE_TAMED && isTame()));
 	}
 
@@ -339,7 +339,7 @@ public class ShrineCat extends TamableAnimal {
 			}
 			double horizSq = (sp.getX() - getX()) * (sp.getX() - getX()) + (sp.getZ() - getZ()) * (sp.getZ() - getZ());
 			if (horizSq <= 24.0 * 24.0 && sp.getY() > getY() + 5.5 && sp.getY() < getY() + 26.0) {
-				sp.teleportTo(level, getX(), getY(), getZ() - 3.0, Set.of(), sp.getYRot(), sp.getXRot(), false);
+				sp.teleportTo(level, getX(), getY(), getZ() - 3.0, Set.of(), sp.getYRot(), sp.getXRot());
 				level.playSound(null, sp.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 0.9F, 0.85F);
 				level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, sp.getX(), sp.getY() + 1.0, sp.getZ(), 14, 0.4, 0.4, 0.4, 0.04);
 				sp.displayClientMessage(Component.literal("Floor " + variant().sanctuaryFloor + " is sealed! Defeat "
@@ -726,7 +726,7 @@ public class ShrineCat extends TamableAnimal {
 				if (!level().isClientSide()) {
 					player.displayClientMessage(Component.literal(variant().displayName + " is still guarding Floor " + variant().sanctuaryFloor + "!"), true);
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 			if (bellItem || fishItem) {
 				if (level() instanceof ServerLevel server) {
@@ -735,12 +735,12 @@ public class ShrineCat extends TamableAnimal {
 					}
 					if (!ShrineCatRules.canTame(role, sanctuaryFinished, bellItem)) {
 						player.displayClientMessage(Component.literal("Finish all 4 Sanctuary floors (defeat Kuro on Floor 4) before taming!"), true);
-						return InteractionResult.SUCCESS_SERVER;
+						return InteractionResult.SUCCESS;
 					}
 					if (!ShrineCatJournal.canTame(server.getServer(), player.getUUID(), variant())) {
 						player.displayClientMessage(Component.literal("You already have " + variant().displayName
 							+ " as a companion! Ring a Suzu Cat-Bell Charm to call them."), true);
-						return InteractionResult.SUCCESS_SERVER;
+						return InteractionResult.SUCCESS;
 					}
 					if (fishItem) {
 						held.consume(1, player);
@@ -766,7 +766,7 @@ public class ShrineCat extends TamableAnimal {
 					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.NEUTRAL, 1.0F, 1.2F);
 					player.displayClientMessage(Component.literal("You tamed " + variant().displayName + "! Unique Power: " + variant().tamedPower), false);
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 		}
 		if (isTame() && isOwnedBy(player)) {
@@ -776,7 +776,7 @@ public class ShrineCat extends TamableAnimal {
 					heal(6.0F);
 					level().broadcastEntityEvent(this, (byte) 7);
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 			if (level() instanceof ServerLevel server) {
 				if (player.isShiftKeyDown()) {
@@ -792,7 +792,7 @@ public class ShrineCat extends TamableAnimal {
 				}
 				ShrineCatJournal.snapshotLive(server.getServer(), player.getUUID(), this);
 			}
-			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(player, hand);
 	}

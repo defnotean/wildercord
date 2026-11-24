@@ -459,7 +459,7 @@ public final class OathholdInnerCore {
 					OathholdStreetscape.hedgePlanter(c, 57, 0, 68, 61, 88);
 					OathholdStreetscape.patioTable(c, 58, 1, 78, Blocks.RED_CARPET.defaultBlockState(), Blocks.WHITE_WOOL.defaultBlockState());
 					if (c.inClip(52, 1, 82)) {
-						ArmorStand stand = EntityType.ARMOR_STAND.create(c.level().getLevel(), MobSpawnType.STRUCTURE);
+						ArmorStand stand = dev.wildercord.compat.McEntities.create(EntityType.ARMOR_STAND, c.level().getLevel(), MobSpawnType.STRUCTURE);
 						if (stand != null) {
 							stand.moveTo(c.wx(52) + 0.5, c.wy(1), c.wz(82) + 0.5, 125.0F, 0.0F);
 							stand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
