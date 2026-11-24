@@ -566,7 +566,7 @@ public final class OathholdQuests {
 				if (Math.abs(rx - center.getX()) < 6 && Math.abs(rz - center.getZ()) < 6) continue;
 				BlockPos p = new BlockPos(rx, center.getY(), rz);
 				if (level.getBlockState(p).isAir() && level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) {
-					if (type.get().create(level, MobSpawnType.EVENT) instanceof Mob mob) {
+					if (dev.wildercord.compat.McEntities.create(type.get(), level, MobSpawnType.EVENT) instanceof Mob mob) {
 						mob.moveTo(rx + 0.5, p.getY(), rz + 0.5, rng.nextFloat() * 360.0F, 0.0F);
 						mob.addTag(QUEST_PEST_PREFIX + playerId);
 						mob.setCustomName(Component.literal("Guild Subjugation Target"));

@@ -109,7 +109,7 @@ public final class SacredPigQuest {
 	private static Entity create(ServerLevel level, String id) {
 		return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
 			.getOptional(net.minecraft.resources.ResourceLocation.parse(id))
-			.map(t -> ((EntityType<? extends Entity>) t).create(level, MobSpawnType.STRUCTURE))
+			.map(t -> dev.wildercord.compat.McEntities.create((EntityType<? extends Entity>) t, level, MobSpawnType.STRUCTURE))
 			.orElse(null);
 	}
 }

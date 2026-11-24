@@ -187,8 +187,7 @@ public class ThalassorBoss extends Monster {
 				e -> e instanceof SirenVeilJelly || e instanceof CoralSpineMako).size();
 			if (existing < 4) {
 				for (int i = 0; i < 2; i++) {
-					Monster minion = (i == 0 ? OceanEntities.SIREN_VEIL_JELLY : OceanEntities.CORAL_SPINE_MAKO)
-						.create(server, MobSpawnType.MOB_SUMMONED);
+					Monster minion = dev.wildercord.compat.McEntities.create(i == 0 ? OceanEntities.SIREN_VEIL_JELLY : OceanEntities.CORAL_SPINE_MAKO, server, MobSpawnType.MOB_SUMMONED);
 					if (minion != null) {
 						minion.setPos(getX() + (i == 0 ? 4.0 : -4.0), getY() + 1.0, getZ());
 						server.addFreshEntity(minion);
