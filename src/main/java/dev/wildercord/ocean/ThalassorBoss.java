@@ -168,10 +168,10 @@ public class ThalassorBoss extends Monster {
 			if (mode == 1) {
 				entityData.set(JAW_OPEN, 1.0f);
 				if (target != null && target.isAlive() && activeAttackTicks % 8 == 0) {
-					fireHydroBeam(server, target);
+					fireHydroBeam(level, target);
 				}
 			} else if (mode == 2 && activeAttackTicks % 6 == 0) {
-				pulseMaelstromVortex(server);
+				pulseMaelstromVortex(level);
 			}
 			if (activeAttackTicks == 0) {
 				entityData.set(ATTACK_MODE, 0);
@@ -184,14 +184,14 @@ public class ThalassorBoss extends Monster {
 
 		if (phase >= 2 && summonCooldown <= 0) {
 			summonCooldown = phase == 3 ? 220 : 300;
-			int existing = server.getEntitiesOfClass(Monster.class, getBoundingBox().inflate(32.0),
+			int existing = level.getEntitiesOfClass(Monster.class, getBoundingBox().inflate(32.0),
 				e -> e instanceof SirenVeilJelly || e instanceof CoralSpineMako).size();
 			if (existing < 4) {
 				for (int i = 0; i < 2; i++) {
-					Monster minion = dev.wildercord.compat.McEntities.create(i == 0 ? OceanEntities.SIREN_VEIL_JELLY : OceanEntities.CORAL_SPINE_MAKO, server, MobSpawnType.MOB_SUMMONED);
+					Monster minion = dev.wildercord.compat.McEntities.create(i == 0 ? OceanEntities.SIREN_VEIL_JELLY : OceanEntities.CORAL_SPINE_MAKO, level, MobSpawnType.MOB_SUMMONED);
 					if (minion != null) {
 						minion.setPos(getX() + (i == 0 ? 4.0 : -4.0), getY() + 1.0, getZ());
-						server.addFreshEntity(minion);
+						level.addFreshEntity(minion);
 					}
 				}
 			}
@@ -237,7 +237,7 @@ public class ThalassorBoss extends Monster {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel server, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		boolean hit = super.doHurtTarget(server, target);
 		if (hit && target instanceof LivingEntity living && OceanItems.wornSuitPieces(living) >= 4) {
 			living.heal((float) (OceanRules.THALASSOR_MELEE_DAMAGE * OceanRules.FULL_SUIT_ABYSSAL_DAMAGE_REDUCTION * 0.5f));

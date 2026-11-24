@@ -498,7 +498,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (amount <= 0.0F) {
 			return false;
 		}
@@ -511,8 +511,8 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 		long el = since();
 		if (src instanceof LivingEntity attacker && attacker.getMainHandItem().is(ItemTags.AXES)
 				&& OathboundHalberdierRules.axeInterruptsWindup(m, el, t, true)) {
-			Sigils.flash(level, chestPos(), 0xFF48F0FF, 1.6F);
-			startMove(level, OathboundHalberdierRules.STAGGERED, null);
+			Sigils.flash(((ServerLevel) level()), chestPos(), 0xFF48F0FF, 1.6F);
+			startMove(((ServerLevel) level()), OathboundHalberdierRules.STAGGERED, null);
 			return super.hurt( source,  amount * 1.15F);
 		}
 		double mult = OathboundHalberdierRules.damageMultiplier(m, el, t);

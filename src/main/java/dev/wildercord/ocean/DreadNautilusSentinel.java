@@ -105,7 +105,7 @@ public class DreadNautilusSentinel extends Monster {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		Entity attacker = source.getEntity();
 		if (attacker != null && !source.is(DamageTypeTags.BYPASSES_ARMOR)) {
 			Vec3 toAttacker = attacker.position().subtract(position()).normalize();
@@ -147,12 +147,12 @@ public class DreadNautilusSentinel extends Monster {
 				Vec3 to = target.getEyePosition();
 				for (int step = 1; step <= 6; step++) {
 					Vec3 p = from.lerp(to, step / 6.0);
-					server.sendParticles(ParticleTypes.GLOW, p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.0);
+					level.sendParticles(ParticleTypes.GLOW, p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.0);
 				}
 			}
 			if (laser % 10 == 0) {
 				float dmg = OceanRules.DREAD_NAUTILUS_LASER_DAMAGE * OceanRules.abyssalDamageMultiplier(OceanItems.wornSuitPieces(target));
-				target.hurt( server.damageSources().indirectMagic(this, this),  dmg);
+				target.hurt( level.damageSources().indirectMagic(this, this),  dmg);
 			}
 		}
 

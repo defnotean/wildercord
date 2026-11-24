@@ -684,7 +684,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+	public boolean hurt(DamageSource source, float damage) {
 		if (damage <= 0 || source.is(DamageTypes.GENERIC_KILL)) {
 			return super.hurt( source,  damage);
 		}
@@ -701,7 +701,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 
 		// Belt-and-suspenders projectile block during Phalanx Brace for direct hurt calls.
 		if (source.getDirectEntity() instanceof Projectile && OathboundBastionRules.deflectsProjectile(curMove, frontal)) {
-			Feels.sound(level, chestPos(), "aura_bell_warden_ring", 1.1F, 1.15F);
+			Feels.sound(((ServerLevel) level()), chestPos(), "aura_bell_warden_ring", 1.1F, 1.15F);
 			return false;
 		}
 
@@ -713,10 +713,10 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 			if (attacker instanceof Player player) {
 				MonsterMagic.tell(player, Component.translatable("message.wildercord.aura_world.guard_broken", getDisplayName()).withColor(0xFFD54A));
 			}
-			enterStagger(level, OathboundBastionRules.STAGGER_AXE_TICKS);
+			enterStagger(((ServerLevel) level()), OathboundBastionRules.STAGGER_AXE_TICKS);
 			boolean brokenHit = super.hurt( source,  damage);
 			if (brokenHit) {
-				level.sendParticles(ParticleTypes.CRIT, chestPos().x, chestPos().y, chestPos().z, 14, 0.5, 0.5, 0.5, 0.25);
+				((ServerLevel) level()).sendParticles(ParticleTypes.CRIT, chestPos().x, chestPos().y, chestPos().z, 14, 0.5, 0.5, 0.5, 0.25);
 			}
 			return brokenHit;
 		}
@@ -724,12 +724,12 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		boolean inAnvilRecovery = curMove == OathboundBastionRules.ANVIL_SLAM && since() >= tell();
 		float scaled = damage * (float) OathboundBastionRules.damageMultiplier(curMove, frontal, inAnvilRecovery);
 		if (curMove == OathboundBastionRules.PHALANX_BRACE && frontal) {
-			sound(level, chestPos(), SoundEvents.SHIELD_BLOCK, 1.0F, 0.9F);
-			level.sendParticles(ParticleTypes.WAX_ON, chestPos().x, chestPos().y, chestPos().z, 6, 0.3, 0.4, 0.3, 0.05);
+			sound(((ServerLevel) level()), chestPos(), SoundEvents.SHIELD_BLOCK, 1.0F, 0.9F);
+			((ServerLevel) level()).sendParticles(ParticleTypes.WAX_ON, chestPos().x, chestPos().y, chestPos().z, 6, 0.3, 0.4, 0.3, 0.05);
 		}
 		boolean hurt = super.hurt( source,  scaled);
 		if (hurt) {
-			long now = level.getGameTime();
+			long now = ((ServerLevel) level()).getGameTime();
 			recentDamage = (now <= recentDamageWindowEnd ? recentDamage : 0.0F) + scaled;
 			recentDamageWindowEnd = now + 40L;
 		}

@@ -224,7 +224,7 @@ public class PearlPup extends TamableAnimal {
 			entityData.set(SNIFFING, true);
 			if (detectedChest != null && sniffHighlightTicks % 8 == 0) {
 				Vec3 to = Vec3.atCenterOf(detectedChest).subtract(getEyePosition()).normalize();
-				server.sendParticles(ParticleTypes.GLOW,
+				level.sendParticles(ParticleTypes.GLOW,
 					getX() + to.x * 1.5, getEyeY() + to.y * 1.5, getZ() + to.z * 1.5,
 					2, 0.1, 0.1, 0.1, 0.02);
 			}
@@ -233,7 +233,7 @@ public class PearlPup extends TamableAnimal {
 		}
 		if (--sniffTimer <= 0) {
 			sniffTimer = OceanRules.PEARL_PUP_SNIFF_INTERVAL;
-			detectedChest = findNearestTreasure(server);
+			detectedChest = findNearestTreasure(level);
 			if (detectedChest != null) {
 				sniffHighlightTicks = 60;
 				playSound(SoundEvents.DOLPHIN_PLAY, 0.8f, 1.4f);

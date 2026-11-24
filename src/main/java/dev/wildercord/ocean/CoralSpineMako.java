@@ -106,7 +106,7 @@ public class CoralSpineMako extends Monster {
 		if (lunge > 0) {
 			entityData.set(LUNGE_TICKS, lunge - 1);
 			if (isInWater()) {
-				server.sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.3, getZ(), 2, 0.2, 0.1, 0.2, 0.02);
+				level.sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.3, getZ(), 2, 0.2, 0.1, 0.2, 0.02);
 			}
 			return;
 		}

@@ -109,7 +109,7 @@ public class SirenVeilJelly extends Monster {
 			pulse--;
 			entityData.set(PULSE_TICKS, pulse);
 			if (pulse == 1) {
-				releaseShockRing(server);
+				releaseShockRing(level);
 			}
 			return;
 		}

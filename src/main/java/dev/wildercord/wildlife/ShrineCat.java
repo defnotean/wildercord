@@ -493,7 +493,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (source.is(DamageTypes.GENERIC_KILL)) {
 			bossBar.removeAllPlayers();
 			return super.hurt( source,  amount);
@@ -519,19 +519,19 @@ public class ShrineCat extends TamableAnimal {
 			float floorHp = Math.max(12.0F, getMaxHealth() * 0.35F);
 			if (getHealth() - amount <= 2.0F) {
 				setHealth(Math.max(getHealth(), floorHp));
-				level.playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.7F, 1.4F);
-				level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.5, getZ(), 8, 0.3, 0.3, 0.3, 0.04);
+				((ServerLevel) level()).playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.7F, 1.4F);
+				((ServerLevel) level()).sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.5, getZ(), 8, 0.3, 0.3, 0.3, 0.04);
 				return false;
 			}
 		}
 		if (role == ShrineCatRules.ROLE_GUARDIAN) {
 			boolean bypassAegis = amount >= getMaxHealth() * 0.75F;
 			if (!bypassAegis) {
-				int sentries = countFloorSentries(level);
+				int sentries = countFloorSentries(((ServerLevel) level()));
 				if (sentries > 0) {
 					amount *= 0.15F;
-					level.playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.HOSTILE, 0.7F, 1.35F);
-					level.sendParticles(ParticleTypes.ENCHANT, getX(), getY() + 0.6, getZ(), 10, 0.5, 0.3, 0.5, 0.05);
+					((ServerLevel) level()).playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.HOSTILE, 0.7F, 1.35F);
+					((ServerLevel) level()).sendParticles(ParticleTypes.ENCHANT, getX(), getY() + 0.6, getZ(), 10, 0.5, 0.3, 0.5, 0.05);
 					if (source.getEntity() instanceof ServerPlayer sp) {
 						sp.displayClientMessage(Component.literal("[" + variant().displayName
 							+ "'s Shrine Aegis] Protected while " + sentries + " floor defender(s) remain!"), true);
@@ -540,17 +540,17 @@ public class ShrineCat extends TamableAnimal {
 			}
 			float nextHealth = getHealth() - amount;
 			if (ShrineCatRules.shouldYieldInTrial(nextHealth, getMaxHealth())) {
-				yieldInTrial(level);
+				yieldInTrial(((ServerLevel) level()));
 				return true;
 			}
 			if (!bypassAegis) {
 				float frac = nextHealth / Math.max(1.0F, getMaxHealth());
 				if (!wave1Summoned && frac <= 0.65F) {
 					wave1Summoned = true;
-					summonReinforcements(level);
+					summonReinforcements(((ServerLevel) level()));
 				} else if (!wave2Summoned && frac <= 0.40F) {
 					wave2Summoned = true;
-					summonReinforcements(level);
+					summonReinforcements(((ServerLevel) level()));
 				}
 			}
 			boolean hit = super.hurt( source,  amount);

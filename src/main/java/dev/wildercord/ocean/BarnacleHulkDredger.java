@@ -116,7 +116,7 @@ public class BarnacleHulkDredger extends Monster {
 			slam--;
 			entityData.set(SLAM_TICKS, slam);
 			if (slam == 1) {
-				performAnchorSlam(server);
+				performAnchorSlam(level);
 			}
 			return;
 		}
@@ -141,7 +141,7 @@ public class BarnacleHulkDredger extends Monster {
 	}
 
 	@Override
-	public boolean doHurtTarget(ServerLevel server, Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		boolean hit = super.doHurtTarget(server, target);
 		if (hit && target instanceof LivingEntity living && OceanItems.wornSuitPieces(living) >= 4) {
 			living.heal((float) (OceanRules.BARNACLE_HULK_DAMAGE * OceanRules.FULL_SUIT_ABYSSAL_DAMAGE_REDUCTION * 0.5f));

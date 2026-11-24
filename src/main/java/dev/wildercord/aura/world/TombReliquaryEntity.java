@@ -58,7 +58,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 		if(!server.hasChunkAt(home) || !server.getBlockState(home).isAir() || !server.getBlockState(home.above()).isAir() || !server.getBlockState(home.above(2)).isAir()){
 			p.displayClientMessage(Component.translatable("message.wildercord.tomb.obstructed"), true);return;
 		}
-		var keeper=SwordTombs.KEEPER.create(server,MobSpawnType.TRIGGERED);if(keeper==null)return;
+		var keeper=dev.wildercord.compat.McEntities.create(SwordTombs.KEEPER, server, MobSpawnType.TRIGGERED);if(keeper==null)return;
 		keeper.bind(worldPosition,home);keeper.moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
 		if(!server.addFreshEntity(keeper))return;
 		cleared=false;clearedAt=0;guardian=keeper.getUUID();missingTicks=0;participants.clear();state(1);setChanged();

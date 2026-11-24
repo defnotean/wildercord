@@ -131,9 +131,9 @@ public class SingingMoonWhale extends PathfinderMob {
 		}
 		if (--songCooldown <= 0) {
 			songCooldown = OceanRules.MOON_WHALE_SONG_INTERVAL;
-			performWhaleSong(server);
+			performWhaleSong(level);
 			if (ambergrisCooldown <= 0 && isInWater()) {
-				shedAmbergris(server);
+				shedAmbergris(level);
 				ambergrisCooldown = OceanRules.MOON_WHALE_AMBERGRIS_INTERVAL;
 			}
 		}

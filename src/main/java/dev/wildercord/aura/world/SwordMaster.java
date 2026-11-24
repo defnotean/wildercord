@@ -582,7 +582,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	@Override
 	protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
-		ServerLevel level = (ServerLevel) ((ServerLevel) level);
 
 		super.customServerAiStep();
 		if (!isAlive()) return;

@@ -553,7 +553,7 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (amount <= 0.0F) {
 			return false;
 		}
@@ -572,8 +572,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 
 		if (src instanceof LivingEntity attacker && attacker.getMainHandItem().is(ItemTags.AXES)
 				&& OathboundBannerMarshalRules.axeBreaksGuard(m, el, t, countered, true, getYRot(), dx, dz)) {
-			Sigils.flash(level, chestPos(), 0xFFFFD048, 1.8F);
-			startMove(level, OathboundBannerMarshalRules.STAGGERED, null);
+			Sigils.flash(((ServerLevel) level()), chestPos(), 0xFFFFD048, 1.8F);
+			startMove(((ServerLevel) level()), OathboundBannerMarshalRules.STAGGERED, null);
 			return super.hurt( source,  amount * 1.15F);
 		}
 
@@ -584,10 +584,10 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 		boolean applied = super.hurt( source,  scaled);
 
 		if (applied && guarded) {
-			Fx.sound(level, chestPos(), WildercordSounds.SHIELD_PARRY, 1.2F, 1.0F);
-			Sigils.flash(level, chestPos().add(ahead(getYRot()).scale(0.85)), 0xFFFFE066, 1.6F);
+			Fx.sound(((ServerLevel) level()), chestPos(), WildercordSounds.SHIELD_PARRY, 1.2F, 1.0F);
+			Sigils.flash(((ServerLevel) level()), chestPos().add(ahead(getYRot()).scale(0.85)), 0xFFFFE066, 1.6F);
 			entityData.set(GUARD_COUNTERED, true);
-			entityData.set(GUARD_COUNTER_BEGAN, level.getGameTime());
+			entityData.set(GUARD_COUNTER_BEGAN, ((ServerLevel) level()).getGameTime());
 			moveTicksLeft = Math.max(moveTicksLeft, OathboundBannerMarshalRules.GUARD_COUNTER_TICKS);
 			if (src instanceof LivingEntity attacker) {
 				aim = yawTo(attacker.position());

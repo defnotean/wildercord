@@ -579,7 +579,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (amount <= 0.0F) {
 			return false;
 		}
@@ -598,8 +598,8 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 
 		if (src instanceof LivingEntity attacker && attacker.getMainHandItem().is(ItemTags.AXES)
 				&& OathboundBladeChampionRules.axeBreaksParry(m, el, t, triggered, true, getYRot(), dx, dz)) {
-			Sigils.flash(level, chestPos(), 0xFFFF6030, 1.8F);
-			startMove(level, OathboundBladeChampionRules.STAGGERED, null);
+			Sigils.flash(((ServerLevel) level()), chestPos(), 0xFFFF6030, 1.8F);
+			startMove(((ServerLevel) level()), OathboundBladeChampionRules.STAGGERED, null);
 			return super.hurt( source,  amount * 1.15F);
 		}
 
@@ -609,11 +609,11 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 
 		boolean applied = super.hurt( source,  scaled);
 		if (applied && parried) {
-			Fx.sound(level, chestPos(), WildercordSounds.SHIELD_PARRY, 1.25F, 1.05F);
-			Sigils.flash(level, chestPos().add(ahead(getYRot()).scale(0.85)), 0xFFFFD048, 1.6F);
+			Fx.sound(((ServerLevel) level()), chestPos(), WildercordSounds.SHIELD_PARRY, 1.25F, 1.05F);
+			Sigils.flash(((ServerLevel) level()), chestPos().add(ahead(getYRot()).scale(0.85)), 0xFFFFD048, 1.6F);
 			// Trigger immediate Wrathful Riposte counter-cleave!
 			entityData.set(RIPOSTE_TRIGGERED, true);
-			entityData.set(RIPOSTE_BEGAN, level.getGameTime());
+			entityData.set(RIPOSTE_BEGAN, ((ServerLevel) level()).getGameTime());
 			moveTicksLeft = Math.max(moveTicksLeft, OathboundBladeChampionRules.RIPOSTE_COUNTER_TICKS);
 			if (src instanceof LivingEntity attacker) {
 				aim = yawTo(attacker.position());
