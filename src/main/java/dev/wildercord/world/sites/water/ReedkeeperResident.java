@@ -24,7 +24,7 @@ public final class ReedkeeperResident {
 	public static final String TAG = "wildercord.reedkeeper";
 	public static final String ENTRY = "person:reedkeeper";
 	public static final int TALK_COOLDOWN = 100;
-	private static final AttachmentType<Integer> LAST_TALK = dev.wildercord.compat.McAttachments.create(Wildercord.id("reedkeeper_last_talk"));
+	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("reedkeeper_last_talk"));
 	private static final String[] LINES = {"greet", "garden", "crossing", "ferryman"};
 
 	public static void init() {
