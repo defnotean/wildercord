@@ -28,6 +28,10 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+	maven {
+		name = "OpenCollab"
+		url = "https://repo.opencollab.dev/main/"
+	}
 }
 
 loom {
@@ -77,6 +81,11 @@ dependencies {
 	testImplementation platform("org.junit:junit-bom:5.11.4")
 	testImplementation "org.junit.jupiter:junit-jupiter"
 	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+	// Optional Geyser/Floodgate/Cumulus APIs for Java <-> Bedrock crossplay translation (guarded at runtime).
+	compileOnly "org.geysermc.geyser:api:2.12.1-SNAPSHOT"
+	compileOnly "org.geysermc.floodgate:api:2.2.5-SNAPSHOT"
+	compileOnly "org.geysermc.cumulus:cumulus:1.1.2"
 }
 
 processResources {

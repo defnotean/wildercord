@@ -1,0 +1,35 @@
+plugins {
+	id 'java'
+}
+
+group = 'dev.wildercord'
+version = '0.16.0'
+
+repositories {
+	mavenCentral()
+	maven {
+		name = 'OpenCollab'
+		url = 'https://repo.opencollab.dev/main/'
+	}
+}
+
+dependencies {
+	compileOnly 'org.geysermc.geyser:api:2.12.1-SNAPSHOT'
+	compileOnly 'com.google.code.gson:gson:2.11.0'
+}
+
+processResources {
+	from('../../src/main/resources/wildercord-bedrock-mappings.json') {
+		into '.'
+		rename 'wildercord-bedrock-mappings.json', 'wildercord-geyser-mappings.json'
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.release = 21
+}
+
+jar {
+	archiveBaseName = 'wildercord-geyser-extension'
+}

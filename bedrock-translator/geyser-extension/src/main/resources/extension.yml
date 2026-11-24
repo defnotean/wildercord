@@ -1,0 +1,7 @@
+id: wildercord_geyser
+name: WildercordGeyser
+main: dev.wildercord.geyser.WildercordGeyserExtension
+api: 2.12.0
+version: 0.16.0
+authors:
+  - defnotean

@@ -203,6 +203,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.PerfHygiene.init();
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
 		dev.wildercord.api.WildercordApi.loadAddons();
+		dev.wildercord.bedrock.BedrockBridge.init();
 		LOGGER.info("Wildercord initialized");
 	}
 }

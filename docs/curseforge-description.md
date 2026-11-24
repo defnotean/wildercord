@@ -162,3 +162,7 @@ Cinnamon's owner defaults to empty. Set a username or UUID in `config/wildercord
 **This is an alpha release.** Back up an existing world before updating. New dungeons and sites need newly generated chunks; restart the game or server to register the practice dimension.
 
 [Start playing](https://defnotean.github.io/wildercord/getting-started/) · [Installation help](https://defnotean.github.io/wildercord/installing/) · [Troubleshooting](https://defnotean.github.io/wildercord/troubleshooting/)
+
+## Credits
+
+- **Contributors:** **MissToasted** — building, testing, world design, and expansion support for **Wildercord** and **Oathhold**.

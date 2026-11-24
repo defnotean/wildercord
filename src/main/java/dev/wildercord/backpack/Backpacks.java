@@ -186,34 +186,60 @@ public final class Backpacks {
 		}
 		spillOverflow(player, place.stack(player));
 		BackpackTier[] opened = new BackpackTier[1];
-		ExtendedMenuProvider<BackpackMenu.Opening> provider = new ExtendedMenuProvider<>() {
-			private Component title = Component.empty();
+		boolean bedrock = dev.wildercord.bedrock.BedrockPlayers.isBedrock(player);
+		net.minecraft.world.MenuProvider provider = bedrock
+			? new net.minecraft.world.MenuProvider() {
+				private Component title = Component.empty();
 
-			@Override
-			public AbstractContainerMenu createMenu(int id, Inventory inventory, Player who) {
-				// Read here, not before: opening closes whatever was open first, and a backpack closing can put
-				// a fresh copy of itself back in its place.
-				ItemStack stack = place.stack(player);
-				BackpackTier tier = tierOf(stack);
-				if (tier == null) {
-					return null;
+				@Override
+				public AbstractContainerMenu createMenu(int id, Inventory inventory, Player who) {
+					ItemStack stack = place.stack(player);
+					BackpackTier tier = tierOf(stack);
+					if (tier == null) {
+						return null;
+					}
+					title = stack.getHoverName();
+					opened[0] = tier;
+					dev.wildercord.bedrock.BedrockMappings.setPendingMenuRows(player.getUUID(), tier.rows);
+					return new BackpackMenu(id, inventory, player, place, stack, tier);
 				}
-				title = stack.getHoverName();
-				opened[0] = tier;
-				return new BackpackMenu(id, inventory, player, place, stack, tier);
-			}
 
-			@Override
-			public Component getDisplayName() {
-				return title;
+				@Override
+				public Component getDisplayName() {
+					return title;
+				}
 			}
+			: new ExtendedMenuProvider<BackpackMenu.Opening>() {
+				private Component title = Component.empty();
 
-			@Override
-			public BackpackMenu.Opening getScreenOpeningData(ServerPlayer who) {
-				return new BackpackMenu.Opening(opened[0] == null ? 1 : opened[0].rows, place.slot());
-			}
-		};
+				@Override
+				public AbstractContainerMenu createMenu(int id, Inventory inventory, Player who) {
+					// Read here, not before: opening closes whatever was open first, and a backpack closing can put
+					// a fresh copy of itself back in its place.
+					ItemStack stack = place.stack(player);
+					BackpackTier tier = tierOf(stack);
+					if (tier == null) {
+						return null;
+					}
+					title = stack.getHoverName();
+					opened[0] = tier;
+					return new BackpackMenu(id, inventory, player, place, stack, tier);
+				}
+
+				@Override
+				public Component getDisplayName() {
+					return title;
+				}
+
+				@Override
+				public BackpackMenu.Opening getScreenOpeningData(ServerPlayer who) {
+					return new BackpackMenu.Opening(opened[0] == null ? 1 : opened[0].rows, place.slot());
+				}
+			};
 		if (player.openMenu(provider).isEmpty() || opened[0] == null) {
+			if (bedrock) {
+				dev.wildercord.bedrock.BedrockMappings.consumePendingMenuRows(player.getUUID(), 1);
+			}
 			return false;
 		}
 		player.level().playSound(null, player, dev.wildercord.compat.McBlocksAndItems.sound(SoundEvents.ARMOR_EQUIP_LEATHER), SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);

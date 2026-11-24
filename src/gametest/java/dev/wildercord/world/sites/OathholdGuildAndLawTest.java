@@ -327,7 +327,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			shot(context, "oathhold_guild_03_peaceful_knight_patrol");
 			cut(context, world);
 
-			// Commit assault inside Oathhold -> Knights turn hostile -> pay restitution to Priest -> Knights pacified
+			// Commit assault inside Oathhold -> Knights watch without attacking -> pay restitution to Priest -> Bounty cleared
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
@@ -344,8 +344,8 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				OathboundBastion b = (OathboundBastion) l.getEntity(bastionId);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				boolean aggro = (b != null && b.getTarget() == p) || (h != null && h.getTarget() == p);
-				check(aggro, "At least one nearby Knight must target the Wanted player");
+				boolean watchingNonHostile = b != null && h != null && b.getTarget() == null && h.getTarget() == null;
+				check(watchingNonHostile, "Nearby Knights must watch Wanted player without forcing attack target");
 
 				// Restitution via sneaking Priests
 				p.setHealth(p.getMaxHealth());

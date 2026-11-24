@@ -365,6 +365,10 @@ public final class FormDash {
 		emit(player, s, form, FormDashRules.SET, FormDashRules.setTicks(form), move.yaw);
 		return true;
 	}
+	public static boolean triggerCounter(ServerPlayer player) {
+		return counter(player, new Counter(view(player).epoch()));
+	}
+
 	/** Spell Cut: a CUT severs the spell and pays the full price; a near MISS pays less but owes a longer recovery. */
 	static boolean counter(ServerPlayer player, Counter packet) {
 		Session s = SESSIONS.get(player);

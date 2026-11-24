@@ -41,6 +41,10 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void wildercord$addCordSlot(Inventory inventory, boolean active, Player player, CallbackInfo ci) {
+		if (dev.wildercord.bedrock.BedrockPlayers.isBedrock(player)) {
+			this.wildercord$cordIndex = -1;
+			return;
+		}
 		this.wildercord$cordIndex = this.addSlot(new CordSlot(player, CordSlot.INVENTORY_X, CordSlot.INVENTORY_Y)).index;
 		for (GearSlot kind : GearSlot.all()) {
 			this.addSlot(new GearInventorySlot(player, kind));
@@ -50,7 +54,7 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 
 	@Inject(method = "quickMoveStack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$quickMove(Player player, int index, CallbackInfoReturnable<ItemStack> cir) {
-		if (index < 0 || index >= this.slots.size()) {
+		if (this.wildercord$cordIndex < 0 || index < 0 || index >= this.slots.size()) {
 			return;
 		}
 		Slot slot = this.slots.get(index);

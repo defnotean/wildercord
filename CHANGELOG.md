@@ -4,6 +4,23 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.16.1-alpha] — 2026-11-24
+
+**Crossplay, Oathbound Techniques & Sacred Pig Quest.** Full optional Geyser/Floodgate Bedrock and Console crossplay server bridge, 52 shared Oathbound combat techniques, bundled Oathhold outer-ward house schematics and one-heart guard arrests, the Sacred Pig boss-drop map quest, and dungeon ward / Deep Ocean placement fixes.
+
+### Added
+- **Optional Java + Bedrock / Console Crossplay Bridge (`dev.wildercord.bedrock.*`)**: zero-overhead opt-in runtime support when Geyser/Floodgate are installed on a server (Java clients need no extra jars) — adds server-side `en_us.json` translation (`9,465` keys), `1,045` custom sound mappings, item tooltips, written books, imbued/bonded lore, ritual tablet hold-use consumables, vanilla chest backpack and altar/request-board bridges, particle/VFX expansion and waypoint compass HUD, and Cumulus forms for equipment, the Cast Focus wand, spell lessons, Aura/Blade counters, Rune Notebook, and Practice Arena.
+- **Oathbound 52 Combat Techniques & Poses (`OathboundCombat`, `OathboundTechnique`, `OathboundPose`)**: shared combat technique repertoire and faster animations across **Oathbound Bastion**, **Oathbound Blade-Champion**, **Oathbound Halberdier**, and **Oathbound Banner-Marshal**.
+- **Oathhold Schematic Houses**: bundled rotating `house1.schem` and `house2.schem` placements on Oathhold outer-ward house lots.
+- **Sacred Pig Quest & Village**: new boss-drop map quest, `sacred_pig_map` and `sacred_pig_left_nipple` items, chest loot, advancement, and `wilds_sacred_pig_village` structure.
+
+### Changed
+- **Oathhold Guard Justice**: updated city guard watch checks and one-heart Watch Stockade imprisonment thresholds.
+
+### Fixed
+- **Dungeon Wards**: extended chunk start scanning across neighbor chunks for warded dungeons.
+- **Deep Ocean Placement**: allowed `sea-1` surface height in `locateSubmergedFloor` for natural ocean structures.
+
 ## [0.16.0-alpha] — 2026-11-22
 
 **Sovereigns & Seas.** Oathhold sovereign megacity with citizens, guild requests, guard justice & live NPC house rebuilding; four Oathbound Knights; Deep Ocean expansion with 9 creatures, 5 underwater landmarks & 1:1 translucent models; forest White Rabbit hollow-tree portals; Cinnamon party healing, Grand Bow & flying chest harness; higher boss health pools, arena respawns, perimeter custom-mob fire embers, and global structure non-overlap spacing.
