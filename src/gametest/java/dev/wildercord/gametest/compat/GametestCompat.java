@@ -236,7 +236,7 @@ public final class GametestCompat {
 
 	/** Clears the toast stack. 26.3 moved the toast manager from Minecraft onto Gui. */
 	public static void clearToasts(Minecraft mc) {
-		mc.getToastManager().clear();
+		mc.getToasts().clear();
 	}
 
 	/** Clears the chat line list. 26.3 reaches it through Gui#hud. */
@@ -277,5 +277,25 @@ public final class GametestCompat {
 	}
 	public static void awaitClientPackets(TestSingleplayerContext world) {
 		world.getClientWorld().waitForChunksDownload();
+	}
+
+public static boolean inputIdle(net.minecraft.world.entity.player.Player player) {
+		if (player instanceof LocalPlayer client) {
+			net.minecraft.client.player.Input keys = client.input;
+			return keys.forwardImpulse == 0.0F && keys.leftImpulse == 0.0F && !keys.up && !keys.down
+				&& !keys.left && !keys.right && !keys.jumping && !keys.shiftKeyDown;
+		}
+		return !player.isShiftKeyDown() && !player.isSprinting() && player.getDeltaMovement().lengthSqr() < 1.0E-7;
+	}
+
+public static Object lastClientInput(ServerPlayer player) {
+		return null;
+	}
+
+public static String inputSummary(LocalPlayer player) {
+		net.minecraft.client.player.Input keys = player.input;
+		return "[up=" + keys.up + ", down=" + keys.down + ", left=" + keys.left + ", right=" + keys.right
+			+ ", jump=" + keys.jumping + ", shift=" + keys.shiftKeyDown
+			+ ", forward=" + keys.forwardImpulse + ", strafe=" + keys.leftImpulse + "]";
 	}
 }

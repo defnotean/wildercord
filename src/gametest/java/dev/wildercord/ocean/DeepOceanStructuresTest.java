@@ -203,7 +203,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					OceanSites.FORGE_ID, OceanSites.CITADEL_ID
 				)) {
 					ResourceKey<Structure> key = ResourceKey.create(Registries.STRUCTURE, dev.wildercord.Wildercord.id(sid));
-					check(reg.getOptional(key).isPresent(), "Structure registered in worldgen registry: " + sid);
+					check(reg.get(key).isPresent(), "Structure registered in worldgen registry: " + sid);
 					check(StructureClearance.entries().containsKey(sid), "StructureClearance guards: " + sid);
 				}
 

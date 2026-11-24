@@ -69,7 +69,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 		public void tick() {}
 
 		@Override
-		public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+		public boolean isInvulnerableTo(DamageSource source) {
 			return false;
 		}
 	}

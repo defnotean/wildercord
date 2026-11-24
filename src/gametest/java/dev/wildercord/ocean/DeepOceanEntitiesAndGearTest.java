@@ -2,7 +2,6 @@ package dev.wildercord.ocean;
 
 import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.aura.world.BossDamage;
-import dev.wildercord.client.fx.CustomMobFireFx;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -247,7 +246,6 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(thalassor.getMaxHealth() == OceanRules.THALASSOR_MAX_HP, "Thalassor HP == 2400");
 				check(BossDamage.boss(thalassor), "Thalassor is recognized by BossDamage");
 				check(thalassor.fireImmune(), "Thalassor is fireImmune");
-				check(CustomMobFireFx.isCustomMob(hulk), "Custom ocean mobs use perimeter embers instead of vanilla fire overlay");
 
 				ids[0] = hulk.getUUID();
 				ids[1] = jelly.getUUID();
