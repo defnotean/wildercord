@@ -256,13 +256,14 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 
 		if (!empowered() && OathboundBladeChampionRules.empowered(getHealth(), getMaxHealth())) {
 			entityData.set(EMPOWERED, true);
-			Feels.sound(level(), chestPos(), "duelist_clash", 1.35F, 0.88F);
-			Light.groundRing(level(), position(), HEX_CRIMSON, 0.5, 4.5, 0.14, 18);
-			Sigils.flash(level(), chestPos(), 0xFFFF3830, 2.2F);
+			Feels.sound(level, chestPos(), "duelist_clash", 1.35F, 0.88F);
+			Light.groundRing(level, position(), HEX_CRIMSON, 0.5, 4.5, 0.14, 18);
+			Sigils.flash(level, chestPos(), 0xFFFF3830, 2.2F);
 		}
 
 		LivingEntity target = getTarget();
@@ -273,7 +274,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 
 		int move = move();
 		if (move != OathboundBladeChampionRules.IDLE_STALK) {
-			tickActiveMove(level(), move, target);
+			tickActiveMove(level, move, target);
 			return;
 		}
 
@@ -288,7 +289,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		if (dist > 3.2) {
 			getNavigation().moveTo(target, 1.08);
 			if (tickCount % 11 == 0 && onGround()) {
-				Feels.sound(level(), position(), "duelist_knight_step", 0.75F, 0.96F + random.nextFloat() * 0.12F);
+				Feels.sound(level, position(), "duelist_knight_step", 0.75F, 0.96F + random.nextFloat() * 0.12F);
 			}
 		} else {
 			getNavigation().stop();
@@ -296,9 +297,9 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		turnToward(yawTo(target.position()), 14.0F);
 
 		if (gapTicks <= 0 && dist <= 7.8) {
-			int next = chooseMove(level(), target, dist);
+			int next = chooseMove(level, target, dist);
 			if (next > 0) {
-				startMove(level(), next, target);
+				startMove(level, next, target);
 			}
 		}
 	}

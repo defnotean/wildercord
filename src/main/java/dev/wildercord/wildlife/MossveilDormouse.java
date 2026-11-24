@@ -32,7 +32,8 @@ public final class MossveilDormouse extends TamableAnimal {
   goalSelector.addGoal(5,new WaterAvoidingRandomStrollGoal(this,.65));goalSelector.addGoal(6,new RandomLookAroundGoal(this));
  }
  @Override public void tick(){super.tick();if(level().isClientSide()){curlO=curl;curl=WildlifeRules.approach(curl,isInSittingPose()?1:0,.12F);sniffO=sniff;sniff=WildlifeRules.approach(sniff,entityData.get(SNIFF)>0?1:0,.2F);}}
- @Override protected void customServerAiStep() {super.customServerAiStep();int sniffLeft=entityData.get(SNIFF);if(sniffLeft>0)entityData.set(SNIFF,sniffLeft-1);else if(tickCount%80==getId()%80){entityData.set(SNIFF,12);voice("sniff");}}
+ @Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();super.customServerAiStep();int sniffLeft=entityData.get(SNIFF);if(sniffLeft>0)entityData.set(SNIFF,sniffLeft-1);else if(tickCount%80==getId()%80){entityData.set(SNIFF,12);voice("sniff");}}
  public static long clock(Level l){return l instanceof ServerLevel s?s.getServer().overworld().getGameTime():l.getGameTime();}
  public int feedings(){return fed;}public UUID claimant(){return claimant;}public long feedReady(){return feedReady;}public long claimUntil(){return claimUntil;}public long filterReady(){return filterReady;}
  public boolean followingOwner(){return follow!=null&&follow.running;}

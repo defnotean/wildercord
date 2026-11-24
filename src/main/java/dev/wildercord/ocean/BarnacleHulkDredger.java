@@ -106,6 +106,7 @@ public class BarnacleHulkDredger extends Monster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (slamCooldown > 0) slamCooldown--;
 

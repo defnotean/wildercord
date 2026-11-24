@@ -121,6 +121,7 @@ public class SingingMoonWhale extends PathfinderMob {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (ambergrisCooldown > 0) ambergrisCooldown--;
 

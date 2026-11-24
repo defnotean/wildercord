@@ -130,11 +130,11 @@ public class Bramblewalker extends WildMonster {
 			// A giant's fight runs it.
 			return;
 		}
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		if (isOnFire()) {
 			fleeUntil = now + MonsterRules.FLEE_AFTER_FIRE;
 			if (now % 4 == 0) {
-				smoulder(level());
+				smoulder(level);
 			}
 		}
 		if (actingUntil > 0 && now >= actingUntil) {
@@ -161,19 +161,19 @@ public class Bramblewalker extends WildMonster {
 			if (now % 3 == 0) {
 				// The vines draw in, glowing.
 				Vec3 c = position().add(0, getBbHeight() * 0.6, 0);
-				Motes.glows(level(), c, 2, 0.8, VINE, 0.12, 10, new Vec3(0, 0.02, 0), 0.02);
+				Motes.glows(level, c, 2, 0.8, VINE, 0.12, 10, new Vec3(0, 0.02, 0), 0.02);
 			}
 			if (now >= lashAt) {
 				lashAt = 0;
 				setState(WINDUP, false);
-				lash(level(), target);
+				lash(level, target);
 			}
 			return;
 		}
 		if (target != null && target.isAlive() && now >= nextLash && Targets.canHarm(this, target) && hasLineOfSight(target)) {
 			double d = distanceTo(target);
 			if (d >= LASH_MIN && d <= LASH_RANGE) {
-				windUp(level(), now);
+				windUp(level, now);
 			}
 		}
 	}

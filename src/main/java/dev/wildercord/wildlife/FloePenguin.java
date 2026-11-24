@@ -180,11 +180,11 @@ public class FloePenguin extends Animal {
 			}
 		}
 		if (slides && tickCount % 3 == 0) {
-			Fx.send(level(), ParticleTypes.SNOWFLAKE, getX(), getY() + 0.1, getZ(), 2, 0.15, 0.05, 0.15, 0.01);
+			Fx.send(level, ParticleTypes.SNOWFLAKE, getX(), getY() + 0.1, getZ(), 2, 0.15, 0.05, 0.15, 0.01);
 		}
 		if (huddling() && tickCount % 20 == 0) {
 			// Anyone standing in among the huddle is kept warm.
-			for (Player player : level().getEntitiesOfClass(Player.class, getBoundingBox().inflate(1.2))) {
+			for (Player player : level.getEntitiesOfClass(Player.class, getBoundingBox().inflate(1.2))) {
 				player.setTicksFrozen(Math.max(0, player.getTicksFrozen() - 40));
 			}
 		}

@@ -179,8 +179,8 @@ public class LumenStag extends Animal {
 		}
 		// Nobody earned its antler today: it lets it fall on its own, while someone is near enough to come and find it.
 		if (tickCount % 200 == 0 && WildlifeRules.mayShed(shedDay(), today()) && random.nextInt(40) == 0
-				&& level().getNearestPlayer(this, 48) != null) {
-			shed(level(), null);
+				&& level.getNearestPlayer(this, 48) != null) {
+			shed(level, null);
 		}
 	}
 

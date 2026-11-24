@@ -157,8 +157,8 @@ public class Gloomstalker extends WildMonster {
 			// A giant's fight runs it, veil and all.
 			return;
 		}
-		long now = level().getGameTime();
-		updateVeil(level(), now);
+		long now = level.getGameTime();
+		updateVeil(level, now);
 		LivingEntity target = getTarget();
 		switch (phase) {
 			case CROUCH -> {
@@ -170,7 +170,7 @@ public class Gloomstalker extends WildMonster {
 					if (now >= phaseUntil) {
 						if (Targets.canHarm(this, target) && MonsterPressureRules.gloomCanRelease(distanceTo(target),
 							target.getY() - getY(), hasLineOfSight(target))) {
-							pounce(level(), target, now);
+							pounce(level, target, now);
 						} else {
 							// Cover and a high ledge beat the tell; reacquire by walking, never by teleporting.
 							resumeStalk(now);
@@ -182,19 +182,19 @@ public class Gloomstalker extends WildMonster {
 				pounceTicks++;
 				if (target != null && target.isAlive() && Targets.canHarm(this, target) && hasLineOfSight(target)
 					&& getBoundingBox().inflate(0.35).intersects(target.getBoundingBox())) {
-					strike(level(), target, now);
+					strike(level, target, now);
 				} else if ((onGround() && pounceTicks > 4) || pounceTicks > 30) {
 					// It missed: it lands sprawled, and for a moment it's open.
 					enter(Phase.SPRAWL, now, MISSED);
 					setState(STUNNED, true);
-					MonsterMagic.sound(level(), position(), "monster_gloom_hurt", 0.7F, 0.8F);
+					MonsterMagic.sound(level, position(), "monster_gloom_hurt", 0.7F, 0.8F);
 				}
 			}
 			case SPRAWL -> {
 				getNavigation().stop();
 				if (now >= phaseUntil) {
 					setState(STUNNED, false);
-					startRetreat(level(), target, now);
+					startRetreat(level, target, now);
 				}
 			}
 			default -> {

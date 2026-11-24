@@ -330,22 +330,22 @@ public abstract class DungeonBoss extends Monster {
 	protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		bossEvent.setProgress(getHealth() / getMaxHealth());
 		if (home == null) {
 			home = blockPosition();
 		}
 		if (now % 10 == 0) {
-			updateViewers(level());
+			updateViewers(level);
 		}
-		if (resetIfWiped(level(), now)) {
+		if (resetIfWiped(level, now)) {
 			updateName(null);
 			return;
 		}
 		if (shifting > 0) {
 			shifting--;
 			getNavigation().stop();
-			shiftTick(level(), shifting);
+			shiftTick(level, shifting);
 			if (shifting == 0) {
 				setState(SHIFTING, false);
 				readyAt = now + 20;
@@ -353,15 +353,15 @@ public abstract class DungeonBoss extends Monster {
 			updateName(null);
 			return;
 		}
-		if (shiftIfDue(level())) {
+		if (shiftIfDue(level)) {
 			return;
 		}
 		if (position().distanceTo(Vec3.atCenterOf(home)) > leash()) {
-			returnHome(level());
+			returnHome(level);
 		}
-		mechanic(level(), now);
+		mechanic(level, now);
 		if (move > 0) {
-			tickMove(level(), now);
+			tickMove(level, now);
 			updateName(null);
 			return;
 		}
@@ -374,8 +374,8 @@ public abstract class DungeonBoss extends Monster {
 			if (now >= castAt) {
 				castAt = 0;
 				setState(CASTING, false);
-				fire(level());
-				readyAt = now + pause(level());
+				fire(level);
+				readyAt = now + pause(level);
 				updateName(null);
 			}
 			return;
@@ -384,12 +384,12 @@ public abstract class DungeonBoss extends Monster {
 			updateName(null);
 			return;
 		}
-		approach(level(), target);
+		approach(level, target);
 		if (now < readyAt) {
 			updateName(null);
 			return;
 		}
-		int picked = pick(level(), target);
+		int picked = pick(level, target);
 		if (picked < 0) {
 			updateName(null);
 			return;
@@ -397,9 +397,9 @@ public abstract class DungeonBoss extends Monster {
 		deck.played(picked);
 		if (picked < SPELL) {
 			moveTarget = target;
-			beginMove(level(), picked, target);
+			beginMove(level, picked, target);
 			if (move == 0) {
-				readyAt = now + rest(level(), picked);
+				readyAt = now + rest(level, picked);
 			}
 			updateName(null);
 			return;
@@ -409,7 +409,7 @@ public abstract class DungeonBoss extends Monster {
 		castAt = now + TELEGRAPH;
 		setState(CASTING, true);
 		updateName(SpellNames.auto(casting));
-		Runebound.telegraph(level(), this, casting, target, TELEGRAPH);
+		Runebound.telegraph(level, this, casting, target, TELEGRAPH);
 	}
 
 	/** Into its next phase, if its health says so: the pause begins at once. True if it did. */

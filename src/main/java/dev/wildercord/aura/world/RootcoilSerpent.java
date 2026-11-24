@@ -172,20 +172,20 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	@Override protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();if(!isAlive())return;
-		if(!clods.isEmpty())fly(level());
-		if(!roots.isEmpty())grow(level());
-		if(rippleAge>=0)ripple(level());
+		if(!clods.isEmpty())fly(level);
+		if(!roots.isEmpty())grow(level);
+		if(rippleAge>=0)ripple(level);
 		if(!bound)bind(blockPosition(),getYRot());
 		// Left alone long enough (its prey died and went home, say) and it has gone back round the trunk in the meantime.
-		long now=level().getGameTime();
+		long now=level.getGameTime();
 		if(lastTick>=0 && move()!=SerpentRules.DORMANT && SerpentRules.forgets(now-lastTick))coil();
 		lastTick=now;
-		if(tickCount%SerpentRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
+		if(tickCount%SerpentRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
 		switch(move()){
-			case SerpentRules.DORMANT->dormant(level());
-			case SerpentRules.UNCOIL->{hold();if(--left<=0)land(level());else if(left==SerpentRules.UNCOIL_TICKS/2)Feels.sound(level(),trunk().add(0,3,0),"aura_serpent_uncoil",1,1);}
-			case SerpentRules.RECOIL->{hold();var p=wakeful(level());if(p!=null)wake(level(),SerpentRules.UNCOIL_TICKS-left);else if(--left<=0)coil();}
-			default->awake(level());
+			case SerpentRules.DORMANT->dormant(level);
+			case SerpentRules.UNCOIL->{hold();if(--left<=0)land(level);else if(left==SerpentRules.UNCOIL_TICKS/2)Feels.sound(level,trunk().add(0,3,0),"aura_serpent_uncoil",1,1);}
+			case SerpentRules.RECOIL->{hold();var p=wakeful(level);if(p!=null)wake(level,SerpentRules.UNCOIL_TICKS-left);else if(--left<=0)coil();}
+			default->awake(level);
 		}
 	}
 

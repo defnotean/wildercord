@@ -228,13 +228,14 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 
 		if (!empowered() && OathboundHalberdierRules.empowered(getHealth(), getMaxHealth())) {
 			entityData.set(EMPOWERED, true);
-			Feels.sound(level(), chestPos(), "duelist_clash", 1.3F, 1.15F);
-			Light.groundRing(level(), position(), HEX_CYAN, 0.5, 4.6, 0.14, 16);
-			Sigils.flash(level(), chestPos(), 0xFF48F0FF, 2.1F);
+			Feels.sound(level, chestPos(), "duelist_clash", 1.3F, 1.15F);
+			Light.groundRing(level, position(), HEX_CYAN, 0.5, 4.6, 0.14, 16);
+			Sigils.flash(level, chestPos(), 0xFF48F0FF, 2.1F);
 		}
 
 		LivingEntity target = getTarget();
@@ -245,7 +246,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 
 		int move = move();
 		if (move != OathboundHalberdierRules.LOW_GLAIVE_STALK) {
-			tickActiveMove(level(), move, target);
+			tickActiveMove(level, move, target);
 			return;
 		}
 
@@ -260,7 +261,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 		if (dist > 3.5) {
 			getNavigation().moveTo(target, 1.12);
 			if (tickCount % 10 == 0 && onGround()) {
-				Feels.sound(level(), position(), "duelist_knight_step", 0.72F, 1.04F + random.nextFloat() * 0.12F);
+				Feels.sound(level, position(), "duelist_knight_step", 0.72F, 1.04F + random.nextFloat() * 0.12F);
 			}
 		} else {
 			getNavigation().stop();
@@ -268,9 +269,9 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 		turnToward(yawTo(target.position()), 15.0F);
 
 		if (gapTicks <= 0 && dist <= 8.4) {
-			int next = chooseMove(level(), dist);
+			int next = chooseMove(level, dist);
 			if (next > 0) {
-				startMove(level(), next, target);
+				startMove(level, next, target);
 			}
 		}
 	}

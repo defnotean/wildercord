@@ -130,8 +130,8 @@ public class BrookbillDuck extends Animal {
 		boolean afloat = isInWater();
 		if (DuckRules.shakes(wasAfloat, afloat, onGround())) {
 			flap();
-			Fx.send(level(), ParticleTypes.SPLASH, getX(), getY() + 0.4, getZ(), 10, 0.25, 0.15, 0.25, 0.1);
-		} else if (flapLeft == 0 && !isBaby() && DuckRules.rejoices(level().isRainingAt(blockPosition().above()), onGround(), getRandom().nextDouble())) {
+			Fx.send(level, ParticleTypes.SPLASH, getX(), getY() + 0.4, getZ(), 10, 0.25, 0.15, 0.25, 0.1);
+		} else if (flapLeft == 0 && !isBaby() && DuckRules.rejoices(level.isRainingAt(blockPosition().above()), onGround(), getRandom().nextDouble())) {
 			flap();
 			playSound(getAmbientSound(), 0.8F, getVoicePitch() * 1.1F);
 		}

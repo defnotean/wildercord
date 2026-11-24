@@ -206,30 +206,30 @@ public class SandmawWyrm extends EliteMonster {
 		if (tickCount % 20 == 0 && pressed > 0) {
 			pressed--;
 		}
-		geysers(level());
+		geysers(level);
 		switch (move()) {
-			case SandmawRules.BURROW -> burrow(level(), target);
-			case SandmawRules.RUMBLE -> rumble(level());
+			case SandmawRules.BURROW -> burrow(level, target);
+			case SandmawRules.RUMBLE -> rumble(level);
 			case SandmawRules.ERUPT -> {
 				hold();
 				if (left == 0) {
 					settle();
 				}
 			}
-			case SandmawRules.DIVE -> diving(level());
-			case SandmawRules.SLAM -> slam(level(), target);
-			case SandmawRules.STUCK -> stuck(level());
-			case SandmawRules.SPIT -> spit(level(), target);
-			case SandmawRules.GULP -> gulp(level(), target);
-			case SandmawRules.GULPED -> gulped(level());
-			case SandmawRules.CHOKING -> choking(level());
-			case SandmawRules.SINKHOLE -> sinkhole(level());
-			case SandmawRules.GEYSER -> geyser(level(), target);
-			case SandmawRules.QUILLS -> quills(level());
-			case SandmawRules.BREACH -> breach(level(), target);
-			case SandmawRules.BEACHED -> beached(level());
-			case SandmawRules.THRASH -> thrash(level());
-			default -> idle(level(), target);
+			case SandmawRules.DIVE -> diving(level);
+			case SandmawRules.SLAM -> slam(level, target);
+			case SandmawRules.STUCK -> stuck(level);
+			case SandmawRules.SPIT -> spit(level, target);
+			case SandmawRules.GULP -> gulp(level, target);
+			case SandmawRules.GULPED -> gulped(level);
+			case SandmawRules.CHOKING -> choking(level);
+			case SandmawRules.SINKHOLE -> sinkhole(level);
+			case SandmawRules.GEYSER -> geyser(level, target);
+			case SandmawRules.QUILLS -> quills(level);
+			case SandmawRules.BREACH -> breach(level, target);
+			case SandmawRules.BEACHED -> beached(level);
+			case SandmawRules.THRASH -> thrash(level);
+			default -> idle(level, target);
 		}
 		int move = move();
 		if (!burrowed()) {

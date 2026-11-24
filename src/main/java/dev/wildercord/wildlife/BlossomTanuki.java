@@ -140,34 +140,34 @@ public class BlossomTanuki extends Animal {
 	protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		switch (form()) {
 			case LEAF -> {
 				if (now - formAt >= TanukiRules.LEAF_TICKS) {
-					turn(level(), BUSH);
+					turn(level, BUSH);
 				}
 			}
 			case BUSH -> {
-				if (tickCount % 10 == 0 && !TanukiRules.staysBush(now - formAt, threat(level(), TanukiRules.THREAT_RANGE) != null)) {
-					turn(level(), SELF);
+				if (tickCount % 10 == 0 && !TanukiRules.staysBush(now - formAt, threat(level, TanukiRules.THREAT_RANGE) != null)) {
+					turn(level, SELF);
 					turnedBackAt = now;
 				}
 			}
 			default -> {
 				if (tickCount % 5 == 0 && !isBaby() && onGround()) {
-					Entity threat = threat(level(), TanukiRules.STARTLE_RANGE);
+					Entity threat = threat(level, TanukiRules.STARTLE_RANGE);
 					if (threat != null && TanukiRules.startled(distanceTo(threat), true, turnedBackAt < 0 ? -1 : now - turnedBackAt)) {
 						startle(threat);
 					}
 				}
 			}
 		}
-		drum(level(), now);
+		drum(level, now);
 		Player friend = truster();
 		if (friend != null && !hidden()) {
 			crouched = friend.isCrouching() && distanceTo(friend) <= TanukiRules.TRICK_RANGE ? crouched + 1 : 0;
 			if (TanukiRules.tricks(true, crouched, distanceTo(friend), trickAt < 0 ? -1 : now - trickAt)) {
-				trick(level(), friend, now);
+				trick(level, friend, now);
 			}
 		} else {
 			crouched = 0;

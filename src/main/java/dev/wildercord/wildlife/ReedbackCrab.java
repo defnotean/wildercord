@@ -59,22 +59,22 @@ public final class ReedbackCrab extends PathfinderMob {
 		ServerLevel level = (ServerLevel) level();
 
   super.customServerAiStep();if(home==null)home=blockPosition();
-  if(level().getDifficulty()==Difficulty.PEACEFUL || !dev.wildercord.config.Config.get().wildlife().enabled()) {setTarget(null);pose(IDLE,0);return;}
-  if(level().getGameTime()<calmUntil) {setTarget(null);pose(CALM,0);return;}
+  if(level.getDifficulty()==Difficulty.PEACEFUL || !dev.wildercord.config.Config.get().wildlife().enabled()) {setTarget(null);pose(IDLE,0);return;}
+  if(level.getGameTime()<calmUntil) {setTarget(null);pose(CALM,0);return;}
   if(pose()==CALM)pose(IDLE,0);
   if(left>0) {
    getNavigation().stop();setYRot((float)Math.toDegrees(Math.atan2(-facing.x,facing.z)));setYBodyRot(getYRot());
    if(--left==0) {
     if(pose()==WARNING) {
      pose(SWEEP,12);sound("sweep");
-     sweep(level());
+     sweep(level);
     } else if(pose()==SWEEP)pose(RECOVERY,60);else pose(IDLE,0);
    }
    return;
   }
   if(!valid(getTarget()))setTarget(null);
   if(getTarget()==null && tickCount%10==0) {
-   var pool=WetlandQueries.scan(level(),Player.class,getBoundingBox().inflate(5),null);var target=pool.saturated()?null:pool.entities().stream().filter(p -> valid(p) && hasLineOfSight(p) && (!p.isShiftKeyDown() || distanceToSqr(p)<4)).min(Comparator.<Player>comparingDouble(this::distanceToSqr).thenComparingInt(Entity::getId)).orElse(null);setTarget(target);
+   var pool=WetlandQueries.scan(level,Player.class,getBoundingBox().inflate(5),null);var target=pool.saturated()?null:pool.entities().stream().filter(p -> valid(p) && hasLineOfSight(p) && (!p.isShiftKeyDown() || distanceToSqr(p)<4)).min(Comparator.<Player>comparingDouble(this::distanceToSqr).thenComparingInt(Entity::getId)).orElse(null);setTarget(target);
   }
   if(getTarget()!=null) {
    if(distanceToSqr(getTarget())>16) {getNavigation().moveTo(getTarget(),.85);return;}

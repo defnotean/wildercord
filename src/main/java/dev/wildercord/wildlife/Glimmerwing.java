@@ -149,17 +149,17 @@ public class Glimmerwing extends AmbientCreature {
 		if (home == null) {
 			home = position();
 		}
-		if(flower!=null && tickCount%10==0 && MoonreedBlock.pollinate(level(),flower,this)) {flower=null;lure=null;lureLeft=0;target=null;}
+		if(flower!=null && tickCount%10==0 && MoonreedBlock.pollinate(level,flower,this)) {flower=null;lure=null;lureLeft=0;target=null;}
 		// A synchronous pollination callback may remove or transfer this actual actor.
-		if(!isAlive()||isRemoved()||level()!=level())return;
+		if(!isAlive()||isRemoved()||level!=level)return;
 		if ((tickCount + getId()) % 40 == 0) {
-			seekLure(level());
+			seekLure(level);
 		}
 		if (lureLeft > 0 && --lureLeft == 0) {
 			lure = null;
 		}
-		if (target == null || --retarget <= 0 || target.distanceToSqr(position()) < 0.5 || !level().getBlockState(BlockPos.containing(target)).isAir()) {
-			target = pickTarget(level());
+		if (target == null || --retarget <= 0 || target.distanceToSqr(position()) < 0.5 || !level.getBlockState(BlockPos.containing(target)).isAir()) {
+			target = pickTarget(level);
 			retarget = 15 + random.nextInt(30);
 		}
 		Vec3 to = target.subtract(position());
@@ -177,8 +177,8 @@ public class Glimmerwing extends AmbientCreature {
 		zza = 0.5F;
 
 		// They belong to the night: by day, one by one, they fade.
-		if (!(!(level().isDay() && level().dimensionType().hasSkyLight())) && !isPersistenceRequired() && level().getBrightness(LightLayer.SKY, blockPosition()) > 8 && random.nextInt(240) == 0) {
-			fade(level());
+		if (!(!(level.isDay() && level.dimensionType().hasSkyLight())) && !isPersistenceRequired() && level.getBrightness(LightLayer.SKY, blockPosition()) > 8 && random.nextInt(240) == 0) {
+			fade(level);
 		}
 	}
 

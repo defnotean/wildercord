@@ -132,18 +132,18 @@ public class Dunestinger extends WildMonster {
 	protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		LivingEntity target = getTarget();
 		boolean live = target != null && target.isAlive() && Targets.canHarm(this, target);
 
 		if (buried()) {
 			hold();
 			if (live) {
-				burst(level(), target);
+				burst(level, target);
 			} else {
-				Player feet = feel(level());
+				Player feet = feel(level);
 				if (feet != null) {
-					burst(level(), feet);
+					burst(level, feet);
 				}
 			}
 			return;
@@ -152,10 +152,10 @@ public class Dunestinger extends WildMonster {
 		if (burrowing()) {
 			hold();
 			if (random.nextInt(3) == 0) {
-				sand(level(), position(), 3, 0.15);
+				sand(level, position(), 3, 0.15);
 			}
 			if (now >= burrowUntil) {
-				resurface(level(), live ? target : null, now);
+				resurface(level, live ? target : null, now);
 			}
 			return;
 		}
@@ -169,7 +169,7 @@ public class Dunestinger extends WildMonster {
 				getNavigation().stop();
 			}
 			if (now >= stingAt) {
-				sting(level(), live ? target : null, now);
+				sting(level, live ? target : null, now);
 			}
 			return;
 		}
@@ -178,13 +178,13 @@ public class Dunestinger extends WildMonster {
 		if (live) {
 			idle = 0;
 			if (DunestingerRules.burrows(getHealth(), getMaxHealth(), onSand(), now, nextBurrow)) {
-				burrow(level(), now);
+				burrow(level, now);
 				return;
 			}
-			hunt(level(), target, now);
+			hunt(level, target, now);
 		} else if (onSand() && ++idle >= DunestingerRules.REBURY_TICKS) {
 			idle = 0;
-			bury(level());
+			bury(level);
 		}
 	}
 

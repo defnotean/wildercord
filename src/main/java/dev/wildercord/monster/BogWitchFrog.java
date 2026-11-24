@@ -130,7 +130,7 @@ public class BogWitchFrog extends WildMonster {
 	protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		LivingEntity target = getTarget();
 		boolean hunting = target != null && target.isAlive() && Targets.canHarm(this, target);
 		switch (phase) {
@@ -141,12 +141,12 @@ public class BogWitchFrog extends WildMonster {
 				}
 				if (now % 3 == 0) {
 					Vec3 throat = throat();
-					Motes.glows(level(), throat, 1, 0.15, BOG, 0.12, 12, new Vec3(0, 0.02, 0), 0.01);
+					Motes.glows(level, throat, 1, 0.15, BOG, 0.12, 12, new Vec3(0, 0.02, 0), 0.01);
 				}
 				if (now >= phaseUntil) {
 					enter(Phase.IDLE, now, 0);
 					if (hunting && MonsterPressureRules.frogCanBubble(distanceTo(target), hasLineOfSight(target))) {
-						spit(level(), target);
+						spit(level, target);
 					}
 				}
 			}
@@ -160,7 +160,7 @@ public class BogWitchFrog extends WildMonster {
 					}
 				}
 				if (now >= phaseUntil) {
-					tongue(level(), at, now);
+					tongue(level, at, now);
 				}
 			}
 			case GULP -> {
@@ -173,13 +173,13 @@ public class BogWitchFrog extends WildMonster {
 				if (hunting && MonsterPressureRules.frogTongueFirst(difficulty(), distanceTo(target),
 					hasLineOfSight(target), now >= nextTongue)) {
 					prey = null;
-					openMouth(level(), now);
+					openMouth(level, now);
 					break;
 				}
 				if (hunting && now >= nextBubble && hasLineOfSight(target)) {
 					double d = distanceTo(target);
 					if (d >= BUBBLE_MIN && d <= BUBBLE_MAX) {
-						swell(level(), now);
+						swell(level, now);
 						break;
 					}
 				}
@@ -187,16 +187,16 @@ public class BogWitchFrog extends WildMonster {
 					double d = distanceTo(target);
 					if (d >= MonsterPressureRules.FROG_TONGUE_MIN && d <= TONGUE_RANGE) {
 						prey = null;
-						openMouth(level(), now);
+						openMouth(level, now);
 						break;
 					}
 				}
 				if (now >= nextHunt) {
 					nextHunt = now + 40;
-					Entity snack = findPrey(level());
+					Entity snack = findPrey(level);
 					if (snack != null) {
 						prey = snack;
-						openMouth(level(), now);
+						openMouth(level, now);
 					}
 				}
 			}

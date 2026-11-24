@@ -268,6 +268,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (!isAlive()) {
 			return;
@@ -280,12 +281,12 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		if (nowEmpowered != empowered()) {
 			entityData.set(EMPOWERED, nowEmpowered);
 			if (nowEmpowered) {
-				Feels.sound(level(), chestPos(), "aura_bell_warden_knell", 1.3F, 1.25F);
-				Light.groundRing(level(), position(), HEX_GOLD, 0.3, 3.6, 0.12, 12);
+				Feels.sound(level, chestPos(), "aura_bell_warden_knell", 1.3F, 1.25F);
+				Light.groundRing(level, position(), HEX_GOLD, 0.3, 3.6, 0.12, 12);
 			}
 		}
 
-		if (level().getGameTime() > recentDamageWindowEnd) {
+		if (level.getGameTime() > recentDamageWindowEnd) {
 			recentDamage = 0.0F;
 		}
 
@@ -296,17 +297,17 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 
 		switch (move()) {
-			case OathboundBastionRules.PHALANX_BRACE -> tickPhalanx(level(), target);
-			case OathboundBastionRules.SHIELD_RAM -> tickShieldRam(level(), target);
-			case OathboundBastionRules.ANVIL_SLAM -> tickAnvilSlam(level(), target);
-			case OathboundBastionRules.SHIELD_BASH -> tickShieldBash(level(), target);
-			case OathboundBastionRules.MACE_CLEAVE -> tickMaceCleave(level(), target);
-			case OathboundBastionRules.STAGGERED -> tickStaggered(level());
+			case OathboundBastionRules.PHALANX_BRACE -> tickPhalanx(level, target);
+			case OathboundBastionRules.SHIELD_RAM -> tickShieldRam(level, target);
+			case OathboundBastionRules.ANVIL_SLAM -> tickAnvilSlam(level, target);
+			case OathboundBastionRules.SHIELD_BASH -> tickShieldBash(level, target);
+			case OathboundBastionRules.MACE_CLEAVE -> tickMaceCleave(level, target);
+			case OathboundBastionRules.STAGGERED -> tickStaggered(level);
 			default -> {
 				if (OathboundBastionRules.technique(move()) != null) {
-					tickTechnique(level(), target);
+					tickTechnique(level, target);
 				} else {
-					tickIdleMarch(level(), target);
+					tickIdleMarch(level, target);
 				}
 			}
 		}

@@ -83,8 +83,8 @@ public class KarakuriSentinel extends WildMonster {
 			if (windupTicks == 0) {
 				setState(WINDUP, false);
 				setState(ACTING, true);
-				level().playSound(null, blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.HOSTILE, 0.75F, 1.3F);
-				level().sendParticles(ParticleTypes.CRIT, getX(), getY() + 1.0, getZ(), 14, 1.0, 0.3, 1.0, 0.08);
+				level.playSound(null, blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.HOSTILE, 0.75F, 1.3F);
+				level.sendParticles(ParticleTypes.CRIT, getX(), getY() + 1.0, getZ(), 14, 1.0, 0.3, 1.0, 0.08);
 				Vec3 lunge = target.position().subtract(position()).multiply(1, 0, 1);
 				if (lunge.lengthSqr() > 0.01) {
 					setDeltaMovement(lunge.normalize().scale(0.45).add(0, 0.14, 0));
@@ -107,7 +107,7 @@ public class KarakuriSentinel extends WildMonster {
 		} else if (distanceToSqr(target) <= 12.0) {
 			spinCooldown = 45;
 			windupTicks = 14;
-			level().playSound(null, blockPosition(), SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.HOSTILE, 0.8F, 1.1F);
+			level.playSound(null, blockPosition(), SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.HOSTILE, 0.8F, 1.1F);
 		}
 	}
 }

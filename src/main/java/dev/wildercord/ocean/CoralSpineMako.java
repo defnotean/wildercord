@@ -98,6 +98,7 @@ public class CoralSpineMako extends Monster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (lungeCooldown > 0) lungeCooldown--;
 

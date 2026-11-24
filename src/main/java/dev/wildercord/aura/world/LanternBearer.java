@@ -216,29 +216,29 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-16,b.getY()-2,b.getZ()-16,b.getX()+16,b.getY()+14,b.getZ()+16),b.above(5),List.of());}
 		// Left alone long enough (its prey died and went home, say) and it has gone back down in the meantime.
-		long now=level().getGameTime();
+		long now=level.getGameTime();
 		if(lastTick>=0 && move()!=LanternBearerRules.DORMANT && LanternBearerRules.forgets(now-lastTick))goDown();
 		lastTick=now;
-		if(tickCount%LanternBearerRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
+		if(tickCount%LanternBearerRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
 		switch(move()){
-			case LanternBearerRules.DORMANT->dormant(level());
+			case LanternBearerRules.DORMANT->dormant(level);
 			case LanternBearerRules.RISE->{
 				hold();int el=LanternBearerRules.RISE_TICKS-left;
-				if(LanternBearerRules.holdsLantern(LanternBearerRules.rise(LanternBearerRules.RISE,el)))lantern(level(),true);
-				if(el==LanternBearerRules.ROAR_AT)wail(level());
-				if(--left<=0)stand(level());
+				if(LanternBearerRules.holdsLantern(LanternBearerRules.rise(LanternBearerRules.RISE,el)))lantern(level,true);
+				if(el==LanternBearerRules.ROAR_AT)wail(level);
+				if(--left<=0)stand(level);
 			}
 			case LanternBearerRules.BED->{
 				hold();
-				if(wakeful(level())!=null){wake(level(),LanternBearerRules.RISE_TICKS-left);break;}
+				if(wakeful(level)!=null){wake(level,LanternBearerRules.RISE_TICKS-left);break;}
 				int el=LanternBearerRules.RISE_TICKS-left;
-				if(!LanternBearerRules.holdsLantern(LanternBearerRules.rise(LanternBearerRules.BED,el)))lantern(level(),false);
+				if(!LanternBearerRules.holdsLantern(LanternBearerRules.rise(LanternBearerRules.BED,el)))lantern(level,false);
 				if(--left<=0)goDown();
 			}
-			default->awake(level());
+			default->awake(level);
 		}
-		drift(level());marks(level());waves(level());clods(level());
-		if(tickCount%4==0)smoke(level());
+		drift(level);marks(level);waves(level);clods(level);
+		if(tickCount%4==0)smoke(level);
 	}
 
 	/** Grave-damp smoke rising off its rags, and its lantern guttering; roused, souls trailing off it; down in the grave, a soul now and then drifting up out of it. */

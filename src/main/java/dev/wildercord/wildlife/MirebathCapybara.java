@@ -123,16 +123,16 @@ public class MirebathCapybara extends Animal {
 	protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		if (isBaby() || isPassenger()) {
-			ride(level(), now);
+			ride(level, now);
 		}
 		boolean inWater = isInWater();
 		if (bathing()) {
 			if (!CapybaraRules.staysBathing(inWater, now - bathAt, bathLength)) {
-				endBath(level(), now);
+				endBath(level, now);
 			} else if (tickCount % CapybaraRules.SOAK_EVERY == 0) {
-				soak(level());
+				soak(level);
 			}
 			return;
 		}
@@ -144,7 +144,7 @@ public class MirebathCapybara extends Animal {
 			entityData.set(BATHING, true);
 			getNavigation().stop();
 			playSound(SoundEvents.GENERIC_SPLASH, 0.4F, 0.8F);
-			Fx.send(level(), ParticleTypes.SPLASH, getX(), getY() + 0.5, getZ(), 14, 0.4, 0.1, 0.4, 0.1);
+			Fx.send(level, ParticleTypes.SPLASH, getX(), getY() + 0.5, getZ(), 14, 0.4, 0.1, 0.4, 0.1);
 		}
 	}
 
