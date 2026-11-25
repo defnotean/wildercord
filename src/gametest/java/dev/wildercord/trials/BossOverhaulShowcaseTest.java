@@ -171,28 +171,34 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 				new Vec3(cinderPos.getX() + 0.5, cinderPos.getY() + 1.7, cinderPos.getZ() + 0.5));
 			shot(c, "overhaul_cinder_warden");
 
-			// 3. Thalassor deep basin stage at (128, 86, 0)
+			// 3. Thalassor barrier-fronted prismarine aquarium stage at (128, 86, 0) — camera sits in open air outside z=+6 barrier wall
 			BlockPos thalPos = new BlockPos(128, 86, 0);
 			int thalId = world.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
-				fillBox(l, thalPos.offset(-10, -2, -10), thalPos.offset(10, -2, 10), Blocks.DARK_PRISMARINE);
-				fillBox(l, thalPos.offset(-10, -1, -10), thalPos.offset(10, 7, 10), Blocks.WATER);
-				for (int ox = -8; ox <= 8; ox += 4) {
-					l.setBlock(thalPos.offset(ox, -1, -8), Blocks.SEA_LANTERN.defaultBlockState(), 2);
-					l.setBlock(thalPos.offset(ox, -1, 8), Blocks.SEA_LANTERN.defaultBlockState(), 2);
+				fillBox(l, thalPos.offset(-10, -2, -10), thalPos.offset(10, 10, 12), Blocks.AIR);
+				fillBox(l, thalPos.offset(-7, -2, -7), thalPos.offset(7, -2, 6), Blocks.DARK_PRISMARINE);
+				fillBox(l, thalPos.offset(-7, -1, -7), thalPos.offset(-7, 7, 6), Blocks.DARK_PRISMARINE);
+				fillBox(l, thalPos.offset(7, -1, -7), thalPos.offset(7, 7, 6), Blocks.DARK_PRISMARINE);
+				fillBox(l, thalPos.offset(-7, -1, -7), thalPos.offset(7, 7, -7), Blocks.DARK_PRISMARINE);
+				fillBox(l, thalPos.offset(-6, -1, 6), thalPos.offset(6, 7, 6), Blocks.BARRIER);
+				fillBox(l, thalPos.offset(-6, -1, -6), thalPos.offset(6, 6, 5), Blocks.WATER);
+				for (int ox = -4; ox <= 4; ox += 4) {
+					l.setBlock(thalPos.offset(ox, -1, -5), Blocks.SEA_LANTERN.defaultBlockState(), 2);
+					l.setBlock(thalPos.offset(ox, -1, 3), Blocks.SEA_LANTERN.defaultBlockState(), 2);
+					l.setBlock(thalPos.offset(ox, 4, -6), Blocks.SEA_LANTERN.defaultBlockState(), 2);
 				}
 				ServerPlayer sp = s.getPlayerList().getPlayers().getFirst();
 				sp.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false));
 				sp.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 400, 0, false, false));
 				ThalassorBoss thal = OceanEntities.THALASSOR.create(l, EntitySpawnReason.COMMAND);
 				check(thal != null, "Created Thalassor");
-				poseMob(thal, thalPos.getX() + 0.5, thalPos.getY() + 1.4, thalPos.getZ() + 0.5, 0.0F);
+				poseMob(thal, thalPos.getX() + 0.5, thalPos.getY() + 1.5, thalPos.getZ() + 0.0, 0.0F);
 				check(l.addFreshEntity(thal), "Spawned Thalassor");
 				return thal.getId();
 			});
 			setupDirector(c, world, thalPos, thalId,
-				new Vec3(thalPos.getX() - 4.2, thalPos.getY() + 3.0, thalPos.getZ() + 6.4),
-				new Vec3(thalPos.getX() + 0.5, thalPos.getY() + 1.7, thalPos.getZ() + 0.5));
+				new Vec3(thalPos.getX() - 4.2, thalPos.getY() + 3.6, thalPos.getZ() + 9.8),
+				new Vec3(thalPos.getX() + 0.5, thalPos.getY() + 2.1, thalPos.getZ() + 0.0));
 			shot(c, "overhaul_thalassor");
 
 			// Restore camera and HUD cleanly
