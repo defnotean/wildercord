@@ -29,7 +29,7 @@ public final class LeySpireFeature extends SimpleWorldFeature {
 			BlockPos p = base.above(dy);
 			if (!writable(level, p)) continue;
 			BlockState pillar = dy == 0 ? Blocks.AMETHYST_BLOCK.defaultBlockState()
-				: (dy == height - 1 ? Blocks.SEA_LANTERN.defaultBlockState() : Blocks.OXIDIZED_COPPER.defaultBlockState());
+				: (dy == height - 1 ? Blocks.SEA_LANTERN.defaultBlockState() : Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState());
 			level.setBlock(p, pillar, Block.UPDATE_CLIENTS);
 		}
 		int clusters = 0;
