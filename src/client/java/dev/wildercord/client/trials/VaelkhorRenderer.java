@@ -92,7 +92,6 @@ public final class VaelkhorRenderer extends CullableEntityRenderer<VaelkhorBoss,
 		};
 		float actionSec = Math.max(0.0F, state.elapsedTicks / 20.0F);
 		float actionWeight = actionClip == null ? 0.0F : Math.min(1.0F, state.elapsedTicks / 3.0F);
-		rig.poseClip(baseClip, baseSec, actionClip, actionSec, actionWeight);
 
 		int overlay = OverlayTexture.pack(OverlayTexture.u(0.0F), OverlayTexture.v(state.hurtFlash > 0.0F));
 		int tint = state.staggered ? 0xFFB8D4FF : 0xFFFFFFFF;
@@ -102,9 +101,9 @@ public final class VaelkhorRenderer extends CullableEntityRenderer<VaelkhorBoss,
 		poseStack.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
 
 		collector.order(0).submitCustomGeometry(poseStack, RenderTypes.entityCutout(SKIN),
-			(pose, buffer) -> rig.submit(poseStackFrom(pose), buffer, state.lightCoords, overlay, tint));
+			(pose, buffer) -> rig.poseAndSubmit(baseClip, baseSec, actionClip, actionSec, actionWeight, poseStackFrom(pose), buffer, state.lightCoords, overlay, tint));
 		collector.order(1).submitCustomGeometry(poseStack, RenderTypes.eyes(GLOW),
-			(pose, buffer) -> rig.submit(poseStackFrom(pose), buffer, 0xF000F0, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF));
+			(pose, buffer) -> rig.poseAndSubmit(baseClip, baseSec, actionClip, actionSec, actionWeight, poseStackFrom(pose), buffer, 0xF000F0, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF));
 
 		poseStack.popPose();
 

@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.wildercord.Wildercord;
+import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -363,6 +364,14 @@ public final class BedrockGeoRig {
 		}
 	}
 
+	public synchronized void poseAndSubmit(
+		String baseClip, float baseTimeSec, String actionClip, float actionTimeSec, float actionWeight,
+		PoseStack stack, VertexConsumer consumer, int light, int overlay, int color
+	) {
+		poseClip(baseClip, baseTimeSec, actionClip, actionTimeSec, actionWeight);
+		submit(stack, consumer, light, overlay, color);
+	}
+
 	public synchronized void submit(PoseStack stack, VertexConsumer consumer, int light, int overlay, int color) {
 		for (BoneNode root : roots) {
 			drawBone(root, stack, consumer, light, overlay, color);
@@ -377,7 +386,7 @@ public final class BedrockGeoRig {
 		float ry = rotBuffer[off + 1];
 		float rz = rotBuffer[off + 2];
 		if (rx != 0.0F || ry != 0.0F || rz != 0.0F) {
-			stack.mulPose(tmpQuat.rotationZYX(rz * Mth.DEG_TO_RAD, ry * Mth.DEG_TO_RAD, rx * Mth.DEG_TO_RAD));
+			RenderCompat.rotate(stack, tmpQuat.rotationZYX(rz * Mth.DEG_TO_RAD, ry * Mth.DEG_TO_RAD, rx * Mth.DEG_TO_RAD));
 		}
 		PoseStack.Pose pose = stack.last();
 		for (BakedQuad q : node.quads) {
