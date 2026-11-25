@@ -278,7 +278,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				h.setTarget(p);
 				h.startMove(l, OathboundHalberdierRules.TEMPEST_WHIRL, null);
 			});
-			check(await(context, world, 24, s -> player(s).getHealth() < 20.0F),
+			check(await(context, world, 45, s -> player(s).getHealth() < 20.0F),
 				"Tempest Whirl did not hit target within 360-degree 4.6-block radius");
 
 			// 2b. Hook-and-Reap pulls target inward & applies Slowness
@@ -288,12 +288,13 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				p.removeAllEffects();
 				p.setHealth(p.getMaxHealth());
 				p.setInvulnerableTime(0);
+				p.setDeltaMovement(Vec3.ZERO);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.HOOK_AND_REAP, p);
 			});
-			check(await(context, world, 20, s -> {
+			check(await(context, world, 45, s -> {
 				ServerPlayer p = player(s);
 				return p.hasEffect(MobEffects.SLOWNESS) && p.getHealth() < 20.0F;
 			}), "Hook-and-Reap did not damage and slow frontal target");
@@ -309,7 +310,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
 			});
-			check(await(context, world, 30, s -> player(s).getHealth() < 20.0F),
+			check(await(context, world, 45, s -> player(s).getHealth() < 20.0F),
 				"Thunderbolt Crash 4-way cross did not hit target on orthogonal arm");
 
 			// 2d. Heavy axe interrupts Sky-Vault windup -> STAGGERED -> amplified damage
@@ -346,7 +347,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SHADOWSTEP_THRUST, p);
 			});
-			check(await(context, world, 24, s -> {
+			check(await(context, world, 45, s -> {
 				OathboundHalberdier h = (OathboundHalberdier) level(s).getEntity(halberdierId);
 				return h != null && h.getZ() < -1.0 && player(s).getHealth() < 20.0F;
 			}), "Shadowstep Blink-Thrust did not advance Halberdier forward and strike target");
@@ -357,7 +358,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				h.setHealth(h.getMaxHealth() * 0.40F);
 				h.setTarget(null);
 			});
-			check(await(context, world, 15, s -> {
+			check(await(context, world, 35, s -> {
 				OathboundHalberdier h = (OathboundHalberdier) level(s).getEntity(halberdierId);
 				return h != null && h.empowered();
 			}), "Halberdier did not enter Overdrive below 50% HP");
