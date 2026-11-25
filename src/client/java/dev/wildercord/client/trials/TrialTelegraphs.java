@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 
 /** Shared safe-palette ground ring, cone, and tether telegraph geometry for Co-Op Trial boss renderers. */
-final class TrialTelegraphs {
+public final class TrialTelegraphs {
 	private TrialTelegraphs() {}
 
-	static PoseStack poseStackFrom(PoseStack.Pose basePose) {
+	public static PoseStack poseStackFrom(PoseStack.Pose basePose) {
 		PoseStack local = new PoseStack();
 		local.last().pose().set(basePose.pose());
 		local.last().normal().set(basePose.normal());
