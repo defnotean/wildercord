@@ -141,6 +141,12 @@ public final class WildercordCommand {
 					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.runebound"), false);
 					return 1;
 				}))
+				.then(Commands.literal("sanctum")
+					.then(Commands.literal("place")
+						.then(Commands.argument("kind", StringArgumentType.word())
+							.suggests((ctx, builder) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+								List.of("leyline", "crucible", "eclipse"), builder))
+							.executes(WildercordCommand::placeSanctum))))
 				.then(Commands.literal("reload").executes(WildercordCommand::reload))
 				.then(Commands.literal("reset").executes(ctx -> {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
@@ -178,6 +184,34 @@ public final class WildercordCommand {
 			ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.spell_set", index + 1, threaded), false);
 		}
 		return threaded;
+	}
+
+	private static int placeSanctum(CommandContext<CommandSourceStack> ctx) {
+		String kind = StringArgumentType.getString(ctx, "kind").trim().toLowerCase(java.util.Locale.ROOT);
+		var source = ctx.getSource();
+		var pos = net.minecraft.core.BlockPos.containing(source.getPosition());
+		net.minecraft.core.Direction facing = source.getEntity() instanceof ServerPlayer sp
+			? sp.getDirection() : net.minecraft.core.Direction.NORTH;
+		var placed = dev.wildercord.world.sites.trials.TrialSites.placeSanctum(source.getLevel(), pos, facing, kind);
+		if (placed == null) {
+			source.sendFailure(Component.translatable("command.wildercord.sanctum.unknown", kind));
+			return 0;
+		}
+		if (source.getEntity() instanceof ServerPlayer sp) {
+			var gate = placed.gatePosition();
+			var center = placed.arenaCenter();
+			double dx = center.getX() - gate.getX();
+			double dz = center.getZ() - gate.getZ();
+			double len = Math.max(1.0, Math.hypot(dx, dz));
+			sp.teleportTo(source.getLevel(),
+				gate.getX() + 0.5 + (dx / len) * 2.5,
+				gate.getY(),
+				gate.getZ() + 0.5 + (dz / len) * 2.5,
+				java.util.Set.of(), sp.getYRot(), sp.getXRot(), false);
+		}
+		source.sendSuccess(() -> Component.translatable("command.wildercord.sanctum.placed", kind,
+			placed.gatePosition().getX(), placed.gatePosition().getY(), placed.gatePosition().getZ()), true);
+		return 1;
 	}
 
 	/** Reads the config file again, and says what was wrong with it (each already fixed). */

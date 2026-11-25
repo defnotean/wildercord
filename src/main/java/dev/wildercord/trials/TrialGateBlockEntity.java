@@ -3,7 +3,7 @@ package dev.wildercord.trials;
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.cast.BossRules;
 import dev.wildercord.world.sites.SiteStructure;
-import dev.wildercord.world.sites.trials.LeylineSanctumPiece;
+import dev.wildercord.world.sites.trials.TrialArenaPiece;
 import dev.wildercord.world.sites.trials.TrialSites;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,13 +24,15 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-/** Persistent controller binding an authentic Leyline Sanctum, its boss, and its Treasury. */
+/** Persistent controller binding an authentic Co-Op Trial Sanctum, its boss, and its Treasury. */
 public final class TrialGateBlockEntity extends BlockEntity {
 	private @Nullable UUID guardian;
 	private boolean slain;
 	private long slainAt;
+	private String trialKind = "leyline";
 
 	public TrialGateBlockEntity(BlockPos pos, BlockState state) {
 		super(CoopTrialContent.TRIAL_GATE_ENTITY, pos, state);
@@ -44,12 +46,16 @@ public final class TrialGateBlockEntity extends BlockEntity {
 		return slain;
 	}
 
+	public String trialKind() {
+		return trialKind;
+	}
+
 	public void use(ServerPlayer player, ItemStack held) {
 		ServerLevel server = player.level();
 		if (player.isSpectator() || !player.isAlive() || !worldPosition.closerToCenterThan(player.position(), 8.0)) {
 			return;
 		}
-		LeylineSanctumPiece sanctum = findSanctum(server, worldPosition);
+		TrialArenaPiece sanctum = findSanctum(server, worldPosition);
 		if (sanctum == null || !sanctum.gatePosition().equals(worldPosition)) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.trial.decorative"));
 			return;
@@ -59,7 +65,7 @@ public final class TrialGateBlockEntity extends BlockEntity {
 			return;
 		}
 		if (guardian != null) {
-			if (server.getEntity(guardian) instanceof VaelkhorBoss existing && existing.isAlive()) {
+			if (server.getEntity(guardian) instanceof TrialBoss existing && existing.isAlive()) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.trial.active").withStyle(ChatFormatting.GOLD));
 				return;
 			}
@@ -87,24 +93,42 @@ public final class TrialGateBlockEntity extends BlockEntity {
 		if (!party.contains(player)) {
 			party = List.of(player);
 		}
-		VaelkhorBoss boss = CoopTrialContent.VAELKHOR.create(server, EntitySpawnReason.STRUCTURE);
-		if (boss == null) {
+		boolean apex = isApexTriggered(player, held);
+		if (apex && held.getItem() != CoopTrialContent.SOVEREIGNS_MANTLE && !SovereignsMantleItem.isWearingMantle(player) && isSeal(held)) {
+			held.shrink(1);
+		}
+		TrialBoss boss = TrialSites.createBoss(server, sanctum.trialKind());
+		if (!(boss instanceof Entity bossEntity)) {
 			return;
 		}
-		boss.configureTrial(center, worldPosition, treasuryPos, party.size());
-		if (!server.addFreshEntity(boss)) {
+		boss.configureTrial(center, worldPosition, treasuryPos, party.size(), apex);
+		if (!server.addFreshEntity(bossEntity)) {
 			return;
 		}
 		guardian = boss.getUUID();
+		trialKind = sanctum.trialKind();
 		setChanged();
 		if (server.getBlockEntity(treasuryPos) instanceof TrialTreasuryBlockEntity treasury) {
 			treasury.resetForTrial(worldPosition);
 		}
-		server.playSound(null, worldPosition, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 0.9F, 1.15F);
+		server.playSound(null, worldPosition, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 0.9F, apex ? 0.85F : 1.15F);
 		for (ServerPlayer member : party) {
-			member.sendSystemMessage(Component.translatable("message.wildercord.trial.started", party.size())
-				.withStyle(ChatFormatting.AQUA));
+			member.sendSystemMessage(Component.translatable(
+				apex ? "message.wildercord.trial.started_apex" : "message.wildercord.trial.started",
+				party.size()).withStyle(apex ? ChatFormatting.GOLD : ChatFormatting.AQUA));
 		}
+	}
+
+	private static boolean isApexTriggered(ServerPlayer player, ItemStack held) {
+		return SovereignsMantleItem.isWearingMantle(player)
+			|| held.is(CoopTrialContent.SOVEREIGNS_MANTLE)
+			|| (player.isShiftKeyDown() && isSeal(held));
+	}
+
+	private static boolean isSeal(ItemStack stack) {
+		return stack.is(CoopTrialContent.LEYLINE_SEAL)
+			|| stack.is(CoopTrialContent.CRUCIBLE_SEAL)
+			|| stack.is(CoopTrialContent.ECLIPSE_SEAL);
 	}
 
 	private static List<ServerPlayer> gatherParty(ServerLevel server, BlockPos arenaCenter) {
@@ -134,14 +158,15 @@ public final class TrialGateBlockEntity extends BlockEntity {
 		return true;
 	}
 
-	private static @Nullable LeylineSanctumPiece findSanctum(ServerLevel server, BlockPos pos) {
+	private static @Nullable TrialArenaPiece findSanctum(ServerLevel server, BlockPos pos) {
+		Set<String> validSites = TrialSites.allSiteIds();
 		var start = server.structureManager().getStructureWithPieceAt(
-			pos, h -> h.value() instanceof SiteStructure site && site.site().equals(TrialSites.SANCTUM_ID));
+			pos, h -> h.value() instanceof SiteStructure site && validSites.contains(site.site()));
 		if (!start.isValid()) {
 			return null;
 		}
 		for (var piece : start.getPieces()) {
-			if (piece instanceof LeylineSanctumPiece found) {
+			if (piece instanceof TrialArenaPiece found) {
 				return found;
 			}
 		}
@@ -154,6 +179,7 @@ public final class TrialGateBlockEntity extends BlockEntity {
 		guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null);
 		slain = input.getBooleanOr("slain", false);
 		slainAt = input.getLongOr("slain_at", 0L);
+		trialKind = input.getStringOr("trial_kind", "leyline");
 	}
 
 	@Override
@@ -164,5 +190,6 @@ public final class TrialGateBlockEntity extends BlockEntity {
 		}
 		output.putBoolean("slain", slain);
 		output.putLong("slain_at", slainAt);
+		output.putString("trial_kind", trialKind);
 	}
 }

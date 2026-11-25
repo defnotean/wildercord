@@ -3,6 +3,7 @@ package dev.wildercord.trials;
 import dev.wildercord.aura.world.AuraWorld;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,7 +32,12 @@ public final class SovereignHalberdItem extends AuraWorld.Lore {
 			if (!player.getAbilities().instabuild) {
 				held.hurtAndBreak(2, player, hand.asEquipmentSlot());
 			}
+			boolean crowned = SovereignsMantleItem.isWearingMantle(player);
+			if (crowned && player instanceof ServerPlayer sp) {
+				SovereignsMantleItem.tryTriggerFromRelic(server, sp);
+			}
 			float yaw = player.getYRot();
+			float damage = crowned ? 15.0F : 12.0F;
 			AABB box = player.getBoundingBox().inflate(5.2, 1.8, 5.2);
 			for (LivingEntity target : server.getEntitiesOfClass(LivingEntity.class, box)) {
 				if (target == player || target.isAlliedTo(player)) {
@@ -39,7 +45,7 @@ public final class SovereignHalberdItem extends AuraWorld.Lore {
 				}
 				Vec3 d = target.position().subtract(player.position());
 				if (VaelkhorRules.inCleaveArc(d.x, d.z, yaw, 5.2, Math.toRadians(65.0))) {
-					target.hurtServer(server, server.damageSources().playerAttack(player), 12.0F);
+					target.hurtServer(server, server.damageSources().playerAttack(player), damage);
 					Vec3 push = d.multiply(1.0, 0.0, 1.0);
 					double len = push.length();
 					if (len > 0.01) {
@@ -47,12 +53,17 @@ public final class SovereignHalberdItem extends AuraWorld.Lore {
 					}
 				}
 			}
-			Vec3 look = player.getLookAngle().multiply(1.0, 0.0, 1.0);
-			if (look.lengthSqr() > 1.0e-4) {
-				Vec3 fwd = look.normalize();
+			double baseRad = Math.toRadians(yaw);
+			for (int step = -3; step <= 3; step++) {
+				double ang = baseRad + Math.toRadians(step * 18.0);
+				double fx = -Math.sin(ang);
+				double fz = Math.cos(ang);
+				server.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,
+					player.getX() + fx * 3.0, player.getY() + 1.05, player.getZ() + fz * 3.0,
+					2, 0.12, 0.12, 0.12, 0.02);
 				server.sendParticles(ParticleTypes.END_ROD,
-					player.getX() + fwd.x * 2.5, player.getY() + 1.1, player.getZ() + fwd.z * 2.5,
-					16, 1.2, 0.3, 1.2, 0.04);
+					player.getX() + fx * 3.6, player.getY() + 1.1, player.getZ() + fz * 3.6,
+					1, 0.08, 0.08, 0.08, 0.02);
 			}
 			server.playSound(null, player.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.1F, 0.75F);
 		}

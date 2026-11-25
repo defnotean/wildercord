@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/** Supportive trial relic: chimes a 14-block resonance that heals and fortifies nearby party allies. */
+/** Supportive trial relic: chimes a 14-block resonance that cleanses, heals, and fortifies nearby party allies. */
 public final class LeylineBellCharmItem extends AuraWorld.Lore {
 	private static final int COOLDOWN_TICKS = 160;
 
@@ -36,15 +36,31 @@ public final class LeylineBellCharmItem extends AuraWorld.Lore {
 		}
 		if (level instanceof ServerLevel server) {
 			player.getCooldowns().addCooldown(held, COOLDOWN_TICKS);
+			boolean mantleActive = SovereignsMantleItem.isWearingMantle(player);
+			if (mantleActive && player instanceof ServerPlayer sp) {
+				SovereignsMantleItem.tryTriggerFromRelic(server, sp);
+			}
 			for (ServerPlayer ally : server.players()) {
 				if (ally == player || Parties.sameParty(player, ally)) {
 					if (ally.distanceToSqr(player) <= 14.0 * 14.0) {
 						ally.heal(6.0F);
+						ally.removeEffect(MobEffects.WEAKNESS);
+						ally.removeEffect(MobEffects.SLOWNESS);
+						ally.removeEffect(MobEffects.WITHER);
 						ally.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1, false, true));
 						ally.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 120, 0, false, true));
+						if (mantleActive) {
+							ally.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 120, 0, false, true));
+						}
 						server.sendParticles(ParticleTypes.NOTE, ally.getX(), ally.getEyeY() + 0.3, ally.getZ(), 6, 0.3, 0.2, 0.3, 0.1);
 					}
 				}
+			}
+			for (int i = 0; i < 12; i++) {
+				double ang = (Math.PI * 2.0 * i) / 12.0;
+				server.sendParticles(ParticleTypes.END_ROD,
+					player.getX() + Math.cos(ang) * 2.4, player.getY() + 1.0, player.getZ() + Math.sin(ang) * 2.4,
+					1, 0.08, 0.12, 0.08, 0.01);
 			}
 			server.playSound(null, player.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.3F, 1.35F);
 			if (player instanceof ServerPlayer sp) {

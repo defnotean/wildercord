@@ -4,6 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -11,6 +12,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -18,6 +21,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,9 +31,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
-/** Registers Multiplayer Co-Op Trial blocks, items, relics, and Vaelkhor entity. */
+/** Registers Multiplayer Co-Op Trial blocks, items, Sovereign relics/seals, and Vaelkhor entity. */
 public final class CoopTrialContent {
 	private CoopTrialContent() {}
 
@@ -43,6 +50,22 @@ public final class CoopTrialContent {
 		ResourceKey<Item> key = itemKey(id);
 		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().setId(key)));
 	}
+
+	public static final ArmorMaterial SOVEREIGN_ARMOR_MATERIAL = new ArmorMaterial(
+		42,
+		Map.of(
+			ArmorType.HELMET, 4,
+			ArmorType.CHESTPLATE, 9,
+			ArmorType.LEGGINGS, 7,
+			ArmorType.BOOTS, 4
+		),
+		18,
+		SoundEvents.ARMOR_EQUIP_NETHERITE,
+		3.5F,
+		0.15F,
+		ItemTags.REPAIRS_NETHERITE_ARMOR,
+		ResourceKey.create(EquipmentAssets.ROOT_ID, Wildercord.id("sovereign"))
+	);
 
 	public static final TrialGateBlock TRIAL_GATE = Registry.register(
 		BuiltInRegistries.BLOCK, blockKey("trial_gate"),
@@ -96,6 +119,17 @@ public final class CoopTrialContent {
 	public static final Item LEYLINE_SIGIL = registerItem("leyline_sigil",
 		p -> new AuraWorld.Lore("leyline_sigil", p.stacksTo(16).rarity(Rarity.RARE)));
 
+	public static final Item LEYLINE_SEAL = registerItem("leyline_seal",
+		p -> new AuraWorld.Lore("leyline_seal", p.stacksTo(16).rarity(Rarity.EPIC)));
+	public static final Item CRUCIBLE_SEAL = registerItem("crucible_seal",
+		p -> new AuraWorld.Lore("crucible_seal", p.stacksTo(16).rarity(Rarity.EPIC)));
+	public static final Item ECLIPSE_SEAL = registerItem("eclipse_seal",
+		p -> new AuraWorld.Lore("eclipse_seal", p.stacksTo(16).rarity(Rarity.EPIC)));
+	public static final Item SOVEREIGNS_MANTLE = registerItem("sovereigns_mantle",
+		p -> new SovereignsMantleItem(p.humanoidArmor(SOVEREIGN_ARMOR_MATERIAL, ArmorType.CHESTPLATE).rarity(Rarity.EPIC)));
+	public static final Item SOVEREIGN_CROWN = registerItem("sovereign_crown",
+		p -> new AuraWorld.Lore("sovereign_crown", p.humanoidArmor(SOVEREIGN_ARMOR_MATERIAL, ArmorType.HELMET).rarity(Rarity.EPIC)));
+
 	private static final ResourceKey<EntityType<?>> VAELKHOR_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("vaelkhor"));
 	public static final EntityType<VaelkhorBoss> VAELKHOR = Registry.register(
 		BuiltInRegistries.ENTITY_TYPE, VAELKHOR_KEY,
@@ -109,6 +143,7 @@ public final class CoopTrialContent {
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(VAELKHOR, VaelkhorBoss.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:vaelkhor", FieldGuide.Group.MONSTER, 0x60F5E0));
+		ServerTickEvents.END_SERVER_TICK.register(SovereignsMantleItem::tickServer);
 		AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
 			if (level.getBlockState(pos).is(LEYLINE_CONDUIT)) {
 				LeylineConduitBlock.interactConduit(level, pos, player);
@@ -119,7 +154,9 @@ public final class CoopTrialContent {
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(out -> List.of(
 				TRIAL_GATE_ITEM, TRIAL_TREASURY_ITEM, LEYLINE_CONDUIT_ITEM,
-				SOVEREIGN_HALBERD, LEYLINE_BELL_CHARM, LEYLINE_SIGIL
+				SOVEREIGN_HALBERD, LEYLINE_BELL_CHARM, LEYLINE_SIGIL,
+				LEYLINE_SEAL, CRUCIBLE_SEAL, ECLIPSE_SEAL,
+				SOVEREIGNS_MANTLE, SOVEREIGN_CROWN
 			).forEach(out::accept));
 	}
 }

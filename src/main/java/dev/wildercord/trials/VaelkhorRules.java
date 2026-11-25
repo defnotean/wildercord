@@ -19,6 +19,9 @@ public final class VaelkhorRules {
 
 	public static final double BASE_HEALTH = 320.0;
 	public static final double HEALTH_PER_EXTRA_PLAYER = 160.0;
+	public static final double APEX_HEALTH_MULTIPLIER = 1.35;
+	public static final float APEX_DAMAGE_MULTIPLIER = 1.20F;
+	public static final double APEX_COOLDOWN_MULTIPLIER = 0.80;
 
 	public static final int CLEAVE_TELL_TICKS = 14;
 	public static final int CLEAVE_ACTIVE_END_TICKS = 21;
@@ -59,8 +62,13 @@ public final class VaelkhorRules {
 	};
 
 	public static double maxHealthFor(int challengers) {
+		return maxHealthFor(challengers, false);
+	}
+
+	public static double maxHealthFor(int challengers, boolean apex) {
 		int extra = Math.clamp(challengers - 1, 0, MAX_PARTY_PLAYERS - 1);
-		return BASE_HEALTH + extra * HEALTH_PER_EXTRA_PLAYER;
+		double base = BASE_HEALTH + extra * HEALTH_PER_EXTRA_PLAYER;
+		return apex ? Math.round(base * APEX_HEALTH_MULTIPLIER) : base;
 	}
 
 	public static int conduitCount(int challengers) {
@@ -69,10 +77,20 @@ public final class VaelkhorRules {
 		return 4;
 	}
 
+	public static int conduitCount(int challengers, boolean apex) {
+		int base = conduitCount(challengers);
+		return apex ? Math.min(4, base + 1) : base;
+	}
+
 	public static int soakRingCount(int challengers) {
 		if (challengers <= 1) return 1;
 		if (challengers <= 3) return 2;
 		return 3;
+	}
+
+	public static int soakRingCount(int challengers, boolean apex) {
+		int base = soakRingCount(challengers);
+		return apex ? Math.min(3, base + 1) : base;
 	}
 
 	public static boolean isPhaseTwo(float health, float maxHealth) {
@@ -80,7 +98,19 @@ public final class VaelkhorRules {
 	}
 
 	public static float cleaveDamage(boolean phaseTwo) {
-		return phaseTwo ? CLEAVE_DAMAGE_P2 : CLEAVE_DAMAGE_P1;
+		return cleaveDamage(phaseTwo, false);
+	}
+
+	public static float cleaveDamage(boolean phaseTwo, boolean apex) {
+		return scaleDamage(phaseTwo ? CLEAVE_DAMAGE_P2 : CLEAVE_DAMAGE_P1, apex);
+	}
+
+	public static float scaleDamage(float baseDamage, boolean apex) {
+		return apex ? baseDamage * APEX_DAMAGE_MULTIPLIER : baseDamage;
+	}
+
+	public static long scaleCooldown(long baseTicks, boolean apex) {
+		return apex ? Math.max(1L, Math.round(baseTicks * APEX_COOLDOWN_MULTIPLIER)) : baseTicks;
 	}
 
 	public static String moveKey(int move) {

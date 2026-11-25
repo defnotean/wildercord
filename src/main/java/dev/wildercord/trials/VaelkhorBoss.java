@@ -45,11 +45,12 @@ import static dev.wildercord.trials.VaelkhorRules.*;
  * Vaelkhor, the Leyline Sovereign: Co-Op Trial guardian combining readable halberd cleaves,
  * cooperative conduit dampening, and split-soak Leyline Cataclysm rings.
  */
-public final class VaelkhorBoss extends PathfinderMob implements Enemy {
+public final class VaelkhorBoss extends PathfinderMob implements Enemy, TrialBoss {
 	private static final EntityDataAccessor<Integer> MOVE = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> BEGAN = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.LONG);
 	private static final EntityDataAccessor<Float> AIM_YAW = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> PHASE_TWO = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> APEX = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Long> STAGGER_UNTIL = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.LONG);
 	private static final EntityDataAccessor<Integer> CONDUIT_MASK = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> SOAK_COUNT = SynchedEntityData.defineId(VaelkhorBoss.class, EntityDataSerializers.INT);
@@ -111,6 +112,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 		builder.define(BEGAN, 0L);
 		builder.define(AIM_YAW, 0.0F);
 		builder.define(PHASE_TWO, false);
+		builder.define(APEX, false);
 		builder.define(STAGGER_UNTIL, 0L);
 		builder.define(CONDUIT_MASK, 0);
 		builder.define(SOAK_COUNT, 0);
@@ -125,21 +127,33 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 	}
 
 	public void configureTrial(BlockPos center, BlockPos gate, BlockPos treasury, int partyCount) {
+		configureTrial(center, gate, treasury, partyCount, false);
+	}
+
+	@Override
+	public void configureTrial(BlockPos center, BlockPos gate, BlockPos treasury, int partyCount, boolean apex) {
 		this.arenaCenter = center.immutable();
 		this.entityData.set(ARENA_CENTER_SYNC, this.arenaCenter);
+		this.entityData.set(APEX, apex);
 		this.gatePos = gate.immutable();
 		this.treasuryPos = treasury.immutable();
 		this.partySize = Math.max(1, partyCount);
-		double scaledHp = maxHealthFor(this.partySize);
+		double scaledHp = maxHealthFor(this.partySize, apex);
 		var attr = getAttribute(Attributes.MAX_HEALTH);
 		if (attr != null) {
 			attr.setBaseValue(scaledHp);
 		}
 		setHealth((float) scaledHp);
+		bar.setColor(apex ? BossEvent.BossBarColor.RED : BossEvent.BossBarColor.PURPLE);
+		updateBarSubtitle(IDLE);
 		snapTo(center.getX() + 0.5, center.getY(), center.getZ() + 0.5, 180.0F, 0.0F);
 		setYHeadRot(getYRot());
 		yBodyRot = getYRot();
 		this.readyAtTick = (level() != null ? level().getGameTime() : 0L) + 12L;
+	}
+
+	public boolean apex() {
+		return entityData.get(APEX);
 	}
 
 	public int move() {
@@ -255,13 +269,13 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 		if (staggered()) {
 			getNavigation().stop();
 			bar.setName(Component.translatable("boss.wildercord.vaelkhor.status",
-				getType().getDescription(), Component.translatable("boss.wildercord.vaelkhor.staggered")));
+				bossTitle(), Component.translatable("boss.wildercord.vaelkhor.staggered")));
 			return;
 		}
 
 		if (isPhaseTwo(getHealth(), getMaxHealth()) && !phaseTwo()) {
 			entityData.set(PHASE_TWO, true);
-			bar.setColor(BossEvent.BossBarColor.BLUE);
+			bar.setColor(apex() ? BossEvent.BossBarColor.PINK : BossEvent.BossBarColor.BLUE);
 			server.playSound(null, blockPosition(), SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.9F, 1.35F);
 		}
 
@@ -317,7 +331,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 		if (move == HALBERD_CLEAVE) {
 			server.playSound(null, blockPosition(), SoundEvents.IRON_GOLEM_ATTACK, SoundSource.HOSTILE, 1.2F, 0.75F);
 		} else if (move == BELL_TOLL_CONDUIT) {
-			int count = conduitCount(Math.max(partySize, challengers.size()));
+			int count = conduitCount(Math.max(partySize, challengers.size()), apex());
 			int mask = 0;
 			int start = completedAttacks % 4;
 			for (int i = 0; i < count; i++) {
@@ -328,7 +342,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 			entityData.set(CONDUIT_MASK, mask);
 			server.playSound(null, blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 1.8F, 0.65F);
 		} else if (move == LEYLINE_CATACLYSM) {
-			int count = soakRingCount(Math.max(partySize, challengers.size()));
+			int count = soakRingCount(Math.max(partySize, challengers.size()), apex());
 			entityData.set(SOAK_COUNT, count);
 			entityData.set(SOAK_FILLED, 0);
 			for (int i = 0; i < 3; i++) {
@@ -346,11 +360,12 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 
 	private void tickAttack(ServerLevel server, List<ServerPlayer> challengers, long now, int move) {
 		long el = now - entityData.get(BEGAN);
+		boolean apexMode = apex();
 		if (move == HALBERD_CLEAVE) {
 			if (!moveImpacted && el >= CLEAVE_TELL_TICKS + 1) {
 				moveImpacted = true;
 				float yaw = aimYaw();
-				float dmg = cleaveDamage(phaseTwo());
+				float dmg = cleaveDamage(phaseTwo(), apexMode);
 				for (ServerPlayer p : challengers) {
 					Vec3 d = p.position().subtract(position());
 					if (inCleaveArc(d.x, d.z, yaw, CLEAVE_REACH, CLEAVE_HALF_ANGLE_RAD)) {
@@ -366,11 +381,11 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 				server.playSound(null, blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 1.5F, 0.6F);
 			}
 			if (el >= CLEAVE_DURATION_TICKS) {
-				finishMove(now, 14L);
+				finishMove(now, scaleCooldown(14L, apexMode));
 			}
 		} else if (move == BELL_TOLL_CONDUIT) {
 			if (conduitMask() == 0) {
-				finishMove(now, 12L);
+				finishMove(now, scaleCooldown(12L, apexMode));
 				return;
 			}
 			if (el % 20 == 0 && el > 0 && el < CONDUIT_WINDOW_TICKS) {
@@ -379,13 +394,14 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 			if (el >= CONDUIT_WINDOW_TICKS) {
 				int active = conduitMask();
 				int remaining = Integer.bitCount(active);
+				float pulseDmg = scaleDamage(CONDUIT_PULSE_DAMAGE * Math.max(1, remaining), apexMode);
 				for (ServerPlayer p : challengers) {
-					p.hurtServer(server, damageSources().magic(), CONDUIT_PULSE_DAMAGE * Math.max(1, remaining));
+					p.hurtServer(server, damageSources().magic(), pulseDmg);
 				}
 				clearConduitLights(server);
 				entityData.set(CONDUIT_MASK, 0);
 				server.playSound(null, blockPosition(), SoundEvents.TRIDENT_THUNDER.value(), SoundSource.HOSTILE, 1.4F, 0.8F);
-				finishMove(now, 16L);
+				finishMove(now, scaleCooldown(16L, apexMode));
 			}
 		} else if (move == LEYLINE_CATACLYSM) {
 			int count = soakCount();
@@ -417,7 +433,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 						}
 					}
 					float dmg = (safe && unsoaked == 0) ? CATACLYSM_SOAKED_DAMAGE : (safe ? CATACLYSM_SOAKED_DAMAGE + 4.0F * unsoaked : CATACLYSM_UNSOAKED_DAMAGE);
-					p.hurtServer(server, damageSources().magic(), dmg);
+					p.hurtServer(server, damageSources().magic(), scaleDamage(dmg, apexMode));
 					if (safe) {
 						p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 80, 0, false, true));
 					}
@@ -428,7 +444,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 			if (el >= CATACLYSM_TELL_TICKS + CATACLYSM_RECOVERY_TICKS) {
 				entityData.set(SOAK_COUNT, 0);
 				entityData.set(SOAK_FILLED, 0);
-				finishMove(now, 18L);
+				finishMove(now, scaleCooldown(18L, apexMode));
 			}
 		}
 	}
@@ -527,9 +543,17 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 		yBodyRot = yaw;
 	}
 
+	private Component bossTitle() {
+		if (apex()) {
+			return Component.literal("[APEX] ").withStyle(ChatFormatting.GOLD)
+				.append(getType().getDescription().copy().withStyle(ChatFormatting.WHITE));
+		}
+		return getType().getDescription();
+	}
+
 	private void updateBarSubtitle(int move) {
 		bar.setName(Component.translatable("boss.wildercord.vaelkhor.status",
-			getType().getDescription(), Component.translatable("boss.wildercord.vaelkhor." + moveKey(move))));
+			bossTitle(), Component.translatable("boss.wildercord.vaelkhor." + moveKey(move))));
 	}
 
 	private void broadcastArena(ServerLevel server, Component msg) {
@@ -585,11 +609,12 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 				gate.complete(getUUID());
 			}
 			if (treasuryPos != null && server.getBlockEntity(treasuryPos) instanceof TrialTreasuryBlockEntity treasury) {
-				treasury.unlockFor(rewardIds, gatePos);
+				treasury.unlockFor(rewardIds, gatePos, "leyline", apex());
 			}
+			String victoryKey = apex() ? "message.wildercord.trial.victory_apex" : "message.wildercord.trial.victory";
 			for (ServerPlayer p : server.players()) {
 				if (rewardIds.contains(p.getUUID())) {
-					p.sendSystemMessage(Component.translatable("message.wildercord.trial.victory").withStyle(ChatFormatting.GOLD));
+					p.sendSystemMessage(Component.translatable(victoryKey).withStyle(ChatFormatting.GOLD));
 				}
 			}
 		}
@@ -603,6 +628,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 		if (treasuryPos != null) output.store("treasury_pos", BlockPos.CODEC, treasuryPos);
 		output.putInt("party_size", partySize);
 		output.putInt("completed_attacks", completedAttacks);
+		output.putBoolean("apex", apex());
 	}
 
 	@Override
@@ -613,5 +639,6 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 		treasuryPos = input.read("treasury_pos", BlockPos.CODEC).orElse(null);
 		partySize = Math.max(1, input.getIntOr("party_size", 1));
 		completedAttacks = input.getIntOr("completed_attacks", 0);
+		entityData.set(APEX, input.getBooleanOr("apex", false));
 	}
 }

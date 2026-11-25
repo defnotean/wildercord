@@ -46,4 +46,16 @@ class VaelkhorRulesTest {
 		assertFalse(VaelkhorRules.withinArena(18.0, 0.0, 18.0));
 		assertEquals(13.5F, VaelkhorRules.staggerDamage(10.0F, true), 1.0e-4F);
 	}
+
+	@Test void apexModeScalesHealthTargetsDamageAndCooldowns() {
+		assertEquals(432.0, VaelkhorRules.maxHealthFor(1, true), 1.0e-6);
+		assertEquals(648.0, VaelkhorRules.maxHealthFor(2, true), 1.0e-6);
+		assertEquals(3, VaelkhorRules.conduitCount(2, true));
+		assertEquals(4, VaelkhorRules.conduitCount(4, true));
+		assertEquals(2, VaelkhorRules.soakRingCount(1, true));
+		assertEquals(3, VaelkhorRules.soakRingCount(3, true));
+		assertEquals(16.8F, VaelkhorRules.cleaveDamage(true, true), 1.0e-4F);
+		assertEquals(11L, VaelkhorRules.scaleCooldown(14L, true));
+		assertEquals(14L, VaelkhorRules.scaleCooldown(14L, false));
+	}
 }

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "wildercord:sovereign"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "wildercord:sovereign"
+      }
+    ]
+  }
+}

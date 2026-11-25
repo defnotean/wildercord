@@ -25,13 +25,16 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-/** Persists contributor eligibility and claimed-once status for each cleared Leyline Trial. */
+/** Persists contributor eligibility, trial tier/Apex state, and claimed-once status for each Trial clear. */
 public final class TrialTreasuryBlockEntity extends BlockEntity {
 	private boolean unlocked;
+	private boolean apex;
+	private String trialKind = "leyline";
 	private @Nullable BlockPos gatePos;
 	private final Set<UUID> eligible = new LinkedHashSet<>();
 	private final Set<UUID> claimed = new LinkedHashSet<>();
@@ -44,8 +47,17 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 		return unlocked;
 	}
 
+	public boolean isApex() {
+		return apex;
+	}
+
+	public String trialKind() {
+		return trialKind;
+	}
+
 	public void resetForTrial(BlockPos gate) {
 		unlocked = false;
+		apex = false;
 		gatePos = gate.immutable();
 		eligible.clear();
 		claimed.clear();
@@ -53,7 +65,13 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 	}
 
 	public void unlockFor(Collection<UUID> contributors, @Nullable BlockPos gate) {
+		unlockFor(contributors, gate, "leyline", false);
+	}
+
+	public void unlockFor(Collection<UUID> contributors, @Nullable BlockPos gate, String kind, boolean apex) {
 		unlocked = true;
+		this.apex = apex;
+		this.trialKind = kind == null ? "leyline" : kind.toLowerCase(Locale.ROOT);
 		if (gate != null) {
 			gatePos = gate.immutable();
 		}
@@ -88,18 +106,24 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 		setChanged();
 
 		var rng = new Random(worldPosition.asLong() ^ player.getUUID().getLeastSignificantBits());
-		ItemStack primaryRelic = (rng.nextInt(2) == 0)
-			? new ItemStack(CoopTrialContent.SOVEREIGN_HALBERD)
-			: new ItemStack(CoopTrialContent.LEYLINE_BELL_CHARM);
-		give(player, primaryRelic);
-		give(player, new ItemStack(WildercordItems.MANA_CRYSTAL, 2));
-		give(player, new ItemStack(WildercordItems.BLANK_RUNE, 4));
-		give(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
-		give(player, new ItemStack(Items.DIAMOND, 2));
+		give(player, primaryRelic(trialKind, rng));
+		give(player, trialSeal(trialKind));
+		give(player, new ItemStack(WildercordItems.MANA_CRYSTAL, apex ? 4 : 2));
+		give(player, new ItemStack(WildercordItems.BLANK_RUNE, apex ? 6 : 4));
+		give(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, apex ? 4 : 2));
+		give(player, new ItemStack(Items.DIAMOND, apex ? 4 : 2));
+		if (apex) {
+			give(player, new ItemStack(CoopTrialContent.SOVEREIGN_CROWN));
+		}
 
 		List<RuneDef> tierPool = Runes.all().stream()
-			.filter(r -> Runes.obtainable(r) && !Runes.fused(r) && r.tier() >= 2 && r.tier() <= 3)
+			.filter(r -> Runes.obtainable(r) && !Runes.fused(r) && (apex ? r.tier() == 3 : (r.tier() >= 2 && r.tier() <= 3)))
 			.toList();
+		if (tierPool.isEmpty()) {
+			tierPool = Runes.all().stream()
+				.filter(r -> Runes.obtainable(r) && !Runes.fused(r) && r.tier() >= 2 && r.tier() <= 3)
+				.toList();
+		}
 		if (!tierPool.isEmpty()) {
 			RuneDef chosen = tierPool.get(rng.nextInt(tierPool.size()));
 			give(player, RuneItem.stack(chosen));
@@ -108,7 +132,23 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 		server.playSound(null, Vec3.atCenterOf(worldPosition).x, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5,
 			SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.9F, 1.1F);
 		player.sendSystemMessage(Component.translatable("message.wildercord.trial.treasury_awarded")
-			.withStyle(ChatFormatting.AQUA));
+			.withStyle(apex ? ChatFormatting.GOLD : ChatFormatting.AQUA));
+	}
+
+	private static ItemStack primaryRelic(String kind, Random rng) {
+		return switch (kind) {
+			default -> (rng.nextInt(2) == 0)
+				? new ItemStack(CoopTrialContent.SOVEREIGN_HALBERD)
+				: new ItemStack(CoopTrialContent.LEYLINE_BELL_CHARM);
+		};
+	}
+
+	private static ItemStack trialSeal(String kind) {
+		return switch (kind) {
+			case "crucible" -> new ItemStack(CoopTrialContent.CRUCIBLE_SEAL);
+			case "eclipse" -> new ItemStack(CoopTrialContent.ECLIPSE_SEAL);
+			default -> new ItemStack(CoopTrialContent.LEYLINE_SEAL);
+		};
 	}
 
 	private static void give(ServerPlayer player, ItemStack stack) {
@@ -121,6 +161,8 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
 		unlocked = input.getBooleanOr("unlocked", false);
+		apex = input.getBooleanOr("apex", false);
+		trialKind = input.getStringOr("trial_kind", "leyline");
 		gatePos = input.read("gate_pos", BlockPos.CODEC).orElse(null);
 		eligible.clear();
 		claimed.clear();
@@ -132,6 +174,8 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		output.putBoolean("unlocked", unlocked);
+		output.putBoolean("apex", apex);
+		output.putString("trial_kind", trialKind);
 		if (gatePos != null) {
 			output.store("gate_pos", BlockPos.CODEC, gatePos);
 		}

@@ -1,11 +1,31 @@
 package dev.wildercord.world.sites.trials;
 
+import dev.wildercord.trials.CoopTrialContent;
+import dev.wildercord.trials.TrialBoss;
+import dev.wildercord.world.dungeons.DungeonPiece;
 import dev.wildercord.world.sites.Sites;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
+import org.jspecify.annotations.Nullable;
 
-/** Registers the Leyline Sanctum Co-Op Trial structure and chest loot table. */
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+/** Registrations and placement helpers for Multiplayer Co-Op Trial sites. */
 public final class TrialSites {
 	private TrialSites() {}
 
@@ -20,5 +40,51 @@ public final class TrialSites {
 
 	public static void init() {
 		Sites.register(SANCTUM_ID, LeylineSanctumPiece::locate);
+	}
+
+	public static Set<String> allSiteIds() {
+		return Set.of(SANCTUM_ID);
+	}
+
+	public static @Nullable TrialBoss createBoss(ServerLevel level, String trialKind) {
+		return switch (trialKind.toLowerCase(Locale.ROOT)) {
+			case "leyline" -> CoopTrialContent.VAELKHOR.create(level, EntitySpawnReason.STRUCTURE);
+			default -> null;
+		};
+	}
+
+	/** Places a registered Co-Op Trial Sanctum at {@code origin} and binds its StructureStart for ward & gate checks. */
+	public static @Nullable TrialArenaPiece placeSanctum(ServerLevel level, BlockPos origin, Direction facing, String kind) {
+		Direction dir = facing.getAxis().isHorizontal() ? facing : Direction.NORTH;
+		String normalized = kind.toLowerCase(Locale.ROOT);
+		DungeonPiece piece = switch (normalized) {
+			case "leyline" -> new LeylineSanctumPiece(
+				origin.getX() - 20, origin.getY() - LeylineSanctumPiece.FLOOR - 1, origin.getZ() - 3, dir);
+			default -> null;
+		};
+		if (!(piece instanceof TrialArenaPiece arena)) {
+			return null;
+		}
+		BoundingBox bb = piece.getBoundingBox();
+		for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+			for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+				level.getChunk(cx, cz);
+			}
+		}
+		ChunkPos startChunk = new ChunkPos(bb.minX() >> 4, bb.minZ() >> 4);
+		piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(),
+			RandomSource.create(origin.asLong()), bb, startChunk, BlockPos.ZERO);
+
+		var structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
+			.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.parse("wildercord:" + arena.structureId()))).value();
+		var start = new StructureStart(structure, startChunk, 0, new PiecesContainer(List.<StructurePiece>of(piece)));
+		for (int cx = bb.minX() >> 4; cx <= bb.maxX() >> 4; cx++) {
+			for (int cz = bb.minZ() >> 4; cz <= bb.maxZ() >> 4; cz++) {
+				var chunk = level.getChunk(cx, cz);
+				chunk.addReferenceForStructure(structure, startChunk.pack());
+				chunk.setStartForStructure(structure, start);
+			}
+		}
+		return arena;
 	}
 }
