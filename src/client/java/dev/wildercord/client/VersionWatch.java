@@ -24,7 +24,11 @@ public final class VersionWatch {
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(VersionCheck.ServerVersion.TYPE, (payload, context) -> {
 			waiting = -1;
-			Component warning = VersionCheck.mismatch(payload.version(), VersionCheck.version());
+			String mine = VersionCheck.version();
+			if (ClientPlayNetworking.canSend(VersionCheck.ClientVersion.TYPE)) {
+				ClientPlayNetworking.send(new VersionCheck.ClientVersion(mine));
+			}
+			Component warning = VersionCheck.mismatch(payload.version(), mine);
 			if (warning != null && context.player() != null) {
 				context.player().sendSystemMessage(warning);
 			}

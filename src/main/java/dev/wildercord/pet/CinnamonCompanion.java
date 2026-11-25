@@ -172,15 +172,21 @@ final class CinnamonCompanion {
 		if (stopping || server.getTickCount() % 5 != 0) return;
 		if (server.getTickCount() % 100 == 0) readConfig();
 		long now = server.overworld().getGameTime();
-		ServerPlayer player = configuredOwner(server);
-		if (ticketLevel != null && (player == null || !LEASE.heldBy(player.getUUID()) || !mayRecall(player) || LEASE.expired(now))) {
-			if (player != null && LEASE.heldBy(player.getUUID()) && LEASE.expired(now)) {
-				BLOCKED.add(player.getUUID());
-				if (REQUESTED.remove(player.getUUID())) message(player, LIVE.containsKey(player.getUUID()) ? "recall_blocked" : "recall_missing");
+		var owners = configuredOwners(server);
+		if (ticketLevel != null) {
+			ServerPlayer leaseHolder = owners.stream().filter(p -> LEASE.heldBy(p.getUUID())).findFirst().orElse(null);
+			if (leaseHolder == null || !mayRecall(leaseHolder) || LEASE.expired(now)) {
+				if (leaseHolder != null && LEASE.expired(now)) {
+					BLOCKED.add(leaseHolder.getUUID());
+					if (REQUESTED.remove(leaseHolder.getUUID())) message(leaseHolder, LIVE.containsKey(leaseHolder.getUUID()) ? "recall_blocked" : "recall_missing");
+				}
+				release();
 			}
-			release();
 		}
-		if (player == null) return;
+		for (ServerPlayer player : owners) tickOwner(server, player, now);
+	}
+
+	private static void tickOwner(MinecraftServer server, ServerPlayer player, long now) {
 		if (player.getVehicle() instanceof CinnamonDog ridden && player.getUUID().equals(ownerId(ridden))) {
 			changed(ridden);
 			if (REQUESTED.remove(player.getUUID())) message(player, "recall_blocked");
@@ -344,16 +350,19 @@ final class CinnamonCompanion {
 	private static void clear() { release(); LIVE.clear(); BLOCKED.clear(); REQUESTED.clear(); UNCERTAIN_OWNERS.clear(); WARNED_IDENTITY.clear(); uncertainOverflow = false; lastModified = -1; recalling = false; }
 	private static void message(ServerPlayer player, String key) { player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon." + key)); }
 	private static boolean matches(ServerPlayer player) {
-		if (config.owner().isBlank()) return false;
-		if (config.owner().equalsIgnoreCase("@singleplayer")) {
-			var profile = player.level().getServer().getSingleplayerProfile();
-			return profile != null && (profile.id().equals(player.getUUID()) || profile.name().equalsIgnoreCase(player.getGameProfile().name()));
-		}
-		return config.ownerId() != null ? player.getUUID().equals(config.ownerId()) : player.getGameProfile().name().equalsIgnoreCase(config.owner());
+		var profile = player.level().getServer().getSingleplayerProfile();
+		boolean singleplayerOwner = profile != null
+			&& (profile.id().equals(player.getUUID()) || profile.name().equalsIgnoreCase(player.getGameProfile().name()));
+		return config.matches(player.getUUID(), player.getGameProfile().name(), singleplayerOwner);
 	}
 	static ServerPlayer configuredOwner(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) if (matches(player)) return player;
 		return null;
+	}
+	static java.util.List<ServerPlayer> configuredOwners(MinecraftServer server) {
+		java.util.List<ServerPlayer> out = new java.util.ArrayList<>();
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) if (matches(player)) out.add(player);
+		return out;
 	}
 	static boolean bell() { return config.bell(); }
 	static int recoveryTickets() { return ticketLevel == null ? 0 : 1; }
@@ -368,7 +377,7 @@ final class CinnamonCompanion {
 			if (modified == lastModified) return;
 			if (Files.size(CONFIG) > 65_536) throw new IOException("Cinnamon config exceeds 64 KiB");
 			CinnamonConfig next = CinnamonConfig.parse(Files.readString(CONFIG, StandardCharsets.UTF_8));
-			if (!config.owner().equalsIgnoreCase(next.owner())) { release(); REQUESTED.clear(); BLOCKED.clear(); }
+			if (!config.owners().equals(next.owners())) { release(); REQUESTED.clear(); BLOCKED.clear(); }
 			config = next; // One atomic authority update, only after every field validated.
 			lastModified = modified;
 		} catch (IOException | RuntimeException e) { Wildercord.LOGGER.warn("Could not read Cinnamon owner config {}: {}", CONFIG, e.toString()); }
