@@ -95,6 +95,9 @@
       "dev.wildercord.ocean.DeepOceanStructuresTest",
       "dev.wildercord.ocean.DeepOceanPlacementTest",
       "dev.wildercord.trials.CoopTrialVaelkhorTest",
+      "dev.wildercord.trials.CoopTrialsExpansionTest",
+      "dev.wildercord.trials.TrialBiomesAndPlacementTest",
+      "dev.wildercord.trials.BossOverhaulShowcaseTest",
       "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },

@@ -24,9 +24,9 @@
     ]
   },
   "area-combat-bosses": {
-    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, a cooperative Ferryman crossing, monsters, aura beasts, Oathbound high knights, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world, Deep Ocean enemies & Thalassor boss, and Co-Op Trials with Vaelkhor.",
+    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, a cooperative Ferryman crossing, monsters, aura beasts, Oathbound high knights, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world, Deep Ocean enemies & Thalassor boss, Co-Op Trials (Vaelkhor, Kharvok, Nyxara), and overhauled Archivist/Thalassor/Cinder Warden rigs.",
     "purpose": "area",
-    "expectedCount": 18,
+    "expectedCount": 20,
     "entries": [
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
@@ -45,7 +45,9 @@
       "dev.wildercord.world.dungeons.ArenaTreeClearingTest",
       "dev.wildercord.aura.world.GauntletRestartTest",
       "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest",
-      "dev.wildercord.trials.CoopTrialVaelkhorTest"
+      "dev.wildercord.trials.CoopTrialVaelkhorTest",
+      "dev.wildercord.trials.CoopTrialsExpansionTest",
+      "dev.wildercord.trials.BossOverhaulShowcaseTest"
     ]
   },
   "area-combat-arts": {
@@ -85,9 +87,9 @@
     ]
   },
   "area-regions-worldgen": {
-    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, every dungeon's wards holding their rooms against a survival player, the forest White Rabbit leading players into Hollow Tree portals, and the 5 Deep Ocean structures.",
+    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, every dungeon's wards holding their rooms against a survival player, the forest White Rabbit leading players into Hollow Tree portals, the 5 Deep Ocean structures, and the Trial living biomes + Sanctum placement.",
     "purpose": "area",
-    "expectedCount": 14,
+    "expectedCount": 15,
     "entries": [
       "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
@@ -102,7 +104,8 @@
       "dev.wildercord.world.dungeons.DungeonWardSealTest",
       "dev.wildercord.wildlife.WhiteRabbitHoleTest",
       "dev.wildercord.ocean.DeepOceanStructuresTest",
-      "dev.wildercord.ocean.DeepOceanPlacementTest"
+      "dev.wildercord.ocean.DeepOceanPlacementTest",
+      "dev.wildercord.trials.TrialBiomesAndPlacementTest"
     ]
   },
   "area-items-crafting": {
@@ -233,11 +236,14 @@
     ]
   },
   "coop-trials": {
-    "description": "Multiplayer Co-Op Trials 1:1 native suite: warded Leyline Sanctum, 2-player party scaling, 40-bone Blockbench Vaelkhor renderer, Halberd Cleave, Bell Toll Conduit dampening stagger, Phase 2 Leyline Cataclysm soak rings, and instanced Trial Treasury rewards.",
+    "description": "Multiplayer Co-Op Trials 1:1 native suite: Vaelkhor (Leyline Sanctum), Kharvok (Ashen Crucible), Nyxara Apex (Astral Eclipse Vault), Trial biomes & Sanctum locators, and overhauled Archivist/Thalassor/Cinder Warden BedrockGeoRig showcases.",
     "purpose": "area",
-    "expectedCount": 1,
+    "expectedCount": 4,
     "entries": [
-      "dev.wildercord.trials.CoopTrialVaelkhorTest"
+      "dev.wildercord.trials.CoopTrialVaelkhorTest",
+      "dev.wildercord.trials.CoopTrialsExpansionTest",
+      "dev.wildercord.trials.TrialBiomesAndPlacementTest",
+      "dev.wildercord.trials.BossOverhaulShowcaseTest"
     ]
   },
   "structure-gallery": {

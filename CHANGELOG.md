@@ -4,6 +4,23 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.17.0-alpha] — 2026-11-25
+
+**Trials of the Sovereign.** Two living custom biomes (**Astral Ley-Glade** & **Cinder Caldera**) with creature spawns, resources & **Sanctum Wayfinder**; three monumental `41×32×41` Co-Op Trial Sanctums (**Leyline Sanctum & Vaelkhor**, **Ashen Crucible & Kharvok**, **Astral Eclipse Vault & Nyxara**); Tri-Seal **Sovereign's Mantle**, **Empowered Apex Mode** & **Sovereign Crown**; 6 Trial Relics; `/wildercord sanctum place`; `BedrockGeoRig` visual overhauls for **Archivist**, **Thalassor**, and **Cinder Warden**; two-way client/server version handshake; and multi-owner Cinnamon support.
+
+### Added
+- **Living Custom Biomes & Exploration Loop**: added **Astral Ley-Glade** (`wildercord:astral_ley_glade`, oxidized copper ley spires, **Leybloom Cluster**, **Leyweaver Moth**) and **Cinder Caldera** (`wildercord:cinder_caldera`, smoking fumaroles, **Caldera Slag Vent**, **Caldera Cinderhound**), plus the **Sanctum Wayfinder** compass item.
+- **Three Cooperative Trial Sanctums & Sovereign Bosses**:
+  - **Leyline Sanctum & Vaelkhor**: 40-bone Blockbench rig, cooperative **Leyline Conduit** dampening, Phase 2 split-soak rings, **Sovereign Halberd**, **Leyline Bell Charm**, and **Leyline Seal**.
+  - **Ashen Crucible & Kharvok**: 40-bone Blockbench foundry rig, Anvil Shatter cones, cooperative **Crucible Vent** quenching, Phase 2 Crucible Meltdown soaks, **Crucible Maul**, **Forgeheart Censer**, and **Crucible Seal**.
+  - **Astral Eclipse Vault & Nyxara**: 40-bone Blockbench eclipse rig, Crescent Sever arcs, cooperative **Astral Prism** alignment, Phase 2 Total Eclipse soaks, **Eclipse Twinblade**, **Astrolabe Dial**, and **Eclipse Seal**.
+- **Empowered Apex Trials & Progression**: added instanced **Trial Treasuries**, **Sovereign's Mantle**, **Sovereign Crown**, `/wildercord sanctum place`, and `9` advancements (`188` visible advancements total, `16,335` XP).
+- **Version Handshake & Multi-Owner Cinnamon**: added bidirectional `VersionCheck`/`VersionWatch` warnings and multi-owner `"owners": [...]` configuration support for Cinnamon.
+
+### Changed
+- **BedrockGeoRig Boss Overhaul**: upgraded **The Archivist**, **Thalassor, Abyssal Sovereign**, and **The Cinder Warden** to multi-bone `BedrockGeoRig` models with articulated ZYX animation clips and dynamic emissive overlays.
+- **Documentation & Tooling**: added `tools/stage_release.py` bundle verifier and expanded `wiki/world/coop-trials.md` + `wiki/progression/advancements.md`.
+
 ## [0.16.1-alpha] — 2026-11-24
 
 **Crossplay, Oathbound Techniques & Sacred Pig Quest.** Full optional Geyser/Floodgate Bedrock and Console crossplay server bridge, 52 shared Oathbound combat techniques, bundled Oathhold outer-ward house schematics and one-heart guard arrests, the Sacred Pig boss-drop map quest, and dungeon ward / Deep Ocean placement fixes.
