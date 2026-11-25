@@ -1,0 +1,1252 @@
+{
+  "creature_id": "archivist",
+  "ground_y": 0.0,
+  "floating_entity": false,
+  "materials": [
+    {
+      "id": "robe_navy",
+      "type": "opaque"
+    },
+    {
+      "id": "robe_slate",
+      "type": "opaque"
+    },
+    {
+      "id": "brass_gold",
+      "type": "opaque"
+    },
+    {
+      "id": "leather_brown",
+      "type": "opaque"
+    },
+    {
+      "id": "parchment",
+      "type": "opaque"
+    },
+    {
+      "id": "void_dark",
+      "type": "opaque"
+    },
+    {
+      "id": "eye_glow",
+      "type": "emissive"
+    },
+    {
+      "id": "rune_glow",
+      "type": "emissive"
+    }
+  ],
+  "bones": [
+    {
+      "id": "root",
+      "parent": null,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pelvis",
+      "parent": "root",
+      "pivot": [
+        0,
+        14.0,
+        0.0
+      ]
+    },
+    {
+      "id": "hem_front",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        14.0,
+        -4.5
+      ]
+    },
+    {
+      "id": "hem_back",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        14.0,
+        4.5
+      ]
+    },
+    {
+      "id": "hem_right",
+      "parent": "pelvis",
+      "pivot": [
+        5.5,
+        14.0,
+        0.0
+      ],
+      "mirror_of": "hem_left"
+    },
+    {
+      "id": "hem_left",
+      "parent": "pelvis",
+      "pivot": [
+        -5.5,
+        14.0,
+        0.0
+      ],
+      "mirror_of": "hem_right"
+    },
+    {
+      "id": "waist",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        22.0,
+        0.0
+      ]
+    },
+    {
+      "id": "chest",
+      "parent": "waist",
+      "pivot": [
+        0,
+        30.0,
+        0.0
+      ]
+    },
+    {
+      "id": "stole_right",
+      "parent": "chest",
+      "pivot": [
+        3.0,
+        33.0,
+        -4.5
+      ],
+      "mirror_of": "stole_left"
+    },
+    {
+      "id": "stole_left",
+      "parent": "chest",
+      "pivot": [
+        -3.0,
+        33.0,
+        -4.5
+      ],
+      "mirror_of": "stole_right"
+    },
+    {
+      "id": "mantle",
+      "parent": "chest",
+      "pivot": [
+        0,
+        38.0,
+        0.0
+      ]
+    },
+    {
+      "id": "head",
+      "parent": "chest",
+      "pivot": [
+        0,
+        39.5,
+        0.0
+      ]
+    },
+    {
+      "id": "hood_tip",
+      "parent": "head",
+      "pivot": [
+        0,
+        49.0,
+        4.5
+      ]
+    },
+    {
+      "id": "upper_arm_right",
+      "parent": "chest",
+      "pivot": [
+        7.5,
+        37.5,
+        0.0
+      ],
+      "mirror_of": "upper_arm_left"
+    },
+    {
+      "id": "upper_arm_left",
+      "parent": "chest",
+      "pivot": [
+        -7.5,
+        37.5,
+        0.0
+      ],
+      "mirror_of": "upper_arm_right"
+    },
+    {
+      "id": "forearm_right",
+      "parent": "upper_arm_right",
+      "pivot": [
+        8.5,
+        29.0,
+        0.0
+      ],
+      "mirror_of": "forearm_left"
+    },
+    {
+      "id": "forearm_left",
+      "parent": "upper_arm_left",
+      "pivot": [
+        -8.5,
+        29.0,
+        0.0
+      ],
+      "mirror_of": "forearm_right"
+    },
+    {
+      "id": "sleeve_right",
+      "parent": "forearm_right",
+      "pivot": [
+        8.5,
+        23.0,
+        0.0
+      ],
+      "mirror_of": "sleeve_left"
+    },
+    {
+      "id": "sleeve_left",
+      "parent": "forearm_left",
+      "pivot": [
+        -8.5,
+        23.0,
+        0.0
+      ],
+      "mirror_of": "sleeve_right"
+    },
+    {
+      "id": "tome",
+      "parent": "chest",
+      "pivot": [
+        0,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_right",
+      "parent": "tome",
+      "pivot": [
+        0.5,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_left",
+      "parent": "tome",
+      "pivot": [
+        -0.5,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_page",
+      "parent": "tome",
+      "pivot": [
+        0.0,
+        28.8,
+        -10.0
+      ]
+    },
+    {
+      "id": "orbit",
+      "parent": "chest",
+      "pivot": [
+        0,
+        37.0,
+        0.0
+      ]
+    },
+    {
+      "id": "page_0",
+      "parent": "orbit",
+      "pivot": [
+        12.0,
+        40.0,
+        -4.0
+      ]
+    },
+    {
+      "id": "page_1",
+      "parent": "orbit",
+      "pivot": [
+        -12.0,
+        38.0,
+        -3.0
+      ]
+    },
+    {
+      "id": "page_2",
+      "parent": "orbit",
+      "pivot": [
+        0.0,
+        42.0,
+        11.0
+      ]
+    },
+    {
+      "id": "sigil_crest",
+      "parent": "chest",
+      "pivot": [
+        0,
+        33.5,
+        -4.2
+      ]
+    }
+  ],
+  "cubes": [
+    {
+      "id": "skirt_upper",
+      "bone": "pelvis",
+      "material": "robe_navy",
+      "from": [
+        -6.0,
+        8.0,
+        -4.2
+      ],
+      "to": [
+        6.0,
+        22.0,
+        4.2
+      ]
+    },
+    {
+      "id": "hem_f_panel",
+      "bone": "hem_front",
+      "material": "robe_navy",
+      "from": [
+        -6.8,
+        0.0,
+        -5.2
+      ],
+      "to": [
+        6.8,
+        10.0,
+        -3.8
+      ]
+    },
+    {
+      "id": "hem_f_trim",
+      "bone": "hem_front",
+      "material": "brass_gold",
+      "from": [
+        -7.0,
+        0.0,
+        -5.4
+      ],
+      "to": [
+        7.0,
+        1.5,
+        -3.6
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "hem_b_panel",
+      "bone": "hem_back",
+      "material": "robe_navy",
+      "from": [
+        -7.2,
+        0.0,
+        3.8
+      ],
+      "to": [
+        7.2,
+        11.0,
+        5.6
+      ]
+    },
+    {
+      "id": "hem_b_trim",
+      "bone": "hem_back",
+      "material": "brass_gold",
+      "from": [
+        -7.4,
+        0.0,
+        3.9
+      ],
+      "to": [
+        7.4,
+        1.6,
+        5.8
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "hem_r_flare",
+      "bone": "hem_right",
+      "material": "robe_navy",
+      "from": [
+        5.2,
+        0.0,
+        -4.6
+      ],
+      "to": [
+        7.6,
+        11.0,
+        4.6
+      ]
+    },
+    {
+      "id": "hem_l_flare",
+      "bone": "hem_left",
+      "material": "robe_navy",
+      "from": [
+        -7.6,
+        0.0,
+        -4.6
+      ],
+      "to": [
+        -5.2,
+        11.0,
+        4.6
+      ]
+    },
+    {
+      "id": "hem_r_gold",
+      "bone": "hem_right",
+      "material": "brass_gold",
+      "from": [
+        5.4,
+        0.0,
+        -4.8
+      ],
+      "to": [
+        7.8,
+        1.4,
+        4.8
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "hem_l_gold",
+      "bone": "hem_left",
+      "material": "brass_gold",
+      "from": [
+        -7.8,
+        0.0,
+        -4.8
+      ],
+      "to": [
+        -5.4,
+        1.4,
+        4.8
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "waist_sash",
+      "bone": "waist",
+      "material": "robe_slate",
+      "from": [
+        -5.4,
+        21.5,
+        -3.8
+      ],
+      "to": [
+        5.4,
+        30.2,
+        3.8
+      ]
+    },
+    {
+      "id": "chest_core",
+      "bone": "chest",
+      "material": "robe_navy",
+      "from": [
+        -6.2,
+        29.5,
+        -4.2
+      ],
+      "to": [
+        6.2,
+        39.2,
+        4.2
+      ]
+    },
+    {
+      "id": "stole_r_cloth",
+      "bone": "stole_right",
+      "material": "robe_slate",
+      "from": [
+        1.6,
+        6.0,
+        -4.9
+      ],
+      "to": [
+        4.4,
+        38.5,
+        -3.8
+      ]
+    },
+    {
+      "id": "stole_l_cloth",
+      "bone": "stole_left",
+      "material": "robe_slate",
+      "from": [
+        -4.4,
+        6.0,
+        -4.9
+      ],
+      "to": [
+        -1.6,
+        38.5,
+        -3.8
+      ]
+    },
+    {
+      "id": "stole_r_rune",
+      "bone": "stole_right",
+      "material": "rune_glow",
+      "from": [
+        2.1,
+        8.0,
+        -5.1
+      ],
+      "to": [
+        3.9,
+        36.5,
+        -4.6
+      ]
+    },
+    {
+      "id": "stole_l_rune",
+      "bone": "stole_left",
+      "material": "rune_glow",
+      "from": [
+        -3.9,
+        8.0,
+        -5.1
+      ],
+      "to": [
+        -2.1,
+        36.5,
+        -4.6
+      ]
+    },
+    {
+      "id": "chest_sigil",
+      "bone": "sigil_crest",
+      "material": "eye_glow",
+      "from": [
+        -1.6,
+        32.0,
+        -4.7
+      ],
+      "to": [
+        1.6,
+        35.2,
+        -3.9
+      ]
+    },
+    {
+      "id": "mantle_shawl",
+      "bone": "mantle",
+      "material": "robe_navy",
+      "from": [
+        -8.4,
+        36.5,
+        -4.8
+      ],
+      "to": [
+        8.4,
+        40.4,
+        4.8
+      ]
+    },
+    {
+      "id": "mantle_gold",
+      "bone": "mantle",
+      "material": "brass_gold",
+      "from": [
+        -8.6,
+        36.2,
+        -5.0
+      ],
+      "to": [
+        8.6,
+        37.5,
+        5.0
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "back_embroidery",
+      "bone": "chest",
+      "material": "brass_gold",
+      "from": [
+        -2.4,
+        6.0,
+        4.1
+      ],
+      "to": [
+        2.4,
+        38.0,
+        4.7
+      ]
+    },
+    {
+      "id": "face_void",
+      "bone": "head",
+      "material": "void_dark",
+      "from": [
+        -4.0,
+        39.6,
+        -4.0
+      ],
+      "to": [
+        4.0,
+        47.6,
+        3.4
+      ]
+    },
+    {
+      "id": "hood_top",
+      "bone": "head",
+      "material": "robe_navy",
+      "from": [
+        -5.4,
+        47.2,
+        -5.4
+      ],
+      "to": [
+        5.4,
+        50.8,
+        5.2
+      ]
+    },
+    {
+      "id": "hood_back",
+      "bone": "head",
+      "material": "robe_navy",
+      "from": [
+        -5.4,
+        39.5,
+        2.8
+      ],
+      "to": [
+        5.4,
+        48.0,
+        5.4
+      ]
+    },
+    {
+      "id": "hood_side_r",
+      "bone": "head",
+      "material": "robe_navy",
+      "from": [
+        3.8,
+        39.6,
+        -5.0
+      ],
+      "to": [
+        5.6,
+        48.0,
+        4.2
+      ]
+    },
+    {
+      "id": "hood_side_l",
+      "bone": "head",
+      "material": "robe_navy",
+      "from": [
+        -5.6,
+        39.6,
+        -5.0
+      ],
+      "to": [
+        -3.8,
+        48.0,
+        4.2
+      ]
+    },
+    {
+      "id": "hood_brim_gold",
+      "bone": "head",
+      "material": "brass_gold",
+      "from": [
+        -5.2,
+        46.8,
+        -5.9
+      ],
+      "to": [
+        5.2,
+        48.8,
+        -4.2
+      ]
+    },
+    {
+      "id": "hood_clasp_r",
+      "bone": "head",
+      "material": "brass_gold",
+      "from": [
+        4.8,
+        42.8,
+        -3.4
+      ],
+      "to": [
+        6.2,
+        46.2,
+        -0.2
+      ]
+    },
+    {
+      "id": "hood_clasp_l",
+      "bone": "head",
+      "material": "brass_gold",
+      "from": [
+        -6.2,
+        42.8,
+        -3.4
+      ],
+      "to": [
+        -4.8,
+        46.2,
+        -0.2
+      ]
+    },
+    {
+      "id": "hood_peak",
+      "bone": "hood_tip",
+      "material": "robe_navy",
+      "from": [
+        -3.4,
+        49.0,
+        1.5
+      ],
+      "to": [
+        3.4,
+        52.8,
+        7.0
+      ],
+      "rotation": [
+        -18.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        0.0,
+        50.9,
+        4.25
+      ]
+    },
+    {
+      "id": "eye_r",
+      "bone": "head",
+      "material": "eye_glow",
+      "from": [
+        1.0,
+        43.2,
+        -4.2
+      ],
+      "to": [
+        3.2,
+        44.6,
+        -3.2
+      ]
+    },
+    {
+      "id": "eye_l",
+      "bone": "head",
+      "material": "eye_glow",
+      "from": [
+        -3.2,
+        43.2,
+        -4.2
+      ],
+      "to": [
+        -1.0,
+        44.6,
+        -3.2
+      ]
+    },
+    {
+      "id": "uarm_r",
+      "bone": "upper_arm_right",
+      "material": "robe_navy",
+      "from": [
+        5.8,
+        28.5,
+        -2.5
+      ],
+      "to": [
+        9.8,
+        38.2,
+        2.5
+      ]
+    },
+    {
+      "id": "uarm_l",
+      "bone": "upper_arm_left",
+      "material": "robe_navy",
+      "from": [
+        -9.8,
+        28.5,
+        -2.5
+      ],
+      "to": [
+        -5.8,
+        38.2,
+        2.5
+      ]
+    },
+    {
+      "id": "uarm_r_pad",
+      "bone": "upper_arm_right",
+      "material": "robe_slate",
+      "from": [
+        6.0,
+        35.8,
+        -2.8
+      ],
+      "to": [
+        10.4,
+        38.8,
+        2.8
+      ]
+    },
+    {
+      "id": "uarm_l_pad",
+      "bone": "upper_arm_left",
+      "material": "robe_slate",
+      "from": [
+        -10.4,
+        35.8,
+        -2.8
+      ],
+      "to": [
+        -6.0,
+        38.8,
+        2.8
+      ]
+    },
+    {
+      "id": "farm_r",
+      "bone": "forearm_right",
+      "material": "robe_navy",
+      "from": [
+        6.0,
+        21.0,
+        -3.0
+      ],
+      "to": [
+        10.4,
+        29.0,
+        3.0
+      ]
+    },
+    {
+      "id": "farm_l",
+      "bone": "forearm_left",
+      "material": "robe_navy",
+      "from": [
+        -10.4,
+        21.0,
+        -3.0
+      ],
+      "to": [
+        -6.0,
+        29.0,
+        3.0
+      ]
+    },
+    {
+      "id": "sleeve_r_flare",
+      "bone": "sleeve_right",
+      "material": "robe_navy",
+      "from": [
+        6.2,
+        16.5,
+        -3.4
+      ],
+      "to": [
+        10.8,
+        23.0,
+        3.4
+      ]
+    },
+    {
+      "id": "sleeve_l_flare",
+      "bone": "sleeve_left",
+      "material": "robe_navy",
+      "from": [
+        -10.8,
+        16.5,
+        -3.4
+      ],
+      "to": [
+        -6.2,
+        23.0,
+        3.4
+      ]
+    },
+    {
+      "id": "sleeve_r_trim",
+      "bone": "sleeve_right",
+      "material": "brass_gold",
+      "from": [
+        6.1,
+        16.2,
+        -3.6
+      ],
+      "to": [
+        10.9,
+        17.6,
+        3.6
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "sleeve_l_trim",
+      "bone": "sleeve_left",
+      "material": "brass_gold",
+      "from": [
+        -10.9,
+        16.2,
+        -3.6
+      ],
+      "to": [
+        -6.1,
+        17.6,
+        3.6
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "hand_r",
+      "bone": "forearm_right",
+      "material": "void_dark",
+      "from": [
+        6.8,
+        19.2,
+        -1.6
+      ],
+      "to": [
+        9.6,
+        22.0,
+        1.6
+      ]
+    },
+    {
+      "id": "hand_l",
+      "bone": "forearm_left",
+      "material": "void_dark",
+      "from": [
+        -9.6,
+        19.2,
+        -1.6
+      ],
+      "to": [
+        -6.8,
+        22.0,
+        1.6
+      ]
+    },
+    {
+      "id": "tome_spine",
+      "bone": "tome",
+      "material": "brass_gold",
+      "from": [
+        -0.8,
+        25.5,
+        -13.0
+      ],
+      "to": [
+        0.8,
+        31.0,
+        -7.2
+      ],
+      "rotation": [
+        34.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        0.0,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_r_cov",
+      "bone": "tome_right",
+      "material": "leather_brown",
+      "from": [
+        0.4,
+        25.6,
+        -13.0
+      ],
+      "to": [
+        6.4,
+        30.8,
+        -7.2
+      ],
+      "rotation": [
+        34.0,
+        0.0,
+        -24.0
+      ],
+      "origin": [
+        0.5,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_r_pg",
+      "bone": "tome_right",
+      "material": "rune_glow",
+      "from": [
+        0.6,
+        26.4,
+        -12.6
+      ],
+      "to": [
+        5.8,
+        30.5,
+        -7.6
+      ],
+      "rotation": [
+        34.0,
+        0.0,
+        -24.0
+      ],
+      "origin": [
+        0.5,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_l_cov",
+      "bone": "tome_left",
+      "material": "leather_brown",
+      "from": [
+        -6.4,
+        25.6,
+        -13.0
+      ],
+      "to": [
+        -0.4,
+        30.8,
+        -7.2
+      ],
+      "rotation": [
+        34.0,
+        0.0,
+        24.0
+      ],
+      "origin": [
+        -0.5,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_l_pg",
+      "bone": "tome_left",
+      "material": "rune_glow",
+      "from": [
+        -5.8,
+        26.4,
+        -12.6
+      ],
+      "to": [
+        -0.6,
+        30.5,
+        -7.6
+      ],
+      "rotation": [
+        34.0,
+        0.0,
+        24.0
+      ],
+      "origin": [
+        -0.5,
+        28.0,
+        -10.0
+      ]
+    },
+    {
+      "id": "tome_turn_pg",
+      "bone": "tome_page",
+      "material": "parchment",
+      "from": [
+        -0.3,
+        27.0,
+        -12.4
+      ],
+      "to": [
+        0.3,
+        31.2,
+        -7.8
+      ],
+      "rotation": [
+        34.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        0.0,
+        28.8,
+        -10.0
+      ]
+    },
+    {
+      "id": "orb_p0_b",
+      "bone": "page_0",
+      "material": "parchment",
+      "from": [
+        10.0,
+        38.0,
+        -5.0
+      ],
+      "to": [
+        14.0,
+        43.0,
+        -4.4
+      ],
+      "rotation": [
+        10.0,
+        -25.0,
+        8.0
+      ],
+      "origin": [
+        12.0,
+        40.5,
+        -4.7
+      ]
+    },
+    {
+      "id": "orb_p0_g",
+      "bone": "page_0",
+      "material": "rune_glow",
+      "from": [
+        10.6,
+        38.8,
+        -5.15
+      ],
+      "to": [
+        13.4,
+        42.2,
+        -4.25
+      ],
+      "rotation": [
+        10.0,
+        -25.0,
+        8.0
+      ],
+      "origin": [
+        12.0,
+        40.5,
+        -4.7
+      ]
+    },
+    {
+      "id": "orb_p1_b",
+      "bone": "page_1",
+      "material": "parchment",
+      "from": [
+        -14.0,
+        36.0,
+        -3.5
+      ],
+      "to": [
+        -10.0,
+        41.0,
+        -2.9
+      ],
+      "rotation": [
+        -12.0,
+        22.0,
+        -6.0
+      ],
+      "origin": [
+        -12.0,
+        38.5,
+        -3.2
+      ]
+    },
+    {
+      "id": "orb_p1_g",
+      "bone": "page_1",
+      "material": "rune_glow",
+      "from": [
+        -13.4,
+        36.8,
+        -3.65
+      ],
+      "to": [
+        -10.6,
+        40.2,
+        -2.75
+      ],
+      "rotation": [
+        -12.0,
+        22.0,
+        -6.0
+      ],
+      "origin": [
+        -12.0,
+        38.5,
+        -3.2
+      ]
+    },
+    {
+      "id": "orb_p2_b",
+      "bone": "page_2",
+      "material": "parchment",
+      "from": [
+        -2.0,
+        39.5,
+        10.6
+      ],
+      "to": [
+        2.0,
+        44.5,
+        11.2
+      ],
+      "rotation": [
+        8.0,
+        0.0,
+        12.0
+      ],
+      "origin": [
+        0.0,
+        42.0,
+        10.9
+      ]
+    },
+    {
+      "id": "orb_p2_g",
+      "bone": "page_2",
+      "material": "rune_glow",
+      "from": [
+        -1.4,
+        40.3,
+        10.45
+      ],
+      "to": [
+        1.4,
+        43.7,
+        11.35
+      ],
+      "rotation": [
+        8.0,
+        0.0,
+        12.0
+      ],
+      "origin": [
+        0.0,
+        42.0,
+        10.9
+      ]
+    }
+  ]
+}

@@ -1095,6 +1095,8 @@ def write_lang(runes):
     import nyxara_art
     lang.update(nyxara_art.LANG)
     nyxara_art.write(sys.modules[__name__])
+    import boss_overhaul_art
+    boss_overhaul_art.write(sys.modules[__name__])
     import trial_biomes_art
     lang.update(trial_biomes_art.LANG)
     trial_biomes_art.write(sys.modules[__name__])

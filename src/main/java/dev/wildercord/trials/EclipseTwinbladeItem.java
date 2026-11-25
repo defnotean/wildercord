@@ -39,7 +39,7 @@ public final class EclipseTwinbladeItem extends AuraWorld.Lore {
 			Vec3 look = player.getLookAngle().multiply(1.0, 0.0, 1.0);
 			Vec3 dir = look.lengthSqr() > 1.0e-4 ? look.normalize() : new Vec3(0.0, 0.0, 1.0);
 			player.push(dir.x * 0.95, 0.14, dir.z * 0.95);
-			player.hurtMarked = true;
+			player.needsSync = true;
 
 			float dmg = mantleActive ? 15.0F : 12.0F;
 			AABB box = player.getBoundingBox().inflate(4.5, 1.8, 4.5);

@@ -1,0 +1,1317 @@
+{
+  "creature_id": "thalassor",
+  "ground_y": 0.0,
+  "floating_entity": true,
+  "materials": [
+    {
+      "id": "abyss_scale",
+      "type": "opaque"
+    },
+    {
+      "id": "plastron_gold",
+      "type": "opaque"
+    },
+    {
+      "id": "sea_fan_teal",
+      "type": "opaque"
+    },
+    {
+      "id": "coral_horn",
+      "type": "opaque"
+    },
+    {
+      "id": "ivory_fang",
+      "type": "opaque"
+    },
+    {
+      "id": "abyss_glow",
+      "type": "emissive"
+    }
+  ],
+  "bones": [
+    {
+      "id": "root",
+      "parent": null,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "chest",
+      "parent": "root",
+      "pivot": [
+        0,
+        20.0,
+        0.0
+      ]
+    },
+    {
+      "id": "dorsal_sail",
+      "parent": "chest",
+      "pivot": [
+        0,
+        31.0,
+        0.0
+      ]
+    },
+    {
+      "id": "pelvic_right",
+      "parent": "chest",
+      "pivot": [
+        8.5,
+        13.0,
+        7.0
+      ],
+      "mirror_of": "pelvic_left"
+    },
+    {
+      "id": "pelvic_left",
+      "parent": "chest",
+      "pivot": [
+        -8.5,
+        13.0,
+        7.0
+      ],
+      "mirror_of": "pelvic_right"
+    },
+    {
+      "id": "neck",
+      "parent": "chest",
+      "pivot": [
+        0,
+        22.0,
+        -11.0
+      ]
+    },
+    {
+      "id": "neck_crest",
+      "parent": "neck",
+      "pivot": [
+        0,
+        31.0,
+        -18.0
+      ]
+    },
+    {
+      "id": "head",
+      "parent": "neck",
+      "pivot": [
+        0,
+        24.0,
+        -24.0
+      ]
+    },
+    {
+      "id": "jaw",
+      "parent": "head",
+      "pivot": [
+        0,
+        20.0,
+        -28.0
+      ]
+    },
+    {
+      "id": "crown_spire",
+      "parent": "head",
+      "pivot": [
+        0,
+        33.0,
+        -32.0
+      ]
+    },
+    {
+      "id": "horn_right",
+      "parent": "head",
+      "pivot": [
+        6.0,
+        32.0,
+        -29.0
+      ],
+      "mirror_of": "horn_left"
+    },
+    {
+      "id": "horn_left",
+      "parent": "head",
+      "pivot": [
+        -6.0,
+        32.0,
+        -29.0
+      ],
+      "mirror_of": "horn_right"
+    },
+    {
+      "id": "cheek_fan_right",
+      "parent": "head",
+      "pivot": [
+        8.5,
+        24.0,
+        -29.0
+      ],
+      "mirror_of": "cheek_fan_left"
+    },
+    {
+      "id": "cheek_fan_left",
+      "parent": "head",
+      "pivot": [
+        -8.5,
+        24.0,
+        -29.0
+      ],
+      "mirror_of": "cheek_fan_right"
+    },
+    {
+      "id": "fin_right",
+      "parent": "chest",
+      "pivot": [
+        11.0,
+        20.0,
+        -4.0
+      ],
+      "mirror_of": "fin_left"
+    },
+    {
+      "id": "fin_left",
+      "parent": "chest",
+      "pivot": [
+        -11.0,
+        20.0,
+        -4.0
+      ],
+      "mirror_of": "fin_right"
+    },
+    {
+      "id": "wing_right",
+      "parent": "fin_right",
+      "pivot": [
+        21.0,
+        20.0,
+        -3.0
+      ],
+      "mirror_of": "wing_left"
+    },
+    {
+      "id": "wing_left",
+      "parent": "fin_left",
+      "pivot": [
+        -21.0,
+        20.0,
+        -3.0
+      ],
+      "mirror_of": "wing_right"
+    },
+    {
+      "id": "wing_tip_right",
+      "parent": "wing_right",
+      "pivot": [
+        36.0,
+        20.0,
+        -1.0
+      ],
+      "mirror_of": "wing_tip_left"
+    },
+    {
+      "id": "wing_tip_left",
+      "parent": "wing_left",
+      "pivot": [
+        -36.0,
+        20.0,
+        -1.0
+      ],
+      "mirror_of": "wing_tip_right"
+    },
+    {
+      "id": "tail_1",
+      "parent": "chest",
+      "pivot": [
+        0,
+        20.0,
+        11.5
+      ]
+    },
+    {
+      "id": "tail_2",
+      "parent": "tail_1",
+      "pivot": [
+        0,
+        20.0,
+        28.0
+      ]
+    },
+    {
+      "id": "tail_3",
+      "parent": "tail_2",
+      "pivot": [
+        0,
+        20.0,
+        43.0
+      ]
+    },
+    {
+      "id": "tail_4",
+      "parent": "tail_3",
+      "pivot": [
+        0,
+        20.0,
+        57.0
+      ]
+    },
+    {
+      "id": "tail_fan",
+      "parent": "tail_4",
+      "pivot": [
+        0,
+        20.0,
+        70.0
+      ]
+    }
+  ],
+  "cubes": [
+    {
+      "id": "chest_armor",
+      "bone": "chest",
+      "material": "abyss_scale",
+      "from": [
+        -10.5,
+        11.5,
+        -11.5
+      ],
+      "to": [
+        10.5,
+        29.5,
+        11.5
+      ]
+    },
+    {
+      "id": "belly_plastron_1",
+      "bone": "chest",
+      "material": "plastron_gold",
+      "from": [
+        -8.0,
+        9.0,
+        -10.5
+      ],
+      "to": [
+        8.0,
+        12.2,
+        10.5
+      ]
+    },
+    {
+      "id": "belly_plastron_2",
+      "bone": "chest",
+      "material": "plastron_gold",
+      "from": [
+        -6.0,
+        7.2,
+        -9.2
+      ],
+      "to": [
+        6.0,
+        9.4,
+        9.2
+      ]
+    },
+    {
+      "id": "flank_rune_r",
+      "bone": "chest",
+      "material": "abyss_glow",
+      "from": [
+        10.1,
+        16.0,
+        -7.0
+      ],
+      "to": [
+        10.9,
+        24.0,
+        6.0
+      ]
+    },
+    {
+      "id": "flank_rune_l",
+      "bone": "chest",
+      "material": "abyss_glow",
+      "from": [
+        -10.9,
+        16.0,
+        -7.0
+      ],
+      "to": [
+        -10.1,
+        24.0,
+        6.0
+      ]
+    },
+    {
+      "id": "dorsal_fin_tall",
+      "bone": "dorsal_sail",
+      "material": "sea_fan_teal",
+      "from": [
+        -1.0,
+        29.5,
+        -10.0
+      ],
+      "to": [
+        1.0,
+        43.5,
+        10.5
+      ]
+    },
+    {
+      "id": "dorsal_spine_glow",
+      "bone": "dorsal_sail",
+      "material": "abyss_glow",
+      "from": [
+        -0.7,
+        36.0,
+        -6.0
+      ],
+      "to": [
+        0.7,
+        44.2,
+        8.0
+      ]
+    },
+    {
+      "id": "pelvic_fin_r",
+      "bone": "pelvic_right",
+      "material": "sea_fan_teal",
+      "from": [
+        8.0,
+        11.5,
+        4.0
+      ],
+      "to": [
+        17.0,
+        14.0,
+        11.0
+      ],
+      "rotation": [
+        0.0,
+        -16.0,
+        -18.0
+      ],
+      "origin": [
+        12.5,
+        12.75,
+        7.5
+      ]
+    },
+    {
+      "id": "pelvic_fin_l",
+      "bone": "pelvic_left",
+      "material": "sea_fan_teal",
+      "from": [
+        -17.0,
+        11.5,
+        4.0
+      ],
+      "to": [
+        -8.0,
+        14.0,
+        11.0
+      ],
+      "rotation": [
+        0.0,
+        16.0,
+        18.0
+      ],
+      "origin": [
+        -12.5,
+        12.75,
+        7.5
+      ]
+    },
+    {
+      "id": "neck_seg",
+      "bone": "neck",
+      "material": "abyss_scale",
+      "from": [
+        -7.5,
+        16.5,
+        -26.0
+      ],
+      "to": [
+        7.5,
+        29.5,
+        -10.5
+      ]
+    },
+    {
+      "id": "neck_belly",
+      "bone": "neck",
+      "material": "plastron_gold",
+      "from": [
+        -5.2,
+        14.8,
+        -25.0
+      ],
+      "to": [
+        5.2,
+        17.2,
+        -11.0
+      ]
+    },
+    {
+      "id": "neck_sail",
+      "bone": "neck_crest",
+      "material": "sea_fan_teal",
+      "from": [
+        -1.0,
+        28.5,
+        -24.5
+      ],
+      "to": [
+        1.0,
+        39.5,
+        -12.0
+      ]
+    },
+    {
+      "id": "skull_main",
+      "bone": "head",
+      "material": "abyss_scale",
+      "from": [
+        -8.0,
+        19.5,
+        -40.0
+      ],
+      "to": [
+        8.0,
+        32.0,
+        -23.0
+      ]
+    },
+    {
+      "id": "snout_box",
+      "bone": "head",
+      "material": "abyss_scale",
+      "from": [
+        -6.0,
+        20.0,
+        -49.0
+      ],
+      "to": [
+        6.0,
+        29.2,
+        -39.5
+      ]
+    },
+    {
+      "id": "eye_r",
+      "bone": "head",
+      "material": "abyss_glow",
+      "from": [
+        6.2,
+        24.5,
+        -39.0
+      ],
+      "to": [
+        8.4,
+        27.6,
+        -34.0
+      ]
+    },
+    {
+      "id": "eye_l",
+      "bone": "head",
+      "material": "abyss_glow",
+      "from": [
+        -8.4,
+        24.5,
+        -39.0
+      ],
+      "to": [
+        -6.2,
+        27.6,
+        -34.0
+      ]
+    },
+    {
+      "id": "crown_center",
+      "bone": "crown_spire",
+      "material": "plastron_gold",
+      "from": [
+        -1.4,
+        31.5,
+        -34.0
+      ],
+      "to": [
+        1.4,
+        41.5,
+        -30.5
+      ],
+      "rotation": [
+        -20.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        0.0,
+        36.5,
+        -32.25
+      ]
+    },
+    {
+      "id": "horn_stem_r",
+      "bone": "horn_right",
+      "material": "coral_horn",
+      "from": [
+        4.8,
+        31.2,
+        -31.0
+      ],
+      "to": [
+        7.2,
+        42.5,
+        -28.6
+      ],
+      "rotation": [
+        -22.0,
+        0.0,
+        22.0
+      ],
+      "origin": [
+        6.0,
+        36.85,
+        -29.8
+      ]
+    },
+    {
+      "id": "horn_stem_l",
+      "bone": "horn_left",
+      "material": "coral_horn",
+      "from": [
+        -7.2,
+        31.2,
+        -31.0
+      ],
+      "to": [
+        -4.8,
+        42.5,
+        -28.6
+      ],
+      "rotation": [
+        -22.0,
+        0.0,
+        -22.0
+      ],
+      "origin": [
+        -6.0,
+        36.85,
+        -29.8
+      ]
+    },
+    {
+      "id": "horn_tine_a_r",
+      "bone": "horn_right",
+      "material": "abyss_glow",
+      "from": [
+        6.6,
+        38.5,
+        -29.8
+      ],
+      "to": [
+        11.8,
+        42.0,
+        -27.8
+      ],
+      "rotation": [
+        -18.0,
+        0.0,
+        48.0
+      ],
+      "origin": [
+        9.2,
+        40.25,
+        -28.8
+      ]
+    },
+    {
+      "id": "horn_tine_a_l",
+      "bone": "horn_left",
+      "material": "abyss_glow",
+      "from": [
+        -11.8,
+        38.5,
+        -29.8
+      ],
+      "to": [
+        -6.6,
+        42.0,
+        -27.8
+      ],
+      "rotation": [
+        -18.0,
+        0.0,
+        -48.0
+      ],
+      "origin": [
+        -9.2,
+        40.25,
+        -28.8
+      ]
+    },
+    {
+      "id": "horn_tine_b_r",
+      "bone": "horn_right",
+      "material": "abyss_glow",
+      "from": [
+        6.2,
+        41.5,
+        -28.4
+      ],
+      "to": [
+        8.8,
+        49.5,
+        -26.2
+      ],
+      "rotation": [
+        -20.0,
+        0.0,
+        14.0
+      ],
+      "origin": [
+        7.5,
+        45.5,
+        -27.3
+      ]
+    },
+    {
+      "id": "horn_tine_b_l",
+      "bone": "horn_left",
+      "material": "abyss_glow",
+      "from": [
+        -8.8,
+        41.5,
+        -28.4
+      ],
+      "to": [
+        -6.2,
+        49.5,
+        -26.2
+      ],
+      "rotation": [
+        -20.0,
+        0.0,
+        -14.0
+      ],
+      "origin": [
+        -7.5,
+        45.5,
+        -27.3
+      ]
+    },
+    {
+      "id": "cheek_r_fin",
+      "bone": "cheek_fan_right",
+      "material": "sea_fan_teal",
+      "from": [
+        8.0,
+        20.0,
+        -31.0
+      ],
+      "to": [
+        9.4,
+        29.0,
+        -20.5
+      ],
+      "rotation": [
+        0.0,
+        26.0,
+        0.0
+      ],
+      "origin": [
+        8.7,
+        24.5,
+        -25.75
+      ]
+    },
+    {
+      "id": "cheek_l_fin",
+      "bone": "cheek_fan_left",
+      "material": "sea_fan_teal",
+      "from": [
+        -9.4,
+        20.0,
+        -31.0
+      ],
+      "to": [
+        -8.0,
+        29.0,
+        -20.5
+      ],
+      "rotation": [
+        0.0,
+        -26.0,
+        0.0
+      ],
+      "origin": [
+        -8.7,
+        24.5,
+        -25.75
+      ]
+    },
+    {
+      "id": "jaw_base",
+      "bone": "jaw",
+      "material": "abyss_scale",
+      "from": [
+        -5.5,
+        16.0,
+        -47.5
+      ],
+      "to": [
+        5.5,
+        20.2,
+        -27.5
+      ]
+    },
+    {
+      "id": "fang_3.6_-46.5",
+      "bone": "jaw",
+      "material": "ivory_fang",
+      "from": [
+        2.8,
+        19.6,
+        -47.3
+      ],
+      "to": [
+        4.4,
+        22.8,
+        -45.7
+      ]
+    },
+    {
+      "id": "fang_-3.6_-46.5",
+      "bone": "jaw",
+      "material": "ivory_fang",
+      "from": [
+        -4.4,
+        19.6,
+        -47.3
+      ],
+      "to": [
+        -2.8,
+        22.8,
+        -45.7
+      ]
+    },
+    {
+      "id": "fang_4.0_-41.0",
+      "bone": "jaw",
+      "material": "ivory_fang",
+      "from": [
+        3.2,
+        19.6,
+        -41.8
+      ],
+      "to": [
+        4.8,
+        22.8,
+        -40.2
+      ]
+    },
+    {
+      "id": "fang_-4.0_-41.0",
+      "bone": "jaw",
+      "material": "ivory_fang",
+      "from": [
+        -4.8,
+        19.6,
+        -41.8
+      ],
+      "to": [
+        -3.2,
+        22.8,
+        -40.2
+      ]
+    },
+    {
+      "id": "fang_4.2_-35.0",
+      "bone": "jaw",
+      "material": "ivory_fang",
+      "from": [
+        3.4,
+        19.6,
+        -35.8
+      ],
+      "to": [
+        5.0,
+        22.8,
+        -34.2
+      ]
+    },
+    {
+      "id": "fang_-4.2_-35.0",
+      "bone": "jaw",
+      "material": "ivory_fang",
+      "from": [
+        -5.0,
+        19.6,
+        -35.8
+      ],
+      "to": [
+        -3.4,
+        22.8,
+        -34.2
+      ]
+    },
+    {
+      "id": "fin_r_arm",
+      "bone": "fin_right",
+      "material": "abyss_scale",
+      "from": [
+        10.0,
+        19.0,
+        -7.5
+      ],
+      "to": [
+        23.0,
+        23.0,
+        -1.5
+      ],
+      "rotation": [
+        0.0,
+        16.0,
+        26.0
+      ],
+      "origin": [
+        16.5,
+        21.0,
+        -4.5
+      ]
+    },
+    {
+      "id": "fin_l_arm",
+      "bone": "fin_left",
+      "material": "abyss_scale",
+      "from": [
+        -23.0,
+        19.0,
+        -7.5
+      ],
+      "to": [
+        -10.0,
+        23.0,
+        -1.5
+      ],
+      "rotation": [
+        0.0,
+        -16.0,
+        -26.0
+      ],
+      "origin": [
+        -16.5,
+        21.0,
+        -4.5
+      ]
+    },
+    {
+      "id": "wing_r_spar",
+      "bone": "wing_right",
+      "material": "abyss_scale",
+      "from": [
+        21.0,
+        25.0,
+        -6.5
+      ],
+      "to": [
+        38.5,
+        28.4,
+        -2.5
+      ],
+      "rotation": [
+        0.0,
+        18.0,
+        20.0
+      ],
+      "origin": [
+        29.75,
+        26.7,
+        -4.5
+      ]
+    },
+    {
+      "id": "wing_l_spar",
+      "bone": "wing_left",
+      "material": "abyss_scale",
+      "from": [
+        -38.5,
+        25.0,
+        -6.5
+      ],
+      "to": [
+        -21.0,
+        28.4,
+        -2.5
+      ],
+      "rotation": [
+        0.0,
+        -18.0,
+        -20.0
+      ],
+      "origin": [
+        -29.75,
+        26.7,
+        -4.5
+      ]
+    },
+    {
+      "id": "wing_r_strut",
+      "bone": "wing_right",
+      "material": "abyss_scale",
+      "from": [
+        22.0,
+        14.0,
+        0.5
+      ],
+      "to": [
+        36.5,
+        25.6,
+        2.5
+      ],
+      "rotation": [
+        0.0,
+        18.0,
+        12.0
+      ],
+      "origin": [
+        29.25,
+        19.8,
+        1.5
+      ]
+    },
+    {
+      "id": "wing_l_strut",
+      "bone": "wing_left",
+      "material": "abyss_scale",
+      "from": [
+        -36.5,
+        14.0,
+        0.5
+      ],
+      "to": [
+        -22.0,
+        25.6,
+        2.5
+      ],
+      "rotation": [
+        0.0,
+        -18.0,
+        -12.0
+      ],
+      "origin": [
+        -29.25,
+        19.8,
+        1.5
+      ]
+    },
+    {
+      "id": "wing_r_web",
+      "bone": "wing_right",
+      "material": "sea_fan_teal",
+      "from": [
+        20.5,
+        13.5,
+        -2.5
+      ],
+      "to": [
+        38.0,
+        26.5,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        18.0,
+        14.0
+      ],
+      "origin": [
+        29.25,
+        20.0,
+        4.75
+      ]
+    },
+    {
+      "id": "wing_l_web",
+      "bone": "wing_left",
+      "material": "sea_fan_teal",
+      "from": [
+        -38.0,
+        13.5,
+        -2.5
+      ],
+      "to": [
+        -20.5,
+        26.5,
+        12.0
+      ],
+      "rotation": [
+        0.0,
+        -18.0,
+        -14.0
+      ],
+      "origin": [
+        -29.25,
+        20.0,
+        4.75
+      ]
+    },
+    {
+      "id": "wing_r_tip_spar",
+      "bone": "wing_tip_right",
+      "material": "abyss_scale",
+      "from": [
+        36.5,
+        22.5,
+        -5.0
+      ],
+      "to": [
+        56.0,
+        25.2,
+        -1.5
+      ],
+      "rotation": [
+        0.0,
+        22.0,
+        -26.0
+      ],
+      "origin": [
+        46.25,
+        23.85,
+        -3.25
+      ]
+    },
+    {
+      "id": "wing_l_tip_spar",
+      "bone": "wing_tip_left",
+      "material": "abyss_scale",
+      "from": [
+        -56.0,
+        22.5,
+        -5.0
+      ],
+      "to": [
+        -36.5,
+        25.2,
+        -1.5
+      ],
+      "rotation": [
+        0.0,
+        -22.0,
+        26.0
+      ],
+      "origin": [
+        -46.25,
+        23.85,
+        -3.25
+      ]
+    },
+    {
+      "id": "wing_r_tip",
+      "bone": "wing_tip_right",
+      "material": "sea_fan_teal",
+      "from": [
+        36.0,
+        10.5,
+        -3.0
+      ],
+      "to": [
+        54.5,
+        23.5,
+        9.5
+      ],
+      "rotation": [
+        0.0,
+        22.0,
+        -22.0
+      ],
+      "origin": [
+        45.25,
+        17.0,
+        3.25
+      ]
+    },
+    {
+      "id": "wing_l_tip",
+      "bone": "wing_tip_left",
+      "material": "sea_fan_teal",
+      "from": [
+        -54.5,
+        10.5,
+        -3.0
+      ],
+      "to": [
+        -36.0,
+        23.5,
+        9.5
+      ],
+      "rotation": [
+        0.0,
+        -22.0,
+        22.0
+      ],
+      "origin": [
+        -45.25,
+        17.0,
+        3.25
+      ]
+    },
+    {
+      "id": "t1_body",
+      "bone": "tail_1",
+      "material": "abyss_scale",
+      "from": [
+        -8.2,
+        12.5,
+        11.5
+      ],
+      "to": [
+        8.2,
+        27.5,
+        28.5
+      ]
+    },
+    {
+      "id": "t1_rune",
+      "bone": "tail_1",
+      "material": "abyss_glow",
+      "from": [
+        -1.2,
+        26.8,
+        14.0
+      ],
+      "to": [
+        1.2,
+        30.5,
+        26.0
+      ]
+    },
+    {
+      "id": "t2_body",
+      "bone": "tail_2",
+      "material": "abyss_scale",
+      "from": [
+        -6.5,
+        14.0,
+        28.0
+      ],
+      "to": [
+        6.5,
+        26.0,
+        43.5
+      ]
+    },
+    {
+      "id": "t2_fin",
+      "bone": "tail_2",
+      "material": "sea_fan_teal",
+      "from": [
+        -0.9,
+        25.5,
+        30.0
+      ],
+      "to": [
+        0.9,
+        31.5,
+        42.0
+      ]
+    },
+    {
+      "id": "t3_body",
+      "bone": "tail_3",
+      "material": "abyss_scale",
+      "from": [
+        -4.8,
+        15.5,
+        43.0
+      ],
+      "to": [
+        4.8,
+        24.5,
+        57.5
+      ]
+    },
+    {
+      "id": "t4_body",
+      "bone": "tail_4",
+      "material": "abyss_scale",
+      "from": [
+        -3.2,
+        16.8,
+        57.0
+      ],
+      "to": [
+        3.2,
+        23.2,
+        70.5
+      ]
+    },
+    {
+      "id": "tail_fan_up",
+      "bone": "tail_fan",
+      "material": "sea_fan_teal",
+      "from": [
+        -1.0,
+        20.0,
+        69.0
+      ],
+      "to": [
+        1.0,
+        34.0,
+        86.0
+      ],
+      "rotation": [
+        20.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        0.0,
+        27.0,
+        77.5
+      ]
+    },
+    {
+      "id": "tail_fan_dn",
+      "bone": "tail_fan",
+      "material": "sea_fan_teal",
+      "from": [
+        -1.0,
+        6.0,
+        69.0
+      ],
+      "to": [
+        1.0,
+        20.0,
+        86.0
+      ],
+      "rotation": [
+        -20.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        0.0,
+        13.0,
+        77.5
+      ]
+    },
+    {
+      "id": "tail_fan_glow",
+      "bone": "tail_fan",
+      "material": "abyss_glow",
+      "from": [
+        -0.8,
+        14.0,
+        72.0
+      ],
+      "to": [
+        0.8,
+        26.0,
+        88.0
+      ]
+    }
+  ]
+}

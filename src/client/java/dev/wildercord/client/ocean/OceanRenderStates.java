@@ -24,6 +24,8 @@ public final class OceanRenderStates {
 	}
 
 	public static class ThalassorState extends LivingEntityRenderState {
+		public float bodyYaw;
+		public float hurtFlash;
 		public float jawOpen;
 		public int attackMode;
 	}

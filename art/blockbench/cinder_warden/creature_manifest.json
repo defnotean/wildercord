@@ -1,0 +1,1086 @@
+{
+  "creature_id": "cinder_warden",
+  "ground_y": 0.0,
+  "floating_entity": false,
+  "materials": [
+    {
+      "id": "black_iron",
+      "type": "opaque"
+    },
+    {
+      "id": "dark_iron",
+      "type": "opaque"
+    },
+    {
+      "id": "brass_bronze",
+      "type": "opaque"
+    },
+    {
+      "id": "iron_chain",
+      "type": "opaque"
+    },
+    {
+      "id": "magma_glow",
+      "type": "emissive"
+    },
+    {
+      "id": "eye_glow",
+      "type": "emissive"
+    }
+  ],
+  "bones": [
+    {
+      "id": "root",
+      "parent": null,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pelvis",
+      "parent": "root",
+      "pivot": [
+        0,
+        20.0,
+        0.0
+      ]
+    },
+    {
+      "id": "thigh_right",
+      "parent": "pelvis",
+      "pivot": [
+        4.5,
+        19.0,
+        0.0
+      ],
+      "mirror_of": "thigh_left"
+    },
+    {
+      "id": "thigh_left",
+      "parent": "pelvis",
+      "pivot": [
+        -4.5,
+        19.0,
+        0.0
+      ],
+      "mirror_of": "thigh_right"
+    },
+    {
+      "id": "shin_right",
+      "parent": "thigh_right",
+      "pivot": [
+        4.5,
+        9.5,
+        0.0
+      ],
+      "mirror_of": "shin_left"
+    },
+    {
+      "id": "shin_left",
+      "parent": "thigh_left",
+      "pivot": [
+        -4.5,
+        9.5,
+        0.0
+      ],
+      "mirror_of": "shin_right"
+    },
+    {
+      "id": "foot_right",
+      "parent": "shin_right",
+      "pivot": [
+        4.5,
+        2.5,
+        0.0
+      ],
+      "mirror_of": "foot_left"
+    },
+    {
+      "id": "foot_left",
+      "parent": "shin_left",
+      "pivot": [
+        -4.5,
+        2.5,
+        0.0
+      ],
+      "mirror_of": "foot_right"
+    },
+    {
+      "id": "chest",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        23.0,
+        0.0
+      ]
+    },
+    {
+      "id": "magma_core",
+      "parent": "chest",
+      "pivot": [
+        0,
+        27.0,
+        -4.0
+      ]
+    },
+    {
+      "id": "back_vent_right",
+      "parent": "chest",
+      "pivot": [
+        4.0,
+        32.0,
+        5.5
+      ],
+      "mirror_of": "back_vent_left"
+    },
+    {
+      "id": "back_vent_left",
+      "parent": "chest",
+      "pivot": [
+        -4.0,
+        32.0,
+        5.5
+      ],
+      "mirror_of": "back_vent_right"
+    },
+    {
+      "id": "pauldron_right",
+      "parent": "chest",
+      "pivot": [
+        10.0,
+        39.0,
+        0.0
+      ],
+      "mirror_of": "pauldron_left"
+    },
+    {
+      "id": "pauldron_left",
+      "parent": "chest",
+      "pivot": [
+        -10.0,
+        39.0,
+        0.0
+      ],
+      "mirror_of": "pauldron_right"
+    },
+    {
+      "id": "head",
+      "parent": "chest",
+      "pivot": [
+        0,
+        38.0,
+        -2.5
+      ]
+    },
+    {
+      "id": "upper_arm_right",
+      "parent": "chest",
+      "pivot": [
+        11.5,
+        36.0,
+        0.0
+      ],
+      "mirror_of": "upper_arm_left"
+    },
+    {
+      "id": "upper_arm_left",
+      "parent": "chest",
+      "pivot": [
+        -11.5,
+        36.0,
+        0.0
+      ],
+      "mirror_of": "upper_arm_right"
+    },
+    {
+      "id": "forearm_right",
+      "parent": "upper_arm_right",
+      "pivot": [
+        12.5,
+        25.5,
+        0.0
+      ],
+      "mirror_of": "forearm_left"
+    },
+    {
+      "id": "forearm_left",
+      "parent": "upper_arm_left",
+      "pivot": [
+        -12.5,
+        25.5,
+        0.0
+      ],
+      "mirror_of": "forearm_right"
+    },
+    {
+      "id": "gauntlet_right",
+      "parent": "forearm_right",
+      "pivot": [
+        12.5,
+        19.0,
+        0.0
+      ],
+      "mirror_of": "gauntlet_left"
+    },
+    {
+      "id": "gauntlet_left",
+      "parent": "forearm_left",
+      "pivot": [
+        -12.5,
+        19.0,
+        0.0
+      ],
+      "mirror_of": "gauntlet_right"
+    },
+    {
+      "id": "chain_r0",
+      "parent": "gauntlet_right",
+      "pivot": [
+        12.5,
+        13.0,
+        -2.0
+      ],
+      "mirror_of": "chain_l0"
+    },
+    {
+      "id": "chain_l0",
+      "parent": "gauntlet_left",
+      "pivot": [
+        -12.5,
+        13.0,
+        -2.0
+      ],
+      "mirror_of": "chain_r0"
+    },
+    {
+      "id": "chain_r1",
+      "parent": "chain_r0",
+      "pivot": [
+        12.5,
+        7.5,
+        -2.0
+      ],
+      "mirror_of": "chain_l1"
+    },
+    {
+      "id": "chain_l1",
+      "parent": "chain_l0",
+      "pivot": [
+        -12.5,
+        7.5,
+        -2.0
+      ],
+      "mirror_of": "chain_r1"
+    }
+  ],
+  "cubes": [
+    {
+      "id": "pelvis_plate",
+      "bone": "pelvis",
+      "material": "black_iron",
+      "from": [
+        -8.5,
+        18.0,
+        -4.8
+      ],
+      "to": [
+        8.5,
+        23.0,
+        4.8
+      ]
+    },
+    {
+      "id": "belt_brass",
+      "bone": "pelvis",
+      "material": "brass_bronze",
+      "from": [
+        -9.0,
+        20.5,
+        -5.2
+      ],
+      "to": [
+        9.0,
+        23.4,
+        5.2
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "belt_buckle",
+      "bone": "pelvis",
+      "material": "brass_bronze",
+      "from": [
+        -2.4,
+        19.8,
+        -5.8
+      ],
+      "to": [
+        2.4,
+        24.0,
+        -4.8
+      ]
+    },
+    {
+      "id": "belt_inset",
+      "bone": "pelvis",
+      "material": "dark_iron",
+      "from": [
+        -1.4,
+        20.8,
+        -6.0
+      ],
+      "to": [
+        1.4,
+        23.0,
+        -5.4
+      ]
+    },
+    {
+      "id": "thigh_r",
+      "bone": "thigh_right",
+      "material": "dark_iron",
+      "from": [
+        1.8,
+        9.5,
+        -3.5
+      ],
+      "to": [
+        7.8,
+        19.0,
+        3.5
+      ]
+    },
+    {
+      "id": "thigh_l",
+      "bone": "thigh_left",
+      "material": "dark_iron",
+      "from": [
+        -7.8,
+        9.5,
+        -3.5
+      ],
+      "to": [
+        -1.8,
+        19.0,
+        3.5
+      ]
+    },
+    {
+      "id": "knee_r",
+      "bone": "shin_right",
+      "material": "black_iron",
+      "from": [
+        2.2,
+        8.8,
+        -4.6
+      ],
+      "to": [
+        7.4,
+        12.6,
+        -2.4
+      ]
+    },
+    {
+      "id": "knee_l",
+      "bone": "shin_left",
+      "material": "black_iron",
+      "from": [
+        -7.4,
+        8.8,
+        -4.6
+      ],
+      "to": [
+        -2.2,
+        12.6,
+        -2.4
+      ]
+    },
+    {
+      "id": "shin_r",
+      "bone": "shin_right",
+      "material": "black_iron",
+      "from": [
+        1.9,
+        2.5,
+        -3.8
+      ],
+      "to": [
+        7.7,
+        9.8,
+        3.8
+      ]
+    },
+    {
+      "id": "shin_l",
+      "bone": "shin_left",
+      "material": "black_iron",
+      "from": [
+        -7.7,
+        2.5,
+        -3.8
+      ],
+      "to": [
+        -1.9,
+        9.8,
+        3.8
+      ]
+    },
+    {
+      "id": "foot_r",
+      "bone": "foot_right",
+      "material": "black_iron",
+      "from": [
+        1.5,
+        0.0,
+        -5.2
+      ],
+      "to": [
+        8.1,
+        2.8,
+        4.0
+      ]
+    },
+    {
+      "id": "foot_l",
+      "bone": "foot_left",
+      "material": "black_iron",
+      "from": [
+        -8.1,
+        0.0,
+        -5.2
+      ],
+      "to": [
+        -1.5,
+        2.8,
+        4.0
+      ]
+    },
+    {
+      "id": "magma_heart",
+      "bone": "magma_core",
+      "material": "magma_glow",
+      "from": [
+        -6.6,
+        23.8,
+        -4.8
+      ],
+      "to": [
+        6.6,
+        34.8,
+        4.4
+      ]
+    },
+    {
+      "id": "chest_main",
+      "bone": "chest",
+      "material": "black_iron",
+      "from": [
+        -9.2,
+        23.0,
+        -5.5
+      ],
+      "to": [
+        9.2,
+        39.2,
+        5.5
+      ]
+    },
+    {
+      "id": "chest_plate_r",
+      "bone": "chest",
+      "material": "dark_iron",
+      "from": [
+        3.0,
+        26.0,
+        -6.3
+      ],
+      "to": [
+        9.4,
+        38.2,
+        -4.4
+      ]
+    },
+    {
+      "id": "chest_plate_l",
+      "bone": "chest",
+      "material": "dark_iron",
+      "from": [
+        -9.4,
+        26.0,
+        -6.3
+      ],
+      "to": [
+        -3.0,
+        38.2,
+        -4.4
+      ]
+    },
+    {
+      "id": "chest_collar",
+      "bone": "chest",
+      "material": "black_iron",
+      "from": [
+        -7.5,
+        36.0,
+        -6.2
+      ],
+      "to": [
+        7.5,
+        39.8,
+        5.6
+      ]
+    },
+    {
+      "id": "chest_crack_glow",
+      "bone": "magma_core",
+      "material": "magma_glow",
+      "from": [
+        -3.6,
+        23.6,
+        -5.9
+      ],
+      "to": [
+        3.6,
+        33.8,
+        -4.6
+      ]
+    },
+    {
+      "id": "bvent_r",
+      "bone": "back_vent_right",
+      "material": "black_iron",
+      "from": [
+        1.6,
+        28.0,
+        4.8
+      ],
+      "to": [
+        8.2,
+        36.5,
+        6.8
+      ],
+      "rotation": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        4.9,
+        32.25,
+        5.8
+      ]
+    },
+    {
+      "id": "bvent_l",
+      "bone": "back_vent_left",
+      "material": "black_iron",
+      "from": [
+        -8.2,
+        28.0,
+        4.8
+      ],
+      "to": [
+        -1.6,
+        36.5,
+        6.8
+      ],
+      "rotation": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        -4.9,
+        32.25,
+        5.8
+      ]
+    },
+    {
+      "id": "bvent_r_g",
+      "bone": "back_vent_right",
+      "material": "magma_glow",
+      "from": [
+        2.6,
+        29.0,
+        6.2
+      ],
+      "to": [
+        7.2,
+        33.5,
+        7.0
+      ],
+      "rotation": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        4.9,
+        31.25,
+        6.6
+      ]
+    },
+    {
+      "id": "bvent_l_g",
+      "bone": "back_vent_left",
+      "material": "magma_glow",
+      "from": [
+        -7.2,
+        29.0,
+        6.2
+      ],
+      "to": [
+        -2.6,
+        33.5,
+        7.0
+      ],
+      "rotation": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        -4.9,
+        31.25,
+        6.6
+      ]
+    },
+    {
+      "id": "helm_box",
+      "bone": "head",
+      "material": "black_iron",
+      "from": [
+        -4.4,
+        36.2,
+        -6.8
+      ],
+      "to": [
+        4.4,
+        44.2,
+        1.8
+      ]
+    },
+    {
+      "id": "helm_brow",
+      "bone": "head",
+      "material": "dark_iron",
+      "from": [
+        -4.7,
+        41.2,
+        -7.2
+      ],
+      "to": [
+        4.7,
+        43.2,
+        2.0
+      ]
+    },
+    {
+      "id": "helm_nose",
+      "bone": "head",
+      "material": "black_iron",
+      "from": [
+        -1.0,
+        36.4,
+        -7.2
+      ],
+      "to": [
+        1.0,
+        41.4,
+        -6.0
+      ]
+    },
+    {
+      "id": "eye_r",
+      "bone": "head",
+      "material": "eye_glow",
+      "from": [
+        1.3,
+        39.5,
+        -7.1
+      ],
+      "to": [
+        3.5,
+        41.0,
+        -6.2
+      ]
+    },
+    {
+      "id": "eye_l",
+      "bone": "head",
+      "material": "eye_glow",
+      "from": [
+        -3.5,
+        39.5,
+        -7.1
+      ],
+      "to": [
+        -1.3,
+        41.0,
+        -6.2
+      ]
+    },
+    {
+      "id": "pauldron_r_base",
+      "bone": "pauldron_right",
+      "material": "black_iron",
+      "from": [
+        8.0,
+        35.5,
+        -5.8
+      ],
+      "to": [
+        17.8,
+        43.5,
+        5.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -14.0
+      ],
+      "origin": [
+        12.9,
+        39.5,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_base",
+      "bone": "pauldron_left",
+      "material": "black_iron",
+      "from": [
+        -17.8,
+        35.5,
+        -5.8
+      ],
+      "to": [
+        -8.0,
+        43.5,
+        5.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        14.0
+      ],
+      "origin": [
+        -12.9,
+        39.5,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_r_fin",
+      "bone": "pauldron_right",
+      "material": "dark_iron",
+      "from": [
+        11.0,
+        39.0,
+        -5.2
+      ],
+      "to": [
+        13.5,
+        50.2,
+        5.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -18.0
+      ],
+      "origin": [
+        12.25,
+        44.6,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_fin",
+      "bone": "pauldron_left",
+      "material": "dark_iron",
+      "from": [
+        -13.5,
+        39.0,
+        -5.2
+      ],
+      "to": [
+        -11.0,
+        50.2,
+        5.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        18.0
+      ],
+      "origin": [
+        -12.25,
+        44.6,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_r_vent",
+      "bone": "pauldron_right",
+      "material": "magma_glow",
+      "from": [
+        11.6,
+        37.8,
+        -5.9
+      ],
+      "to": [
+        16.4,
+        42.4,
+        5.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -14.0
+      ],
+      "origin": [
+        14.0,
+        40.1,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_vent",
+      "bone": "pauldron_left",
+      "material": "magma_glow",
+      "from": [
+        -16.4,
+        37.8,
+        -5.9
+      ],
+      "to": [
+        -11.6,
+        42.4,
+        5.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        14.0
+      ],
+      "origin": [
+        -14.0,
+        40.1,
+        0.0
+      ]
+    },
+    {
+      "id": "uarm_r",
+      "bone": "upper_arm_right",
+      "material": "black_iron",
+      "from": [
+        8.8,
+        25.5,
+        -3.4
+      ],
+      "to": [
+        15.8,
+        36.2,
+        3.4
+      ]
+    },
+    {
+      "id": "uarm_l",
+      "bone": "upper_arm_left",
+      "material": "black_iron",
+      "from": [
+        -15.8,
+        25.5,
+        -3.4
+      ],
+      "to": [
+        -8.8,
+        36.2,
+        3.4
+      ]
+    },
+    {
+      "id": "farm_r",
+      "bone": "forearm_right",
+      "material": "dark_iron",
+      "from": [
+        9.2,
+        19.0,
+        -3.5
+      ],
+      "to": [
+        15.8,
+        25.8,
+        3.5
+      ]
+    },
+    {
+      "id": "farm_l",
+      "bone": "forearm_left",
+      "material": "dark_iron",
+      "from": [
+        -15.8,
+        19.0,
+        -3.5
+      ],
+      "to": [
+        -9.2,
+        25.8,
+        3.5
+      ]
+    },
+    {
+      "id": "gaunt_r",
+      "bone": "gauntlet_right",
+      "material": "black_iron",
+      "from": [
+        8.8,
+        12.2,
+        -4.2
+      ],
+      "to": [
+        16.4,
+        20.4,
+        4.2
+      ]
+    },
+    {
+      "id": "gaunt_l",
+      "bone": "gauntlet_left",
+      "material": "black_iron",
+      "from": [
+        -16.4,
+        12.2,
+        -4.2
+      ],
+      "to": [
+        -8.8,
+        20.4,
+        4.2
+      ]
+    },
+    {
+      "id": "gspike_r_top",
+      "bone": "gauntlet_right",
+      "material": "iron_chain",
+      "from": [
+        16.0,
+        17.0,
+        -1.6
+      ],
+      "to": [
+        18.4,
+        19.2,
+        1.6
+      ]
+    },
+    {
+      "id": "gspike_l_top",
+      "bone": "gauntlet_left",
+      "material": "iron_chain",
+      "from": [
+        -18.4,
+        17.0,
+        -1.6
+      ],
+      "to": [
+        -16.0,
+        19.2,
+        1.6
+      ]
+    },
+    {
+      "id": "gspike_r_bot",
+      "bone": "gauntlet_right",
+      "material": "iron_chain",
+      "from": [
+        16.0,
+        13.4,
+        -1.6
+      ],
+      "to": [
+        18.4,
+        15.6,
+        1.6
+      ]
+    },
+    {
+      "id": "gspike_l_bot",
+      "bone": "gauntlet_left",
+      "material": "iron_chain",
+      "from": [
+        -18.4,
+        13.4,
+        -1.6
+      ],
+      "to": [
+        -16.0,
+        15.6,
+        1.6
+      ]
+    },
+    {
+      "id": "chain_r0_l",
+      "bone": "chain_r0",
+      "material": "iron_chain",
+      "from": [
+        11.4,
+        7.4,
+        -3.2
+      ],
+      "to": [
+        13.6,
+        13.0,
+        -1.0
+      ]
+    },
+    {
+      "id": "chain_l0_l",
+      "bone": "chain_l0",
+      "material": "iron_chain",
+      "from": [
+        -13.6,
+        7.4,
+        -3.2
+      ],
+      "to": [
+        -11.4,
+        13.0,
+        -1.0
+      ]
+    },
+    {
+      "id": "chain_r1_l",
+      "bone": "chain_r1",
+      "material": "iron_chain",
+      "from": [
+        11.4,
+        2.2,
+        -3.2
+      ],
+      "to": [
+        13.6,
+        7.6,
+        -1.0
+      ]
+    },
+    {
+      "id": "chain_l1_l",
+      "bone": "chain_l1",
+      "material": "iron_chain",
+      "from": [
+        -13.6,
+        2.2,
+        -3.2
+      ],
+      "to": [
+        -11.4,
+        7.6,
+        -1.0
+      ]
+    }
+  ]
+}

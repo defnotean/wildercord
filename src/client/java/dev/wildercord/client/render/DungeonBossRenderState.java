@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 /** A dungeon boss's pose, eased on the client (see {@code DungeonBoss}): each blend runs 0 to 1. */
 public class DungeonBossRenderState extends LivingEntityRenderState {
+	public float bodyYaw;
+	public float hurtFlash;
 	/** Telegraphing a spell. */
 	public float casting;
 	/** Between phases. */
