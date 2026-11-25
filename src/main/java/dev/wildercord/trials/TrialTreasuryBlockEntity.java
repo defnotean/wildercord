@@ -1,9 +1,9 @@
 package dev.wildercord.trials;
 
 import dev.wildercord.compat.McEntities;
+import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.spell.RuneDef;
-import dev.wildercord.spell.RuneItem;
 import dev.wildercord.spell.Runes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -97,7 +97,9 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 		give(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
 		give(player, new ItemStack(Items.DIAMOND, 2));
 
-		List<RuneDef> tierPool = Runes.ALL.stream().filter(r -> r.tier() >= 2 && r.tier() <= 3).toList();
+		List<RuneDef> tierPool = Runes.all().stream()
+			.filter(r -> Runes.obtainable(r) && !Runes.fused(r) && r.tier() >= 2 && r.tier() <= 3)
+			.toList();
 		if (!tierPool.isEmpty()) {
 			RuneDef chosen = tierPool.get(rng.nextInt(tierPool.size()));
 			give(player, RuneItem.stack(chosen));
