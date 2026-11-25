@@ -2,7 +2,6 @@ package dev.wildercord.trials;
 
 import com.mojang.authlib.GameProfile;
 import dev.wildercord.aura.world.BossDamage;
-import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.world.dungeons.DungeonWards;
 import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.trials.LeylineSanctumPiece;
@@ -57,7 +56,6 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 			world.getServer().runCommand("time set 6000");
 
 			BlockPos[] points = world.getServer().computeOnServer(s -> {
-				Guardians.setEnabled(true);
 				ServerLevel l = s.overworld();
 				var piece = new LeylineSanctumPiece(0, 70, 0, Direction.NORTH);
 				BoundingBox b = piece.getBoundingBox();
