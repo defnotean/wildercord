@@ -187,6 +187,19 @@ public final class KharvokBoss extends PathfinderMob implements Enemy, TrialBoss
 		quietTicks = 0;
 
 		long now = server.getGameTime();
+		if (now % 3 == 0) {
+			double rad = Math.toRadians(yBodyRot);
+			double fx = -Math.sin(rad), fz = Math.cos(rad);
+			double rx = -Math.cos(rad), rz = -Math.sin(rad);
+			double sx = getX() + rx * 0.45 - fx * 0.34;
+			double sy = getY() + 3.92;
+			double sz = getZ() + rz * 0.45 - fz * 0.34;
+			server.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, sx, sy, sz, 1, 0.06, 0.05, 0.06, 0.03);
+			server.sendParticles(ParticleTypes.FLAME, sx, sy, sz, 1, 0.04, 0.04, 0.04, 0.01);
+		}
+		if (move() == STRIDE && now % 16 == 0) {
+			server.playSound(null, blockPosition(), SoundEvents.IRON_GOLEM_STEP, SoundSource.HOSTILE, 1.1F, 0.55F);
+		}
 		if (staggered()) {
 			getNavigation().stop();
 			bar.setName(Component.translatable("boss.wildercord.kharvok.status",
