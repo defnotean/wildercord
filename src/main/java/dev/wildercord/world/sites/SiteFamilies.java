@@ -97,5 +97,7 @@ public final class SiteFamilies {
 		worldgen("wildercord:ocean_abyssal_citadel", "Abyssal Trench Citadel ziggurat and Thalassor boss colosseum; generates only in newly explored oceans.");
 		// ---- co-op trials pack
 		worldgen("wildercord:trial_leyline_sanctum", "Warded Co-Op Trial Leyline Sanctum arena with Vaelkhor and instanced Trial Treasury; generates only in newly explored chunks.");
+		worldgen("wildercord:trial_ashen_crucible", "Warded Co-Op Trial Ashen Crucible arena with Kharvok, Crucible Vents, and instanced Trial Treasury; generates only in newly explored chunks.");
+		worldgen("wildercord:trial_astral_eclipse", "Warded Co-Op Trial Astral Eclipse Vault arena with Nyxara, Astral Prisms, and instanced Trial Treasury; generates only in newly explored chunks.");
 	}
 }
