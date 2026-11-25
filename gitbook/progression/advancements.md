@@ -332,16 +332,26 @@ See [Water Sites](../world/water-sites.md) and [Deep Ocean Expansion](../world/d
 
 See [Wild Places](../world/wilds-sites.md), [Oathhold](../world/oathhold.md), and [Emberwood Reach](../world/emberwood-reach.md).
 
+### Co-Op Trials
+
+| Advancement | Kind | After | Needs | Reward |
+|---|---|---|---|---|
+| **Sanctum of the Sovereign** | task | Ley Walker | Enter a Leyline Sanctum Co-Op Trial arena | 25 XP |
+| **Leyline Sovereign Broken** | challenge | Sanctum of the Sovereign | Defeat Vaelkhor, the Leyline Sovereign in a Co-Op Trial Sanctum | 150 XP |
+| **Shares of the Sanctum** | goal | Leyline Sovereign Broken | Claim an instanced reward from a Trial Treasury | 50 XP |
+
+See [Co-Op Trials & Vaelkhor](../world/coop-trials.md).
+
 ## Totals
 
-179 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+182 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 131 |
-| Goals | 34 |
-| Challenges | 14 |
+| Tasks | 132 |
+| Goals | 35 |
+| Challenges | 15 |
 | Hidden | 4 |
-| Experience for all of them | 15,310 |
+| Experience for all of them | 15,535 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |
