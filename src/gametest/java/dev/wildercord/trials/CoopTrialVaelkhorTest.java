@@ -82,14 +82,15 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 					piece.gatePosition(),
 					piece.arenaCenter(),
 					piece.treasuryPosition(),
-					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 11),
+					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 7),
 					piece.localPosition(25, LeylineSanctumPiece.FLOOR + 1, 14),
+					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 11),
 					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 31)
 				};
 			});
 
 			c.waitTicks(3); // flush DungeonWards.remember queue
-			BlockPos gate = points[0], center = points[1], treasury = points[2], standSpot = points[3], allySpot = points[4], treasuryView = points[5];
+			BlockPos gate = points[0], center = points[1], treasury = points[2], standSpot = points[3], allySpot = points[4], viewSpot = points[5], treasuryView = points[6];
 
 			// Verify ward protection + spawn 2nd party player
 			UUID partnerId = world.getServer().computeOnServer(s -> {
@@ -121,17 +122,21 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 			c.waitTicks(8);
 
 			UUID bossId = world.getServer().computeOnServer(s -> {
-				var all = s.overworld().getEntitiesOfClass(VaelkhorBoss.class, new AABB(center).inflate(30));
+				ServerLevel l = s.overworld();
+				var all = l.getEntitiesOfClass(VaelkhorBoss.class, new AABB(center).inflate(30));
 				check(all.size() == 1, "Trial Gate spawned exactly one Vaelkhor");
 				VaelkhorBoss boss = all.getFirst();
 				check(Math.abs(boss.getMaxHealth() - 480.0F) < 0.5F, "2-player Vaelkhor scaled to 480 HP (got " + boss.getMaxHealth() + ")");
 				check(BossDamage.boss(boss), "Vaelkhor recognized by BossDamage");
+				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
+				p.teleportTo(l, viewSpot.getX() + 0.5, viewSpot.getY(), viewSpot.getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				return boss.getUUID();
 			});
 
 			// Capture arena idle view looking at Vaelkhor
-			aimAt(c, center, 2.2);
 			c.waitTicks(3);
+			aimAt(c, center, 2.2);
+			c.waitTicks(1);
 			shot(c, "vaelkhor_arena_idle");
 
 			// Wait for HALBERD_CLEAVE & capture screenshot
@@ -198,8 +203,9 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 				check(countRewards(p) == afterFirstClaim, "Double-claim rejected");
 			});
 
-			aimAt(c, treasury, 0.5);
 			c.waitTicks(3);
+			aimAt(c, treasury, 0.5);
+			c.waitTicks(1);
 			shot(c, "vaelkhor_treasury_victory");
 		}
 	}
