@@ -147,7 +147,7 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 				ServerLevel l = s.overworld();
 				fillBox(l, cinderPos.offset(-8, -1, -8), cinderPos.offset(8, -1, 8), Blocks.POLISHED_BASALT);
 				fillBox(l, cinderPos.offset(-8, 0, -8), cinderPos.offset(8, 9, 8), Blocks.AIR);
-				fillBox(l, cinderPos.offset(-8, 0, -8), cinderPos.offset(8, 7, -8), Blocks.BLACKSTONE_BRICKS);
+				fillBox(l, cinderPos.offset(-8, 0, -8), cinderPos.offset(8, 7, -8), Blocks.POLISHED_BLACKSTONE_BRICKS);
 				l.setBlock(cinderPos.offset(-4, 0, -3), Blocks.MAGMA_BLOCK.defaultBlockState(), 2);
 				l.setBlock(cinderPos.offset(4, 0, -3), Blocks.MAGMA_BLOCK.defaultBlockState(), 2);
 				l.setBlock(cinderPos.offset(-4, 0, 3), Blocks.SHROOMLIGHT.defaultBlockState(), 2);
