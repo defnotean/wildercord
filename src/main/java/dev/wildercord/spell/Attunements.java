@@ -61,7 +61,7 @@ public final class Attunements {
 	private static final Predicate<Place> ALWAYS = p -> true;
 
 	public static final List<Rule> RULES = List.of(
-		new Rule("cherry_grove", Runes.MOONPETAL, Set.of("minecraft:cherry_grove"), p -> p.night() && p.moonPhase() == 0 && p.openSky(),
+		new Rule("cherry_grove", Runes.MOONPETAL, Set.of("minecraft:cherry_grove", "wildercord:astral_ley_glade"), p -> p.night() && p.moonPhase() == 0 && p.openSky(),
 			"Pink boughs hold their breath beneath a moon that is whole.", "at night, under a full moon"),
 		new Rule("ice_spikes", Runes.HOARFROST, Set.of("minecraft:ice_spikes"), p -> p.precipitation().equals("snow"),
 			"Among the frozen spears, wait while the sky lets its snow fall.", "while snow falls"),
@@ -69,7 +69,7 @@ public final class Attunements {
 			"Where the listening moss grows, be quieter than it.", "beside sculk"),
 		new Rule("mushroom_fields", Runes.SPOREBLOOM, Set.of("minecraft:mushroom_fields"), ALWAYS,
 			"On the island where the ground is fungus, and no monster walks.", "anywhere"),
-		new Rule("badlands", Runes.SUNSCORCH, Set.of("minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"),
+		new Rule("badlands", Runes.SUNSCORCH, Set.of("minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach", "wildercord:cinder_caldera"),
 			p -> p.noon() && p.openSky(), "In the red canyons, when the sun stands at its highest.", "at noon, under open sky"),
 		new Rule("swamp", Runes.MIRE, Set.of("minecraft:swamp", "wildercord:luminous_reedlands"), p -> p.precipitation().equals("rain"),
 			"The murky marsh speaks only while the rain beats down on it.", "in the rain"),

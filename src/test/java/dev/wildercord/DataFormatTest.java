@@ -343,7 +343,7 @@ class DataFormatTest {
 						allowed(state, file + " state", "Name", "Properties");
 						required(state, file, "Name");
 					}
-					case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch" -> allowed(cfg, file + " config");
+					case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch", "wildercord:ley_spire_patch", "wildercord:caldera_fumarole_patch" -> allowed(cfg, file + " config");
 					default -> fail(file + ": unsupported vegetation feature " + feature);
 				}
 			} else {
@@ -356,7 +356,7 @@ class DataFormatTest {
 						allowed(state, file + " state", "id", "properties");
 						required(state, file, "id");
 					}
-					case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch" -> allowed(feature, file, "type");
+					case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch", "wildercord:ley_spire_patch", "wildercord:caldera_fumarole_patch" -> allowed(feature, file, "type");
 					default -> fail(file + ": unsupported vegetation feature " + feature);
 				}
 			}

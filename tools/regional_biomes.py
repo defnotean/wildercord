@@ -9,6 +9,10 @@ LANG = {
     "journal.wildercord.entry.place.belowkeeper_hollows": "Belowkeeper Hollows. Damp clay basins and copper-stained dripstone vaults where water carries the hum of the lower rock. Mara's listeners kept Glowcap beds under the stone arches so every watch had filter gills and steady light. Sporeback Snails, Mossveil Dormice and Rootmolt Striders share the dark, while Listening Stations, Drainhouses and the Bell Sanctum still hold the Belowkeepers' acoustic logs.",
     "biome.wildercord.emberwood_reach": "Emberwood Reach",
     "journal.wildercord.entry.place.emberwood_reach": "Emberwood Reach. Scorched oak woods and coarse-dirt firebreaks where Ashwin's charcoal burners cut timber for the southern forges. Harvest the cooled fronds of Cinder Fern and leave the root for the Cinder Bailiffs that patrol the ash beds. Cinderfoxes and Dune Cougars hunt the warm borders, while Charcoal Yards, Forge Dojos and the Kiln Court still keep the burners' tallies.",
+    "biome.wildercord.astral_ley_glade": "Astral Ley-Glade",
+    "journal.wildercord.entry.place.astral_ley_glade": "Astral Ley-Glade. Luminous dark-oak groves pierced by azure ley-crystal spires and floating Leyweaver Moths. Harvest Astral Ley Shards from leybloom clusters and follow Sanctum Wayfinders toward Trial Sanctums.",
+    "biome.wildercord.cinder_caldera": "Cinder Caldera",
+    "journal.wildercord.entry.place.cinder_caldera": "Cinder Caldera. Basalt-rimmed ash basins and smoldering slag vents haunted by Caldera Cinderhounds. Mine Caldera Slag Cores from smoking fumaroles to temper Trial Wayfinders and forge-keys.",
 }
 
 
@@ -240,17 +244,121 @@ def emberwood(profile):
     })
 
 
+def astral_ley_glade(profile):
+    """Luminous teal-indigo enchanted forest retaining vanilla Dark Forest decoration order."""
+    return profile.apply_biome_spawns({
+        "attributes": {
+            "minecraft:audio/background_music": {"default": {
+                "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.forest"}},
+            "minecraft:visual/sky_color": "#5268a8",
+            "minecraft:visual/water_fog_color": "#163858",
+            "minecraft:visual/water_fog_end_distance": {"argument": 0.9, "modifier": "multiply"},
+        },
+        "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
+        "downfall": 0.8,
+        "effects": {
+            "dry_foliage_color": "#5c7ca8", "foliage_color": "#4ab8a8",
+            "grass_color": "#46a89c", "grass_color_modifier": "dark_forest", "water_color": "#32b8d8",
+        },
+        "features": [
+            [],
+            ["minecraft:lake_lava_underground", "minecraft:lake_lava_surface"],
+            ["minecraft:amethyst_geode"],
+            ["minecraft:monster_room", "minecraft:monster_room_deep"],
+            [], [],
+            ["minecraft:" + name for name in (
+                "ore_dirt", "ore_gravel", "ore_granite_upper", "ore_granite_lower",
+                "ore_diorite_upper", "ore_diorite_lower", "ore_andesite_upper", "ore_andesite_lower",
+                "ore_tuff", "ore_coal_upper", "ore_coal_lower", "ore_iron_upper", "ore_iron_middle",
+                "ore_iron_small", "ore_gold", "ore_gold_lower", "ore_redstone", "ore_redstone_lower",
+                "ore_diamond", "ore_diamond_medium", "ore_diamond_large", "ore_diamond_buried",
+                "ore_lapis", "ore_lapis_buried", "ore_copper", "underwater_magma", "disk_sand",
+                "disk_clay", "disk_gravel")],
+            [],
+            ["minecraft:spring_water", "minecraft:spring_lava"],
+            ["minecraft:" + name for name in (
+                "glow_lichen", "trees_birch_and_oak_leaf_litter", "flower_default",
+                "patch_grass_forest", "brown_mushroom_normal", "red_mushroom_normal",
+                "patch_pumpkin", "patch_sugar_cane", "patch_firefly_bush_near_water")],
+            ["minecraft:freeze_top_layer"],
+        ],
+        "has_precipitation": True,
+        "temperature": 0.65,
+    }, {
+        "ambient": [_spawn(profile, "bat", 10, 8)],
+        "creature": [_spawn(profile, "sheep", 8, 2, 4), _spawn(profile, "fox", 6, 2, 4)],
+        "monster": [_spawn(profile, "spider", 80, 4), _spawn(profile, "zombie", 80, 4),
+                    _spawn(profile, "skeleton", 90, 4), _spawn(profile, "enderman", 25, 1, 4),
+                    _spawn(profile, "witch", 10, 1)],
+        "underground_water_creature": [_spawn(profile, "glow_squid", 12, 4, 6)],
+    })
+
+
+def cinder_caldera(profile):
+    """Volcanic basalt-and-terracotta caldera basin retaining vanilla badlands decoration order."""
+    return profile.apply_biome_spawns({
+        "attributes": {
+            "minecraft:audio/background_music": {"default": {
+                "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.badlands"}},
+            "minecraft:gameplay/increased_fire_burnout": False,
+            "minecraft:visual/sky_color": "#8c523c",
+            "minecraft:visual/water_fog_color": "#2e1c18",
+        },
+        "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
+        "downfall": 0.05,
+        "effects": {
+            "dry_foliage_color": "#7c4c34", "foliage_color": "#6e4e38",
+            "grass_color": "#7a5c42", "grass_color_modifier": "none", "water_color": "#6e4e44",
+        },
+        "features": [
+            [],
+            ["minecraft:lake_lava_underground", "minecraft:lake_lava_surface"],
+            ["minecraft:amethyst_geode"],
+            ["minecraft:monster_room", "minecraft:monster_room_deep"],
+            [], [],
+            ["minecraft:" + name for name in (
+                "ore_dirt", "ore_gravel", "ore_granite_upper", "ore_granite_lower",
+                "ore_diorite_upper", "ore_diorite_lower", "ore_andesite_upper", "ore_andesite_lower",
+                "ore_tuff", "ore_coal_upper", "ore_coal_lower", "ore_iron_upper", "ore_iron_middle",
+                "ore_iron_small", "ore_gold", "ore_gold_lower", "ore_redstone", "ore_redstone_lower",
+                "ore_diamond", "ore_diamond_medium", "ore_diamond_large", "ore_diamond_buried",
+                "ore_lapis", "ore_lapis_buried", "ore_copper", "underwater_magma", "disk_sand",
+                "disk_clay", "disk_gravel")],
+            [],
+            ["minecraft:spring_water", "minecraft:spring_lava"],
+            ["minecraft:" + name for name in (
+                "glow_lichen", "patch_grass_badlands", "patch_dead_bush_2", "patch_cactus_decorated")],
+            ["minecraft:freeze_top_layer"],
+        ],
+        "has_precipitation": False,
+        "temperature": 1.6,
+    }, {
+        "ambient": [_spawn(profile, "bat", 10, 8)],
+        "creature": [_spawn(profile, "armadillo", 6, 1, 2)],
+        "monster": [_spawn(profile, "spider", 90, 4), _spawn(profile, "zombie", 90, 4),
+                    _spawn(profile, "skeleton", 95, 4), _spawn(profile, "creeper", 90, 4),
+                    _spawn(profile, "husk", 60, 2, 4)],
+        "underground_water_creature": [_spawn(profile, "glow_squid", 10, 4, 6)],
+    })
+
+
 def write(g):
     g.write_json(g.DATA / "worldgen/biome/luminous_reedlands.json", reedlands(g.profile))
     g.write_json(g.DATA / "worldgen/biome/windscar_highlands.json", windscar(g.profile))
     g.write_json(g.DATA / "worldgen/biome/belowkeeper_hollows.json", belowkeeper(g.profile))
     g.write_json(g.DATA / "worldgen/biome/emberwood_reach.json", emberwood(g.profile))
+    g.write_json(g.DATA / "worldgen/biome/astral_ley_glade.json", astral_ley_glade(g.profile))
+    g.write_json(g.DATA / "worldgen/biome/cinder_caldera.json", cinder_caldera(g.profile))
     # Appending to these tags preserves vanilla members and other packs' additions.
     for name, members in {
-        "is_overworld": ["wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows", "wildercord:emberwood_reach"],
+        "is_overworld": [
+            "wildercord:luminous_reedlands", "wildercord:windscar_highlands",
+            "wildercord:belowkeeper_hollows", "wildercord:emberwood_reach",
+            "wildercord:astral_ley_glade", "wildercord:cinder_caldera",
+        ],
         "is_swamp": ["wildercord:luminous_reedlands"],
         "is_hill": ["wildercord:windscar_highlands"],
-        "is_forest": ["wildercord:emberwood_reach"],
+        "is_forest": ["wildercord:emberwood_reach", "wildercord:astral_ley_glade"],
     }.items():
         g.write_json(g.RES / "data/minecraft/tags/worldgen/biome" / (name + ".json"),
                      {"replace": False, "values": members})

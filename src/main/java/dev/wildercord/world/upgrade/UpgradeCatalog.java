@@ -48,6 +48,8 @@ public final class UpgradeCatalog {
 		worldgen("wildercord:glowcap_patch","Plant patch; vegetation regrowth is not an upgrade"),
 		worldgen("wildercord:moonreed_patch","Plant patch; vegetation regrowth is not an upgrade"),
 		worldgen("wildercord:windreed_patch","Plant patch; vegetation regrowth is not an upgrade"),
+		worldgen("wildercord:ley_spire_patch","Astral Ley-Glade crystalline spire feature"),
+		worldgen("wildercord:caldera_fumarole_patch","Cinder Caldera basalt fumarole feature"),
 		runtime("wildercord:training_grounds","Detected at runtime from natural waterfalls/summits; old worlds already have them"),
 		runtime("wildercord:masters_and_duelists","Masters, Duelists and knights spawn at runtime by their own rules; no block placement"),
 		runtime("wildercord:village_tournaments","Bounded runtime visitor event at inhabited village bells"));

@@ -56,5 +56,12 @@ public final class WildercordComponents {
 		DataComponentType.<SacredPigMap>builder().persistent(SacredPigMap.CODEC).networkSynchronized(SacredPigMap.STREAM_CODEC).build()
 	);
 
+	/** Selected Trial target mode for the Sanctum Wayfinder (0 = Leyline, 1 = Crucible, 2 = Eclipse). */
+	public static final DataComponentType<Integer> WAYFINDER_MODE = Registry.register(
+		BuiltInRegistries.DATA_COMPONENT_TYPE,
+		Wildercord.id("wayfinder_mode"),
+		DataComponentType.<Integer>builder().persistent(Codec.intRange(0, 2)).networkSynchronized(ByteBufCodecs.VAR_INT).build()
+	);
+
 	public static void init() {}
 }

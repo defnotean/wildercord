@@ -211,6 +211,14 @@ public final class LoreJournal {
 			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.EmberwoodClimate.EMBERWOOD)) {
 			record(player, dev.wildercord.world.biome.EmberwoodClimate.JOURNAL_ENTRY, true);
 		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.AstralLeyGladeClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.AstralLeyGladeClimate.ASTRAL_LEY_GLADE)) {
+			record(player, dev.wildercord.world.biome.AstralLeyGladeClimate.JOURNAL_ENTRY, true);
+		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.CinderCalderaClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.CinderCalderaClimate.CINDER_CALDERA)) {
+			record(player, dev.wildercord.world.biome.CinderCalderaClimate.JOURNAL_ENTRY, true);
+		}
 		LoreJournalData before = data(player);
 		LoreJournalData data = before;
 		List<String> grimoire = Heart.grimoire(player);

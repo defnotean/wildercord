@@ -1,7 +1,9 @@
 package dev.wildercord.mixin;
 
 import com.mojang.datafixers.util.Pair;
+import dev.wildercord.world.biome.AstralLeyGladeClimate;
 import dev.wildercord.world.biome.BelowkeeperClimate;
+import dev.wildercord.world.biome.CinderCalderaClimate;
 import dev.wildercord.world.biome.EmberwoodClimate;
 import dev.wildercord.world.biome.ReedlandClimate;
 import dev.wildercord.world.biome.WindscarClimate;
@@ -24,6 +26,8 @@ abstract class ReedlandPlacementMixin {
 		return entry -> ReedlandClimate.emit(entry,
 			wetland -> WindscarClimate.emit(wetland,
 				hill -> BelowkeeperClimate.emit(hill,
-					cave -> EmberwoodClimate.emit(cave, output))));
+					cave -> EmberwoodClimate.emit(cave,
+						ember -> AstralLeyGladeClimate.emit(ember,
+							glade -> CinderCalderaClimate.emit(glade, output))))));
 	}
 }

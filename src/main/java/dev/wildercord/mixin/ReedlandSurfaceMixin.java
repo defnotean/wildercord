@@ -1,6 +1,8 @@
 package dev.wildercord.mixin;
 
+import dev.wildercord.world.biome.AstralLeyGladeClimate;
 import dev.wildercord.world.biome.BelowkeeperClimate;
+import dev.wildercord.world.biome.CinderCalderaClimate;
 import dev.wildercord.world.biome.EmberwoodClimate;
 import dev.wildercord.world.biome.ReedlandClimate;
 import dev.wildercord.world.biome.WindscarClimate;
@@ -23,7 +25,9 @@ abstract class ReedlandSurfaceMixin {
 		boolean hills = biomes.stream().anyMatch(biome -> biome.is(Biomes.WINDSWEPT_HILLS));
 		boolean dripstone = biomes.stream().anyMatch(biome -> biome.is(Biomes.DRIPSTONE_CAVES));
 		boolean pineTaiga = biomes.stream().anyMatch(biome -> biome.is(Biomes.OLD_GROWTH_PINE_TAIGA));
-		if (!swamp && !hills && !dripstone && !pineTaiga) return;
+		boolean darkForest = biomes.stream().anyMatch(biome -> biome.is(Biomes.DARK_FOREST));
+		boolean erodedBadlands = biomes.stream().anyMatch(biome -> biome.is(Biomes.ERODED_BADLANDS));
+		if (!swamp && !hills && !dripstone && !pineTaiga && !darkForest && !erodedBadlands) return;
 		ConditionEvaluator original = result.getReturnValue();
 		result.setReturnValue(new MaterialRuleContext.LazyYCondition(ruleContext) {
 			@Override
@@ -31,7 +35,10 @@ abstract class ReedlandSurfaceMixin {
 				return (swamp && context.getBiome().is(ReedlandClimate.REEDLANDS))
 					|| (hills && context.getBiome().is(WindscarClimate.WINDSCAR))
 					|| (dripstone && context.getBiome().is(BelowkeeperClimate.HOLLOWS))
-					|| (pineTaiga && context.getBiome().is(EmberwoodClimate.EMBERWOOD)) || original.test();
+					|| (pineTaiga && context.getBiome().is(EmberwoodClimate.EMBERWOOD))
+					|| (darkForest && context.getBiome().is(AstralLeyGladeClimate.ASTRAL_LEY_GLADE))
+					|| (erodedBadlands && context.getBiome().is(CinderCalderaClimate.CINDER_CALDERA))
+					|| original.test();
 			}
 		});
 	}
