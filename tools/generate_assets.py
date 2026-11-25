@@ -1086,6 +1086,9 @@ def write_lang(runes):
     import ocean_expansion_art
     lang.update(ocean_expansion_art.LANG)
     ocean_expansion_art.write(sys.modules[__name__])
+    import vaelkhor_art
+    lang.update(vaelkhor_art.LANG)
+    vaelkhor_art.write(sys.modules[__name__])
     import magic_art  # 0.13 magic: the mage-hunter's skin, egg and loot.
     lang.update(magic_art.LANG)
     magic_art.write(sys.modules[__name__])

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "GCG",
+    " E "
+  ],
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "G": "minecraft:gold_ingot",
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:echo_shard"
+  },
+  "result": {
+    "id": "wildercord:leyline_sigil"
+  }
+}

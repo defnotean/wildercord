@@ -156,6 +156,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [The Astral Observatory](astral-observatory.md)
 - [Root Guardian and Storm Conductor](root-and-storm-bosses.md)
 - [Reed-Crowned Ferryman](reed-crowned-ferryman.md)
+- [Co-Op Trials & Vaelkhor](coop-trials.md)
 - [Glass Cartographer](glass-cartographer.md)
 - [Hollow Bell](hollow-bell.md)
 - [Kiln Widow](kiln-widow.md)

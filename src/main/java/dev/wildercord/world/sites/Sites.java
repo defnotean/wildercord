@@ -77,5 +77,7 @@ public final class Sites {
 		dev.wildercord.world.sites.mine.MineSites.init();
 		// ---- sites-oathhold megacity pack
 		dev.wildercord.world.sites.oathhold.OathholdSites.init();
+		// ---- co-op trials pack
+		dev.wildercord.world.sites.trials.TrialSites.init();
 	}
 }

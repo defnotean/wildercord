@@ -154,6 +154,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.town.BountyEscorts.init();
 		dev.wildercord.town.Caravans.init();
 		dev.wildercord.world.sites.oathhold.OathholdContent.init();
+		dev.wildercord.trials.CoopTrialContent.init();
 		dev.wildercord.monster.Giants.init();
 		dev.wildercord.aura.BladeSmithing.init();
 		dev.wildercord.NameTags.init();

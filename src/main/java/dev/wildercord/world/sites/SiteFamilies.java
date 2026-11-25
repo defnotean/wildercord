@@ -95,5 +95,7 @@ public final class SiteFamilies {
 		worldgen("wildercord:ocean_kelp_spire_watchtower", "Kelp-Spire Watchtower with bubble elevator and surface boat dock; generates only in newly explored oceans.");
 		worldgen("wildercord:ocean_hydrothermal_forge", "Seabed Hydrothermal Vent Forge housing the Trench Anvil; generates only in newly explored oceans.");
 		worldgen("wildercord:ocean_abyssal_citadel", "Abyssal Trench Citadel ziggurat and Thalassor boss colosseum; generates only in newly explored oceans.");
+		// ---- co-op trials pack
+		worldgen("wildercord:trial_leyline_sanctum", "Warded Co-Op Trial Leyline Sanctum arena with Vaelkhor and instanced Trial Treasury; generates only in newly explored chunks.");
 	}
 }

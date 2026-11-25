@@ -132,6 +132,7 @@
   * [Expeditions and Relics](world/expeditions.md)
   * [Magic that Changes the World](world/world-magic.md)
   * [Deep Ocean Expansion](world/deep-ocean.md)
+  * [Co-Op Trials & Vaelkhor](world/coop-trials.md)
   * [Residues and Reagents](world/residues.md)
   * [Places and Times of Power](world/places-of-power.md)
   * [Creatures](world/creatures.md)

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "trial_leyline_sanctum": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:trial_leyline_sanctum"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:trial_gate"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.trial_leyline_sanctum.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.trial_leyline_sanctum.description"
+    }
+  },
+  "requirements": [
+    [
+      "trial_leyline_sanctum"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

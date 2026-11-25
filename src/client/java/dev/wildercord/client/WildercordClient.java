@@ -85,6 +85,7 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.auraworld.AuraWorldClient.init();
 		dev.wildercord.client.wildlife.WildlifeClient.init();
 		dev.wildercord.client.ocean.OceanClient.init();
+		dev.wildercord.client.trials.CoopTrialsClient.init();
 		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(dev.wildercord.town.Town.KEEPER, net.minecraft.client.renderer.entity.WanderingTraderRenderer::new);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.oathhold.OathholdCitizenRenderer.LAYER, dev.wildercord.client.oathhold.OathholdCitizenModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.sites.oathhold.OathholdContent.CITIZEN, dev.wildercord.client.oathhold.OathholdCitizenRenderer::new);

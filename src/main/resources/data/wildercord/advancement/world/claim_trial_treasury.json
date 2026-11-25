@@ -1,0 +1,46 @@
+{
+  "parent": "wildercord:world/defeat_vaelkhor",
+  "criteria": {
+    "halberd": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:sovereign_halberd"
+          }
+        ]
+      }
+    },
+    "bell_charm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:leyline_bell_charm"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:leyline_bell_charm"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.claim_trial_treasury.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.claim_trial_treasury.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "halberd",
+      "bell_charm"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

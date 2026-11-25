@@ -1,0 +1,37 @@
+{
+  "parent": "wildercord:world/trial_leyline_sanctum",
+  "criteria": {
+    "defeat_vaelkhor": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "wildercord:vaelkhor"
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:sovereign_halberd"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.defeat_vaelkhor.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.defeat_vaelkhor.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "defeat_vaelkhor"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

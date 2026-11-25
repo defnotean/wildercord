@@ -157,6 +157,7 @@ public final class StructureClearance {
 		register("sleeping_blade", "sleeping_blades", Domain.LAND, 92, 36, 202610023, 34, false);
 		register("storm_spire", "storm_spire", Domain.LAND, 32, 10, 20261002, 28, false);
 		register("sword_tomb", "sword_tombs", Domain.LAND, 76, 28, 202610022, 34, false);
+		register("trial_leyline_sanctum", "trial_leyline_sanctum", Domain.LAND, 52, 18, 2026112501, 24, false);
 		register("travel_broken_bridge", "travel_broken_bridge", Domain.LAND, 40, 14, 2026101402, 24, false);
 		register("travel_caravan_camp", "travel_caravan_camp", Domain.LAND, 34, 12, 2026101405, 24, false);
 		register("travel_cartographer_hut", "travel_cartographer_hut", Domain.LAND, 36, 12, 2026101406, 24, false);
