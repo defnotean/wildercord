@@ -67,12 +67,12 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 		BlockPos.betweenClosedStream(a, b).forEach(p -> l.setBlock(p, block.defaultBlockState(), 2));
 	}
 
-	private static void setupDirector(ClientGameTestContext c, TestSingleplayerContext world, BlockPos anchor, Vec3 eye, Vec3 target) {
+	private static void setupDirector(ClientGameTestContext c, TestSingleplayerContext world, BlockPos anchor, int bossId, Vec3 eye, Vec3 target) {
 		int camId = world.getServer().computeOnServer(server -> {
 			ServerLevel l = server.overworld();
 			ServerPlayer sp = server.getPlayerList().getPlayers().getFirst();
 			sp.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
-			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(anchor).inflate(48),
+			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(anchor).inflate(128),
 				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityTypes.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
@@ -80,20 +80,27 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 			l.addFreshEntity(cam);
 			return cam.getId();
 		});
-		c.waitTicks(4);
-		c.runOnClient(mc -> {
-			Entity cam = mc.level.getEntity(camId);
-			if (cam != null) {
-				mc.options.setCameraType(CameraType.FIRST_PERSON);
-				mc.setCameraEntity(cam);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
-				}
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+		for (int i = 0; i < 80; i++) {
+			if (c.computeOnClient(mc -> mc.level != null && mc.player != null
+				&& mc.player.position().closerThan(eye, 3.0)
+				&& mc.level.getEntity(camId) != null
+				&& mc.level.getEntity(bossId) != null)) {
+				break;
 			}
+			c.waitTicks(1);
+		}
+		c.runOnClient(mc -> {
+			Entity cam = mc.level != null ? mc.level.getEntity(camId) : null;
+			check(cam != null, "Director camera entity synced to client: " + camId);
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			mc.setCameraEntity(cam);
+			if (!mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+			mc.gui.toastManager().clear();
+			mc.gui.hud.getChat().clearMessages(false);
 		});
-		c.waitTicks(6);
+		c.waitTicks(8);
 	}
 
 	private static void shot(ClientGameTestContext c, String name) {
@@ -120,7 +127,7 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 
 			// 1. Archivist showcase stage at (0, 96, 0)
 			BlockPos archPos = new BlockPos(0, 96, 0);
-			world.getServer().runOnServer(s -> {
+			int archId = world.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
 				fillBox(l, archPos.offset(-8, -1, -8), archPos.offset(8, -1, 8), Blocks.DEEPSLATE_TILES);
 				fillBox(l, archPos.offset(-8, 0, -8), archPos.offset(8, 8, 8), Blocks.AIR);
@@ -135,15 +142,16 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 				check(archivist != null, "Created Archivist");
 				poseMob(archivist, archPos.getX() + 0.5, archPos.getY(), archPos.getZ() + 0.5, 0.0F);
 				check(l.addFreshEntity(archivist), "Spawned Archivist");
+				return archivist.getId();
 			});
-			setupDirector(c, world, archPos,
+			setupDirector(c, world, archPos, archId,
 				new Vec3(archPos.getX() - 2.3, archPos.getY() + 2.0, archPos.getZ() + 4.4),
 				new Vec3(archPos.getX() + 0.5, archPos.getY() + 1.35, archPos.getZ() + 0.5));
 			shot(c, "overhaul_archivist");
 
 			// 2. Cinder Warden showcase stage at (64, 96, 0)
 			BlockPos cinderPos = new BlockPos(64, 96, 0);
-			world.getServer().runOnServer(s -> {
+			int cinderId = world.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
 				fillBox(l, cinderPos.offset(-8, -1, -8), cinderPos.offset(8, -1, 8), Blocks.POLISHED_BASALT);
 				fillBox(l, cinderPos.offset(-8, 0, -8), cinderPos.offset(8, 9, 8), Blocks.AIR);
@@ -156,15 +164,16 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 				check(warden != null, "Created Cinder Warden");
 				poseMob(warden, cinderPos.getX() + 0.5, cinderPos.getY(), cinderPos.getZ() + 0.5, 0.0F);
 				check(l.addFreshEntity(warden), "Spawned Cinder Warden");
+				return warden.getId();
 			});
-			setupDirector(c, world, cinderPos,
+			setupDirector(c, world, cinderPos, cinderId,
 				new Vec3(cinderPos.getX() - 2.9, cinderPos.getY() + 2.4, cinderPos.getZ() + 5.2),
 				new Vec3(cinderPos.getX() + 0.5, cinderPos.getY() + 1.7, cinderPos.getZ() + 0.5));
 			shot(c, "overhaul_cinder_warden");
 
 			// 3. Thalassor deep basin stage at (128, 86, 0)
 			BlockPos thalPos = new BlockPos(128, 86, 0);
-			world.getServer().runOnServer(s -> {
+			int thalId = world.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
 				fillBox(l, thalPos.offset(-10, -2, -10), thalPos.offset(10, -2, 10), Blocks.DARK_PRISMARINE);
 				fillBox(l, thalPos.offset(-10, -1, -10), thalPos.offset(10, 7, 10), Blocks.WATER);
@@ -179,8 +188,9 @@ public final class BossOverhaulShowcaseTest implements FabricClientGameTest {
 				check(thal != null, "Created Thalassor");
 				poseMob(thal, thalPos.getX() + 0.5, thalPos.getY() + 1.4, thalPos.getZ() + 0.5, 0.0F);
 				check(l.addFreshEntity(thal), "Spawned Thalassor");
+				return thal.getId();
 			});
-			setupDirector(c, world, thalPos,
+			setupDirector(c, world, thalPos, thalId,
 				new Vec3(thalPos.getX() - 4.2, thalPos.getY() + 3.0, thalPos.getZ() + 6.4),
 				new Vec3(thalPos.getX() + 0.5, thalPos.getY() + 1.7, thalPos.getZ() + 0.5));
 			shot(c, "overhaul_thalassor");
