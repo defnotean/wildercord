@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/trial_ashen_crucible",
+  "criteria": {
+    "trial_astral_eclipse": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:trial_astral_eclipse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:astral_prism"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.trial_astral_eclipse.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.trial_astral_eclipse.description"
+    }
+  },
+  "requirements": [
+    [
+      "trial_astral_eclipse"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

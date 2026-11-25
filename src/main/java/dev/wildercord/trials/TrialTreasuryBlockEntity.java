@@ -140,6 +140,9 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 			case "crucible" -> (rng.nextInt(2) == 0)
 				? new ItemStack(CoopTrialContent.CRUCIBLE_MAUL)
 				: new ItemStack(CoopTrialContent.FORGEHEART_CENSER);
+			case "eclipse" -> (rng.nextInt(2) == 0)
+				? new ItemStack(CoopTrialContent.ECLIPSE_TWINBLADE)
+				: new ItemStack(CoopTrialContent.ASTROLABE_DIAL);
 			default -> (rng.nextInt(2) == 0)
 				? new ItemStack(CoopTrialContent.SOVEREIGN_HALBERD)
 				: new ItemStack(CoopTrialContent.LEYLINE_BELL_CHARM);

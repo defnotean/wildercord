@@ -1,0 +1,35 @@
+{
+  "parent": "wildercord:world/claim_trial_treasury",
+  "criteria": {
+    "sovereigns_mantle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:sovereigns_mantle"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:sovereigns_mantle"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.sovereigns_mantle.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.sovereigns_mantle.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "sovereigns_mantle"
+    ]
+  ],
+  "rewards": {
+    "experience": 200
+  }
+}

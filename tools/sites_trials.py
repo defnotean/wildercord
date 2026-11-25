@@ -19,8 +19,17 @@ CRUCIBLE_BIOMES = [
     "minecraft:wooded_badlands",
 ]
 
+ECLIPSE_BIOMES = [
+    "wildercord:astral_ley_glade",
+    "minecraft:meadow",
+    "minecraft:jagged_peaks",
+    "minecraft:stony_peaks",
+    "minecraft:cherry_grove",
+]
+
 SANCTUM_ID = "trial_leyline_sanctum"
 CRUCIBLE_ID = "trial_ashen_crucible"
+ECLIPSE_ID = "trial_astral_eclipse"
 
 LANG = {
     f"journal.wildercord.entry.place.{SANCTUM_ID}": "Leyline Sanctum: a warded Co-Op Trial arena where Vaelkhor, the Leyline Sovereign tests coordinated parties.",
@@ -29,6 +38,9 @@ LANG = {
     f"journal.wildercord.entry.place.{CRUCIBLE_ID}": "Ashen Crucible: a warded Co-Op foundry colosseum where Kharvok, the Crucible Sovereign challenges parties amid quenchable vents.",
     f"advancements.wildercord.world.{CRUCIBLE_ID}.title": "Crucible of Ashen Flame",
     f"advancements.wildercord.world.{CRUCIBLE_ID}.description": "Enter an Ashen Crucible Co-Op Trial foundry",
+    f"journal.wildercord.entry.place.{ECLIPSE_ID}": "Astral Eclipse Vault: a warded starlit colosseum where Nyxara, the Eclipse Sovereign duels parties across alignable prisms.",
+    f"advancements.wildercord.world.{ECLIPSE_ID}.title": "Vault of the Eclipse",
+    f"advancements.wildercord.world.{ECLIPSE_ID}.description": "Enter an Astral Eclipse Vault Co-Op Trial sanctuary",
 }
 
 
@@ -54,6 +66,13 @@ def write(gen):
             "wildercord:crucible_vent", f"world/{SANCTUM_ID}",
             LANG[f"advancements.wildercord.world.{CRUCIBLE_ID}.title"],
             LANG[f"advancements.wildercord.world.{CRUCIBLE_ID}.description"],
+        ),
+        (
+            ECLIPSE_ID, ECLIPSE_BIOMES, 2026112503,
+            "loot_table/chests/trial_eclipse_treasury.json",
+            "wildercord:astral_prism", f"world/{CRUCIBLE_ID}",
+            LANG[f"advancements.wildercord.world.{ECLIPSE_ID}.title"],
+            LANG[f"advancements.wildercord.world.{ECLIPSE_ID}.description"],
         ),
     ):
         gen.write_json(gen.DATA / f"tags/worldgen/biome/has_structure/{site_id}.json", {"replace": False, "values": biomes})
@@ -108,4 +127,4 @@ def write(gen):
             xp=25,
         )
 
-    return [SANCTUM_ID, CRUCIBLE_ID]
+    return [SANCTUM_ID, CRUCIBLE_ID, ECLIPSE_ID]

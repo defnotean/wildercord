@@ -1,0 +1,35 @@
+{
+  "parent": "wildercord:world/sovereigns_mantle",
+  "criteria": {
+    "apex_sovereign": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:sovereign_crown"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:sovereign_crown"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.apex_sovereign.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.apex_sovereign.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "apex_sovereign"
+    ]
+  ],
+  "rewards": {
+    "experience": 250
+  }
+}

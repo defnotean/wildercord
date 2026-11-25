@@ -341,19 +341,23 @@ See [Wild Places](../world/wilds-sites.md), [Oathhold](../world/oathhold.md), an
 | **Shares of the Sanctum** | goal | Leyline Sovereign Broken | Claim an instanced reward from a Trial Treasury | 50 XP |
 | **Crucible of Ashen Flame** | task | Sanctum of the Sovereign | Enter an Ashen Crucible Co-Op Trial foundry | 25 XP |
 | **Crucible Sovereign Quenched** | challenge | Crucible of Ashen Flame | Defeat Kharvok, the Crucible Sovereign inside the Ashen Crucible | 150 XP |
+| **Vault of the Eclipse** | task | Crucible of Ashen Flame | Enter an Astral Eclipse Vault Co-Op Trial sanctuary | 25 XP |
+| **Eclipse Sovereign Eclipsed** | challenge | Vault of the Eclipse | Defeat Nyxara, the Eclipse Sovereign in the Astral Eclipse Vault | 150 XP |
+| **Tri-Seal Sovereign** | challenge | Shares of the Sanctum | Forge Sovereign's Mantle from the Leyline, Crucible, and Eclipse Trial Seals | 200 XP |
+| **Apex Sovereign** | challenge | Tri-Seal Sovereign | Conquer an Empowered Apex Co-Op Trial and claim the Sovereign Crown | 250 XP |
 
-See [Co-Op Trials & Vaelkhor](../world/coop-trials.md).
+See [Co-Op Trials & the Sovereign Triad](../world/coop-trials.md).
 
 ## Totals
 
-184 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+188 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 133 |
+| Tasks | 134 |
 | Goals | 35 |
-| Challenges | 16 |
+| Challenges | 19 |
 | Hidden | 4 |
-| Experience for all of them | 15,710 |
+| Experience for all of them | 16,335 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

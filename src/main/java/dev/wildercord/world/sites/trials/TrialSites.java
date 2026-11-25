@@ -31,6 +31,7 @@ public final class TrialSites {
 
 	public static final String SANCTUM_ID = "trial_leyline_sanctum";
 	public static final String CRUCIBLE_ID = "trial_ashen_crucible";
+	public static final String ECLIPSE_ID = "trial_astral_eclipse";
 
 	public static final StructurePieceType LEYLINE_SANCTUM = Sites.piece(
 		SANCTUM_ID,
@@ -40,23 +41,30 @@ public final class TrialSites {
 		CRUCIBLE_ID,
 		(StructurePieceType.ContextlessType) AshenCruciblePiece::new
 	);
+	public static final StructurePieceType ASTRAL_ECLIPSE = Sites.piece(
+		ECLIPSE_ID,
+		(StructurePieceType.ContextlessType) AstralEclipsePiece::new
+	);
 
 	public static final ResourceKey<LootTable> TREASURY_LOOT = Sites.loot("chests/trial_leyline_treasury");
 	public static final ResourceKey<LootTable> CRUCIBLE_TREASURY_LOOT = Sites.loot("chests/trial_crucible_treasury");
+	public static final ResourceKey<LootTable> ECLIPSE_TREASURY_LOOT = Sites.loot("chests/trial_eclipse_treasury");
 
 	public static void init() {
 		Sites.register(SANCTUM_ID, LeylineSanctumPiece::locate);
 		Sites.register(CRUCIBLE_ID, AshenCruciblePiece::locate);
+		Sites.register(ECLIPSE_ID, AstralEclipsePiece::locate);
 	}
 
 	public static Set<String> allSiteIds() {
-		return Set.of(SANCTUM_ID, CRUCIBLE_ID);
+		return Set.of(SANCTUM_ID, CRUCIBLE_ID, ECLIPSE_ID);
 	}
 
 	public static @Nullable TrialBoss createBoss(ServerLevel level, String trialKind) {
 		return switch (trialKind.toLowerCase(Locale.ROOT)) {
 			case "leyline" -> CoopTrialContent.VAELKHOR.create(level, EntitySpawnReason.STRUCTURE);
 			case "crucible" -> CoopTrialContent.KHARVOK.create(level, EntitySpawnReason.STRUCTURE);
+			case "eclipse" -> CoopTrialContent.NYXARA.create(level, EntitySpawnReason.STRUCTURE);
 			default -> null;
 		};
 	}
@@ -70,6 +78,8 @@ public final class TrialSites {
 				origin.getX() - 20, origin.getY() - LeylineSanctumPiece.FLOOR - 1, origin.getZ() - 3, dir);
 			case "crucible" -> new AshenCruciblePiece(
 				origin.getX() - 20, origin.getY() - AshenCruciblePiece.FLOOR - 1, origin.getZ() - 3, dir);
+			case "eclipse" -> new AstralEclipsePiece(
+				origin.getX() - 20, origin.getY() - AstralEclipsePiece.FLOOR - 1, origin.getZ() - 3, dir);
 			default -> null;
 		};
 		if (!(piece instanceof TrialArenaPiece arena)) {

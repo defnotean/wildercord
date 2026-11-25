@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "wildercord:astral_ley_glade",
+    "minecraft:meadow",
+    "minecraft:jagged_peaks",
+    "minecraft:stony_peaks",
+    "minecraft:cherry_grove"
+  ]
+}

@@ -11,6 +11,7 @@ public final class CoopTrialsClient {
 	public static void init() {
 		EntityRendererRegistry.register(CoopTrialContent.VAELKHOR, VaelkhorRenderer::new);
 		EntityRendererRegistry.register(CoopTrialContent.KHARVOK, KharvokRenderer::new);
+		EntityRendererRegistry.register(CoopTrialContent.NYXARA, NyxaraRenderer::new);
 		EntityRendererRegistry.register(BiomeTrialContent.LEYWEAVER_MOTH,
 			ctx -> new GeoMobRenderer<>(ctx, "trials/leyweaver_moth", "leyweaver_moth", 0.35F, 1.0F));
 		EntityRendererRegistry.register(BiomeTrialContent.CALDERA_CINDERHOUND,

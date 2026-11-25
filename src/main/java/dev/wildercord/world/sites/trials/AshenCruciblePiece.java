@@ -105,7 +105,7 @@ public final class AshenCruciblePiece extends DungeonPiece implements TrialArena
 		BlockState gold = Blocks.GILDED_BLACKSTONE.defaultBlockState();
 		BlockState shroom = Blocks.SHROOMLIGHT.defaultBlockState();
 		BlockState magma = Blocks.MAGMA_BLOCK.defaultBlockState();
-		BlockState grateGlass = Blocks.ORANGE_STAINED_GLASS.defaultBlockState();
+		BlockState grateGlass = Blocks.STAINED_GLASS.orange().defaultBlockState();
 		BlockState chain = Blocks.IRON_CHAIN.defaultBlockState();
 		Block orangeBanner = Blocks.WALL_BANNER.orange();
 		Block redBanner = Blocks.WALL_BANNER.red();

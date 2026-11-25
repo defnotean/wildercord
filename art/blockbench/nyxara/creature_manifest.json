@@ -1,0 +1,2565 @@
+{
+  "creature_id": "nyxara_eclipse_sovereign",
+  "ground_y": 0.0,
+  "floating_entity": false,
+  "materials": [
+    {
+      "id": "void_obsidian",
+      "type": "opaque"
+    },
+    {
+      "id": "twilight_indigo",
+      "type": "opaque"
+    },
+    {
+      "id": "silver_trim",
+      "type": "opaque"
+    },
+    {
+      "id": "star_gold",
+      "type": "opaque"
+    },
+    {
+      "id": "astral_emissive",
+      "type": "emissive"
+    }
+  ],
+  "bones": [
+    {
+      "id": "root",
+      "parent": null,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pelvis",
+      "parent": "root",
+      "pivot": [
+        0,
+        24.5,
+        0.0
+      ]
+    },
+    {
+      "id": "skirt_front",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        24.0,
+        -3.5
+      ]
+    },
+    {
+      "id": "skirt_back",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        24.0,
+        3.5
+      ]
+    },
+    {
+      "id": "skirt_right",
+      "parent": "pelvis",
+      "pivot": [
+        5.5,
+        24.0,
+        0.0
+      ],
+      "mirror_of": "skirt_left"
+    },
+    {
+      "id": "skirt_left",
+      "parent": "pelvis",
+      "pivot": [
+        -5.5,
+        24.0,
+        0.0
+      ],
+      "mirror_of": "skirt_right"
+    },
+    {
+      "id": "thigh_right",
+      "parent": "pelvis",
+      "pivot": [
+        3.5,
+        23.0,
+        0.0
+      ],
+      "mirror_of": "thigh_left"
+    },
+    {
+      "id": "thigh_left",
+      "parent": "pelvis",
+      "pivot": [
+        -3.5,
+        23.0,
+        0.0
+      ],
+      "mirror_of": "thigh_right"
+    },
+    {
+      "id": "knee_right",
+      "parent": "thigh_right",
+      "pivot": [
+        3.5,
+        12.5,
+        -2.5
+      ],
+      "mirror_of": "knee_left"
+    },
+    {
+      "id": "knee_left",
+      "parent": "thigh_left",
+      "pivot": [
+        -3.5,
+        12.5,
+        -2.5
+      ],
+      "mirror_of": "knee_right"
+    },
+    {
+      "id": "shin_right",
+      "parent": "thigh_right",
+      "pivot": [
+        3.5,
+        11.5,
+        0.0
+      ],
+      "mirror_of": "shin_left"
+    },
+    {
+      "id": "shin_left",
+      "parent": "thigh_left",
+      "pivot": [
+        -3.5,
+        11.5,
+        0.0
+      ],
+      "mirror_of": "shin_right"
+    },
+    {
+      "id": "foot_right",
+      "parent": "shin_right",
+      "pivot": [
+        3.5,
+        2.5,
+        -0.5
+      ],
+      "mirror_of": "foot_left"
+    },
+    {
+      "id": "foot_left",
+      "parent": "shin_left",
+      "pivot": [
+        -3.5,
+        2.5,
+        -0.5
+      ],
+      "mirror_of": "foot_right"
+    },
+    {
+      "id": "waist",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        27.0,
+        0.0
+      ]
+    },
+    {
+      "id": "chest",
+      "parent": "waist",
+      "pivot": [
+        0,
+        35.0,
+        0.0
+      ]
+    },
+    {
+      "id": "astral_core",
+      "parent": "chest",
+      "pivot": [
+        0,
+        38.5,
+        -3.6
+      ]
+    },
+    {
+      "id": "cloak_top",
+      "parent": "chest",
+      "pivot": [
+        0,
+        44.0,
+        3.8
+      ]
+    },
+    {
+      "id": "cloak_tail_right",
+      "parent": "cloak_top",
+      "pivot": [
+        4.5,
+        38.0,
+        5.2
+      ],
+      "mirror_of": "cloak_tail_left"
+    },
+    {
+      "id": "cloak_tail_left",
+      "parent": "cloak_top",
+      "pivot": [
+        -4.5,
+        38.0,
+        5.2
+      ],
+      "mirror_of": "cloak_tail_right"
+    },
+    {
+      "id": "cloak_hem_right",
+      "parent": "cloak_tail_right",
+      "pivot": [
+        6.5,
+        21.0,
+        6.2
+      ],
+      "mirror_of": "cloak_hem_left"
+    },
+    {
+      "id": "cloak_hem_left",
+      "parent": "cloak_tail_left",
+      "pivot": [
+        -6.5,
+        21.0,
+        6.2
+      ],
+      "mirror_of": "cloak_hem_right"
+    },
+    {
+      "id": "halo_outer",
+      "parent": "chest",
+      "pivot": [
+        0,
+        53.0,
+        4.8
+      ]
+    },
+    {
+      "id": "halo_inner",
+      "parent": "chest",
+      "pivot": [
+        0,
+        53.0,
+        4.2
+      ]
+    },
+    {
+      "id": "neck",
+      "parent": "chest",
+      "pivot": [
+        0,
+        45.5,
+        0.0
+      ]
+    },
+    {
+      "id": "head",
+      "parent": "neck",
+      "pivot": [
+        0,
+        47.5,
+        0.0
+      ]
+    },
+    {
+      "id": "crescent_crown",
+      "parent": "head",
+      "pivot": [
+        0,
+        55.5,
+        -4.4
+      ]
+    },
+    {
+      "id": "brow_wing_right",
+      "parent": "head",
+      "pivot": [
+        4.8,
+        52.0,
+        -3.5
+      ],
+      "mirror_of": "brow_wing_left"
+    },
+    {
+      "id": "brow_wing_left",
+      "parent": "head",
+      "pivot": [
+        -4.8,
+        52.0,
+        -3.5
+      ],
+      "mirror_of": "brow_wing_right"
+    },
+    {
+      "id": "pauldron_right",
+      "parent": "chest",
+      "pivot": [
+        8.5,
+        44.5,
+        0.0
+      ],
+      "mirror_of": "pauldron_left"
+    },
+    {
+      "id": "pauldron_left",
+      "parent": "chest",
+      "pivot": [
+        -8.5,
+        44.5,
+        0.0
+      ],
+      "mirror_of": "pauldron_right"
+    },
+    {
+      "id": "upper_arm_right",
+      "parent": "chest",
+      "pivot": [
+        8.5,
+        43.0,
+        0.0
+      ],
+      "mirror_of": "upper_arm_left"
+    },
+    {
+      "id": "upper_arm_left",
+      "parent": "chest",
+      "pivot": [
+        -8.5,
+        43.0,
+        0.0
+      ],
+      "mirror_of": "upper_arm_right"
+    },
+    {
+      "id": "forearm_right",
+      "parent": "upper_arm_right",
+      "pivot": [
+        9.2,
+        34.0,
+        0.0
+      ],
+      "mirror_of": "forearm_left"
+    },
+    {
+      "id": "forearm_left",
+      "parent": "upper_arm_left",
+      "pivot": [
+        -9.2,
+        34.0,
+        0.0
+      ],
+      "mirror_of": "forearm_right"
+    },
+    {
+      "id": "blade_right",
+      "parent": "forearm_right",
+      "pivot": [
+        10.0,
+        26.0,
+        -1.5
+      ],
+      "mirror_of": "blade_left"
+    },
+    {
+      "id": "blade_left",
+      "parent": "forearm_left",
+      "pivot": [
+        -10.0,
+        26.0,
+        -1.5
+      ],
+      "mirror_of": "blade_right"
+    },
+    {
+      "id": "blade_r_tip",
+      "parent": "blade_right",
+      "pivot": [
+        12.5,
+        16.0,
+        -6.5
+      ],
+      "mirror_of": "blade_l_tip"
+    },
+    {
+      "id": "blade_l_tip",
+      "parent": "blade_left",
+      "pivot": [
+        -12.5,
+        16.0,
+        -6.5
+      ],
+      "mirror_of": "blade_r_tip"
+    },
+    {
+      "id": "eclipse_orb",
+      "parent": "halo_inner",
+      "pivot": [
+        0,
+        64.0,
+        4.5
+      ]
+    }
+  ],
+  "cubes": [
+    {
+      "id": "pelvis_block",
+      "bone": "pelvis",
+      "material": "void_obsidian",
+      "from": [
+        -5.8,
+        22.5,
+        -3.2
+      ],
+      "to": [
+        5.8,
+        26.8,
+        3.2
+      ]
+    },
+    {
+      "id": "sash_belt",
+      "bone": "pelvis",
+      "material": "silver_trim",
+      "from": [
+        -6.2,
+        24.4,
+        -3.6
+      ],
+      "to": [
+        6.2,
+        26.2,
+        3.6
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "sash_clasp",
+      "bone": "pelvis",
+      "material": "star_gold",
+      "from": [
+        -1.6,
+        24.0,
+        -4.1
+      ],
+      "to": [
+        1.6,
+        26.5,
+        -3.1
+      ]
+    },
+    {
+      "id": "skirt_f_center",
+      "bone": "skirt_front",
+      "material": "twilight_indigo",
+      "from": [
+        -3.2,
+        13.5,
+        -3.8
+      ],
+      "to": [
+        3.2,
+        24.5,
+        -2.9
+      ]
+    },
+    {
+      "id": "skirt_f_trim",
+      "bone": "skirt_front",
+      "material": "silver_trim",
+      "from": [
+        -3.4,
+        13.0,
+        -4.0
+      ],
+      "to": [
+        3.4,
+        14.5,
+        -2.8
+      ]
+    },
+    {
+      "id": "skirt_b_panel",
+      "bone": "skirt_back",
+      "material": "twilight_indigo",
+      "from": [
+        -4.5,
+        14.0,
+        2.8
+      ],
+      "to": [
+        4.5,
+        24.5,
+        3.8
+      ]
+    },
+    {
+      "id": "skirt_r_pleat",
+      "bone": "skirt_right",
+      "material": "twilight_indigo",
+      "from": [
+        3.6,
+        13.0,
+        -3.0
+      ],
+      "to": [
+        6.2,
+        24.6,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -9.0
+      ],
+      "origin": [
+        4.9,
+        18.8,
+        0.0
+      ]
+    },
+    {
+      "id": "skirt_l_pleat",
+      "bone": "skirt_left",
+      "material": "twilight_indigo",
+      "from": [
+        -6.2,
+        13.0,
+        -3.0
+      ],
+      "to": [
+        -3.6,
+        24.6,
+        3.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        9.0
+      ],
+      "origin": [
+        -4.9,
+        18.8,
+        0.0
+      ]
+    },
+    {
+      "id": "skirt_r_edge",
+      "bone": "skirt_right",
+      "material": "silver_trim",
+      "from": [
+        5.7,
+        12.8,
+        -3.1
+      ],
+      "to": [
+        6.5,
+        24.0,
+        3.1
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -9.0
+      ],
+      "origin": [
+        6.1,
+        18.4,
+        0.0
+      ]
+    },
+    {
+      "id": "skirt_l_edge",
+      "bone": "skirt_left",
+      "material": "silver_trim",
+      "from": [
+        -6.5,
+        12.8,
+        -3.1
+      ],
+      "to": [
+        -5.7,
+        24.0,
+        3.1
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        9.0
+      ],
+      "origin": [
+        -6.1,
+        18.4,
+        0.0
+      ]
+    },
+    {
+      "id": "thigh_r_body",
+      "bone": "thigh_right",
+      "material": "void_obsidian",
+      "from": [
+        1.4,
+        12.0,
+        -2.4
+      ],
+      "to": [
+        5.4,
+        23.0,
+        2.4
+      ]
+    },
+    {
+      "id": "thigh_l_body",
+      "bone": "thigh_left",
+      "material": "void_obsidian",
+      "from": [
+        -5.4,
+        12.0,
+        -2.4
+      ],
+      "to": [
+        -1.4,
+        23.0,
+        2.4
+      ]
+    },
+    {
+      "id": "knee_r_crest",
+      "bone": "knee_right",
+      "material": "silver_trim",
+      "from": [
+        1.8,
+        10.6,
+        -3.3
+      ],
+      "to": [
+        5.0,
+        14.2,
+        -1.9
+      ]
+    },
+    {
+      "id": "knee_l_crest",
+      "bone": "knee_left",
+      "material": "silver_trim",
+      "from": [
+        -5.0,
+        10.6,
+        -3.3
+      ],
+      "to": [
+        -1.8,
+        14.2,
+        -1.9
+      ]
+    },
+    {
+      "id": "shin_r_greave",
+      "bone": "shin_right",
+      "material": "void_obsidian",
+      "from": [
+        1.5,
+        3.2,
+        -2.5
+      ],
+      "to": [
+        5.3,
+        12.0,
+        2.5
+      ]
+    },
+    {
+      "id": "shin_l_greave",
+      "bone": "shin_left",
+      "material": "void_obsidian",
+      "from": [
+        -5.3,
+        3.2,
+        -2.5
+      ],
+      "to": [
+        -1.5,
+        12.0,
+        2.5
+      ]
+    },
+    {
+      "id": "shin_r_trim",
+      "bone": "shin_right",
+      "material": "silver_trim",
+      "from": [
+        1.7,
+        4.0,
+        -2.8
+      ],
+      "to": [
+        5.1,
+        10.5,
+        -2.0
+      ]
+    },
+    {
+      "id": "shin_l_trim",
+      "bone": "shin_left",
+      "material": "silver_trim",
+      "from": [
+        -5.1,
+        4.0,
+        -2.8
+      ],
+      "to": [
+        -1.7,
+        10.5,
+        -2.0
+      ]
+    },
+    {
+      "id": "foot_r_heel",
+      "bone": "foot_right",
+      "material": "void_obsidian",
+      "from": [
+        1.5,
+        0.0,
+        -1.8
+      ],
+      "to": [
+        5.3,
+        3.4,
+        2.8
+      ]
+    },
+    {
+      "id": "foot_l_heel",
+      "bone": "foot_left",
+      "material": "void_obsidian",
+      "from": [
+        -5.3,
+        0.0,
+        -1.8
+      ],
+      "to": [
+        -1.5,
+        3.4,
+        2.8
+      ]
+    },
+    {
+      "id": "foot_r_toe",
+      "bone": "foot_right",
+      "material": "silver_trim",
+      "from": [
+        1.8,
+        0.0,
+        -4.4
+      ],
+      "to": [
+        5.0,
+        2.4,
+        -1.6
+      ]
+    },
+    {
+      "id": "foot_l_toe",
+      "bone": "foot_left",
+      "material": "silver_trim",
+      "from": [
+        -5.0,
+        0.0,
+        -4.4
+      ],
+      "to": [
+        -1.8,
+        2.4,
+        -1.6
+      ]
+    },
+    {
+      "id": "waist_core",
+      "bone": "waist",
+      "material": "void_obsidian",
+      "from": [
+        -4.6,
+        26.5,
+        -2.8
+      ],
+      "to": [
+        4.6,
+        35.2,
+        2.8
+      ]
+    },
+    {
+      "id": "waist_ribs_gold",
+      "bone": "waist",
+      "material": "star_gold",
+      "from": [
+        -4.8,
+        28.0,
+        -3.0
+      ],
+      "to": [
+        4.8,
+        30.0,
+        3.0
+      ]
+    },
+    {
+      "id": "chest_cuirass",
+      "bone": "chest",
+      "material": "void_obsidian",
+      "from": [
+        -6.6,
+        35.0,
+        -3.6
+      ],
+      "to": [
+        6.6,
+        45.2,
+        3.6
+      ]
+    },
+    {
+      "id": "chest_mantle_plate",
+      "bone": "chest",
+      "material": "twilight_indigo",
+      "from": [
+        -7.2,
+        39.2,
+        -4.1
+      ],
+      "to": [
+        7.2,
+        45.6,
+        4.0
+      ]
+    },
+    {
+      "id": "chest_gold_collar",
+      "bone": "chest",
+      "material": "star_gold",
+      "from": [
+        -5.4,
+        43.8,
+        -4.4
+      ],
+      "to": [
+        5.4,
+        46.0,
+        4.2
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "core_bezel",
+      "bone": "astral_core",
+      "material": "silver_trim",
+      "from": [
+        -3.1,
+        36.2,
+        -4.6
+      ],
+      "to": [
+        3.1,
+        42.2,
+        -3.5
+      ]
+    },
+    {
+      "id": "core_orb",
+      "bone": "astral_core",
+      "material": "astral_emissive",
+      "from": [
+        -2.2,
+        37.1,
+        -5.0
+      ],
+      "to": [
+        2.2,
+        41.3,
+        -4.0
+      ]
+    },
+    {
+      "id": "cloak_shawl",
+      "bone": "cloak_top",
+      "material": "twilight_indigo",
+      "from": [
+        -7.6,
+        41.0,
+        3.0
+      ],
+      "to": [
+        7.6,
+        45.8,
+        5.4
+      ]
+    },
+    {
+      "id": "cloak_shawl_gold",
+      "bone": "cloak_top",
+      "material": "star_gold",
+      "from": [
+        -6.8,
+        43.2,
+        4.8
+      ],
+      "to": [
+        6.8,
+        45.4,
+        5.7
+      ]
+    },
+    {
+      "id": "cloak_u_r",
+      "bone": "cloak_tail_right",
+      "material": "twilight_indigo",
+      "from": [
+        1.6,
+        21.0,
+        4.2
+      ],
+      "to": [
+        8.8,
+        42.0,
+        5.8
+      ],
+      "rotation": [
+        6.0,
+        0.0,
+        -6.0
+      ],
+      "origin": [
+        5.2,
+        31.5,
+        5.0
+      ]
+    },
+    {
+      "id": "cloak_u_l",
+      "bone": "cloak_tail_left",
+      "material": "twilight_indigo",
+      "from": [
+        -8.8,
+        21.0,
+        4.2
+      ],
+      "to": [
+        -1.6,
+        42.0,
+        5.8
+      ],
+      "rotation": [
+        6.0,
+        0.0,
+        6.0
+      ],
+      "origin": [
+        -5.2,
+        31.5,
+        5.0
+      ]
+    },
+    {
+      "id": "cloak_m_r",
+      "bone": "cloak_tail_right",
+      "material": "void_obsidian",
+      "from": [
+        2.6,
+        22.0,
+        4.8
+      ],
+      "to": [
+        5.4,
+        41.0,
+        6.1
+      ],
+      "rotation": [
+        6.0,
+        0.0,
+        -6.0
+      ],
+      "origin": [
+        4.0,
+        31.5,
+        5.45
+      ]
+    },
+    {
+      "id": "cloak_m_l",
+      "bone": "cloak_tail_left",
+      "material": "void_obsidian",
+      "from": [
+        -5.4,
+        22.0,
+        4.8
+      ],
+      "to": [
+        -2.6,
+        41.0,
+        6.1
+      ],
+      "rotation": [
+        6.0,
+        0.0,
+        6.0
+      ],
+      "origin": [
+        -4.0,
+        31.5,
+        5.45
+      ]
+    },
+    {
+      "id": "cloak_l_r",
+      "bone": "cloak_hem_right",
+      "material": "twilight_indigo",
+      "from": [
+        2.2,
+        8.0,
+        5.4
+      ],
+      "to": [
+        9.8,
+        22.0,
+        7.0
+      ],
+      "rotation": [
+        8.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        6.0,
+        15.0,
+        6.2
+      ]
+    },
+    {
+      "id": "cloak_l_l",
+      "bone": "cloak_hem_left",
+      "material": "twilight_indigo",
+      "from": [
+        -9.8,
+        8.0,
+        5.4
+      ],
+      "to": [
+        -2.2,
+        22.0,
+        7.0
+      ],
+      "rotation": [
+        8.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -6.0,
+        15.0,
+        6.2
+      ]
+    },
+    {
+      "id": "cloak_trim_r",
+      "bone": "cloak_hem_right",
+      "material": "astral_emissive",
+      "from": [
+        8.8,
+        8.2,
+        5.5
+      ],
+      "to": [
+        10.0,
+        21.0,
+        6.8
+      ],
+      "rotation": [
+        8.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        9.4,
+        14.6,
+        6.15
+      ]
+    },
+    {
+      "id": "cloak_trim_l",
+      "bone": "cloak_hem_left",
+      "material": "astral_emissive",
+      "from": [
+        -10.0,
+        8.2,
+        5.5
+      ],
+      "to": [
+        -8.8,
+        21.0,
+        6.8
+      ],
+      "rotation": [
+        8.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -9.4,
+        14.6,
+        6.15
+      ]
+    },
+    {
+      "id": "halo_out_0",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        10.0,
+        50.7,
+        4.3
+      ],
+      "to": [
+        12.4,
+        55.3,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        11.2,
+        53.0,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_0",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        6.9,
+        51.3,
+        3.8
+      ],
+      "to": [
+        8.7,
+        54.7,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        7.8,
+        53.0,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_1",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        9.147,
+        54.986,
+        4.3
+      ],
+      "to": [
+        11.547,
+        59.586,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        22.5
+      ],
+      "origin": [
+        10.347,
+        57.286,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_1",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        6.306,
+        54.285,
+        3.8
+      ],
+      "to": [
+        8.106,
+        57.685,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        22.5
+      ],
+      "origin": [
+        7.206,
+        55.985,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_2",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        6.72,
+        58.62,
+        4.3
+      ],
+      "to": [
+        9.12,
+        63.22,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        45.0
+      ],
+      "origin": [
+        7.92,
+        60.92,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_2",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        4.615,
+        56.815,
+        3.8
+      ],
+      "to": [
+        6.415,
+        60.215,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        45.0
+      ],
+      "origin": [
+        5.515,
+        58.515,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_3",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        3.086,
+        61.047,
+        4.3
+      ],
+      "to": [
+        5.486,
+        65.647,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        67.5
+      ],
+      "origin": [
+        4.286,
+        63.347,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_3",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        2.085,
+        58.506,
+        3.8
+      ],
+      "to": [
+        3.885,
+        61.906,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        67.5
+      ],
+      "origin": [
+        2.985,
+        60.206,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_4",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -1.2,
+        61.9,
+        4.3
+      ],
+      "to": [
+        1.2,
+        66.5,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "origin": [
+        0.0,
+        64.2,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_4",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -0.9,
+        59.1,
+        3.8
+      ],
+      "to": [
+        0.9,
+        62.5,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "origin": [
+        0.0,
+        60.8,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_5",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -5.486,
+        61.047,
+        4.3
+      ],
+      "to": [
+        -3.086,
+        65.647,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        112.5
+      ],
+      "origin": [
+        -4.286,
+        63.347,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_5",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -3.885,
+        58.506,
+        3.8
+      ],
+      "to": [
+        -2.085,
+        61.906,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        112.5
+      ],
+      "origin": [
+        -2.985,
+        60.206,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_6",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -9.12,
+        58.62,
+        4.3
+      ],
+      "to": [
+        -6.72,
+        63.22,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        135.0
+      ],
+      "origin": [
+        -7.92,
+        60.92,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_6",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -6.415,
+        56.815,
+        3.8
+      ],
+      "to": [
+        -4.615,
+        60.215,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        135.0
+      ],
+      "origin": [
+        -5.515,
+        58.515,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_7",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -11.547,
+        54.986,
+        4.3
+      ],
+      "to": [
+        -9.147,
+        59.586,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        157.5
+      ],
+      "origin": [
+        -10.347,
+        57.286,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_7",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -8.106,
+        54.285,
+        3.8
+      ],
+      "to": [
+        -6.306,
+        57.685,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        157.5
+      ],
+      "origin": [
+        -7.206,
+        55.985,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_8",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -12.4,
+        50.7,
+        4.3
+      ],
+      "to": [
+        -10.0,
+        55.3,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "origin": [
+        -11.2,
+        53.0,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_8",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -8.7,
+        51.3,
+        3.8
+      ],
+      "to": [
+        -6.9,
+        54.7,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "origin": [
+        -7.8,
+        53.0,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_9",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -11.547,
+        46.414,
+        4.3
+      ],
+      "to": [
+        -9.147,
+        51.014,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        202.5
+      ],
+      "origin": [
+        -10.347,
+        48.714,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_9",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -8.106,
+        48.315,
+        3.8
+      ],
+      "to": [
+        -6.306,
+        51.715,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        202.5
+      ],
+      "origin": [
+        -7.206,
+        50.015,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_10",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -9.12,
+        42.78,
+        4.3
+      ],
+      "to": [
+        -6.72,
+        47.38,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        225.0
+      ],
+      "origin": [
+        -7.92,
+        45.08,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_10",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -6.415,
+        45.785,
+        3.8
+      ],
+      "to": [
+        -4.615,
+        49.185,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        225.0
+      ],
+      "origin": [
+        -5.515,
+        47.485,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_11",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -5.486,
+        40.353,
+        4.3
+      ],
+      "to": [
+        -3.086,
+        44.953,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        247.5
+      ],
+      "origin": [
+        -4.286,
+        42.653,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_11",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -3.885,
+        44.094,
+        3.8
+      ],
+      "to": [
+        -2.085,
+        47.494,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        247.5
+      ],
+      "origin": [
+        -2.985,
+        45.794,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_12",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        -1.2,
+        39.5,
+        4.3
+      ],
+      "to": [
+        1.2,
+        44.1,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "origin": [
+        -0.0,
+        41.8,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_12",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        -0.9,
+        43.5,
+        3.8
+      ],
+      "to": [
+        0.9,
+        46.9,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "origin": [
+        -0.0,
+        45.2,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_13",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        3.086,
+        40.353,
+        4.3
+      ],
+      "to": [
+        5.486,
+        44.953,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        292.5
+      ],
+      "origin": [
+        4.286,
+        42.653,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_13",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        2.085,
+        44.094,
+        3.8
+      ],
+      "to": [
+        3.885,
+        47.494,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        292.5
+      ],
+      "origin": [
+        2.985,
+        45.794,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_14",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        6.72,
+        42.78,
+        4.3
+      ],
+      "to": [
+        9.12,
+        47.38,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        315.0
+      ],
+      "origin": [
+        7.92,
+        45.08,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_14",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        4.615,
+        45.785,
+        3.8
+      ],
+      "to": [
+        6.415,
+        49.185,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        315.0
+      ],
+      "origin": [
+        5.515,
+        47.485,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_out_15",
+      "bone": "halo_outer",
+      "material": "star_gold",
+      "from": [
+        9.147,
+        46.414,
+        4.3
+      ],
+      "to": [
+        11.547,
+        51.014,
+        5.5
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        337.5
+      ],
+      "origin": [
+        10.347,
+        48.714,
+        4.9
+      ]
+    },
+    {
+      "id": "halo_in_15",
+      "bone": "halo_inner",
+      "material": "star_gold",
+      "from": [
+        6.306,
+        48.315,
+        3.8
+      ],
+      "to": [
+        8.106,
+        51.715,
+        4.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        337.5
+      ],
+      "origin": [
+        7.206,
+        50.015,
+        4.3
+      ]
+    },
+    {
+      "id": "halo_apex_star",
+      "bone": "eclipse_orb",
+      "material": "astral_emissive",
+      "from": [
+        -1.4,
+        62.6,
+        3.6
+      ],
+      "to": [
+        1.4,
+        65.4,
+        5.4
+      ]
+    },
+    {
+      "id": "neck_post",
+      "bone": "neck",
+      "material": "void_obsidian",
+      "from": [
+        -2.4,
+        45.0,
+        -2.2
+      ],
+      "to": [
+        2.4,
+        48.0,
+        2.2
+      ]
+    },
+    {
+      "id": "head_helm",
+      "bone": "head",
+      "material": "void_obsidian",
+      "from": [
+        -4.2,
+        47.4,
+        -4.2
+      ],
+      "to": [
+        4.2,
+        56.2,
+        4.2
+      ]
+    },
+    {
+      "id": "mask_face",
+      "bone": "head",
+      "material": "silver_trim",
+      "from": [
+        -3.8,
+        47.8,
+        -4.6
+      ],
+      "to": [
+        3.8,
+        54.0,
+        -3.5
+      ]
+    },
+    {
+      "id": "mask_slot",
+      "bone": "head",
+      "material": "void_obsidian",
+      "from": [
+        -0.9,
+        47.7,
+        -4.8
+      ],
+      "to": [
+        0.9,
+        51.4,
+        -4.0
+      ]
+    },
+    {
+      "id": "eye_r",
+      "bone": "head",
+      "material": "astral_emissive",
+      "from": [
+        1.3,
+        51.6,
+        -4.8
+      ],
+      "to": [
+        3.4,
+        53.1,
+        -4.0
+      ]
+    },
+    {
+      "id": "eye_l",
+      "bone": "head",
+      "material": "astral_emissive",
+      "from": [
+        -3.4,
+        51.6,
+        -4.8
+      ],
+      "to": [
+        -1.3,
+        53.1,
+        -4.0
+      ]
+    },
+    {
+      "id": "crown_band",
+      "bone": "crescent_crown",
+      "material": "star_gold",
+      "from": [
+        -4.5,
+        54.2,
+        -4.6
+      ],
+      "to": [
+        4.5,
+        55.6,
+        4.5
+      ],
+      "inflate": 0.04
+    },
+    {
+      "id": "crescent_horn_r",
+      "bone": "crescent_crown",
+      "material": "star_gold",
+      "from": [
+        1.2,
+        55.2,
+        -5.0
+      ],
+      "to": [
+        3.4,
+        59.0,
+        -3.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        18.0
+      ],
+      "origin": [
+        2.3,
+        57.1,
+        -4.4
+      ]
+    },
+    {
+      "id": "crescent_horn_l",
+      "bone": "crescent_crown",
+      "material": "star_gold",
+      "from": [
+        -3.4,
+        55.2,
+        -5.0
+      ],
+      "to": [
+        -1.2,
+        59.0,
+        -3.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -18.0
+      ],
+      "origin": [
+        -2.3,
+        57.1,
+        -4.4
+      ]
+    },
+    {
+      "id": "brow_wing_r",
+      "bone": "brow_wing_right",
+      "material": "silver_trim",
+      "from": [
+        4.0,
+        50.0,
+        -3.8
+      ],
+      "to": [
+        5.1,
+        53.8,
+        1.5
+      ]
+    },
+    {
+      "id": "brow_wing_l",
+      "bone": "brow_wing_left",
+      "material": "silver_trim",
+      "from": [
+        -5.1,
+        50.0,
+        -3.8
+      ],
+      "to": [
+        -4.0,
+        53.8,
+        1.5
+      ]
+    },
+    {
+      "id": "pauldron_r_main",
+      "bone": "pauldron_right",
+      "material": "twilight_indigo",
+      "from": [
+        6.2,
+        42.0,
+        -4.2
+      ],
+      "to": [
+        11.6,
+        46.8,
+        4.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        8.9,
+        44.4,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_main",
+      "bone": "pauldron_left",
+      "material": "twilight_indigo",
+      "from": [
+        -11.6,
+        42.0,
+        -4.2
+      ],
+      "to": [
+        -6.2,
+        46.8,
+        4.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -8.9,
+        44.4,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_r_gold",
+      "bone": "pauldron_right",
+      "material": "star_gold",
+      "from": [
+        6.6,
+        46.2,
+        -4.4
+      ],
+      "to": [
+        11.2,
+        47.8,
+        4.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        8.9,
+        47.0,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_gold",
+      "bone": "pauldron_left",
+      "material": "star_gold",
+      "from": [
+        -11.2,
+        46.2,
+        -4.4
+      ],
+      "to": [
+        -6.6,
+        47.8,
+        4.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -8.9,
+        47.0,
+        0.0
+      ]
+    },
+    {
+      "id": "uarm_r",
+      "bone": "upper_arm_right",
+      "material": "void_obsidian",
+      "from": [
+        7.0,
+        34.0,
+        -2.3
+      ],
+      "to": [
+        11.0,
+        43.0,
+        2.3
+      ]
+    },
+    {
+      "id": "uarm_l",
+      "bone": "upper_arm_left",
+      "material": "void_obsidian",
+      "from": [
+        -11.0,
+        34.0,
+        -2.3
+      ],
+      "to": [
+        -7.0,
+        43.0,
+        2.3
+      ]
+    },
+    {
+      "id": "farm_r",
+      "bone": "forearm_right",
+      "material": "silver_trim",
+      "from": [
+        7.4,
+        25.4,
+        -2.5
+      ],
+      "to": [
+        11.4,
+        34.2,
+        2.5
+      ]
+    },
+    {
+      "id": "farm_l",
+      "bone": "forearm_left",
+      "material": "silver_trim",
+      "from": [
+        -11.4,
+        25.4,
+        -2.5
+      ],
+      "to": [
+        -7.4,
+        34.2,
+        2.5
+      ]
+    },
+    {
+      "id": "farm_r_cuff",
+      "bone": "forearm_right",
+      "material": "twilight_indigo",
+      "from": [
+        7.2,
+        28.0,
+        -2.7
+      ],
+      "to": [
+        11.6,
+        33.2,
+        2.7
+      ]
+    },
+    {
+      "id": "farm_l_cuff",
+      "bone": "forearm_left",
+      "material": "twilight_indigo",
+      "from": [
+        -11.6,
+        28.0,
+        -2.7
+      ],
+      "to": [
+        -7.2,
+        33.2,
+        2.7
+      ]
+    },
+    {
+      "id": "hilt_r",
+      "bone": "blade_right",
+      "material": "star_gold",
+      "from": [
+        9.2,
+        23.0,
+        -4.5
+      ],
+      "to": [
+        10.8,
+        27.6,
+        1.5
+      ],
+      "rotation": [
+        38.0,
+        0.0,
+        12.0
+      ],
+      "origin": [
+        10.0,
+        25.5,
+        -1.5
+      ]
+    },
+    {
+      "id": "hilt_l",
+      "bone": "blade_left",
+      "material": "star_gold",
+      "from": [
+        -10.8,
+        23.0,
+        -4.5
+      ],
+      "to": [
+        -9.2,
+        27.6,
+        1.5
+      ],
+      "rotation": [
+        38.0,
+        0.0,
+        -12.0
+      ],
+      "origin": [
+        -10.0,
+        25.5,
+        -1.5
+      ]
+    },
+    {
+      "id": "blade_r_mid",
+      "bone": "blade_right",
+      "material": "void_obsidian",
+      "from": [
+        10.4,
+        15.5,
+        -6.2
+      ],
+      "to": [
+        11.8,
+        24.0,
+        -0.8
+      ],
+      "rotation": [
+        32.0,
+        0.0,
+        16.0
+      ],
+      "origin": [
+        11.0,
+        20.0,
+        -3.5
+      ]
+    },
+    {
+      "id": "blade_l_mid",
+      "bone": "blade_left",
+      "material": "void_obsidian",
+      "from": [
+        -11.8,
+        15.5,
+        -6.2
+      ],
+      "to": [
+        -10.4,
+        24.0,
+        -0.8
+      ],
+      "rotation": [
+        32.0,
+        0.0,
+        -16.0
+      ],
+      "origin": [
+        -11.0,
+        20.0,
+        -3.5
+      ]
+    },
+    {
+      "id": "blade_r_edge",
+      "bone": "blade_right",
+      "material": "astral_emissive",
+      "from": [
+        10.7,
+        15.8,
+        -6.8
+      ],
+      "to": [
+        11.5,
+        23.8,
+        -5.6
+      ],
+      "rotation": [
+        32.0,
+        0.0,
+        16.0
+      ],
+      "origin": [
+        11.0,
+        20.0,
+        -3.5
+      ]
+    },
+    {
+      "id": "blade_l_edge",
+      "bone": "blade_left",
+      "material": "astral_emissive",
+      "from": [
+        -11.5,
+        15.8,
+        -6.8
+      ],
+      "to": [
+        -10.7,
+        23.8,
+        -5.6
+      ],
+      "rotation": [
+        32.0,
+        0.0,
+        -16.0
+      ],
+      "origin": [
+        -11.0,
+        20.0,
+        -3.5
+      ]
+    },
+    {
+      "id": "blade_r_sweep",
+      "bone": "blade_r_tip",
+      "material": "silver_trim",
+      "from": [
+        11.6,
+        11.2,
+        -10.8
+      ],
+      "to": [
+        12.9,
+        17.5,
+        -4.2
+      ],
+      "rotation": [
+        52.0,
+        0.0,
+        22.0
+      ],
+      "origin": [
+        12.2,
+        14.5,
+        -7.2
+      ]
+    },
+    {
+      "id": "blade_l_sweep",
+      "bone": "blade_l_tip",
+      "material": "silver_trim",
+      "from": [
+        -12.9,
+        11.2,
+        -10.8
+      ],
+      "to": [
+        -11.6,
+        17.5,
+        -4.2
+      ],
+      "rotation": [
+        52.0,
+        0.0,
+        -22.0
+      ],
+      "origin": [
+        -12.2,
+        14.5,
+        -7.2
+      ]
+    },
+    {
+      "id": "blade_r_rune",
+      "bone": "blade_r_tip",
+      "material": "astral_emissive",
+      "from": [
+        11.8,
+        12.2,
+        -11.4
+      ],
+      "to": [
+        12.7,
+        16.5,
+        -9.8
+      ],
+      "rotation": [
+        52.0,
+        0.0,
+        22.0
+      ],
+      "origin": [
+        12.2,
+        14.5,
+        -7.2
+      ]
+    },
+    {
+      "id": "blade_l_rune",
+      "bone": "blade_l_tip",
+      "material": "astral_emissive",
+      "from": [
+        -12.7,
+        12.2,
+        -11.4
+      ],
+      "to": [
+        -11.8,
+        16.5,
+        -9.8
+      ],
+      "rotation": [
+        52.0,
+        0.0,
+        -22.0
+      ],
+      "origin": [
+        -12.2,
+        14.5,
+        -7.2
+      ]
+    }
+  ]
+}

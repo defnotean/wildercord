@@ -107,6 +107,16 @@ public final class CoopTrialContent {
 			.lightLevel(s -> s.getValue(CrucibleVentBlock.LIT) ? 15 : 5)
 			.noLootTable()));
 
+	public static final AstralPrismBlock ASTRAL_PRISM = Registry.register(
+		BuiltInRegistries.BLOCK, blockKey("astral_prism"),
+		new AstralPrismBlock(BlockBehaviour.Properties.of()
+			.setId(blockKey("astral_prism"))
+			.mapColor(MapColor.COLOR_PURPLE)
+			.strength(-1.0F, 3600000.0F)
+			.sound(SoundType.AMETHYST)
+			.lightLevel(s -> s.getValue(AstralPrismBlock.LIT) ? 15 : 7)
+			.noLootTable()));
+
 	public static final BlockEntityType<TrialGateBlockEntity> TRIAL_GATE_ENTITY = Registry.register(
 		BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("trial_gate"),
 		FabricBlockEntityTypeBuilder.create(TrialGateBlockEntity::new, TRIAL_GATE).build());
@@ -123,6 +133,8 @@ public final class CoopTrialContent {
 		p -> new BlockItem(LEYLINE_CONDUIT, p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
 	public static final Item CRUCIBLE_VENT_ITEM = registerItem("crucible_vent",
 		p -> new BlockItem(CRUCIBLE_VENT, p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
+	public static final Item ASTRAL_PRISM_ITEM = registerItem("astral_prism",
+		p -> new BlockItem(ASTRAL_PRISM, p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
 
 	public static final Item SOVEREIGN_HALBERD = registerItem("sovereign_halberd",
 		p -> new SovereignHalberdItem(p.sword(ToolMaterial.NETHERITE, 7.0F, -2.9F).durability(2048).rarity(Rarity.EPIC)));
@@ -135,6 +147,11 @@ public final class CoopTrialContent {
 		p -> new CrucibleMaulItem(p.sword(ToolMaterial.NETHERITE, 8.0F, -3.1F).durability(2300).rarity(Rarity.EPIC)));
 	public static final Item FORGEHEART_CENSER = registerItem("forgeheart_censer",
 		p -> new ForgeheartCenserItem(p.stacksTo(1).rarity(Rarity.EPIC)));
+
+	public static final Item ECLIPSE_TWINBLADE = registerItem("eclipse_twinblade",
+		p -> new EclipseTwinbladeItem(p.sword(ToolMaterial.NETHERITE, 7.5F, -2.5F).durability(2300).rarity(Rarity.EPIC)));
+	public static final Item ASTROLABE_DIAL = registerItem("astrolabe_dial",
+		p -> new AstrolabeDialItem(p.stacksTo(1).rarity(Rarity.EPIC)));
 
 	public static final Item LEYLINE_SEAL = registerItem("leyline_seal",
 		p -> new AuraWorld.Lore("leyline_seal", p.stacksTo(16).rarity(Rarity.EPIC)));
@@ -167,11 +184,23 @@ public final class CoopTrialContent {
 			.fireImmune()
 			.build(KHARVOK_KEY));
 
+	private static final ResourceKey<EntityType<?>> NYXARA_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("nyxara"));
+	public static final EntityType<NyxaraBoss> NYXARA = Registry.register(
+		BuiltInRegistries.ENTITY_TYPE, NYXARA_KEY,
+		EntityType.Builder.of(NyxaraBoss::new, MobCategory.MONSTER)
+			.sized(1.8F, 4.0F)
+			.eyeHeight(3.3F)
+			.clientTrackingRange(16)
+			.fireImmune()
+			.build(NYXARA_KEY));
+
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(VAELKHOR, VaelkhorBoss.createAttributes());
 		FabricDefaultAttributeRegistry.register(KHARVOK, KharvokBoss.createAttributes());
+		FabricDefaultAttributeRegistry.register(NYXARA, NyxaraBoss.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:vaelkhor", FieldGuide.Group.MONSTER, 0x60F5E0));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:kharvok", FieldGuide.Group.MONSTER, 0xFF8424));
+		FieldGuide.add(new FieldGuide.Entry("wildercord:nyxara", FieldGuide.Group.MONSTER, 0xB46CFF));
 		ServerTickEvents.END_SERVER_TICK.register(SovereignsMantleItem::tickServer);
 		AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
 			if (level.getBlockState(pos).is(LEYLINE_CONDUIT)) {
@@ -182,13 +211,18 @@ public final class CoopTrialContent {
 				CrucibleVentBlock.interactVent(level, pos, player);
 				return InteractionResult.SUCCESS;
 			}
+			if (level.getBlockState(pos).is(ASTRAL_PRISM)) {
+				AstralPrismBlock.interactPrism(level, pos, player);
+				return InteractionResult.SUCCESS;
+			}
 			return InteractionResult.PASS;
 		});
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(out -> List.of(
-				TRIAL_GATE_ITEM, TRIAL_TREASURY_ITEM, LEYLINE_CONDUIT_ITEM, CRUCIBLE_VENT_ITEM,
+				TRIAL_GATE_ITEM, TRIAL_TREASURY_ITEM, LEYLINE_CONDUIT_ITEM, CRUCIBLE_VENT_ITEM, ASTRAL_PRISM_ITEM,
 				SOVEREIGN_HALBERD, LEYLINE_BELL_CHARM, LEYLINE_SIGIL,
 				CRUCIBLE_MAUL, FORGEHEART_CENSER,
+				ECLIPSE_TWINBLADE, ASTROLABE_DIAL,
 				LEYLINE_SEAL, CRUCIBLE_SEAL, ECLIPSE_SEAL,
 				SOVEREIGNS_MANTLE, SOVEREIGN_CROWN
 			).forEach(out::accept));
