@@ -82,13 +82,14 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 					piece.gatePosition(),
 					piece.arenaCenter(),
 					piece.treasuryPosition(),
-					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 7),
-					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 14)
+					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 11),
+					piece.localPosition(25, LeylineSanctumPiece.FLOOR + 1, 14),
+					piece.localPosition(20, LeylineSanctumPiece.FLOOR + 1, 31)
 				};
 			});
 
 			c.waitTicks(3); // flush DungeonWards.remember queue
-			BlockPos gate = points[0], center = points[1], treasury = points[2], standSpot = points[3], allySpot = points[4];
+			BlockPos gate = points[0], center = points[1], treasury = points[2], standSpot = points[3], allySpot = points[4], treasuryView = points[5];
 
 			// Verify ward protection + spawn 2nd party player
 			UUID partnerId = world.getServer().computeOnServer(s -> {
@@ -170,20 +171,20 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 				check(boss.phaseTwo(), "Vaelkhor entered Phase 2");
 				check(boss.soakCount() == 2, "2-player Leyline Cataclysm spawned 2 soak rings");
 				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, treasury.getX() + 0.5, treasury.getY(), treasury.getZ() - 3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
-				boss.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
+				check(boss.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F), "Killing blow accepted from arena challenger");
 			});
 
 			c.waitTicks(12);
 			world.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				check(l.getEntity(bossId) == null || !l.getEntity(bossId).isAlive(), "Vaelkhor died cleanly");
+				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
+				p.teleportTo(l, treasuryView.getX() + 0.5, treasuryView.getY(), treasuryView.getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				var gateBe = (TrialGateBlockEntity) l.getBlockEntity(gate);
 				var treBe = (TrialTreasuryBlockEntity) l.getBlockEntity(treasury);
 				check(gateBe.slain(), "Trial Gate recorded slain");
 				check(treBe.isUnlocked(), "Trial Treasury unlocked on Vaelkhor death");
 
-				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
 				ServerPlayer partner = (ServerPlayer) l.getEntity(partnerId);
 				int beforeMain = countRewards(p);
 				int beforePartner = countRewards(partner);
