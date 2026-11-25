@@ -1,5 +1,6 @@
 package dev.wildercord.trials;
 
+import dev.wildercord.monster.Tempering;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -75,6 +76,7 @@ public final class VaelkhorBoss extends PathfinderMob implements Enemy {
 	public VaelkhorBoss(EntityType<? extends VaelkhorBoss> type, Level level) {
 		super(type, level);
 		setPersistenceRequired();
+		addTag(Tempering.TAG);
 		xpReward = 0;
 	}
 
