@@ -137,6 +137,9 @@ public final class TrialTreasuryBlockEntity extends BlockEntity {
 
 	private static ItemStack primaryRelic(String kind, Random rng) {
 		return switch (kind) {
+			case "crucible" -> (rng.nextInt(2) == 0)
+				? new ItemStack(CoopTrialContent.CRUCIBLE_MAUL)
+				: new ItemStack(CoopTrialContent.FORGEHEART_CENSER);
 			default -> (rng.nextInt(2) == 0)
 				? new ItemStack(CoopTrialContent.SOVEREIGN_HALBERD)
 				: new ItemStack(CoopTrialContent.LEYLINE_BELL_CHARM);

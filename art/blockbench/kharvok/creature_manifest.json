@@ -1,0 +1,2553 @@
+{
+  "creature_id": "kharvok_crucible_sovereign",
+  "ground_y": 0.0,
+  "floating_entity": false,
+  "materials": [
+    {
+      "id": "basalt_iron",
+      "type": "opaque"
+    },
+    {
+      "id": "charred_steel",
+      "type": "opaque"
+    },
+    {
+      "id": "foundry_bronze",
+      "type": "opaque"
+    },
+    {
+      "id": "slag_chain",
+      "type": "opaque"
+    },
+    {
+      "id": "forge_ember_emissive",
+      "type": "emissive"
+    }
+  ],
+  "bones": [
+    {
+      "id": "root",
+      "parent": null,
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pelvis",
+      "parent": "root",
+      "pivot": [
+        0,
+        22.0,
+        0.0
+      ]
+    },
+    {
+      "id": "skirt_front",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        21.5,
+        -4.5
+      ]
+    },
+    {
+      "id": "skirt_back",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        21.5,
+        4.5
+      ]
+    },
+    {
+      "id": "tasset_right",
+      "parent": "pelvis",
+      "pivot": [
+        8.0,
+        22.0,
+        0.0
+      ],
+      "mirror_of": "tasset_left"
+    },
+    {
+      "id": "tasset_left",
+      "parent": "pelvis",
+      "pivot": [
+        -8.0,
+        22.0,
+        0.0
+      ],
+      "mirror_of": "tasset_right"
+    },
+    {
+      "id": "thigh_right",
+      "parent": "pelvis",
+      "pivot": [
+        5.0,
+        21.0,
+        0.0
+      ],
+      "mirror_of": "thigh_left"
+    },
+    {
+      "id": "thigh_left",
+      "parent": "pelvis",
+      "pivot": [
+        -5.0,
+        21.0,
+        0.0
+      ],
+      "mirror_of": "thigh_right"
+    },
+    {
+      "id": "knee_right",
+      "parent": "thigh_right",
+      "pivot": [
+        5.0,
+        12.0,
+        -3.5
+      ],
+      "mirror_of": "knee_left"
+    },
+    {
+      "id": "knee_left",
+      "parent": "thigh_left",
+      "pivot": [
+        -5.0,
+        12.0,
+        -3.5
+      ],
+      "mirror_of": "knee_right"
+    },
+    {
+      "id": "shin_right",
+      "parent": "thigh_right",
+      "pivot": [
+        5.0,
+        11.0,
+        0.0
+      ],
+      "mirror_of": "shin_left"
+    },
+    {
+      "id": "shin_left",
+      "parent": "thigh_left",
+      "pivot": [
+        -5.0,
+        11.0,
+        0.0
+      ],
+      "mirror_of": "shin_right"
+    },
+    {
+      "id": "foot_right",
+      "parent": "shin_right",
+      "pivot": [
+        5.0,
+        3.0,
+        -0.5
+      ],
+      "mirror_of": "foot_left"
+    },
+    {
+      "id": "foot_left",
+      "parent": "shin_left",
+      "pivot": [
+        -5.0,
+        3.0,
+        -0.5
+      ],
+      "mirror_of": "foot_right"
+    },
+    {
+      "id": "waist",
+      "parent": "pelvis",
+      "pivot": [
+        0,
+        25.0,
+        0.0
+      ]
+    },
+    {
+      "id": "chest",
+      "parent": "waist",
+      "pivot": [
+        0,
+        33.0,
+        0.0
+      ]
+    },
+    {
+      "id": "furnace_core",
+      "parent": "chest",
+      "pivot": [
+        0,
+        29.5,
+        -3.2
+      ]
+    },
+    {
+      "id": "stack_right",
+      "parent": "chest",
+      "pivot": [
+        5.0,
+        47.0,
+        6.0
+      ],
+      "mirror_of": "stack_left"
+    },
+    {
+      "id": "stack_left",
+      "parent": "chest",
+      "pivot": [
+        -5.0,
+        47.0,
+        6.0
+      ],
+      "mirror_of": "stack_right"
+    },
+    {
+      "id": "back_chain_mid",
+      "parent": "chest",
+      "pivot": [
+        0,
+        37.5,
+        7.0
+      ]
+    },
+    {
+      "id": "pauldron_right",
+      "parent": "chest",
+      "pivot": [
+        12.0,
+        46.5,
+        0.0
+      ],
+      "mirror_of": "pauldron_left"
+    },
+    {
+      "id": "pauldron_left",
+      "parent": "chest",
+      "pivot": [
+        -12.0,
+        46.5,
+        0.0
+      ],
+      "mirror_of": "pauldron_right"
+    },
+    {
+      "id": "shoulder_cap_right",
+      "parent": "pauldron_right",
+      "pivot": [
+        16.5,
+        45.5,
+        0.0
+      ],
+      "mirror_of": "shoulder_cap_left"
+    },
+    {
+      "id": "shoulder_cap_left",
+      "parent": "pauldron_left",
+      "pivot": [
+        -16.5,
+        45.5,
+        0.0
+      ],
+      "mirror_of": "shoulder_cap_right"
+    },
+    {
+      "id": "neck",
+      "parent": "chest",
+      "pivot": [
+        0,
+        47.5,
+        -0.5
+      ]
+    },
+    {
+      "id": "head",
+      "parent": "neck",
+      "pivot": [
+        0,
+        49.5,
+        -0.5
+      ]
+    },
+    {
+      "id": "jaw_grate",
+      "parent": "head",
+      "pivot": [
+        0,
+        50.5,
+        -4.5
+      ]
+    },
+    {
+      "id": "visor_brow",
+      "parent": "head",
+      "pivot": [
+        0,
+        55.5,
+        -4.5
+      ]
+    },
+    {
+      "id": "horn_right",
+      "parent": "head",
+      "pivot": [
+        6.5,
+        57.5,
+        -0.5
+      ],
+      "mirror_of": "horn_left"
+    },
+    {
+      "id": "horn_left",
+      "parent": "head",
+      "pivot": [
+        -6.5,
+        57.5,
+        -0.5
+      ],
+      "mirror_of": "horn_right"
+    },
+    {
+      "id": "upper_arm_right",
+      "parent": "chest",
+      "pivot": [
+        12.5,
+        44.0,
+        0.0
+      ],
+      "mirror_of": "upper_arm_left"
+    },
+    {
+      "id": "upper_arm_left",
+      "parent": "chest",
+      "pivot": [
+        -12.5,
+        44.0,
+        0.0
+      ],
+      "mirror_of": "upper_arm_right"
+    },
+    {
+      "id": "forearm_right",
+      "parent": "upper_arm_right",
+      "pivot": [
+        13.5,
+        34.0,
+        0.0
+      ],
+      "mirror_of": "forearm_left"
+    },
+    {
+      "id": "forearm_left",
+      "parent": "upper_arm_left",
+      "pivot": [
+        -13.5,
+        34.0,
+        0.0
+      ],
+      "mirror_of": "forearm_right"
+    },
+    {
+      "id": "shackle_right",
+      "parent": "forearm_right",
+      "pivot": [
+        13.5,
+        28.0,
+        0.0
+      ],
+      "mirror_of": "shackle_left"
+    },
+    {
+      "id": "shackle_left",
+      "parent": "forearm_left",
+      "pivot": [
+        -13.5,
+        28.0,
+        0.0
+      ],
+      "mirror_of": "shackle_right"
+    },
+    {
+      "id": "anvil_maul",
+      "parent": "forearm_right",
+      "pivot": [
+        13.5,
+        24.5,
+        -2.5
+      ]
+    },
+    {
+      "id": "maul_head",
+      "parent": "anvil_maul",
+      "pivot": [
+        13.5,
+        11.5,
+        -9.5
+      ]
+    },
+    {
+      "id": "forge_shield",
+      "parent": "forearm_left",
+      "pivot": [
+        -16.8,
+        28.0,
+        -1.0
+      ]
+    },
+    {
+      "id": "shield_chain",
+      "parent": "forge_shield",
+      "pivot": [
+        -16.8,
+        17.5,
+        -1.0
+      ]
+    }
+  ],
+  "cubes": [
+    {
+      "id": "pelvis_block",
+      "bone": "pelvis",
+      "material": "basalt_iron",
+      "from": [
+        -8.5,
+        20.0,
+        -4.5
+      ],
+      "to": [
+        8.5,
+        25.0,
+        4.5
+      ]
+    },
+    {
+      "id": "belt_band",
+      "bone": "pelvis",
+      "material": "foundry_bronze",
+      "from": [
+        -9.0,
+        22.0,
+        -4.8
+      ],
+      "to": [
+        9.0,
+        24.6,
+        4.8
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "belt_buckle",
+      "bone": "pelvis",
+      "material": "foundry_bronze",
+      "from": [
+        -2.4,
+        21.6,
+        -5.4
+      ],
+      "to": [
+        2.4,
+        24.9,
+        -4.4
+      ]
+    },
+    {
+      "id": "belt_gem",
+      "bone": "pelvis",
+      "material": "forge_ember_emissive",
+      "from": [
+        -1.1,
+        22.5,
+        -5.6
+      ],
+      "to": [
+        1.1,
+        24.1,
+        -5.2
+      ]
+    },
+    {
+      "id": "skirt_f_plate",
+      "bone": "skirt_front",
+      "material": "basalt_iron",
+      "from": [
+        -5.0,
+        14.0,
+        -5.1
+      ],
+      "to": [
+        5.0,
+        22.0,
+        -4.0
+      ]
+    },
+    {
+      "id": "skirt_f_trim",
+      "bone": "skirt_front",
+      "material": "foundry_bronze",
+      "from": [
+        -5.2,
+        13.6,
+        -5.3
+      ],
+      "to": [
+        5.2,
+        15.4,
+        -3.9
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "skirt_f_seam",
+      "bone": "skirt_front",
+      "material": "foundry_bronze",
+      "from": [
+        -0.7,
+        15.2,
+        -5.3
+      ],
+      "to": [
+        0.7,
+        21.8,
+        -4.7
+      ]
+    },
+    {
+      "id": "skirt_b_plate",
+      "bone": "skirt_back",
+      "material": "basalt_iron",
+      "from": [
+        -6.0,
+        13.5,
+        4.0
+      ],
+      "to": [
+        6.0,
+        22.0,
+        5.2
+      ]
+    },
+    {
+      "id": "skirt_b_trim",
+      "bone": "skirt_back",
+      "material": "foundry_bronze",
+      "from": [
+        -6.2,
+        13.1,
+        4.1
+      ],
+      "to": [
+        6.2,
+        14.9,
+        5.4
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "tasset_r_upper",
+      "bone": "tasset_right",
+      "material": "basalt_iron",
+      "from": [
+        7.6,
+        15.5,
+        -4.2
+      ],
+      "to": [
+        9.6,
+        22.2,
+        4.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        8.6,
+        18.85,
+        0.0
+      ]
+    },
+    {
+      "id": "tasset_l_upper",
+      "bone": "tasset_left",
+      "material": "basalt_iron",
+      "from": [
+        -9.6,
+        15.5,
+        -4.2
+      ],
+      "to": [
+        -7.6,
+        22.2,
+        4.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -8.6,
+        18.85,
+        0.0
+      ]
+    },
+    {
+      "id": "tasset_r_trim",
+      "bone": "tasset_right",
+      "material": "foundry_bronze",
+      "from": [
+        7.8,
+        15.0,
+        -4.4
+      ],
+      "to": [
+        9.9,
+        16.6,
+        4.4
+      ],
+      "inflate": 0.04,
+      "rotation": [
+        0.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        8.85,
+        15.8,
+        0.0
+      ]
+    },
+    {
+      "id": "tasset_l_trim",
+      "bone": "tasset_left",
+      "material": "foundry_bronze",
+      "from": [
+        -9.9,
+        15.0,
+        -4.4
+      ],
+      "to": [
+        -7.8,
+        16.6,
+        4.4
+      ],
+      "inflate": 0.04,
+      "rotation": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -8.85,
+        15.8,
+        0.0
+      ]
+    },
+    {
+      "id": "tasset_r_lower",
+      "bone": "tasset_right",
+      "material": "charred_steel",
+      "from": [
+        8.0,
+        12.2,
+        -3.4
+      ],
+      "to": [
+        9.6,
+        15.8,
+        3.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -11.0
+      ],
+      "origin": [
+        8.8,
+        14.0,
+        0.0
+      ]
+    },
+    {
+      "id": "tasset_l_lower",
+      "bone": "tasset_left",
+      "material": "charred_steel",
+      "from": [
+        -9.6,
+        12.2,
+        -3.4
+      ],
+      "to": [
+        -8.0,
+        15.8,
+        3.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        11.0
+      ],
+      "origin": [
+        -8.8,
+        14.0,
+        0.0
+      ]
+    },
+    {
+      "id": "thigh_r_body",
+      "bone": "thigh_right",
+      "material": "basalt_iron",
+      "from": [
+        2.0,
+        11.5,
+        -3.6
+      ],
+      "to": [
+        8.0,
+        21.2,
+        3.6
+      ]
+    },
+    {
+      "id": "thigh_l_body",
+      "bone": "thigh_left",
+      "material": "basalt_iron",
+      "from": [
+        -8.0,
+        11.5,
+        -3.6
+      ],
+      "to": [
+        -2.0,
+        21.2,
+        3.6
+      ]
+    },
+    {
+      "id": "thigh_r_strap",
+      "bone": "thigh_right",
+      "material": "foundry_bronze",
+      "from": [
+        1.9,
+        13.0,
+        -3.8
+      ],
+      "to": [
+        8.1,
+        14.8,
+        3.8
+      ]
+    },
+    {
+      "id": "thigh_l_strap",
+      "bone": "thigh_left",
+      "material": "foundry_bronze",
+      "from": [
+        -8.1,
+        13.0,
+        -3.8
+      ],
+      "to": [
+        -1.9,
+        14.8,
+        3.8
+      ]
+    },
+    {
+      "id": "knee_r_rim",
+      "bone": "knee_right",
+      "material": "foundry_bronze",
+      "from": [
+        2.6,
+        9.6,
+        -4.9
+      ],
+      "to": [
+        7.4,
+        14.2,
+        -3.2
+      ]
+    },
+    {
+      "id": "knee_l_rim",
+      "bone": "knee_left",
+      "material": "foundry_bronze",
+      "from": [
+        -7.4,
+        9.6,
+        -4.9
+      ],
+      "to": [
+        -2.6,
+        14.2,
+        -3.2
+      ]
+    },
+    {
+      "id": "knee_r_slab",
+      "bone": "knee_right",
+      "material": "charred_steel",
+      "from": [
+        3.3,
+        10.3,
+        -5.3
+      ],
+      "to": [
+        6.7,
+        13.5,
+        -4.3
+      ]
+    },
+    {
+      "id": "knee_l_slab",
+      "bone": "knee_left",
+      "material": "charred_steel",
+      "from": [
+        -6.7,
+        10.3,
+        -5.3
+      ],
+      "to": [
+        -3.3,
+        13.5,
+        -4.3
+      ]
+    },
+    {
+      "id": "shin_r_greave",
+      "bone": "shin_right",
+      "material": "charred_steel",
+      "from": [
+        2.1,
+        3.0,
+        -3.8
+      ],
+      "to": [
+        7.9,
+        11.6,
+        3.8
+      ]
+    },
+    {
+      "id": "shin_l_greave",
+      "bone": "shin_left",
+      "material": "charred_steel",
+      "from": [
+        -7.9,
+        3.0,
+        -3.8
+      ],
+      "to": [
+        -2.1,
+        11.6,
+        3.8
+      ]
+    },
+    {
+      "id": "shin_r_trim",
+      "bone": "shin_right",
+      "material": "foundry_bronze",
+      "from": [
+        1.9,
+        8.8,
+        -4.0
+      ],
+      "to": [
+        8.1,
+        10.6,
+        4.0
+      ]
+    },
+    {
+      "id": "shin_l_trim",
+      "bone": "shin_left",
+      "material": "foundry_bronze",
+      "from": [
+        -8.1,
+        8.8,
+        -4.0
+      ],
+      "to": [
+        -1.9,
+        10.6,
+        4.0
+      ]
+    },
+    {
+      "id": "foot_r_sole",
+      "bone": "foot_right",
+      "material": "foundry_bronze",
+      "from": [
+        1.6,
+        0.0,
+        -5.2
+      ],
+      "to": [
+        8.4,
+        2.2,
+        4.2
+      ]
+    },
+    {
+      "id": "foot_l_sole",
+      "bone": "foot_left",
+      "material": "foundry_bronze",
+      "from": [
+        -8.4,
+        0.0,
+        -5.2
+      ],
+      "to": [
+        -1.6,
+        2.2,
+        4.2
+      ]
+    },
+    {
+      "id": "foot_r_vamp",
+      "bone": "foot_right",
+      "material": "basalt_iron",
+      "from": [
+        2.0,
+        2.2,
+        -4.8
+      ],
+      "to": [
+        8.0,
+        4.8,
+        4.0
+      ]
+    },
+    {
+      "id": "foot_l_vamp",
+      "bone": "foot_left",
+      "material": "basalt_iron",
+      "from": [
+        -8.0,
+        2.2,
+        -4.8
+      ],
+      "to": [
+        -2.0,
+        4.8,
+        4.0
+      ]
+    },
+    {
+      "id": "foot_r_toe",
+      "bone": "foot_right",
+      "material": "foundry_bronze",
+      "from": [
+        2.8,
+        1.0,
+        -6.0
+      ],
+      "to": [
+        7.2,
+        3.6,
+        -4.5
+      ]
+    },
+    {
+      "id": "foot_l_toe",
+      "bone": "foot_left",
+      "material": "foundry_bronze",
+      "from": [
+        -7.2,
+        1.0,
+        -6.0
+      ],
+      "to": [
+        -2.8,
+        3.6,
+        -4.5
+      ]
+    },
+    {
+      "id": "waist_column",
+      "bone": "waist",
+      "material": "basalt_iron",
+      "from": [
+        -6.4,
+        24.5,
+        -3.5
+      ],
+      "to": [
+        6.4,
+        33.2,
+        3.5
+      ]
+    },
+    {
+      "id": "furnace_core_box",
+      "bone": "furnace_core",
+      "material": "forge_ember_emissive",
+      "from": [
+        -5.4,
+        25.0,
+        -4.6
+      ],
+      "to": [
+        5.4,
+        32.8,
+        3.2
+      ]
+    },
+    {
+      "id": "rib_r_0",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        1.4,
+        27.0,
+        -5.3
+      ],
+      "to": [
+        6.8,
+        28.2,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -10.0
+      ],
+      "origin": [
+        4.1,
+        27.6,
+        -4.65
+      ]
+    },
+    {
+      "id": "rib_l_0",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        -6.8,
+        27.0,
+        -5.3
+      ],
+      "to": [
+        -1.4,
+        28.2,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        10.0
+      ],
+      "origin": [
+        -4.1,
+        27.6,
+        -4.65
+      ]
+    },
+    {
+      "id": "rib_r_1",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        1.4,
+        29.2,
+        -5.3
+      ],
+      "to": [
+        6.8,
+        30.4,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -10.0
+      ],
+      "origin": [
+        4.1,
+        29.8,
+        -4.65
+      ]
+    },
+    {
+      "id": "rib_l_1",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        -6.8,
+        29.2,
+        -5.3
+      ],
+      "to": [
+        -1.4,
+        30.4,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        10.0
+      ],
+      "origin": [
+        -4.1,
+        29.8,
+        -4.65
+      ]
+    },
+    {
+      "id": "rib_r_2",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        1.4,
+        31.4,
+        -5.3
+      ],
+      "to": [
+        6.8,
+        32.6,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -10.0
+      ],
+      "origin": [
+        4.1,
+        32.0,
+        -4.65
+      ]
+    },
+    {
+      "id": "rib_l_2",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        -6.8,
+        31.4,
+        -5.3
+      ],
+      "to": [
+        -1.4,
+        32.6,
+        -4.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        10.0
+      ],
+      "origin": [
+        -4.1,
+        32.0,
+        -4.65
+      ]
+    },
+    {
+      "id": "chest_core_pillar",
+      "bone": "chest",
+      "material": "basalt_iron",
+      "from": [
+        -1.5,
+        25.0,
+        -5.3
+      ],
+      "to": [
+        1.5,
+        34.0,
+        -4.1
+      ]
+    },
+    {
+      "id": "chest_hull",
+      "bone": "chest",
+      "material": "basalt_iron",
+      "from": [
+        -10.0,
+        33.0,
+        -5.6
+      ],
+      "to": [
+        10.0,
+        47.0,
+        5.6
+      ]
+    },
+    {
+      "id": "chest_breast_r",
+      "bone": "chest",
+      "material": "charred_steel",
+      "from": [
+        0.5,
+        34.5,
+        -6.6
+      ],
+      "to": [
+        9.4,
+        45.8,
+        -5.0
+      ]
+    },
+    {
+      "id": "chest_breast_l",
+      "bone": "chest",
+      "material": "charred_steel",
+      "from": [
+        -9.4,
+        34.5,
+        -6.6
+      ],
+      "to": [
+        -0.5,
+        45.8,
+        -5.0
+      ]
+    },
+    {
+      "id": "chest_collar",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        -8.2,
+        44.8,
+        -6.4
+      ],
+      "to": [
+        8.2,
+        47.6,
+        5.8
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "chest_gorget_v",
+      "bone": "chest",
+      "material": "foundry_bronze",
+      "from": [
+        -3.0,
+        41.0,
+        -6.9
+      ],
+      "to": [
+        3.0,
+        46.8,
+        -5.6
+      ]
+    },
+    {
+      "id": "chest_back_plate",
+      "bone": "chest",
+      "material": "charred_steel",
+      "from": [
+        -8.6,
+        34.0,
+        5.0
+      ],
+      "to": [
+        8.6,
+        45.8,
+        6.6
+      ]
+    },
+    {
+      "id": "stack_r_base",
+      "bone": "stack_right",
+      "material": "foundry_bronze",
+      "from": [
+        2.6,
+        41.0,
+        5.2
+      ],
+      "to": [
+        7.4,
+        46.5,
+        9.6
+      ]
+    },
+    {
+      "id": "stack_l_base",
+      "bone": "stack_left",
+      "material": "foundry_bronze",
+      "from": [
+        -7.4,
+        41.0,
+        5.2
+      ],
+      "to": [
+        -2.6,
+        46.5,
+        9.6
+      ]
+    },
+    {
+      "id": "stack_r_pipe",
+      "bone": "stack_right",
+      "material": "charred_steel",
+      "from": [
+        3.2,
+        46.5,
+        5.8
+      ],
+      "to": [
+        6.8,
+        57.5,
+        9.0
+      ]
+    },
+    {
+      "id": "stack_l_pipe",
+      "bone": "stack_left",
+      "material": "charred_steel",
+      "from": [
+        -6.8,
+        46.5,
+        5.8
+      ],
+      "to": [
+        -3.2,
+        57.5,
+        9.0
+      ]
+    },
+    {
+      "id": "stack_r_cap",
+      "bone": "stack_right",
+      "material": "foundry_bronze",
+      "from": [
+        2.7,
+        56.8,
+        5.3
+      ],
+      "to": [
+        7.3,
+        59.0,
+        9.5
+      ]
+    },
+    {
+      "id": "stack_l_cap",
+      "bone": "stack_left",
+      "material": "foundry_bronze",
+      "from": [
+        -7.3,
+        56.8,
+        5.3
+      ],
+      "to": [
+        -2.7,
+        59.0,
+        9.5
+      ]
+    },
+    {
+      "id": "stack_r_glow",
+      "bone": "stack_right",
+      "material": "forge_ember_emissive",
+      "from": [
+        3.6,
+        58.6,
+        6.2
+      ],
+      "to": [
+        6.4,
+        60.4,
+        8.6
+      ]
+    },
+    {
+      "id": "stack_l_glow",
+      "bone": "stack_left",
+      "material": "forge_ember_emissive",
+      "from": [
+        -6.4,
+        58.6,
+        6.2
+      ],
+      "to": [
+        -3.6,
+        60.4,
+        8.6
+      ]
+    },
+    {
+      "id": "bchain_0",
+      "bone": "back_chain_mid",
+      "material": "slag_chain",
+      "from": [
+        5.3,
+        40.7,
+        5.7
+      ],
+      "to": [
+        8.3,
+        42.9,
+        7.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        34.0
+      ],
+      "origin": [
+        6.8,
+        41.8,
+        6.8
+      ]
+    },
+    {
+      "id": "bchain_1",
+      "bone": "back_chain_mid",
+      "material": "slag_chain",
+      "from": [
+        2.7,
+        38.1,
+        6.1
+      ],
+      "to": [
+        5.7,
+        40.3,
+        8.3
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        20.0
+      ],
+      "origin": [
+        4.2,
+        39.2,
+        7.2
+      ]
+    },
+    {
+      "id": "bchain_2",
+      "bone": "back_chain_mid",
+      "material": "slag_chain",
+      "from": [
+        -0.1,
+        36.5,
+        6.4
+      ],
+      "to": [
+        2.9,
+        38.7,
+        8.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        1.4,
+        37.6,
+        7.5
+      ]
+    },
+    {
+      "id": "bchain_3",
+      "bone": "back_chain_mid",
+      "material": "slag_chain",
+      "from": [
+        -2.9,
+        36.5,
+        6.4
+      ],
+      "to": [
+        0.1,
+        38.7,
+        8.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        -1.4,
+        37.6,
+        7.5
+      ]
+    },
+    {
+      "id": "bchain_4",
+      "bone": "back_chain_mid",
+      "material": "slag_chain",
+      "from": [
+        -5.7,
+        38.1,
+        6.1
+      ],
+      "to": [
+        -2.7,
+        40.3,
+        8.3
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -20.0
+      ],
+      "origin": [
+        -4.2,
+        39.2,
+        7.2
+      ]
+    },
+    {
+      "id": "bchain_5",
+      "bone": "back_chain_mid",
+      "material": "slag_chain",
+      "from": [
+        -8.3,
+        40.7,
+        5.7
+      ],
+      "to": [
+        -5.3,
+        42.9,
+        7.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -34.0
+      ],
+      "origin": [
+        -6.8,
+        41.8,
+        6.8
+      ]
+    },
+    {
+      "id": "pauldron_r_low",
+      "bone": "pauldron_right",
+      "material": "foundry_bronze",
+      "from": [
+        9.2,
+        41.8,
+        -6.2
+      ],
+      "to": [
+        17.5,
+        44.0,
+        6.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -8.0
+      ],
+      "origin": [
+        13.35,
+        42.9,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_low",
+      "bone": "pauldron_left",
+      "material": "foundry_bronze",
+      "from": [
+        -17.5,
+        41.8,
+        -6.2
+      ],
+      "to": [
+        -9.2,
+        44.0,
+        6.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        8.0
+      ],
+      "origin": [
+        -13.35,
+        42.9,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_r_mid",
+      "bone": "pauldron_right",
+      "material": "basalt_iron",
+      "from": [
+        9.6,
+        43.8,
+        -5.8
+      ],
+      "to": [
+        17.0,
+        48.8,
+        5.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -6.0
+      ],
+      "origin": [
+        13.3,
+        46.3,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_mid",
+      "bone": "pauldron_left",
+      "material": "basalt_iron",
+      "from": [
+        -17.0,
+        43.8,
+        -5.8
+      ],
+      "to": [
+        -9.6,
+        48.8,
+        5.8
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        6.0
+      ],
+      "origin": [
+        -13.3,
+        46.3,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_r_top",
+      "bone": "pauldron_right",
+      "material": "foundry_bronze",
+      "from": [
+        9.8,
+        48.2,
+        -5.4
+      ],
+      "to": [
+        15.4,
+        50.4,
+        5.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -4.0
+      ],
+      "origin": [
+        12.6,
+        49.3,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_top",
+      "bone": "pauldron_left",
+      "material": "foundry_bronze",
+      "from": [
+        -15.4,
+        48.2,
+        -5.4
+      ],
+      "to": [
+        -9.8,
+        50.4,
+        5.4
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        4.0
+      ],
+      "origin": [
+        -12.6,
+        49.3,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_r_seam",
+      "bone": "pauldron_right",
+      "material": "forge_ember_emissive",
+      "from": [
+        10.0,
+        44.2,
+        -6.0
+      ],
+      "to": [
+        16.6,
+        45.2,
+        6.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -6.0
+      ],
+      "origin": [
+        13.3,
+        44.7,
+        0.0
+      ]
+    },
+    {
+      "id": "pauldron_l_seam",
+      "bone": "pauldron_left",
+      "material": "forge_ember_emissive",
+      "from": [
+        -16.6,
+        44.2,
+        -6.0
+      ],
+      "to": [
+        -10.0,
+        45.2,
+        6.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        6.0
+      ],
+      "origin": [
+        -13.3,
+        44.7,
+        0.0
+      ]
+    },
+    {
+      "id": "scap_r_horn",
+      "bone": "shoulder_cap_right",
+      "material": "charred_steel",
+      "from": [
+        16.0,
+        46.2,
+        -2.0
+      ],
+      "to": [
+        22.2,
+        49.4,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        14.0
+      ],
+      "origin": [
+        19.1,
+        47.8,
+        0.0
+      ]
+    },
+    {
+      "id": "scap_l_horn",
+      "bone": "shoulder_cap_left",
+      "material": "charred_steel",
+      "from": [
+        -22.2,
+        46.2,
+        -2.0
+      ],
+      "to": [
+        -16.0,
+        49.4,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -14.0
+      ],
+      "origin": [
+        -19.1,
+        47.8,
+        0.0
+      ]
+    },
+    {
+      "id": "neck_collar",
+      "bone": "neck",
+      "material": "charred_steel",
+      "from": [
+        -4.2,
+        46.8,
+        -3.8
+      ],
+      "to": [
+        4.2,
+        50.0,
+        3.8
+      ]
+    },
+    {
+      "id": "head_helm",
+      "bone": "head",
+      "material": "basalt_iron",
+      "from": [
+        -5.4,
+        49.5,
+        -5.4
+      ],
+      "to": [
+        5.4,
+        59.5,
+        5.4
+      ]
+    },
+    {
+      "id": "helm_crest",
+      "bone": "head",
+      "material": "foundry_bronze",
+      "from": [
+        -1.2,
+        54.0,
+        -6.1
+      ],
+      "to": [
+        1.2,
+        60.4,
+        5.8
+      ]
+    },
+    {
+      "id": "visor_brow_plate",
+      "bone": "visor_brow",
+      "material": "foundry_bronze",
+      "from": [
+        -5.8,
+        55.2,
+        -6.0
+      ],
+      "to": [
+        5.8,
+        57.2,
+        5.7
+      ]
+    },
+    {
+      "id": "jaw_grate_frame",
+      "bone": "jaw_grate",
+      "material": "foundry_bronze",
+      "from": [
+        -5.6,
+        49.4,
+        -6.0
+      ],
+      "to": [
+        5.6,
+        53.0,
+        -4.4
+      ]
+    },
+    {
+      "id": "grate_slit_-3.6",
+      "bone": "jaw_grate",
+      "material": "forge_ember_emissive",
+      "from": [
+        -4.1,
+        49.9,
+        -6.2
+      ],
+      "to": [
+        -3.1,
+        52.3,
+        -5.4
+      ]
+    },
+    {
+      "id": "grate_slit_-1.2",
+      "bone": "jaw_grate",
+      "material": "forge_ember_emissive",
+      "from": [
+        -1.7,
+        49.9,
+        -6.2
+      ],
+      "to": [
+        -0.7,
+        52.3,
+        -5.4
+      ]
+    },
+    {
+      "id": "grate_slit_1.2",
+      "bone": "jaw_grate",
+      "material": "forge_ember_emissive",
+      "from": [
+        0.7,
+        49.9,
+        -6.2
+      ],
+      "to": [
+        1.7,
+        52.3,
+        -5.4
+      ]
+    },
+    {
+      "id": "grate_slit_3.6",
+      "bone": "jaw_grate",
+      "material": "forge_ember_emissive",
+      "from": [
+        3.1,
+        49.9,
+        -6.2
+      ],
+      "to": [
+        4.1,
+        52.3,
+        -5.4
+      ]
+    },
+    {
+      "id": "eye_r",
+      "bone": "head",
+      "material": "forge_ember_emissive",
+      "from": [
+        1.5,
+        53.4,
+        -5.8
+      ],
+      "to": [
+        4.4,
+        55.0,
+        -4.9
+      ]
+    },
+    {
+      "id": "eye_l",
+      "bone": "head",
+      "material": "forge_ember_emissive",
+      "from": [
+        -4.4,
+        53.4,
+        -5.8
+      ],
+      "to": [
+        -1.5,
+        55.0,
+        -4.9
+      ]
+    },
+    {
+      "id": "horn_r_base",
+      "bone": "horn_right",
+      "material": "foundry_bronze",
+      "from": [
+        5.2,
+        55.6,
+        -2.0
+      ],
+      "to": [
+        10.4,
+        58.8,
+        2.0
+      ]
+    },
+    {
+      "id": "horn_l_base",
+      "bone": "horn_left",
+      "material": "foundry_bronze",
+      "from": [
+        -10.4,
+        55.6,
+        -2.0
+      ],
+      "to": [
+        -5.2,
+        58.8,
+        2.0
+      ]
+    },
+    {
+      "id": "horn_r_tip",
+      "bone": "horn_right",
+      "material": "foundry_bronze",
+      "from": [
+        8.4,
+        58.4,
+        -1.6
+      ],
+      "to": [
+        11.6,
+        63.8,
+        1.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -10.0
+      ],
+      "origin": [
+        10.0,
+        61.1,
+        0.0
+      ]
+    },
+    {
+      "id": "horn_l_tip",
+      "bone": "horn_left",
+      "material": "foundry_bronze",
+      "from": [
+        -11.6,
+        58.4,
+        -1.6
+      ],
+      "to": [
+        -8.4,
+        63.8,
+        1.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        10.0
+      ],
+      "origin": [
+        -10.0,
+        61.1,
+        0.0
+      ]
+    },
+    {
+      "id": "helm_pipe_r",
+      "bone": "head",
+      "material": "charred_steel",
+      "from": [
+        2.2,
+        59.4,
+        -1.2
+      ],
+      "to": [
+        4.6,
+        62.6,
+        2.2
+      ]
+    },
+    {
+      "id": "helm_pipe_l",
+      "bone": "head",
+      "material": "charred_steel",
+      "from": [
+        -4.6,
+        59.4,
+        -1.2
+      ],
+      "to": [
+        -2.2,
+        62.6,
+        2.2
+      ]
+    },
+    {
+      "id": "helm_ember_r",
+      "bone": "head",
+      "material": "forge_ember_emissive",
+      "from": [
+        2.6,
+        62.4,
+        -0.8
+      ],
+      "to": [
+        4.2,
+        63.8,
+        1.6
+      ]
+    },
+    {
+      "id": "helm_ember_l",
+      "bone": "head",
+      "material": "forge_ember_emissive",
+      "from": [
+        -4.2,
+        62.4,
+        -0.8
+      ],
+      "to": [
+        -2.6,
+        63.8,
+        1.6
+      ]
+    },
+    {
+      "id": "uarm_r_core",
+      "bone": "upper_arm_right",
+      "material": "basalt_iron",
+      "from": [
+        10.0,
+        34.0,
+        -3.2
+      ],
+      "to": [
+        16.0,
+        44.5,
+        3.2
+      ]
+    },
+    {
+      "id": "uarm_l_core",
+      "bone": "upper_arm_left",
+      "material": "basalt_iron",
+      "from": [
+        -16.0,
+        34.0,
+        -3.2
+      ],
+      "to": [
+        -10.0,
+        44.5,
+        3.2
+      ]
+    },
+    {
+      "id": "uarm_r_cuff",
+      "bone": "upper_arm_right",
+      "material": "foundry_bronze",
+      "from": [
+        9.8,
+        34.2,
+        -3.5
+      ],
+      "to": [
+        16.2,
+        36.2,
+        3.5
+      ]
+    },
+    {
+      "id": "uarm_l_cuff",
+      "bone": "upper_arm_left",
+      "material": "foundry_bronze",
+      "from": [
+        -16.2,
+        34.2,
+        -3.5
+      ],
+      "to": [
+        -9.8,
+        36.2,
+        3.5
+      ]
+    },
+    {
+      "id": "farm_r_gaunt",
+      "bone": "forearm_right",
+      "material": "basalt_iron",
+      "from": [
+        10.2,
+        23.0,
+        -3.4
+      ],
+      "to": [
+        16.4,
+        34.2,
+        3.4
+      ]
+    },
+    {
+      "id": "farm_l_gaunt",
+      "bone": "forearm_left",
+      "material": "basalt_iron",
+      "from": [
+        -16.4,
+        23.0,
+        -3.4
+      ],
+      "to": [
+        -10.2,
+        34.2,
+        3.4
+      ]
+    },
+    {
+      "id": "farm_r_band",
+      "bone": "forearm_right",
+      "material": "foundry_bronze",
+      "from": [
+        10.0,
+        29.8,
+        -3.7
+      ],
+      "to": [
+        16.6,
+        32.0,
+        3.7
+      ]
+    },
+    {
+      "id": "farm_l_band",
+      "bone": "forearm_left",
+      "material": "foundry_bronze",
+      "from": [
+        -16.6,
+        29.8,
+        -3.7
+      ],
+      "to": [
+        -10.0,
+        32.0,
+        3.7
+      ]
+    },
+    {
+      "id": "shackle_r_ring",
+      "bone": "shackle_right",
+      "material": "slag_chain",
+      "from": [
+        9.9,
+        26.2,
+        -3.9
+      ],
+      "to": [
+        16.8,
+        28.4,
+        3.9
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "shackle_l_ring",
+      "bone": "shackle_left",
+      "material": "slag_chain",
+      "from": [
+        -16.8,
+        26.2,
+        -3.9
+      ],
+      "to": [
+        -9.9,
+        28.4,
+        3.9
+      ],
+      "inflate": 0.05
+    },
+    {
+      "id": "fist_r",
+      "bone": "forearm_right",
+      "material": "foundry_bronze",
+      "from": [
+        10.8,
+        21.8,
+        -3.0
+      ],
+      "to": [
+        16.0,
+        24.4,
+        3.0
+      ]
+    },
+    {
+      "id": "fist_l",
+      "bone": "forearm_left",
+      "material": "foundry_bronze",
+      "from": [
+        -16.0,
+        21.8,
+        -3.0
+      ],
+      "to": [
+        -10.8,
+        24.4,
+        3.0
+      ]
+    },
+    {
+      "id": "maul_shaft_up",
+      "bone": "anvil_maul",
+      "material": "foundry_bronze",
+      "from": [
+        13.5,
+        13.0,
+        -3.5
+      ],
+      "to": [
+        15.9,
+        32.5,
+        -1.1
+      ]
+    },
+    {
+      "id": "maul_shaft_low",
+      "bone": "anvil_maul",
+      "material": "charred_steel",
+      "from": [
+        13.7,
+        8.5,
+        -3.3
+      ],
+      "to": [
+        15.7,
+        15.0,
+        -1.3
+      ]
+    },
+    {
+      "id": "maul_pommel",
+      "bone": "anvil_maul",
+      "material": "foundry_bronze",
+      "from": [
+        13.2,
+        32.0,
+        -3.8
+      ],
+      "to": [
+        16.2,
+        34.8,
+        -0.8
+      ]
+    },
+    {
+      "id": "maul_head_body",
+      "bone": "maul_head",
+      "material": "basalt_iron",
+      "from": [
+        10.8,
+        0.8,
+        -8.5
+      ],
+      "to": [
+        18.8,
+        9.6,
+        3.8
+      ]
+    },
+    {
+      "id": "maul_cap_front",
+      "bone": "maul_head",
+      "material": "foundry_bronze",
+      "from": [
+        10.4,
+        0.4,
+        -9.4
+      ],
+      "to": [
+        19.2,
+        10.0,
+        -7.4
+      ]
+    },
+    {
+      "id": "maul_cap_back",
+      "bone": "maul_head",
+      "material": "foundry_bronze",
+      "from": [
+        10.4,
+        0.4,
+        2.8
+      ],
+      "to": [
+        19.2,
+        10.0,
+        4.8
+      ]
+    },
+    {
+      "id": "maul_rune_r",
+      "bone": "maul_head",
+      "material": "forge_ember_emissive",
+      "from": [
+        18.5,
+        2.6,
+        -6.4
+      ],
+      "to": [
+        19.3,
+        7.8,
+        1.8
+      ]
+    },
+    {
+      "id": "maul_rune_l",
+      "bone": "maul_head",
+      "material": "forge_ember_emissive",
+      "from": [
+        10.3,
+        2.6,
+        -6.4
+      ],
+      "to": [
+        11.1,
+        7.8,
+        1.8
+      ]
+    },
+    {
+      "id": "shield_plate",
+      "bone": "forge_shield",
+      "material": "charred_steel",
+      "from": [
+        -18.4,
+        20.0,
+        -6.8
+      ],
+      "to": [
+        -15.8,
+        37.5,
+        5.2
+      ]
+    },
+    {
+      "id": "shield_rim_top",
+      "bone": "forge_shield",
+      "material": "foundry_bronze",
+      "from": [
+        -18.8,
+        36.2,
+        -5.8
+      ],
+      "to": [
+        -15.5,
+        38.8,
+        4.2
+      ]
+    },
+    {
+      "id": "shield_rim_bot",
+      "bone": "forge_shield",
+      "material": "foundry_bronze",
+      "from": [
+        -18.8,
+        18.6,
+        -5.8
+      ],
+      "to": [
+        -15.5,
+        21.2,
+        4.2
+      ]
+    },
+    {
+      "id": "shield_boss",
+      "bone": "forge_shield",
+      "material": "forge_ember_emissive",
+      "from": [
+        -19.4,
+        24.2,
+        -3.2
+      ],
+      "to": [
+        -18.0,
+        33.4,
+        1.4
+      ]
+    },
+    {
+      "id": "shield_bar_-2.0",
+      "bone": "forge_shield",
+      "material": "basalt_iron",
+      "from": [
+        -19.7,
+        25.0,
+        -2.45
+      ],
+      "to": [
+        -18.2,
+        32.6,
+        -1.55
+      ]
+    },
+    {
+      "id": "shield_bar_0.2",
+      "bone": "forge_shield",
+      "material": "basalt_iron",
+      "from": [
+        -19.7,
+        25.0,
+        -0.25
+      ],
+      "to": [
+        -18.2,
+        32.6,
+        0.65
+      ]
+    },
+    {
+      "id": "shield_chain_0",
+      "bone": "shield_chain",
+      "material": "slag_chain",
+      "from": [
+        -17.5,
+        16.5,
+        -1.6
+      ],
+      "to": [
+        -15.9,
+        18.7,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        -16.7,
+        17.6,
+        -0.8
+      ]
+    },
+    {
+      "id": "shield_chain_1",
+      "bone": "shield_chain",
+      "material": "slag_chain",
+      "from": [
+        -17.5,
+        13.8,
+        -1.6
+      ],
+      "to": [
+        -15.9,
+        16.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        18.0,
+        0.0
+      ],
+      "origin": [
+        -16.7,
+        14.9,
+        -0.8
+      ]
+    },
+    {
+      "id": "shield_chain_2",
+      "bone": "shield_chain",
+      "material": "slag_chain",
+      "from": [
+        -17.5,
+        11.2,
+        -1.6
+      ],
+      "to": [
+        -15.9,
+        13.4,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "origin": [
+        -16.7,
+        12.3,
+        -0.8
+      ]
+    }
+  ]
+}

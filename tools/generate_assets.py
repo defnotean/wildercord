@@ -1089,6 +1089,9 @@ def write_lang(runes):
     import vaelkhor_art
     lang.update(vaelkhor_art.LANG)
     vaelkhor_art.write(sys.modules[__name__])
+    import kharvok_art
+    lang.update(kharvok_art.LANG)
+    kharvok_art.write(sys.modules[__name__])
     import trial_biomes_art
     lang.update(trial_biomes_art.LANG)
     trial_biomes_art.write(sys.modules[__name__])

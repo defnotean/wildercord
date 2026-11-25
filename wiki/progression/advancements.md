@@ -347,19 +347,21 @@ See [Wild Places]({{ '/world/wilds-sites/' | relative_url }}), [Oathhold]({{ '/w
 | **Sanctum of the Sovereign** | task | Ley Walker | Enter a Leyline Sanctum Co-Op Trial arena | 25 XP |
 | **Leyline Sovereign Broken** | challenge | Sanctum of the Sovereign | Defeat Vaelkhor, the Leyline Sovereign in a Co-Op Trial Sanctum | 150 XP |
 | **Shares of the Sanctum** | goal | Leyline Sovereign Broken | Claim an instanced reward from a Trial Treasury | 50 XP |
+| **Crucible of Ashen Flame** | task | Sanctum of the Sovereign | Enter an Ashen Crucible Co-Op Trial foundry | 25 XP |
+| **Crucible Sovereign Quenched** | challenge | Crucible of Ashen Flame | Defeat Kharvok, the Crucible Sovereign inside the Ashen Crucible | 150 XP |
 
 See [Co-Op Trials & Vaelkhor]({{ '/world/coop-trials/' | relative_url }}).
 
 ## Totals
 
-182 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+184 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 132 |
+| Tasks | 133 |
 | Goals | 35 |
-| Challenges | 15 |
+| Challenges | 16 |
 | Hidden | 4 |
-| Experience for all of them | 15,535 |
+| Experience for all of them | 15,710 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

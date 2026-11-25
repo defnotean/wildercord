@@ -1,35 +1,36 @@
-# Co-Op Trials & Vaelkhor, the Leyline Sovereign
+# Co-Op Trials & Sovereign Sanctums
 
-Across temperate plains, meadows, taigas, and high peaks stand **Leyline Sanctums** (`41×25×41` warded colosseums) built to test coordinated parties against **Vaelkhor, the Leyline Sovereign**.
+Across the Overworld stand three `41×32×41` warded Co-Op Trial arenas designed to challenge coordinated parties of up to 6 players:
 
-## Starting a Trial
+1. **Leyline Sanctum** *(Plains, Meadows, Taiga, Savanna, Peaks)* — Guarded by **Vaelkhor, the Leyline Sovereign**. Drops the **Sovereign Halberd**, **Leyline Bell Charm**, and the **Leyline Trial Seal**.
+2. **Ashen Crucible** *(Cinder Caldera, Emberwood Reach, Badlands)* — Guarded by **Kharvok, the Crucible Sovereign**. Drops the **Crucible Greathammer**, **Forgeheart Censer**, and the **Crucible Trial Seal**.
+3. **Astral Eclipse Vault** *(Trial III, upcoming in Sovereign expansion)* — Yields the **Eclipse Trial Seal**.
 
-1. Locate a **Leyline Sanctum** in newly explored land.
-2. Gather your party inside the arena courtyard (within 24 blocks of the center).
-3. Interact with the **Leyline Trial Gate** at the entrance archway in Survival or Adventure mode above Peaceful.
-4. After defeating Vaelkhor, the gate rests for 10 minutes — or offer a crafted **Leyline Trial Sigil** to awaken the Sovereign immediately.
+## Starting a Trial & Apex Mode
 
-## Party Scaling & Boss Mechanics
+1. Locate a Trial Sanctum (or tune a **Sanctum Wayfinder** to track the nearest arena; operators may test with `/wildercord sanctum place <leyline|crucible>`).
+2. Gather your party inside the courtyard within 24 blocks of the arena center.
+3. Right-click the entrance **Leyline Trial Gate** in Survival or Adventure mode above Peaceful.
+4. After defeating the Sovereign, the gate rests for 10 minutes — or offer a crafted **Leyline Trial Sigil** to reawaken it immediately.
+5. **Apex Mode:** Wear **Sovereign's Mantle** or sneak while offering a Trial Seal at the Trial Gate to summon an `[APEX]` Sovereign (`+35%` HP, faster cooldowns, `+20%` damage, extra objective targets) that unlocks double crystals, guaranteed Tier III runes, and the **Sovereign Crown**.
 
-Vaelkhor scales dynamically to the number of nearby challengers (up to 6):
+## Party Scaling
 
-| Challengers | Max Health | Active Conduits | Cataclysm Soak Rings |
-|---|---|---|---|
-| 1 player | 320 HP | 2 | 1 |
-| 2 players | 480 HP | 2 | 2 |
-| 3 players | 640 HP | 3 | 2 |
-| 4+ players | 800 HP | 4 | 3 |
+| Challengers | Vaelkhor HP | Kharvok HP | Active Objectives | Soak Rings |
+|---|---|---|---|---|
+| 1 player | 320 HP | 380 HP | 2 | 1 |
+| 2 players | 480 HP | 560 HP | 2 | 2 |
+| 3 players | 640 HP | 740 HP | 3 | 2 |
+| 4+ players | 800 HP | 920 HP | 4 | 3 |
 
-### Attacks & Counterplay
+## Sovereign Counterplay
 
-- **Halberd Cleave:** Vaelkhor telegraphs a wide 6.6-block front arc before swinging an overhead cleave. Sidestep out of the highlighted cone before the blade drops.
-- **Bell Toll Conduit:** Vaelkhor chimes its chained bell-lantern and energizes arena **Leyline Conduits**. Right-click or strike every lit conduit pylon before the channel completes to shatter Vaelkhor's resonance — staggering the boss for 2.5 seconds (`+35%` incoming damage).
-- **Leyline Cataclysm (Phase 2, ≤ 60% HP):** Glowing **Anchor Rings** appear across the arena floor. Split up and stand inside every ring before detonation to turn a lethal pulse into light damage plus Resistance I.
+- **Vaelkhor:** Sidestep **Halberd Cleave** arcs, dampen lit **Leyline Conduits** during **Bell Toll Conduit** to stagger the boss, and split across glowing **Anchor Rings** during Phase 2 **Leyline Cataclysm**.
+- **Kharvok:** Dodge **Anvil Shatter** magma cones, quench every lit **Crucible Quench Vent** during **Chain Shackle** to shatter Kharvok's guard (`+35%` stagger damage), and cool the foundry rings during Phase 2 **Crucible Meltdown**.
 
-## Trial Treasury Rewards
+## Tri-Seal Progression & Relics
 
-When Vaelkhor falls, the **Leyline Trial Treasury** at the rear altar unseals for every contributor who fought, dampened a conduit, or soaked a cataclysm ring. Each eligible player claims their own instanced share once per clear:
-
-- **Sovereign Halberd** (sweeping right-click arc attack) or **Leyline Bell Charm** (chimes party Regeneration + Resistance).
-- **Mana Crystals**, **Blank Runes**, **Aura Shards**, Diamonds, and a Tier II–III Rune.
-- **Leyline Trial Sigil** recipe (Mana Crystal, Amethyst Shard, 2× Gold Ingot, Echo Shard).
+Each contributor earns an instanced claim from the rear **Trial Treasury**:
+- **Sovereign Halberd** & **Leyline Bell Charm** *(Leyline Sanctum)*
+- **Crucible Greathammer** & **Forgeheart Censer** *(Ashen Crucible)*
+- **Sovereign's Mantle:** Craft from `Leyline Seal` + `Crucible Seal` + `Eclipse Seal` + `Netherite Chestplate` + `2× Echo Shard` + `Mana Crystal`. Projects a 12-block party Resistance & Regeneration aura and triggers **Sovereign's Convergence** when shift-used.

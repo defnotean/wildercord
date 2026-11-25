@@ -97,6 +97,16 @@ public final class CoopTrialContent {
 			.lightLevel(s -> s.getValue(LeylineConduitBlock.LIT) ? 14 : 6)
 			.noLootTable()));
 
+	public static final CrucibleVentBlock CRUCIBLE_VENT = Registry.register(
+		BuiltInRegistries.BLOCK, blockKey("crucible_vent"),
+		new CrucibleVentBlock(BlockBehaviour.Properties.of()
+			.setId(blockKey("crucible_vent"))
+			.mapColor(MapColor.TERRACOTTA_ORANGE)
+			.strength(-1.0F, 3600000.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.lightLevel(s -> s.getValue(CrucibleVentBlock.LIT) ? 15 : 5)
+			.noLootTable()));
+
 	public static final BlockEntityType<TrialGateBlockEntity> TRIAL_GATE_ENTITY = Registry.register(
 		BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("trial_gate"),
 		FabricBlockEntityTypeBuilder.create(TrialGateBlockEntity::new, TRIAL_GATE).build());
@@ -111,6 +121,8 @@ public final class CoopTrialContent {
 		p -> new BlockItem(TRIAL_TREASURY, p.useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
 	public static final Item LEYLINE_CONDUIT_ITEM = registerItem("leyline_conduit",
 		p -> new BlockItem(LEYLINE_CONDUIT, p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
+	public static final Item CRUCIBLE_VENT_ITEM = registerItem("crucible_vent",
+		p -> new BlockItem(CRUCIBLE_VENT, p.useBlockDescriptionPrefix().rarity(Rarity.RARE)));
 
 	public static final Item SOVEREIGN_HALBERD = registerItem("sovereign_halberd",
 		p -> new SovereignHalberdItem(p.sword(ToolMaterial.NETHERITE, 7.0F, -2.9F).durability(2048).rarity(Rarity.EPIC)));
@@ -118,6 +130,11 @@ public final class CoopTrialContent {
 		p -> new LeylineBellCharmItem(p.stacksTo(1).rarity(Rarity.EPIC)));
 	public static final Item LEYLINE_SIGIL = registerItem("leyline_sigil",
 		p -> new AuraWorld.Lore("leyline_sigil", p.stacksTo(16).rarity(Rarity.RARE)));
+
+	public static final Item CRUCIBLE_MAUL = registerItem("crucible_maul",
+		p -> new CrucibleMaulItem(p.sword(ToolMaterial.NETHERITE, 8.0F, -3.1F).durability(2300).rarity(Rarity.EPIC)));
+	public static final Item FORGEHEART_CENSER = registerItem("forgeheart_censer",
+		p -> new ForgeheartCenserItem(p.stacksTo(1).rarity(Rarity.EPIC)));
 
 	public static final Item LEYLINE_SEAL = registerItem("leyline_seal",
 		p -> new AuraWorld.Lore("leyline_seal", p.stacksTo(16).rarity(Rarity.EPIC)));
@@ -140,21 +157,38 @@ public final class CoopTrialContent {
 			.fireImmune()
 			.build(VAELKHOR_KEY));
 
+	private static final ResourceKey<EntityType<?>> KHARVOK_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("kharvok"));
+	public static final EntityType<KharvokBoss> KHARVOK = Registry.register(
+		BuiltInRegistries.ENTITY_TYPE, KHARVOK_KEY,
+		EntityType.Builder.of(KharvokBoss::new, MobCategory.MONSTER)
+			.sized(1.9F, 4.0F)
+			.eyeHeight(3.3F)
+			.clientTrackingRange(16)
+			.fireImmune()
+			.build(KHARVOK_KEY));
+
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(VAELKHOR, VaelkhorBoss.createAttributes());
+		FabricDefaultAttributeRegistry.register(KHARVOK, KharvokBoss.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:vaelkhor", FieldGuide.Group.MONSTER, 0x60F5E0));
+		FieldGuide.add(new FieldGuide.Entry("wildercord:kharvok", FieldGuide.Group.MONSTER, 0xFF8424));
 		ServerTickEvents.END_SERVER_TICK.register(SovereignsMantleItem::tickServer);
 		AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
 			if (level.getBlockState(pos).is(LEYLINE_CONDUIT)) {
 				LeylineConduitBlock.interactConduit(level, pos, player);
 				return InteractionResult.SUCCESS;
 			}
+			if (level.getBlockState(pos).is(CRUCIBLE_VENT)) {
+				CrucibleVentBlock.interactVent(level, pos, player);
+				return InteractionResult.SUCCESS;
+			}
 			return InteractionResult.PASS;
 		});
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(out -> List.of(
-				TRIAL_GATE_ITEM, TRIAL_TREASURY_ITEM, LEYLINE_CONDUIT_ITEM,
+				TRIAL_GATE_ITEM, TRIAL_TREASURY_ITEM, LEYLINE_CONDUIT_ITEM, CRUCIBLE_VENT_ITEM,
 				SOVEREIGN_HALBERD, LEYLINE_BELL_CHARM, LEYLINE_SIGIL,
+				CRUCIBLE_MAUL, FORGEHEART_CENSER,
 				LEYLINE_SEAL, CRUCIBLE_SEAL, ECLIPSE_SEAL,
 				SOVEREIGNS_MANTLE, SOVEREIGN_CROWN
 			).forEach(out::accept));

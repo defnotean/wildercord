@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/trial_leyline_sanctum",
+  "criteria": {
+    "trial_ashen_crucible": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:trial_ashen_crucible"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:crucible_vent"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.trial_ashen_crucible.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.trial_ashen_crucible.description"
+    }
+  },
+  "requirements": [
+    [
+      "trial_ashen_crucible"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}
