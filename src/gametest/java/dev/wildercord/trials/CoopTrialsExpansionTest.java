@@ -74,7 +74,7 @@ public final class CoopTrialsExpansionTest implements FabricClientGameTest {
 				return partner.getUUID();
 			});
 
-			c.waitTicks(5);
+			awaitClientGateReady(c, stand2, gate2);
 			use(c, gate2);
 			c.waitTicks(8);
 
@@ -164,15 +164,22 @@ public final class CoopTrialsExpansionTest implements FabricClientGameTest {
 				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
 				ServerPlayer partner = (ServerPlayer) l.getEntity(partnerId);
 				p.setHealth(40.0F);
+				p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 				p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(CoopTrialContent.SOVEREIGNS_MANTLE));
 				p.teleportTo(l, stand3.getX() + 0.5, stand3.getY(), stand3.getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				partner.snapTo(ally3.getX() + 0.5, ally3.getY(), ally3.getZ() + 0.5, 0.0F, 0.0F);
 				check(DungeonWards.warded(l, center3), "Astral Eclipse Vault center is warded");
 			});
 
-			c.waitTicks(5);
+			awaitClientGateReady(c, stand3, gate3);
 			use(c, gate3);
-			c.waitTicks(8);
+			for (int i = 0; i < 30; i++) {
+				c.waitTicks(1);
+				if (world.getServer().computeOnServer(s ->
+					s.overworld().getEntitiesOfClass(NyxaraBoss.class, new AABB(center3).inflate(30)).size() == 1)) {
+					break;
+				}
+			}
 
 			UUID nyxaraId = world.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
@@ -282,6 +289,19 @@ public final class CoopTrialsExpansionTest implements FabricClientGameTest {
 				center.getX() + 0.5 + perp.x * 6.0 + dir.x * 3.0, center.getY(), center.getZ() + 0.5 + perp.z * 6.0 + dir.z * 3.0);
 			return new BlockPos[]{gate, center, treasury, standSpot, viewSpot, treasuryView, allySpot};
 		});
+	}
+
+	private static void awaitClientGateReady(ClientGameTestContext c, BlockPos stand, BlockPos gate) {
+		for (int i = 0; i < 80; i++) {
+			if (c.computeOnClient(mc -> mc.level != null && mc.player != null
+				&& mc.player.position().closerThan(Vec3.atCenterOf(stand), 3.5)
+				&& mc.level.getBlockState(gate).is(CoopTrialContent.TRIAL_GATE))) {
+				c.waitTicks(2);
+				return;
+			}
+			c.waitTicks(1);
+		}
+		throw new AssertionError("Client never synced gate chunk at " + gate + " from stand " + stand);
 	}
 
 	private static boolean hasItem(ServerPlayer p, net.minecraft.world.item.Item item) {
