@@ -191,6 +191,7 @@ public final class CoopTrialVaelkhorTest implements FabricClientGameTest {
 				check(treBe.isUnlocked(), "Trial Treasury unlocked on Vaelkhor death");
 
 				ServerPlayer partner = (ServerPlayer) l.getEntity(partnerId);
+				partner.teleportTo(l, treasuryView.getX() + 1.5, treasuryView.getY(), treasuryView.getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				int beforeMain = countRewards(p);
 				int beforePartner = countRewards(partner);
 				treBe.claim(p);
